@@ -63,4 +63,5 @@ jobs:
         run: docker build -t mahanavi-spirituals:ci .
 
       - name: Verify the image's Python version
-        run: docker run --rm mahanavi-spirituals:ci python3 --version
+        run: docker run --rm --entrypoint python3 mahanavi-spirituals:ci --version
+
