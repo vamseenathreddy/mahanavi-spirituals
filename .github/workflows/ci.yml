@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install mypy
+
+      - name: Create placeholder Images/ folders
+        # Settings validation requires images_root to exist. CI has no real
+        # devotional photos, so create empty weekday folders — tests that
+        # need actual image files create their own in tmp_path fixtures.
+        run: |
+          for d in Monday_Shiva Tuesday_Hanuman Wednesday_Ganesha Thursday_Sai Friday_Lakshmi Saturday_Venkateswara Sunday_Surya; do
+            mkdir -p "Images/$d"
+          done
+
+      - name: Run tests with coverage
+        run: |
+          PYTHONPATH=src pytest --cov=mahanavi --cov-report=term-missing --cov-report=xml
+
+      - name: Type check with mypy
+        run: |
+          PYTHONPATH=src mypy src/mahanavi --ignore-missing-imports
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  docker-build:
+    runs-on: ubuntu-latest
+    # This is the first REAL validation of the Dockerfile — it could not be
+    # built or tested in the environment that originally wrote it, since
+    # that sandbox had neither Docker nor network access to
+    # mcr.microsoft.com. If this job fails, start here.
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t mahanavi-spirituals:ci .
+
+      - name: Verify the image's Python version
+        run: docker run --rm mahanavi-spirituals:ci python3 --version
