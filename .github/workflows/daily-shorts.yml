@@ -1,0 +1,75 @@
+name: Daily Shorts Post
+
+on:
+  schedule:
+    - cron: '30 23 * * *'   # 05:00 IST daily (23:30 UTC previous day)
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  post-shorts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_B64: ${{ secrets.GDRIVE_SA_KEY_B64 }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Skip if already posted today (IST)
+        id: gate
+        run: python scripts/ci/drive_state_sync.py check-date
+
+      - name: Run Shorts pipeline
+        if: steps.gate.outputs.run == 'true'
+        env:
+          MAHANAVI_IMAGES_ROOT: ./Images
+          MAHANAVI_ASSETS_DIR: ./assets
+          MAHANAVI_OUTPUT_DIR: ./data/generated
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_PANCHANG_PROVIDER: prokerala
+          MAHANAVI_PROKERALA_CLIENT_ID: ${{ secrets.MAHANAVI_PROKERALA_CLIENT_ID }}
+          MAHANAVI_PROKERALA_CLIENT_SECRET: ${{ secrets.MAHANAVI_PROKERALA_CLIENT_SECRET }}
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
+        run: python3 -m mahanavi.scripts.post_alert_shorts --public
+
+      - name: Mark today done and push state back to Drive
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GDRIVE_SA_KEY_B64: ${{ secrets.GDRIVE_SA_KEY_B64 }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          python scripts/ci/drive_state_sync.py mark-done
+          python scripts/ci/drive_state_sync.py push
+
+      - name: Upload run output as artifact (debugging)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-log-${{ github.run_id }}
+          path: |
+            data/logs/
+            data/generated/
+          if-no-files-found: ignore
+          retention-days: 14
