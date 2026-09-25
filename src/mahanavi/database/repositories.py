@@ -52,6 +52,39 @@ class ImageHistoryRepository:
             )
 
 
+class PuranaHistoryRepository:
+    """
+    Tracks which of the 18 Puranas have already been used for a long-form
+    video, so episode selection can jump randomly between them (per
+    explicit request) while never repeating one until all 18 have been
+    covered -- same non-repeating-cycle pattern as ImageHistoryRepository,
+    just keyed by Purana name instead of image folder.
+    """
+
+    def __init__(self, db: DatabaseManager) -> None:
+        self._db = db
+
+    def get_used_puranas(self) -> set[str]:
+        """All Purana names already used (across all time)."""
+        with self._db.connection() as conn:
+            rows = conn.execute("SELECT DISTINCT purana_name FROM purana_usage").fetchall()
+        return {row["purana_name"] for row in rows}
+
+    def mark_used(self, purana_name: str, used_on: date) -> None:
+        with self._db.connection() as conn:
+            conn.execute(
+                "INSERT OR IGNORE INTO purana_usage (purana_name, used_on) VALUES (?, ?)",
+                (purana_name, used_on.isoformat()),
+            )
+
+    def reset_history(self) -> None:
+        """Wipe usage history once all 18 Puranas have been used, starting
+        a fresh non-repeating cycle -- same idea as
+        ImageHistoryRepository.reset_folder_history."""
+        with self._db.connection() as conn:
+            conn.execute("DELETE FROM purana_usage")
+
+
 @dataclass(slots=True)
 class PostLogRecord:
     id: int

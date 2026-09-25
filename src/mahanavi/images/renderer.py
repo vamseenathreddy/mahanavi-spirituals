@@ -1,4 +1,4 @@
-"""
+﻿"""
 PillowImageRenderer: composes the final branded devotional image from:
   - the selected deity image
   - today's Panchang data
@@ -11,7 +11,7 @@ canvas_width/canvas_height are changed in config:
     2. Deity banner — Telugu deity name, centered
     3. Deity image  — cover-cropped into a rounded, gold-bordered frame with
                        a soft drop shadow
-    4. Panchang panel — semi-transparent cream card, 10 label:value rows
+    4. Panchang panel — semi-transparent cream card, label:value rows
                          in two columns
     5. Footer       — centered watermark text
 """
@@ -45,9 +45,10 @@ from mahanavi.images.layout import (
     vertical_gradient,
 )
 from mahanavi.images.telugu_text import (
-    DEITY_TELUGU_NAMES,
     PANCHANG_LABELS,
     format_telugu_date,
+    translate_nakshatram,
+    translate_tithi,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,9 +57,21 @@ logger = logging.getLogger(__name__)
 class PillowImageRenderer(ImageRenderer):
     """Composes the branded daily devotional image using Pillow."""
 
-    def __init__(self, settings: Settings, font_manager: FontManager | None = None) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        font_manager: FontManager | None = None,
+        decorative_font_manager: FontManager | None = None,
+    ) -> None:
         self._settings = settings
         self._fonts = font_manager or FontManager(settings.telugu_font_path)
+        # Only used where content is guaranteed pure Telugu with no Latin
+        # or emoji characters — Ponnala has neither (confirmed via a real
+        # render test that showed tofu boxes for both). That currently
+        # means just the header date line; the deity banner has an emoji
+        # and the panel/footer mix in Latin content, so they stay on the
+        # main font.
+        self._decorative_fonts = decorative_font_manager or FontManager(settings.decorative_font_path)
 
     def render(
         self,
@@ -116,7 +129,7 @@ class PillowImageRenderer(ImageRenderer):
         else:
             logger.info("No logo file at %s — header will show text only.", logo_path)
 
-        date_font = self._fonts.get_font(size=int(height * 0.026), weight="SemiBold")
+        date_font = self._decorative_fonts.get_font(size=int(height * 0.026), weight="SemiBold")
         date_text = format_telugu_date(for_date)
         bbox = draw.textbbox((0, 0), date_text, font=date_font)
         text_w = bbox[2] - bbox[0]
@@ -130,9 +143,11 @@ class PillowImageRenderer(ImageRenderer):
         self, draw: ImageDraw.ImageDraw, selected_image: SelectedImage, width: int, cursor_y: int,
     ) -> int:
         banner_height = int(width * 0.09)
-        deity_name = DEITY_TELUGU_NAMES.get(selected_image.deity, selected_image.deity.value)
-        text = f"🙏 ఈ రోజు దైవం: {deity_name}"
-        font = self._fonts.get_font(size=int(width * 0.036), weight="Bold")
+        # "శుభోదయం" (Subhodayam / "good morning") — per request, this
+        # replaces the earlier "🙏 ఈ రోజు దైవం: <deity>" text entirely,
+        # with no deity name appended.
+        text = "శుభోదయం"
+        font = self._decorative_fonts.get_font(size=int(width * 0.036), weight="Bold")
         bbox = draw.textbbox((0, 0), text, font=font)
         text_w = bbox[2] - bbox[0]
         draw.text(
@@ -177,6 +192,11 @@ class PillowImageRenderer(ImageRenderer):
         panel_draw.rounded_rectangle(panel_box, radius=radius, fill=COLOR_PANEL_BG, outline=COLOR_PANEL_BORDER, width=4)
         canvas.alpha_composite(panel_layer)
 
+        # Reverted to the main font (not decorative Ponnala) for the panel —
+        # Ponnala is a bold display/poster face; at the panel's small text
+        # size it read as low-quality/hard to read (confirmed by direct
+        # feedback on a real post). Ponnala stays for the large header/
+        # banner text where it actually looks good.
         label_font = self._fonts.get_font(size=int(height * 0.0165), weight="Bold")
         value_font = self._fonts.get_font(size=int(height * 0.0165), weight="Regular")
 
@@ -201,8 +221,21 @@ class PillowImageRenderer(ImageRenderer):
 
     def _draw_footer(self, draw: ImageDraw.ImageDraw, width: int, height: int) -> None:
         footer_height = int(height * FOOTER_HEIGHT_FRAC)
-        font = self._fonts.get_font(size=int(height * 0.017), weight="Medium")
         text = self._settings.watermark_text
+        # Ponnala has zero Latin glyphs — if the watermark text contains
+        # any (e.g. the default "Mahanavi Spirituals"), using it would
+        # render as tofu boxes. Fall back to the main font in that case
+        # rather than silently breaking the footer; switch
+        # MAHANAVI_WATERMARK_TEXT to Telugu text to get Ponnala here too.
+        if any(ch.isascii() and ch.isalpha() for ch in text):
+            font = self._fonts.get_font(size=int(height * 0.017), weight="Medium")
+            logger.info(
+                "Watermark text contains Latin characters — using the main font "
+                "for the footer instead of Ponnala (which has no Latin glyphs). "
+                "Set MAHANAVI_WATERMARK_TEXT to Telugu text to use Ponnala here too."
+            )
+        else:
+            font = self._decorative_fonts.get_font(size=int(height * 0.017), weight="Medium")
         bbox = draw.textbbox((0, 0), text, font=font)
         text_w = bbox[2] - bbox[0]
         y = height - footer_height + (footer_height - (bbox[3] - bbox[1])) // 2 - bbox[1]
@@ -212,19 +245,31 @@ class PillowImageRenderer(ImageRenderer):
 
     @staticmethod
     def _panchang_rows(panchang: PanchangData) -> list[tuple[str, str]]:
+        # Times use plain English digits + AM/PM per explicit request —
+        # reverted from the Telugu-numeral 24-hour format. Since the panel
+        # is back on the main font (which has full Latin support), there's
+        # no compatibility reason to avoid English digits here anymore.
         values = {
-            "tithi": panchang.tithi,
-            "nakshatram": panchang.nakshatram,
+            "tithi": translate_tithi(panchang.tithi),
+            "nakshatram": translate_nakshatram(panchang.nakshatram),
+            "karana": panchang.karana,
+            "yoga": panchang.yoga,
             "sunrise": panchang.sunrise.strftime("%I:%M %p"),
             "sunset": panchang.sunset.strftime("%I:%M %p"),
+            "moonrise": panchang.moonrise.strftime("%I:%M %p") if panchang.moonrise else "",
+            "moonset": panchang.moonset.strftime("%I:%M %p") if panchang.moonset else "",
             "varjyam": panchang.varjyam,
             "rahu_kalam": panchang.rahu_kalam,
             "yamagandam": panchang.yamagandam,
             "gulika_kalam": panchang.gulika_kalam,
             "durmuhurtham": panchang.durmuhurtham,
             "abhijit_muhurtham": panchang.abhijit_muhurtham,
+            "amrit_kaal": panchang.amrit_kaal,
         }
-        return [(PANCHANG_LABELS[key], values[key]) for key in PANCHANG_LABELS]
+        # Skip optional fields with no data (e.g. the dummy provider leaves
+        # karana/moonrise/etc. populated, but a real provider might not
+        # supply every optional field) rather than showing an empty value.
+        return [(PANCHANG_LABELS[key], values[key]) for key in PANCHANG_LABELS if values[key]]
 
     def _build_output_path(self, selected_image: SelectedImage, for_date: date) -> Path:
         self._settings.output_dir.mkdir(parents=True, exist_ok=True)

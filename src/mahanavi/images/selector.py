@@ -66,7 +66,16 @@ class RandomImageSelector(ImageSelector):
 
     def select_for_date(self, for_date: date) -> SelectedImage:
         folder_name = WEEKDAY_FOLDER_MAP[for_date.weekday()]
-        folder_path = self._settings.weekday_folder(for_date.weekday())
+        return self.select_from_folder(folder_name, for_date)
+
+    def select_from_folder(self, folder_name: str, for_date: date) -> SelectedImage:
+        """Pick a non-repeating image from an EXPLICITLY given folder,
+        not necessarily today's weekday folder -- used by other pipelines
+        (e.g. a long-form video that rotates among a custom subset of
+        deity folders, like Vishnu/Shiva/Ganesha only) that want the same
+        "don't repeat until every image has been used" behavior without
+        being tied to the actual weekday mapping."""
+        folder_path = self._settings.images_root / folder_name
 
         all_files = self._list_valid_images(folder_path)
         if not all_files:

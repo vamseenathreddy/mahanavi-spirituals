@@ -1,4 +1,4 @@
-"""
+﻿"""
 DummyPanchangProvider: deterministic, offline Panchang data.
 
 Purpose: lets you run and test the ENTIRE pipeline (image selection ->
@@ -32,6 +32,17 @@ _NAKSHATRAMS = [
     "Shatabhisham", "Poorvabhadra", "Uttarabhadra", "Revati",
 ]
 
+_KARANAS = [
+    "Bava", "Balava", "Kaulava", "Taitila", "Garija", "Vanija", "Vishti",
+]
+
+_YOGAS = [
+    "Vishkambha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda",
+    "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata",
+    "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyana", "Parigha",
+    "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti",
+]
+
 
 class DummyPanchangProvider(PanchangProvider):
     """Offline, deterministic placeholder implementation of PanchangProvider."""
@@ -40,6 +51,8 @@ class DummyPanchangProvider(PanchangProvider):
         ordinal = for_date.toordinal()
         tithi = _TITHIS[ordinal % len(_TITHIS)]
         nakshatram = _NAKSHATRAMS[ordinal % len(_NAKSHATRAMS)]
+        karana = _KARANAS[ordinal % len(_KARANAS)]
+        yoga = _YOGAS[ordinal % len(_YOGAS)]
 
         return PanchangData(
             date_=for_date,
@@ -53,6 +66,13 @@ class DummyPanchangProvider(PanchangProvider):
             abhijit_muhurtham="11:48 AM - 12:38 PM",
             sunrise=time(5, 58),
             sunset=time(18, 45),
+            karana=karana,
+            yoga=yoga,
+            amrit_kaal="07:03 AM - 08:40 AM",
+            moonrise=time(7, 47),
+            moonset=time(19, 42),
+            festivals=[],  # dummy provider has no real festival calendar
+            marriage_muhurats="",  # dummy provider has no real muhurat calculation
             source="dummy",
         )
 

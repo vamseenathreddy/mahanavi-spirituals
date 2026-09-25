@@ -1,4 +1,4 @@
-"""
+﻿"""
 Factory for constructing the configured PanchangProvider.
 
 This is the single place that reads `settings.panchang_provider` and
@@ -14,6 +14,7 @@ from mahanavi.core.interfaces import PanchangProvider
 from mahanavi.exceptions import ConfigError
 from mahanavi.panchang.api_provider import ApiPanchangProvider
 from mahanavi.panchang.dummy_provider import DummyPanchangProvider
+from mahanavi.panchang.prokerala_provider import ProkeralaPanchangProvider
 from mahanavi.panchang.scraper_provider import ScraperPanchangProvider
 
 # Scraper selectors are deployment-specific (depend on which site you scrape).
@@ -42,6 +43,20 @@ def get_panchang_provider(settings: Settings) -> PanchangProvider:
             backoff_seconds=settings.retry_backoff_seconds,
         )
 
+    if provider_name == "prokerala":
+        if not settings.prokerala_client_id or not settings.prokerala_client_secret:
+            raise ConfigError(
+                "MAHANAVI_PANCHANG_PROVIDER=prokerala requires "
+                "MAHANAVI_PROKERALA_CLIENT_ID and MAHANAVI_PROKERALA_CLIENT_SECRET."
+            )
+        return ProkeralaPanchangProvider(
+            client_id=settings.prokerala_client_id,
+            client_secret=settings.prokerala_client_secret,
+            latitude=settings.panchang_latitude,
+            longitude=settings.panchang_longitude,
+            token_cache_path=settings.output_dir.parent / "prokerala_token.json",
+        )
+
     if provider_name == "scraper":
         if not _DEFAULT_SCRAPER_SELECTORS:
             raise ConfigError(
@@ -58,5 +73,5 @@ def get_panchang_provider(settings: Settings) -> PanchangProvider:
 
     raise ConfigError(
         f"Unknown MAHANAVI_PANCHANG_PROVIDER='{settings.panchang_provider}'. "
-        "Expected one of: dummy, api, scraper."
+        "Expected one of: dummy, api, scraper, prokerala."
     )

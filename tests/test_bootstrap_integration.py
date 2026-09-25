@@ -24,17 +24,39 @@ from mahanavi.config import Settings
 from mahanavi.publishers.youtube_playwright_uploader import YouTubePlaywrightUploader
 
 
+class _FakeKeyboard:
+    def __init__(self, page):
+        self._page = page
+
+    def type(self, text):
+        self._page._typed_text = text
+
+
 class _FakeYouTubePage:
+    def __init__(self):
+        self._typed_text = ""
+        self.keyboard = _FakeKeyboard(self)
+
     def goto(self, url, timeout=None): pass
-    def get_by_role(self, role, name=None): return self
+    def get_by_role(self, role, name=None, exact=False): return self
     def get_by_text(self, text): return self
     def get_by_placeholder(self, text): return self
     def locator(self, selector): return self
-    def click(self): pass
+    def click(self, force=False, timeout=None): pass
     def fill(self, text): pass
     def set_input_files(self, path): pass
     def wait_for(self, timeout=None): pass
     def wait_for_timeout(self, timeout): pass
+
+    def evaluate(self, expression, arg=None):
+        if "return el ? el.textContent" in expression:
+            return self._typed_text
+        if "execCommand('insertText'" in expression and isinstance(arg, dict):
+            self._typed_text = arg.get("caption", "")
+        if "el.textContent = ''" in expression:
+            self._typed_text = ""
+        return None
+
     def screenshot(self, path):
         Path(path).write_bytes(b"fake-png-bytes")
 
@@ -49,6 +71,7 @@ def test_full_pipeline_end_to_end(tmp_path: Path, monkeypatch) -> None:
     # --- YouTube: session file present, browser launch stubbed ---
     session_file = tmp_path / "yt_session.json"
     session_file.write_text("{}")
+    (tmp_path / "youtube_chrome_profile").mkdir(parents=True, exist_ok=True)
 
     @contextmanager
     def fake_launch_page(self):
@@ -66,6 +89,7 @@ def test_full_pipeline_end_to_end(tmp_path: Path, monkeypatch) -> None:
         telegram_bot_token="123:ABC",
         telegram_channel_id="@testchannel",
         youtube_session_state_file=session_file,
+        youtube_channel_id="UCtestchannel123",
     )
 
     pipeline = build_pipeline(settings)
@@ -84,7 +108,10 @@ def test_full_pipeline_end_to_end(tmp_path: Path, monkeypatch) -> None:
     assert result.generated_image_path is not None
     assert result.generated_image_path.exists()
     with Image.open(result.generated_image_path) as rendered:
-        assert rendered.size == (settings.canvas_width, settings.canvas_height)
+        # PlainImageRenderer copies the source image untouched — its size
+        # matches the original placeholder (800x1000), not the branded
+        # renderer's fixed canvas_width/canvas_height.
+        assert rendered.size == (800, 1000)
     assert result.seo is not None
     assert "శివుడు" in result.seo.title_telugu or "Shiva" in result.seo.alt_text
 

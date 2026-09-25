@@ -1,4 +1,4 @@
-"""
+﻿"""
 TemplateContentGenerator: composes SEO-optimized Telugu title, description,
 English keywords, Telugu hashtags, trending hashtags, and alt text for a
 day's post.
@@ -87,19 +87,65 @@ class TemplateContentGenerator(ContentGenerator):
 
     def _build_description(self, deity_content: DeityContent, panchang: PanchangData, date_telugu: str) -> str:
         lines = [
-            deity_content.blessing_phrase,
-            "",
+            # blessing_phrase is deliberately NOT repeated here — it's
+            # already the first thing in the title (see _build_title),
+            # and full_caption() puts title immediately before this.
             f"📅 {date_telugu} రోజు పంచాంగం వివరాలు:",
+            "",
+            "🔸 తిథి / నక్షత్రం",
             f"తిథి: {panchang.tithi}",
             f"నక్షత్రం: {panchang.nakshatram}",
-            f"సూర్యోదయం: {panchang.sunrise.strftime('%I:%M %p')}",
-            f"సూర్యాస్తమయం: {panchang.sunset.strftime('%I:%M %p')}",
+        ]
+        if panchang.karana:
+            lines.append(f"కరణం: {panchang.karana}")
+        if panchang.yoga:
+            lines.append(f"యోగం: {panchang.yoga}")
+
+        # Good (శుభ) muhurtams — auspicious periods. Both abhijit_muhurtham
+        # and amrit_kaal are conditional -- confirmed via a real Prokerala
+        # response that Abhijit Muhurtham genuinely doesn't occur every
+        # day, so showing its label with an empty value would be wrong,
+        # not just untidy.
+        good_muhurtams = []
+        if panchang.abhijit_muhurtham:
+            good_muhurtams.append(f"అభిజిత్ ముహూర్తం: {panchang.abhijit_muhurtham}")
+        if panchang.amrit_kaal:
+            good_muhurtams.append(f"అమృత కాలం: {panchang.amrit_kaal}")
+        if panchang.marriage_muhurats:
+            good_muhurtams.append(f"వివాహ ముహూర్తాలు: {panchang.marriage_muhurats}")
+
+        # Bad (అశుభ) muhurtams — inauspicious periods to avoid.
+        bad_muhurtams = [
             f"రాహు కాలం: {panchang.rahu_kalam}",
             f"యమగండం: {panchang.yamagandam}",
             f"గుళిక కాలం: {panchang.gulika_kalam}",
             f"దుర్ముహూర్తం: {panchang.durmuhurtham}",
-            f"అభిజిత్ ముహూర్తం: {panchang.abhijit_muhurtham}",
             f"వర్జ్యం: {panchang.varjyam}",
+        ]
+
+        lines += [
+            "",
+            "శుభ ముహూర్తాలు:",
+            *good_muhurtams,
+            "",
+            "అశుభ ముహూర్తాలు:",
+            *bad_muhurtams,
+        ]
+
+        lines += [
+            "",
+            f"సూర్యోదయం: {panchang.sunrise.strftime('%I:%M %p')}",
+            f"సూర్యాస్తమయం: {panchang.sunset.strftime('%I:%M %p')}",
+        ]
+        if panchang.moonrise:
+            lines.append(f"చంద్రోదయం: {panchang.moonrise.strftime('%I:%M %p')}")
+        if panchang.moonset:
+            lines.append(f"చంద్రాస్తమయం: {panchang.moonset.strftime('%I:%M %p')}")
+
+        if panchang.festivals:
+            lines += ["", f"పండుగలు: {', '.join(panchang.festivals)}"]
+
+        lines += [
             "",
             deity_content.mantra,
             "",

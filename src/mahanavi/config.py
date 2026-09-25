@@ -1,4 +1,4 @@
-"""
+﻿"""
 Application configuration.
 
 All runtime configuration is centralized here and loaded from environment
@@ -62,8 +62,48 @@ class Settings(BaseSettings):
     # --- Branding ---
     channel_name: str = Field(default="Mahanavi Spirituals")
     watermark_text: str = Field(default="Mahanavi Spirituals")
+    # Primary font: needs BOTH Telugu and Latin glyph coverage, since the
+    # Panchang panel mixes Telugu labels with content that's often in
+    # English (tithi/nakshatram names, "AM"/"PM" in times) — Noto Sans
+    # Telugu covers both; a Telugu-only display font would render tofu
+    # boxes for any Latin content (confirmed via a real render test).
     telugu_font_path: Path = Field(default=PROJECT_ROOT / "assets" / "fonts" / "NotoSansTelugu-Variable.ttf")
+    # Decorative font: used ONLY for elements that are guaranteed pure
+    # Telugu with no mixed Latin content (the header date, the deity
+    # banner) — Ponnala (SIL OFL, by Appaji Ambarisha Darbha / Silicon
+    # Andhra), a bolder, more traditional/devotional-poster calligraphic
+    # style than Noto. It has no Latin glyphs at all, so it must never be
+    # used anywhere Latin text could appear (the Panchang panel's mixed
+    # content, or the watermark, which defaults to the English channel
+    # name).
+    decorative_font_path: Path = Field(default=PROJECT_ROOT / "assets" / "fonts" / "Ponnala-Regular.ttf")
     logo_path: Path | None = Field(default=PROJECT_ROOT / "assets" / "logo" / "logo.png")
+
+    # --- Alert Shorts (Rahu Kalam / Shubha Ghadiyalu) ---
+    # Icons shown in a row at the top of each card, in this left-to-right
+    # order: Lakshmi, Ganesha, Kubera. All optional -- a missing/unset
+    # path just means that card renders without an icon row rather than
+    # failing (see AlertCardRenderer._draw_icon_row).
+    alert_icon_lakshmi_path: Path | None = Field(default=PROJECT_ROOT / "assets" / "icons" / "lakshmi.png")
+    alert_icon_ganesha_path: Path | None = Field(default=PROJECT_ROOT / "assets" / "icons" / "ganesha.png")
+    alert_icon_kubera_path: Path | None = Field(default=PROJECT_ROOT / "assets" / "icons" / "kubera.png")
+    # Royalty-free background music baked into each Short.
+    alert_short_music_path: Path | None = Field(default=None)
+
+    # Sarvam AI Telugu voiceover (long-form Puranam videos) -- get a key
+    # at sarvam.ai/try/tts-api. "meera" is Sarvam's own recommended
+    # voice for warm storytelling narration.
+    sarvam_api_key: str | None = Field(default=None)
+    # "priya" confirmed compatible with model bulbul:v3 specifically --
+    # a real API call showed "anushka" (valid for OTHER Sarvam models)
+    # is NOT in bulbul:v3's own speaker roster: aditya, ritu, ashutosh,
+    # priya, neha, rahul, pooja, rohan, simran, kavya, amit, dev,
+    # ishita, shreya, ratan, varun, manan, sumit, roopa, kabir, aayan,
+    # shubh, advait, anand, tanya, tarun, sunny, mani, gokul, vijay,
+    # shruti, suhani, mohit, kavitha, rehan, soham, rupali. Override
+    # this if you prefer a different voice after previewing options.
+    sarvam_voice: str = Field(default="priya")
+    alert_short_duration_seconds: float = Field(default=10.0, gt=0)
 
     # --- Image rendering ---
     canvas_width: int = Field(default=1080, gt=0)
@@ -72,14 +112,24 @@ class Settings(BaseSettings):
     image_output_quality: int = Field(default=95, ge=1, le=100)
 
     # --- Panchang provider ---
-    panchang_provider: str = Field(default="dummy")  # "dummy" | "api" | "scraper"
+    panchang_provider: str = Field(default="dummy")  # "dummy" | "api" | "scraper" | "prokerala"
     panchang_api_base_url: str | None = Field(default=None)
     panchang_api_key: str | None = Field(default=None)
     panchang_latitude: float = Field(default=17.3850)   # Hyderabad default
     panchang_longitude: float = Field(default=78.4867)
+    # Prokerala Astrology API (https://api.prokerala.com/) — real Panchang
+    # data, forever-free tier. Get client_id/client_secret from your
+    # Prokerala dashboard under Integration -> App IDs.
+    prokerala_client_id: str | None = Field(default=None)
+    prokerala_client_secret: str | None = Field(default=None)
 
     # --- YouTube ---
-    youtube_client_secrets_file: Path | None = Field(default=None)
+    # client_secrets.json: downloaded from Google Cloud Console
+    # (APIs & Services -> Credentials -> OAuth client ID -> Desktop app).
+    # Used only by the official Data API v3 Shorts uploader -- the
+    # existing Community Post automation (youtube_playwright_uploader.py)
+    # doesn't need this at all, since Community Posts have no API.
+    youtube_client_secrets_file: Path | None = Field(default=PROJECT_ROOT / "client_secrets.json")
     youtube_token_file: Path = Field(default=PROJECT_ROOT / "data" / "youtube_token.json")
     youtube_channel_id: str | None = Field(default=None)
     youtube_community_post_method: str = Field(default="playwright")  # "api" | "playwright"

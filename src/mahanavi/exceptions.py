@@ -39,7 +39,8 @@ class ImageSelectionError(MahanaviError):
 class ImageRenderError(MahanaviError):
     """Raised when Pillow-based composition of the final image fails."""
 
-
+class VideoAssemblyError(MahanaviError):
+    """Raised when ffmpeg-based video assembly (image + audio -> .mp4) fails."""
 # --- Panchang ------------------------------------------------------------
 
 class PanchangFetchError(MahanaviError):

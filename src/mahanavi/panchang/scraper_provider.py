@@ -1,4 +1,4 @@
-"""
+﻿"""
 ScraperPanchangProvider: fetches Panchang data by scraping an HTML page.
 
 Use this if you don't have (or don't want to pay for) a Panchang API.
@@ -22,7 +22,7 @@ by that site's terms of service/robots.txt before deploying this.
 from __future__ import annotations
 
 import logging
-from datetime import date
+from datetime import date, time
 
 import requests
 from bs4 import BeautifulSoup
@@ -39,6 +39,9 @@ REQUIRED_FIELDS = (
     "tithi", "nakshatram", "varjyam", "rahu_kalam", "yamagandam",
     "gulika_kalam", "durmuhurtham", "abhijit_muhurtham", "sunrise", "sunset",
 )
+# Optional — scraped if a selector is provided for them, otherwise default
+# to empty/None rather than raising PanchangFetchError.
+OPTIONAL_FIELDS = ("karana", "yoga", "amrit_kaal", "moonrise", "moonset", "marriage_muhurats")
 
 
 class ScraperPanchangProvider(PanchangProvider):
@@ -80,6 +83,17 @@ class ScraperPanchangProvider(PanchangProvider):
 
         soup = BeautifulSoup(html, "html.parser")
         values = self._extract_values(soup)
+        optional_values = self._extract_optional_values(soup)
+
+        def optional_time(field: str) -> time | None:
+            raw = optional_values.get(field, "")
+            if not raw:
+                return None
+            try:
+                return parse_time_string(raw)
+            except ValueError:
+                logger.warning("Could not parse optional field '%s' value %r as a time — leaving unset.", field, raw)
+                return None
 
         return PanchangData(
             date_=for_date,
@@ -93,6 +107,12 @@ class ScraperPanchangProvider(PanchangProvider):
             abhijit_muhurtham=values["abhijit_muhurtham"],
             sunrise=parse_time_string(values["sunrise"]),
             sunset=parse_time_string(values["sunset"]),
+            karana=optional_values.get("karana", ""),
+            yoga=optional_values.get("yoga", ""),
+            amrit_kaal=optional_values.get("amrit_kaal", ""),
+            moonrise=optional_time("moonrise"),
+            moonset=optional_time("moonset"),
+            marriage_muhurats=optional_values.get("marriage_muhurats", ""),
             source="scraper",
         )
 
@@ -103,7 +123,8 @@ class ScraperPanchangProvider(PanchangProvider):
 
     def _extract_values(self, soup: BeautifulSoup) -> dict[str, str]:
         values: dict[str, str] = {}
-        for field, selector in self._selectors.items():
+        for field in REQUIRED_FIELDS:
+            selector = self._selectors[field]
             element = soup.select_one(selector)
             if element is None:
                 raise PanchangFetchError(
@@ -112,4 +133,18 @@ class ScraperPanchangProvider(PanchangProvider):
                     "the selector map in your panchang config."
                 )
             values[field] = element.get_text(strip=True)
+        return values
+
+    def _extract_optional_values(self, soup: BeautifulSoup) -> dict[str, str]:
+        """Same as _extract_values but for OPTIONAL_FIELDS — a missing
+        selector (not configured) or a selector matching nothing both
+        just leave the field empty, rather than raising."""
+        values: dict[str, str] = {}
+        for field in OPTIONAL_FIELDS:
+            selector = self._selectors.get(field)
+            if not selector:
+                continue
+            element = soup.select_one(selector)
+            if element is not None:
+                values[field] = element.get_text(strip=True)
         return values

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Composition root: builds every concrete component from Settings and wires
 them into a DailyPipeline. This is the ONE place in the codebase that
 imports every concrete implementation — every other module only depends
@@ -15,7 +15,7 @@ from mahanavi.config import Settings
 from mahanavi.content.generator import TemplateContentGenerator
 from mahanavi.database.db import DatabaseManager
 from mahanavi.database.repositories import ImageHistoryRepository, PostLogRepository
-from mahanavi.images.renderer import PillowImageRenderer
+from mahanavi.images.plain_renderer import PlainImageRenderer
 from mahanavi.images.selector import RandomImageSelector
 from mahanavi.notifications.logging_notifier import LoggingNotifier
 from mahanavi.notifications.telegram_notifier import TelegramNotifier
@@ -34,7 +34,13 @@ def build_pipeline(settings: Settings) -> DailyPipeline:
     return DailyPipeline(
         image_selector=RandomImageSelector(settings, image_history_repo),
         panchang_provider=get_panchang_provider(settings),
-        image_renderer=PillowImageRenderer(settings),
+        # PlainImageRenderer: the original photo, untouched — all Panchang
+        # detail lives in the caption text instead (content/generator.py
+        # already writes it out in full). Switch back to
+        # `PillowImageRenderer(settings)` here for the branded-card style
+        # (photo + border + Panchang panel baked into the image) if you
+        # want that again later — nothing else needs to change either way.
+        image_renderer=PlainImageRenderer(settings),
         content_generator=TemplateContentGenerator(settings),
         publishers=build_publishers(settings),
         post_log_repo=post_log_repo,

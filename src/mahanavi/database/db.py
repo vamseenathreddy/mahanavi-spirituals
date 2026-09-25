@@ -32,6 +32,14 @@ CREATE TABLE IF NOT EXISTS image_usage (
 
 CREATE INDEX IF NOT EXISTS idx_image_usage_folder ON image_usage(folder_name);
 
+CREATE TABLE IF NOT EXISTS purana_usage (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    purana_name   TEXT NOT NULL,
+    used_on       TEXT NOT NULL,          -- ISO date string
+    created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE(purana_name, used_on)
+);
+
 CREATE TABLE IF NOT EXISTS post_log (
     id                    INTEGER PRIMARY KEY AUTOINCREMENT,
     run_date              TEXT NOT NULL UNIQUE,   -- ISO date string, one row per day

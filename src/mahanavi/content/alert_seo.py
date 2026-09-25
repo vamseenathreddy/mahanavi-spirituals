@@ -1,0 +1,223 @@
+"""
+Alert Short SEO content — titles, descriptions, and hashtags for the
+Rahu Kalam / Shubha Ghadiyalu Shorts. Deliberately separate from
+content/generator.py (the main daily post's SEO builder) because Shorts
+have real, different platform conventions from Community Posts:
+
+Applied here (researched 2026 YouTube Shorts best practices, not
+guessed from stale training-data assumptions):
+  - #Shorts is the FIRST hashtag — mandatory categorizer.
+  - 3-5 hashtags total, placed in the DESCRIPTION — the first 3 hashtags
+    in a description show ABOVE the title as clickable links, which is
+    actually the highest-visibility placement (not the title itself).
+  - Shorts titles perform best short (30-40 characters), unlike the
+    long descriptive titles used for the main daily Community Post.
+  - Hashtags are a SECONDARY signal — hook quality, thematic
+    consistency, and watch-through retention matter more. This module
+    doesn't oversell hashtags as a growth lever they aren't.
+  - No fabricated "trending hashtag" claims: there is no free, honest
+    way to track real-time trending hashtags (the tools that do this
+    are paid). What's here is a curated, ROTATING set of established
+    devotional/Telugu hashtags, plus room for a genuinely relevant
+    festival tag when Panchang data indicates one — not a fake
+    "always latest" promise.
+
+TITLE ROTATION: a real, legitimate concern was raised about posting
+IDENTICAL title text every single day, indefinitely. Worth being clear
+about what YouTube's spam/duplicate detection actually targets:
+re-uploading the same VIDEO repeatedly, or channels with no genuine
+changing value -- NOT a recurring daily-content format where the
+underlying data (today's actual times) genuinely changes, the same
+pattern used by established daily horoscope/weather/Panchang channels
+without penalty. Real day-to-day title variety is still worthwhile
+regardless, so titles rotate through a pool deterministically by date
+(same pattern as the hashtag rotation) rather than one fixed string.
+
+BILINGUAL DESCRIPTION (per explicit request): Telugu content first,
+then an English translation below it, so the description serves both
+audiences and both languages' search terms. The English CTA/title-
+reasoning pools are paired by INDEX with their Telugu counterparts
+(same rotation pick) -- not independently rotated -- so a given day's
+Telugu and English sections say the same thing, not two different
+random combinations.
+
+FEATURED VIDEO LINKS: two specific past videos, given directly rather
+than discovered/guessed -- this module never fabricates a link to
+content it hasn't been explicitly told exists.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import date
+
+# Niche hashtags specific to each alert type. Kept small and specific
+# per the "specific beats generic" guidance (#రాహుకాలం beats #పంచాంగం
+# alone) -- these are the 2-3 "niche identifier" tags in the researched
+# 3-5 total formula.
+_RAHU_KALAM_HASHTAGS = ["#రాహుకాలం", "#RahuKalam", "#పంచాంగం"]
+_SHUBHA_GHADIYALU_HASHTAGS = ["#శుభముహూర్తం", "#అభిజిత్ముహూర్తం", "#పంచాంగం"]
+
+# Rotating pool of established devotional/Telugu hashtags -- reviewed
+# periodically (same pattern as the Telugu translation dictionaries),
+# not a real-time trend feed. One is added as the optional 4th/5th tag.
+_ROTATING_POOL = [
+    "#TeluguPanchangam", "#Devotional", "#Bhakti", "#HinduDevotional",
+    "#DailyPanchangam", "#Spirituality",
+]
+
+_TELUGU_WEEKDAYS: dict[int, str] = {
+    0: "సోమవారం", 1: "మంగళవారం", 2: "బుధవారం", 3: "గురువారం",
+    4: "శుక్రవారం", 5: "శనివారం", 6: "ఆదివారం",
+}
+_ENGLISH_WEEKDAYS: dict[int, str] = {
+    0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday",
+    4: "Friday", 5: "Saturday", 6: "Sunday",
+}
+
+# Each title pool has 6 real variations, rotated deterministically by
+# date -- avoids literally identical text every day while keeping every
+# variant on-brand and equally accurate.
+_RAHU_KALAM_TITLES = [
+    "ఈరోజు రాహు కాలం - Rahu Kalam Today",
+    "రాహు కాలం Timing - ఈరోజు జాగ్రత్త!",
+    "Rahu Kalam ఈరోజు ఎప్పుడు?",
+    "Today's Rahu Kalam - ఈరోజు సమయం",
+    "రాహు కాలం Alert - నేటి సమయం",
+    "Avoid This Time - ఈరోజు రాహు కాలం",
+]
+
+_SHUBHA_GHADIYALU_TITLES = [
+    "ఈరోజు శుభ ఘడియలు - Auspicious Time Today",
+    "Shubha Muhurtam - నేటి శుభ సమయాలు",
+    "Good Time Today - ఈరోజు మంచి సమయం",
+    "Auspicious Time - శుభకార్యాలకు ఇదే సమయం",
+    "అభిజిత్/అమృత కాలం - Abhijit/Amrit Kaal - ఈరోజు టైమింగ్స్",
+    "Pooja Time Today - ఈరోజు పూజకు మంచి సమయం",
+]
+
+# Closing CTA sentence in the description also rotates. English pools
+# are paired by INDEX with the Telugu ones (see module docstring) --
+# not independently rotated.
+_RAHU_KALAM_CTAS = [
+    "ఈ సమయంలో శుభకార్యాలు మొదలుపెట్టకండి.",
+    "ఈ సమయంలో కొత్త పనులు ప్రారంభించడం మంచిది కాదు.",
+    "ఈ సమయాన్ని గమనించి ముఖ్యమైన పనులు వాయిదా వేసుకోండి.",
+]
+_RAHU_KALAM_CTAS_EN = [
+    "Avoid starting auspicious activities during this time.",
+    "It's not advisable to start new tasks during this period.",
+    "Please note this time and postpone important tasks accordingly.",
+]
+_SHUBHA_GHADIYALU_CTAS = [
+    "ఈ సమయాల్లో శుభకార్యాలు చేయవచ్చు.",
+    "ఈ సమయాల్లో ముఖ్యమైన పనులు ప్రారంభించడం శుభప్రదం.",
+    "ఈ ఘడియల్లో పూజలు, శుభకార్యాలు చేయడం మంచిది.",
+]
+_SHUBHA_GHADIYALU_CTAS_EN = [
+    "You can perform auspicious activities during these times.",
+    "Starting important tasks during these times is considered auspicious.",
+    "These are good times for poojas and other auspicious activities.",
+]
+
+# Two specific past videos, given directly -- see module docstring.
+_FEATURED_VIDEO_LINKS = [
+    "https://www.youtube.com/watch?v=at-SA1XoOL8",
+    "https://youtu.be/c4AyFWMmhk8",
+]
+
+# Shared footer appended to every description -- real, stable channel
+# links, the two featured videos above, a short about blurb, genuine
+# keyword-rich sentences, and a subscription note. Telugu and English
+# versions, Telugu shown first per explicit request. Uses the
+# ~5000-character description budget that was otherwise sitting almost
+# entirely unused.
+_CHANNEL_FOOTER_TE = """
+మా ఛానల్‌లో మరిన్ని భక్తి వీడియోలు చూడండి:
+🎬 వీడియోలు: https://www.youtube.com/@MahanaviSpirituals/videos
+📱 షార్ట్స్: https://www.youtube.com/@MahanaviSpirituals/shorts
+
+మా ఇతర భక్తి వీడియోలు:
+{videos}
+
+మహానవి స్పిరిచువల్స్ - తెలుగు భక్తి ఛానల్. ప్రతిరోజు పంచాంగం, రాహు కాలం, శుభ ముహూర్తాలు, దేవుళ్ల మంత్రాలు మరియు భక్తి సమాచారం అందిస్తాము. మా లక్ష్యం సనాతన ధర్మం, వేద జ్ఞానాన్ని అందరికీ చేరువ చేయడం.
+
+ప్రతిరోజు ఉదయం పంచాంగం అప్డేట్ కోసం సబ్‌స్క్రైబ్ చేయండి.""".strip().format(videos="\n".join(_FEATURED_VIDEO_LINKS))
+
+_CHANNEL_FOOTER_EN = """
+Watch more devotional videos on our channel:
+🎬 Videos: https://www.youtube.com/@MahanaviSpirituals/videos
+📱 Shorts: https://www.youtube.com/@MahanaviSpirituals/shorts
+
+Our other devotional videos:
+{videos}
+
+Mahanavi Spirituals is a Telugu devotional channel. We bring you daily Panchangam, Rahu Kalam, auspicious muhurtams, deity mantras, and devotional content. Our goal is to bring Sanatana Dharma and Vedic knowledge closer to everyone.
+
+Subscribe for daily morning Panchangam updates.""".strip().format(videos="\n".join(_FEATURED_VIDEO_LINKS))
+
+
+@dataclass(frozen=True, slots=True)
+class ShortSeoContent:
+    """SEO content for one alert Short."""
+    title: str            # kept to the 30-40 char Shorts sweet spot
+    description: str      # Telugu first, then English (see module docstring)
+    hashtags: list[str]   # ordered, #Shorts always first
+
+    def full_caption(self) -> str:
+        """Description + hashtags, the way it goes into the upload form."""
+        return f"{self.description}\n\n{' '.join(self.hashtags)}"
+
+
+def _pick_rotating(pool: list[str], for_date_ordinal: int, offset: int = 0) -> str:
+    """Deterministic rotation through a pool, so the same date always
+    gets the same item (reproducible), but it varies day to day rather
+    than being static forever. `offset` lets two different rotations
+    (e.g. title vs CTA) use the same ordinal without landing in sync."""
+    return pool[(for_date_ordinal + offset) % len(pool)]
+
+
+def _pick_rotating_pair(pool_te: list[str], pool_en: list[str], for_date_ordinal: int, offset: int) -> tuple[str, str]:
+    """Same rotation index for a Telugu/English pair, so both languages
+    say the same thing on a given day rather than mismatched picks."""
+    index = (for_date_ordinal + offset) % len(pool_te)
+    return pool_te[index], pool_en[index]
+
+
+def build_rahu_kalam_seo(rahu_kalam_range: str, for_date_ordinal: int, festival: str | None = None) -> ShortSeoContent:
+    title = _pick_rotating(_RAHU_KALAM_TITLES, for_date_ordinal)
+    d = date.fromordinal(for_date_ordinal)
+    weekday_te, weekday_en = _TELUGU_WEEKDAYS[d.weekday()], _ENGLISH_WEEKDAYS[d.weekday()]
+    cta_te, cta_en = _pick_rotating_pair(_RAHU_KALAM_CTAS, _RAHU_KALAM_CTAS_EN, for_date_ordinal, offset=1)
+
+    description_te = f"ఈరోజు {weekday_te} రాహు కాలం: {rahu_kalam_range} — {cta_te}"
+    description_en = f"Today's ({weekday_en}) Rahu Kalam: {rahu_kalam_range} — {cta_en}"
+    description = f"{description_te}\n\n{_CHANNEL_FOOTER_TE}\n\n---\n\n{description_en}\n\n{_CHANNEL_FOOTER_EN}"
+
+    hashtags = ["#Shorts", *_RAHU_KALAM_HASHTAGS]
+    if festival:
+        hashtags.append(f"#{festival.replace(' ', '')}")
+    hashtags.append(_pick_rotating(_ROTATING_POOL, for_date_ordinal))
+
+    return ShortSeoContent(title=title, description=description, hashtags=hashtags)
+
+
+def build_shubha_ghadiyalu_seo(
+    good_muhurtams: list[tuple[str, str]], for_date_ordinal: int, festival: str | None = None,
+) -> ShortSeoContent:
+    title = _pick_rotating(_SHUBHA_GHADIYALU_TITLES, for_date_ordinal)
+    d = date.fromordinal(for_date_ordinal)
+    weekday_te, weekday_en = _TELUGU_WEEKDAYS[d.weekday()], _ENGLISH_WEEKDAYS[d.weekday()]
+    lines = ", ".join(f"{label} {value}" for label, value in good_muhurtams)
+    cta_te, cta_en = _pick_rotating_pair(_SHUBHA_GHADIYALU_CTAS, _SHUBHA_GHADIYALU_CTAS_EN, for_date_ordinal, offset=1)
+
+    description_te = f"ఈరోజు {weekday_te} శుభ ఘడియలు: {lines} — {cta_te}"
+    description_en = f"Today's ({weekday_en}) auspicious timings: {lines} — {cta_en}"
+    description = f"{description_te}\n\n{_CHANNEL_FOOTER_TE}\n\n---\n\n{description_en}\n\n{_CHANNEL_FOOTER_EN}"
+
+    hashtags = ["#Shorts", *_SHUBHA_GHADIYALU_HASHTAGS]
+    if festival:
+        hashtags.append(f"#{festival.replace(' ', '')}")
+    hashtags.append(_pick_rotating(_ROTATING_POOL, for_date_ordinal))
+
+    return ShortSeoContent(title=title, description=description, hashtags=hashtags)

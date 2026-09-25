@@ -21,9 +21,9 @@ class FakeLocator:
         if action in self._fail_on:
             raise RuntimeError(f"simulated failure on {action}:{self._name}")
 
-    def click(self) -> None:
+    def click(self, force: bool = False, timeout: float | None = None) -> None:
         self._maybe_fail("click")
-        self._log.append(f"click:{self._name}")
+        self._log.append(f"click:{self._name}:force={force}")
 
     def fill(self, text: str) -> None:
         self._maybe_fail("fill")
@@ -33,9 +33,25 @@ class FakeLocator:
         self._maybe_fail("set_input_files")
         self._log.append(f"set_input_files:{self._name}:{path}")
 
+    def get_by_role(self, role: str, name=None, exact: bool = False) -> "FakeLocator":
+        return FakeLocator(self._log, f"{self._name}>role:{role}:{name}:exact={exact}", self._fail_on)
+
     def wait_for(self, timeout: float | None = None) -> None:
         self._maybe_fail("wait_for")
         self._log.append(f"wait_for:{self._name}")
+
+
+class FakeKeyboard:
+    def __init__(self, log: list[str], page: "FakePage", fail_on: set[str] | None = None) -> None:
+        self._log = log
+        self._page = page
+        self._fail_on = fail_on or set()
+
+    def type(self, text: str) -> None:
+        if "keyboard_type" in self._fail_on:
+            raise RuntimeError("simulated failure on keyboard.type")
+        self._log.append("keyboard.type")
+        self._page._typed_text = text
 
 
 class FakePage:
@@ -43,12 +59,14 @@ class FakePage:
         self.log: list[str] = []
         self.screenshots: list[str] = []
         self._fail_on = fail_on or set()
+        self._typed_text = ""
+        self.keyboard = FakeKeyboard(self.log, self, self._fail_on)
 
     def goto(self, url: str, timeout: float | None = None) -> None:
         self.log.append(f"goto:{url}")
 
-    def get_by_role(self, role: str, name: str | None = None) -> FakeLocator:
-        return FakeLocator(self.log, f"role:{role}:{name}", self._fail_on)
+    def get_by_role(self, role: str, name: str | None = None, exact: bool = False) -> FakeLocator:
+        return FakeLocator(self.log, f"role:{role}:{name}:exact={exact}", self._fail_on)
 
     def get_by_text(self, text: str) -> FakeLocator:
         return FakeLocator(self.log, f"text:{text}", self._fail_on)
@@ -65,19 +83,36 @@ class FakePage:
     def wait_for_timeout(self, timeout: float) -> None:
         self.log.append(f"wait_for_timeout:{timeout}")
 
+    def evaluate(self, expression: str, arg: object = None) -> object:
+        if "evaluate" in self._fail_on:
+            raise RuntimeError("simulated failure on evaluate")
+        self.log.append(f"evaluate:{arg}")
+        if "return el ? el.textContent" in expression:
+            if "verify_fail" in self._fail_on:
+                return ""  # simulate typing never actually landing
+            return self._typed_text
+        if "execCommand('insertText'" in expression and isinstance(arg, dict):
+            self._typed_text = arg.get("caption", "")
+        if "el.textContent = ''" in expression:
+            self._typed_text = ""
+        return None
+
 
 def _settings(tmp_path: Path, session_exists: bool = True) -> Settings:
     images_root = tmp_path / "Images"
     images_root.mkdir(parents=True, exist_ok=True)
     session_file = tmp_path / "yt_session.json"
+    profile_dir = tmp_path / "youtube_chrome_profile"
     if session_exists:
         session_file.write_text("{}")
+        profile_dir.mkdir(parents=True, exist_ok=True)
     return Settings(
         images_root=images_root,
         output_dir=tmp_path / "out",
         database_path=tmp_path / "db.sqlite",
         log_dir=tmp_path / "logs",
         youtube_session_state_file=session_file,
+        youtube_channel_id="UCtestchannel123",
     )
 
 
@@ -98,6 +133,16 @@ def test_missing_session_file_returns_failure_without_launching_browser(tmp_path
     assert "youtube_login_setup" in result.error_message
 
 
+def test_missing_channel_id_returns_failure_without_launching_browser(tmp_path: Path) -> None:
+    settings = _settings(tmp_path)
+    settings.youtube_channel_id = None
+    uploader = YouTubePlaywrightUploader(settings)
+    result = uploader.publish(tmp_path / "img.jpg", _seo())
+
+    assert result.success is False
+    assert "MAHANAVI_YOUTUBE_CHANNEL_ID" in result.error_message
+
+
 def test_compose_and_post_happy_path_calls_expected_sequence(tmp_path: Path) -> None:
     settings = _settings(tmp_path)
     uploader = YouTubePlaywrightUploader(settings)
@@ -107,10 +152,28 @@ def test_compose_and_post_happy_path_calls_expected_sequence(tmp_path: Path) -> 
     uploader._compose_and_post(page, tmp_path / "img.jpg", "caption text", screenshot_path)
 
     assert any(entry.startswith("goto:") for entry in page.log)
-    assert any("Create" in entry for entry in page.log)
-    assert any("fill:placeholder" in entry for entry in page.log)
+    assert any("insertText" in str(entry) or entry.startswith("evaluate:") for entry in page.log)
+    assert page._typed_text == "caption text"
     assert any("set_input_files" in entry for entry in page.log)
     assert str(screenshot_path) in page.screenshots
+
+
+def test_compose_and_post_raises_when_caption_never_actually_lands(tmp_path: Path) -> None:
+    """Real-world regression: a real run once posted successfully with an
+    empty caption because the typed text never actually landed in the
+    composer, even though every individual Playwright call reported
+    success. This must now be caught, not silently posted."""
+    settings = _settings(tmp_path)
+    uploader = YouTubePlaywrightUploader(settings)
+    page = FakePage(fail_on={"verify_fail"})
+    screenshot_path = tmp_path / "shot.png"
+
+    with pytest.raises(YouTubeUploadError, match="did not actually appear"):
+        uploader._compose_and_post(page, tmp_path / "img.jpg", "caption text", screenshot_path)
+
+    # Should have retried (2 attempts) before giving up.
+    insert_attempts = sum(1 for entry in page.log if "'caption':" in entry)
+    assert insert_attempts == 2
 
 
 def test_compose_and_post_failure_raises_youtube_upload_error_and_screenshots(tmp_path: Path) -> None:

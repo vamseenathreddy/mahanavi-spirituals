@@ -1,0 +1,68 @@
+﻿"""
+One-time OAuth2 setup for uploading Shorts via the official YouTube Data
+API v3 -- separate from scripts/youtube_login_setup.py (which sets up
+the Playwright browser session used for Community Posts; Community
+Posts have no official API at all, which is why that one exists).
+
+Run this ONCE. It opens a real browser window for you to log into your
+Google account and grant upload permission, then saves a reusable
+refresh token to disk -- every future run reuses that token silently,
+no browser needed again unless the token is revoked or deleted.
+
+Usage:
+    python -m mahanavi.scripts.youtube_shorts_auth_setup
+
+Prerequisite: client_secrets.json downloaded from Google Cloud Console
+(APIs & Services -> Credentials -> OAuth client ID -> Desktop app),
+placed at the path in MAHANAVI_YOUTUBE_CLIENT_SECRETS_FILE (defaults to
+the project root).
+"""
+
+from __future__ import annotations
+
+import sys
+
+from mahanavi.config import get_settings
+
+# youtube.upload is the minimum scope needed to upload videos -- NOT
+# requesting broader scopes (like full account read/write) than this
+# actually needs.
+SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+
+
+def main() -> int:
+    settings = get_settings()
+
+    if not settings.youtube_client_secrets_file or not settings.youtube_client_secrets_file.exists():
+        print(
+            f"client_secrets.json not found at {settings.youtube_client_secrets_file}. "
+            "Download it from Google Cloud Console (APIs & Services -> Credentials -> "
+            "OAuth client ID -> Desktop app) and place it there, or set "
+            "MAHANAVI_YOUTUBE_CLIENT_SECRETS_FILE to its actual path.",
+            file=sys.stderr,
+        )
+        return 1
+
+    try:
+        from google_auth_oauthlib.flow import InstalledAppFlow
+    except ImportError:
+        print(
+            "Missing packages. Run: pip install google-api-python-client google-auth-oauthlib google-auth",
+            file=sys.stderr,
+        )
+        return 1
+
+    print("Opening a browser window for Google sign-in and permission grant...")
+    flow = InstalledAppFlow.from_client_secrets_file(str(settings.youtube_client_secrets_file), SCOPES)
+    credentials = flow.run_local_server(port=0)
+
+    settings.youtube_token_file.parent.mkdir(parents=True, exist_ok=True)
+    settings.youtube_token_file.write_text(credentials.to_json(), encoding="utf-8")
+
+    print(f"Success. Token saved to {settings.youtube_token_file}")
+    print("Future uploads will reuse this token silently -- no browser needed again.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

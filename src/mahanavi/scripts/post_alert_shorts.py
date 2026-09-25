@@ -1,0 +1,252 @@
+"""
+post_alert_shorts.py: the full pipeline for the Rahu Kalam (red) and
+Shubha Ghadiyalu (green) Shorts, mirroring how main.py orchestrates the
+daily Community Post -- but this is deliberately its OWN script rather
+than folded into DailyPipeline, since the shape is different enough
+(no image selection, no multi-platform publisher list, no post-log
+database entry) that forcing it into the same class would mean a lot
+of "this doesn't apply here" conditionals.
+
+Flow: fetch today's Panchang -> render both cards (AlertCardRenderer)
+-> assemble both into .mp4 (video/assembler.py, with your configured
+music) -> build SEO for both (content/alert_seo.py) -> upload both
+(YouTubeShortsUploader).
+
+SAFETY: uploads as "unlisted" by default -- per explicit instruction,
+this does NOT go public until you decide it's ready and pass --public
+yourself. Nothing here auto-publicizes anything.
+
+Usage:
+    python -m mahanavi.scripts.post_alert_shorts
+    python -m mahanavi.scripts.post_alert_shorts --date 2026-09-16
+    python -m mahanavi.scripts.post_alert_shorts --public   # only once you're ready
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from datetime import date, datetime
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+from mahanavi.config import Settings, get_settings
+from mahanavi.content.alert_seo import (
+    ShortSeoContent,
+    build_rahu_kalam_seo,
+    build_shubha_ghadiyalu_seo,
+)
+from mahanavi.content.data import DEITY_CONTENT, WEEKDAY_DEITY_MAP
+from mahanavi.core.models import PanchangData
+from mahanavi.exceptions import MahanaviError
+from mahanavi.images.alert_card_renderer import (
+    COLOR_RAHU_BOTTOM,
+    COLOR_RAHU_TOP,
+    COLOR_SHUBHA_BOTTOM,
+    COLOR_SHUBHA_TOP,
+    AlertCard,
+    AlertCardRenderer,
+)
+from mahanavi.images.telugu_text import PANCHANG_LABELS, format_telugu_date
+from mahanavi.panchang.factory import get_panchang_provider
+from mahanavi.publishers.youtube_shorts_uploader import YouTubeShortsUploader
+from mahanavi.video.assembler import assemble_short
+
+
+def _icon_paths(settings: Settings) -> list[Path]:
+    """Lakshmi, Ganesha, Kubera in that order -- only the ones that
+    actually exist on disk, so a missing icon degrades gracefully
+    (AlertCardRenderer also handles this; this is a second layer so we
+    can print clearly which ones are missing up front)."""
+    candidates = [
+        ("Lakshmi", settings.alert_icon_lakshmi_path),
+        ("Ganesha", settings.alert_icon_ganesha_path),
+        ("Kubera", settings.alert_icon_kubera_path),
+    ]
+    paths: list[Path] = []
+    for name, path in candidates:
+        if path is not None and path.exists():
+            paths.append(path)
+        else:
+            print(f"Note: {name} icon not found at {path} -- that card will render without it.")
+    return paths
+
+
+def _shubha_lines(panchang: PanchangData) -> list[tuple[str, str]]:
+    # Both fields can genuinely be absent on a real day (confirmed via a
+    # real Prokerala response: Abhijit Muhurtham simply doesn't occur
+    # every day) -- skip a missing one entirely rather than showing its
+    # label with nothing after it.
+    lines = []
+    if panchang.abhijit_muhurtham:
+        lines.append((PANCHANG_LABELS["abhijit_muhurtham"], panchang.abhijit_muhurtham))
+    if panchang.amrit_kaal:
+        lines.append((PANCHANG_LABELS["amrit_kaal"], panchang.amrit_kaal))
+    return lines
+
+
+def _other_inauspicious_periods(panchang: PanchangData) -> str:
+    """Compact, small-font secondary info for the Rahu Kalam card --
+    Yamagandam, Gulika Kalam, Durmuhurtham, Varjyam. Rendered as one
+    compact wrapped block (not separate large label/value pairs like
+    the main Rahu Kalam time) so it stays visually secondary, per
+    explicit request."""
+    parts = [
+        f"{PANCHANG_LABELS['yamagandam']}: {panchang.yamagandam}",
+        f"{PANCHANG_LABELS['gulika_kalam']}: {panchang.gulika_kalam}",
+        f"{PANCHANG_LABELS['durmuhurtham']}: {panchang.durmuhurtham}",
+        f"{PANCHANG_LABELS['varjyam']}: {panchang.varjyam}",
+    ]
+    return "   |   ".join(parts)
+
+
+# Rotating on-screen subscribe lines -- 10 each, deterministic by date
+# (same pattern as the YouTube title/CTA rotation in content/alert_seo.py),
+# so the card doesn't show the same flat line every single day. Rahu
+# Kalam's tone is serious/protective urgency, not manufactured panic --
+# these are meant to convey the real cultural weight the timing carries
+# for many viewers, not exploit fear as a growth tactic.
+_RAHU_KALAM_SUBSCRIBE_LINES = [
+    "ప్రతిరోజు అశుభ సమయాలు తెలుసుకోండి - సబ్‌స్క్రైబ్ చేయండి",
+    "చెడు సమయాన్ని తప్పకుండా తెలుసుకోండి - ప్రతిరోజు సబ్‌స్క్రైబ్ చేయండి",
+    "ప్రతిరోజు రాహు కాల అప్‌డేట్ కోసం సబ్‌స్క్రైబ్ చేయండి",
+    "చాలా జాగ్రత్తగా ఉండవలసిన సమయం - ప్రతిరోజు సబ్‌స్క్రైబ్ చేయండి",
+    "ముఖ్యమైన పని మొదలుపెట్టే ముందు ఈ సమయం చూడండి",
+    "ప్రతిరోజు రాహు కాల సమయం తెలుసుకోండి - సబ్‌స్క్రైబ్ చేయండి",
+    "మీ పనులు వాయిదా వేయాల్సిన సమయం కోసం రోజూ చూడండి",
+    "ఈ సమయాన్ని నిర్లక్ష్యం చేయకండి - సబ్‌స్క్రైబ్ చేయండి",
+    "రోజూ నష్టం నివారించడానికి ఈ సమయాలు తెలుసుకోండి",
+    "మీ కుటుంబ భద్రత కోసం ఈరోజు రాహు కాలం చూసుకోండి",
+]
+
+_SHUBHA_GHADIYALU_SUBSCRIBE_LINES = [
+    "ప్రతిరోజు శుభ సమయాలు తెలుసుకోండి - సబ్‌స్క్రైబ్ చేయండి",
+    "మంచి సమయాలను మిస్ కాకుండా - ప్రతిరోజు సబ్‌స్క్రైబ్ చేయండి",
+    "ప్రతిరోజు శుభ ముహూర్తాల అప్‌డేట్ కోసం సబ్‌స్క్రైబ్ చేయండి",
+    "ఈ శుభ సమయం మీ కోసమే - ప్రతిరోజు సబ్‌స్క్రైబ్ చేయండి",
+    "మంచి పని మొదలుపెట్టే ముందు ఈ సమయం చూడండి",
+    "ప్రతిరోజు అదృష్ట సమయాలు తెలుసుకోండి - సబ్‌స్క్రైబ్ చేయండి",
+    "మీ శుభకార్యాలకు సరైన సమయం కోసం రోజూ చూడండి",
+    "ఈ మంచి క్షణాలను వదులుకోకండి - సబ్‌స్క్రైబ్ చేయండి",
+    "రోజూ శుభారంభం కోసం ఈ సమయాలు తెలుసుకోండి",
+    "మీ విజయానికి తొలి అడుగు - ప్రతిరోజు శుభ సమయాలు చూడండి",
+]
+
+
+def _pick_subscribe_text(pool: list[str], for_date: date) -> str:
+    """Deterministic rotation through a subscribe-line pool -- the same
+    date always gets the same line (reproducible), varying day to day."""
+    return pool[for_date.toordinal() % len(pool)]
+
+
+def _mantra_lines(for_date: date) -> list[tuple[str, str]]:
+    """Today's deity's mantra and beeja mantram, as extra lines for both
+    alert cards -- fills the empty space below the muhurtam block with
+    genuinely relevant devotional content instead of leaving it blank."""
+    deity = WEEKDAY_DEITY_MAP[for_date.weekday()]
+    content = DEITY_CONTENT[deity]
+    return [
+        ("మంత్రం", content.mantra),
+        ("బీజ మంత్రం (11 సార్లు పఠించండి)", content.beeja_mantram),
+    ]
+
+
+def _process_one(
+    kind: str, card: AlertCard, seo: ShortSeoContent, renderer: AlertCardRenderer,
+    settings: Settings, for_date: date, uploader: YouTubeShortsUploader, privacy_status: str,
+) -> bool:
+    print(f"\n--- {kind} ---")
+    try:
+        image_path = renderer.render(card, for_date)
+        print(f"Rendered: {image_path}")
+
+        video_path = settings.output_dir / f"{for_date.isoformat()}_{card.filename_suffix}_short.mp4"
+        assemble_short(
+            image_path, video_path,
+            duration_seconds=settings.alert_short_duration_seconds,
+            audio_path=settings.alert_short_music_path,
+        )
+        print(f"Assembled: {video_path}")
+
+        result = uploader.upload(video_path, seo, privacy_status=privacy_status)
+        if result.success:
+            print(f"Uploaded ({privacy_status}): {result.post_url}")
+            return True
+        print(f"Upload FAILED: {result.error_message}", file=sys.stderr)
+        return False
+
+    except MahanaviError as exc:
+        print(f"{kind} FAILED: {exc}", file=sys.stderr)
+        return False
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--date", type=str, default=None, help="YYYY-MM-DD (default: today)")
+    parser.add_argument(
+        "--public", action="store_true",
+        help="Upload as public instead of unlisted. Omit this until you've reviewed the results yourself.",
+    )
+    args = parser.parse_args()
+
+    settings = get_settings()
+    # Uses settings.timezone (Asia/Kolkata) explicitly, matching main.py's
+    # existing pattern -- plain date.today() reads whatever timezone the
+    # underlying machine happens to be configured as, which caused a real
+    # bug: WSL defaults to UTC internally regardless of the Windows host's
+    # timezone, so this returned "yesterday" for any run before 5:30 AM
+    # IST (UTC+5:30) -- confirmed by a real run showing the 18th when it
+    # was already the 19th in IST.
+    tz = ZoneInfo(settings.timezone)
+    for_date = date.fromisoformat(args.date) if args.date else datetime.now(tz).date()
+    privacy_status = "public" if args.public else "unlisted"
+    if not args.public:
+        print("Uploading as UNLISTED (default). Pass --public once you're happy with the results.")
+
+    panchang_provider = get_panchang_provider(settings)
+    renderer = AlertCardRenderer(settings)
+    uploader = YouTubeShortsUploader(settings)
+
+    print(f"Fetching Panchang for {for_date.isoformat()}...")
+    try:
+        panchang = panchang_provider.fetch(for_date)
+    except MahanaviError as exc:
+        print(f"Could not fetch Panchang: {exc}", file=sys.stderr)
+        return 1
+
+    icon_paths = _icon_paths(settings)
+    mantra_lines = _mantra_lines(for_date)
+    date_text = format_telugu_date(for_date)
+
+    rahu_card = AlertCard(
+        title="ఈరోజు రాహు కాలం",
+        lines=[("సమయం", panchang.rahu_kalam), *mantra_lines],
+        top_color=COLOR_RAHU_TOP, bottom_color=COLOR_RAHU_BOTTOM,
+        filename_suffix="rahu_kalam", icon_paths=icon_paths,
+        date_text=date_text, secondary_info=_other_inauspicious_periods(panchang),
+        subscribe_text=_pick_subscribe_text(_RAHU_KALAM_SUBSCRIBE_LINES, for_date),
+    )
+    rahu_seo = build_rahu_kalam_seo(panchang.rahu_kalam, for_date_ordinal=for_date.toordinal())
+    rahu_ok = _process_one("Rahu Kalam", rahu_card, rahu_seo, renderer, settings, for_date, uploader, privacy_status)
+
+    shubha_lines = _shubha_lines(panchang)
+    shubha_card = AlertCard(
+        title="ఈరోజు శుభ ఘడియలు",
+        lines=[*shubha_lines, *mantra_lines],
+        top_color=COLOR_SHUBHA_TOP, bottom_color=COLOR_SHUBHA_BOTTOM,
+        filename_suffix="shubha_ghadiyalu", icon_paths=icon_paths,
+        date_text=date_text,
+        subscribe_text=_pick_subscribe_text(_SHUBHA_GHADIYALU_SUBSCRIBE_LINES, for_date),
+    )
+    shubha_seo = build_shubha_ghadiyalu_seo(shubha_lines, for_date_ordinal=for_date.toordinal())
+    shubha_ok = _process_one(
+        "Shubha Ghadiyalu", shubha_card, shubha_seo, renderer, settings, for_date, uploader, privacy_status,
+    )
+
+    print(f"\n=== Done. Rahu Kalam: {'OK' if rahu_ok else 'FAILED'}, "
+          f"Shubha Ghadiyalu: {'OK' if shubha_ok else 'FAILED'} ===")
+    return 0 if (rahu_ok and shubha_ok) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

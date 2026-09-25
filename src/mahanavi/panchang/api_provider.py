@@ -1,4 +1,4 @@
-"""
+﻿"""
 ApiPanchangProvider: fetches Panchang data from a configurable REST API.
 
 This is written against a generic JSON contract rather than one specific
@@ -21,14 +21,24 @@ Expected response (JSON), field names configurable via _FIELD_MAP:
         "durmuhurtham": "08:06 AM - 08:52 AM",
         "abhijit_muhurtham": "11:48 AM - 12:38 PM",
         "sunrise": "05:58 AM",
-        "sunset": "06:45 PM"
+        "sunset": "06:45 PM",
+        "karana": "Kaulava (up to 07:08 AM), Taitila (up to 07:03 PM), Garija",
+        "yoga": "Sukla (up to 01:42 PM), Brahma",
+        "amrit_kaal": "07:03 AM - 08:40 AM",
+        "moonrise": "07:47 AM",
+        "moonset": "07:42 PM",
+        "festivals": ["Uttara Karte", "Varaha Jayanti"],
+        "marriage_muhurats": "There is no muhurat on this day"
     }
+The last seven fields (karana onward) are OPTIONAL — if your provider
+doesn't return them, either omit them from _FIELD_MAP or leave the JSON
+key absent; they default to empty/None rather than raising.
 """
 
 from __future__ import annotations
 
 import logging
-from datetime import date
+from datetime import date, time
 from typing import Any
 
 import requests
@@ -55,6 +65,18 @@ _FIELD_MAP: dict[str, str] = {
     "sunrise": "sunrise",
     "sunset": "sunset",
 }
+
+# Optional fields — looked up the same way as _FIELD_MAP, but a missing
+# key (or a missing entry here) defaults instead of raising.
+_OPTIONAL_FIELD_MAP: dict[str, str] = {
+    "karana": "karana",
+    "yoga": "yoga",
+    "amrit_kaal": "amrit_kaal",
+    "moonrise": "moonrise",
+    "moonset": "moonset",
+    "marriage_muhurats": "marriage_muhurats",
+}
+_OPTIONAL_FESTIVALS_KEY = "festivals"
 
 
 class ApiPanchangProvider(PanchangProvider):
@@ -125,6 +147,25 @@ class ApiPanchangProvider(PanchangProvider):
         def get(field: str) -> str:
             return str(payload[_FIELD_MAP[field]])
 
+        def get_optional(field: str) -> str:
+            json_key = _OPTIONAL_FIELD_MAP.get(field)
+            if json_key is None or json_key not in payload:
+                return ""
+            return str(payload[json_key])
+
+        def get_optional_time(field: str) -> time | None:
+            raw = get_optional(field)
+            if not raw:
+                return None
+            try:
+                return parse_time_string(raw)
+            except ValueError:
+                logger.warning("Could not parse optional field '%s' value %r as a time — leaving unset.", field, raw)
+                return None
+
+        festivals_raw = payload.get(_OPTIONAL_FESTIVALS_KEY, [])
+        festivals = [str(item) for item in festivals_raw] if isinstance(festivals_raw, list) else []
+
         return PanchangData(
             date_=for_date,
             tithi=get("tithi"),
@@ -137,5 +178,12 @@ class ApiPanchangProvider(PanchangProvider):
             abhijit_muhurtham=get("abhijit_muhurtham"),
             sunrise=parse_time_string(get("sunrise")),
             sunset=parse_time_string(get("sunset")),
+            karana=get_optional("karana"),
+            yoga=get_optional("yoga"),
+            amrit_kaal=get_optional("amrit_kaal"),
+            moonrise=get_optional_time("moonrise"),
+            moonset=get_optional_time("moonset"),
+            festivals=festivals,
+            marriage_muhurats=get_optional("marriage_muhurats"),
             source="api",
         )

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Logging configuration.
 
 Sets up a root logger that writes to:
@@ -36,6 +36,19 @@ def configure_logging(log_dir: Path, level: int = logging.INFO) -> None:
     log_file = log_dir / "mahanavi.log"
 
     formatter = logging.Formatter(LOG_FORMAT, datefmt=DATE_FORMAT)
+
+    # Force UTF-8 on stdout before attaching the console handler. Without
+    # this, a real run showed "--- Logging error ---" (Python logging's
+    # own failure notice) when stdout was redirected to a file on
+    # Windows (e.g. `python ... *> out.log` in a PowerShell wrapper) --
+    # sys.stdout silently falls back to the legacy system codepage in
+    # that case, which can't encode Telugu text or emoji. errors="replace"
+    # is a safety net so an unexpected character can never crash logging
+    # again, even if reconfigure() itself isn't available for some reason.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[union-attr]
+    except (AttributeError, ValueError):
+        pass
 
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)

@@ -1,4 +1,4 @@
-"""Domain models shared across the pipeline. Plain dataclasses, no ORM coupling."""
+﻿"""Domain models shared across the pipeline. Plain dataclasses, no ORM coupling."""
 
 from __future__ import annotations
 
@@ -41,6 +41,16 @@ class PanchangData:
     abhijit_muhurtham: str
     sunrise: time
     sunset: time
+    # Added per explicit request for a richer Panchang breakdown — all
+    # optional (default empty/None) so existing providers that don't
+    # supply them keep working unchanged.
+    karana: str = ""
+    yoga: str = ""
+    amrit_kaal: str = ""
+    moonrise: time | None = None
+    moonset: time | None = None
+    festivals: list[str] = field(default_factory=list)
+    marriage_muhurats: str = ""
     source: str = "unknown"   # which provider produced this (for auditing)
 
 

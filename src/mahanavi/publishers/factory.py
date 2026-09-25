@@ -1,11 +1,16 @@
-"""
+﻿"""
 Factory for constructing the list of publish targets to run each day,
-based on Settings. YouTube and Telegram are treated as required (per the
-project's core requirements); Facebook and Instagram are opt-in via
-MAHANAVI_ENABLE_FACEBOOK / MAHANAVI_ENABLE_INSTAGRAM.
+based on Settings. YouTube is always included. Telegram, Facebook, and
+Instagram are each included only if their credentials are configured —
+missing credentials for one platform log a warning and skip just that
+platform, rather than blocking the whole pipeline. This lets you test
+platforms independently as you set each one up, instead of requiring
+every platform to be configured before you can test any of them.
 """
 
 from __future__ import annotations
+
+import logging
 
 from mahanavi.config import Settings
 from mahanavi.core.interfaces import Uploader
@@ -14,6 +19,8 @@ from mahanavi.publishers.facebook_uploader import FacebookUploader
 from mahanavi.publishers.instagram_uploader import InstagramUploader
 from mahanavi.publishers.telegram_uploader import TelegramUploader
 from mahanavi.publishers.youtube_playwright_uploader import YouTubePlaywrightUploader
+
+logger = logging.getLogger(__name__)
 
 
 def build_publishers(settings: Settings) -> list[Uploader]:
@@ -30,20 +37,20 @@ def build_publishers(settings: Settings) -> list[Uploader]:
             "as of this writing)."
         )
 
-    # Telegram is always included.
-    if not settings.telegram_bot_token or not settings.telegram_channel_id:
-        raise ConfigError(
-            "Telegram publishing requires MAHANAVI_TELEGRAM_BOT_TOKEN and "
-            "MAHANAVI_TELEGRAM_CHANNEL_ID to be set."
+    if settings.telegram_bot_token and settings.telegram_channel_id:
+        publishers.append(
+            TelegramUploader(
+                bot_token=settings.telegram_bot_token,
+                channel_id=settings.telegram_channel_id,
+                max_retries=settings.max_retries,
+                backoff_seconds=settings.retry_backoff_seconds,
+            )
         )
-    publishers.append(
-        TelegramUploader(
-            bot_token=settings.telegram_bot_token,
-            channel_id=settings.telegram_channel_id,
-            max_retries=settings.max_retries,
-            backoff_seconds=settings.retry_backoff_seconds,
+    else:
+        logger.warning(
+            "Telegram publishing is not configured (MAHANAVI_TELEGRAM_BOT_TOKEN / "
+            "MAHANAVI_TELEGRAM_CHANNEL_ID missing) — skipping Telegram for this run."
         )
-    )
 
     if settings.enable_facebook:
         if not settings.facebook_page_id or not settings.facebook_page_access_token:

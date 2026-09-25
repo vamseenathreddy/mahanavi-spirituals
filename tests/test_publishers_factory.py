@@ -35,10 +35,13 @@ def test_default_publishers_are_youtube_and_telegram(tmp_path: Path) -> None:
     assert types == {YouTubePlaywrightUploader, TelegramUploader}
 
 
-def test_missing_telegram_credentials_raises(tmp_path: Path) -> None:
+def test_missing_telegram_credentials_skips_telegram_without_raising(tmp_path: Path, caplog) -> None:
     settings = _settings(tmp_path, telegram_bot_token=None)
-    with pytest.raises(ConfigError):
-        build_publishers(settings)
+    with caplog.at_level("WARNING"):
+        publishers = build_publishers(settings)
+    types = {type(p) for p in publishers}
+    assert types == {YouTubePlaywrightUploader}
+    assert any("Telegram" in record.message for record in caplog.records)
 
 
 def test_facebook_included_when_enabled(tmp_path: Path) -> None:
