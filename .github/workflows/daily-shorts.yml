@@ -31,7 +31,7 @@ jobs:
 
       - name: Restore persistent state from Google Drive
         env:
-          GDRIVE_SA_KEY_B64: ${{ secrets.GDRIVE_SA_KEY_B64 }}
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: python scripts/ci/drive_state_sync.py pull
 
@@ -57,7 +57,7 @@ jobs:
       - name: Mark today done and push state back to Drive
         if: steps.gate.outputs.run == 'true'
         env:
-          GDRIVE_SA_KEY_B64: ${{ secrets.GDRIVE_SA_KEY_B64 }}
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: |
           python scripts/ci/drive_state_sync.py mark-done

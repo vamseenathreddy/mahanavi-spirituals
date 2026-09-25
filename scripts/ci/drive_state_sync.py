@@ -13,8 +13,8 @@ files that must survive between runs:
 
 Auth: a Google Cloud SERVICE ACCOUNT (not the interactive OAuth app used
 for the actual YouTube upload). Its JSON key is stored as the
-GDRIVE_SA_KEY_B64 GitHub secret (base64-encoded) and decoded to a temp
-file at the start of each run. The target Drive folder must be shared
+GDRIVE_SA_KEY_JSON GitHub secret (the raw JSON key file content, pasted
+as-is) and written to a temp file at the start of each run. The target Drive folder must be shared
 with the service account's email as Editor, or nothing below will find it.
 
 Usage:
@@ -26,7 +26,6 @@ Usage:
 
 from __future__ import annotations
 
-import base64
 import io
 import os
 import sys
@@ -44,9 +43,9 @@ STATE_FILES = ["mahanavi.db", "youtube_token.json", "last_run_date.txt"]
 
 
 def _drive_client():
-    key_b64 = os.environ["GDRIVE_SA_KEY_B64"]
+    key_json = os.environ["GDRIVE_SA_KEY_JSON"]
     key_path = Path("/tmp/gdrive_sa_key.json")
-    key_path.write_bytes(base64.b64decode(key_b64))
+    key_path.write_text(key_json, encoding="utf-8")
     creds = service_account.Credentials.from_service_account_file(
         str(key_path), scopes=SCOPES
     )
