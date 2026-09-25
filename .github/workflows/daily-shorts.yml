@@ -2,7 +2,7 @@ name: Daily Shorts Post
 
 on:
   schedule:
-    - cron: '30 23 * * *'   # 05:00 IST daily (23:30 UTC previous day)
+    - cron: '30 18 * * *'   # fires at 00:00 IST daily (18:30 UTC previous day); actual post time is randomized within the hour below
   workflow_dispatch: {}
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
 jobs:
   post-shorts:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +38,17 @@ jobs:
       - name: Skip if already posted today (IST)
         id: gate
         run: python scripts/ci/drive_state_sync.py check-date
+
+      - name: Random delay within the 12:00-1:00 AM IST window
+        # Posting at the exact same second every day is a giveaway that
+        # this is automated. The cron above fires precisely at 00:00 IST;
+        # this sleeps a random 0-59 minutes so the actual upload lands
+        # somewhere between 12:00 AM and 1:00 AM IST, varying day to day.
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          DELAY=$(( RANDOM % 3600 ))
+          echo "Sleeping ${DELAY}s ($((DELAY / 60))m $((DELAY % 60))s) before posting..."
+          sleep "$DELAY"
 
       - name: Run Shorts pipeline
         if: steps.gate.outputs.run == 'true'
