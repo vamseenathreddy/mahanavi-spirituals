@@ -36,6 +36,7 @@ DEITY_TELUGU_NAMES: dict[Deity, str] = {
     Deity.LAKSHMI: "లక్ష్మీదేవి",
     Deity.VENKATESWARA: "వేంకటేశ్వర స్వామి",
     Deity.SURYA: "సూర్యభగవానుడు",
+    Deity.DATTATREYA: "దత్తాత్రేయ స్వామి",
 }
 
 # Order matters here — this is the display order in the Panchang panel.

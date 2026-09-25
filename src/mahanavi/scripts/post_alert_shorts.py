@@ -36,7 +36,7 @@ from mahanavi.content.alert_seo import (
     build_rahu_kalam_seo,
     build_shubha_ghadiyalu_seo,
 )
-from mahanavi.content.data import DEITY_CONTENT, WEEKDAY_DEITY_MAP
+from mahanavi.content.data import DEITY_CONTENT, WEEKDAY_DEITY_MAP, pick_beeja_mantram
 from mahanavi.core.models import PanchangData
 from mahanavi.exceptions import MahanaviError
 from mahanavi.images.alert_card_renderer import (
@@ -142,12 +142,18 @@ def _pick_subscribe_text(pool: list[str], for_date: date) -> str:
 def _mantra_lines(for_date: date) -> list[tuple[str, str]]:
     """Today's deity's mantra and beeja mantram, as extra lines for both
     alert cards -- fills the empty space below the muhurtam block with
-    genuinely relevant devotional content instead of leaving it blank."""
+    genuinely relevant devotional content instead of leaving it blank.
+
+    The beeja mantram is rotated day-to-day through that deity's pool
+    (see pick_beeja_mantram in content/data.py) instead of always
+    showing the same fixed chant -- explicit request, since the same
+    Monday chant every single week felt repetitive."""
     deity = WEEKDAY_DEITY_MAP[for_date.weekday()]
     content = DEITY_CONTENT[deity]
+    beeja = pick_beeja_mantram(content, for_date)
     return [
         ("మంత్రం", content.mantra),
-        ("బీజ మంత్రం (11 సార్లు పఠించండి)", content.beeja_mantram),
+        ("బీజ మంత్రం (శుభఫలితాల కోసం 11 సార్లు పఠించండి)", beeja),
     ]
 
 

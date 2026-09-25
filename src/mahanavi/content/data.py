@@ -10,6 +10,7 @@ picks it up automatically — no other code changes needed.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import date
 
 from mahanavi.core.models import Deity
 
@@ -19,9 +20,26 @@ class DeityContent:
     telugu_name: str
     blessing_phrase: str        # short devotional opening line
     mantra: str                  # traditional chant/mantra
-    beeja_mantram: str            # seed syllable(s) -- see per-deity notes below on confidence
+    # 2-3 valid beeja-mantram phrasings for this deity -- see per-deity
+    # notes below on confidence. Rotated by date (not truly random) via
+    # pick_beeja_mantram() below, so the SAME date always shows the SAME
+    # variant (reproducible across retries) while still varying day to
+    # day instead of being identical every single week -- explicit
+    # request, since a fixed chant every Monday felt repetitive.
+    beeja_mantrams: list[str] = field(default_factory=list)
     telugu_hashtags: list[str] = field(default_factory=list)
     english_keywords: list[str] = field(default_factory=list)
+
+
+def pick_beeja_mantram(content: DeityContent, for_date: date) -> str:
+    """Deterministic day-to-day rotation through a deity's beeja mantram
+    pool -- same pattern as the subscribe-line rotation in
+    post_alert_shorts.py (pool[date.toordinal() % len(pool)]), so a given
+    date always renders the same variant (reproducible on a retry) while
+    the chant shown genuinely varies across the week/month."""
+    if not content.beeja_mantrams:
+        raise ValueError("DeityContent.beeja_mantrams is empty -- every deity needs at least one.")
+    return content.beeja_mantrams[for_date.toordinal() % len(content.beeja_mantrams)]
 
 
 DEITY_CONTENT: dict[Deity, DeityContent] = {
@@ -29,7 +47,11 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         telugu_name="శివుడు",
         blessing_phrase="ఓం నమః శివాయ 🙏",
         mantra="ఓం నమః శివాయ",
-        beeja_mantram="ఓం హౌం నమః శివాయ",  # Haum + the core mantra, fuller than a bare syllable
+        beeja_mantrams=[
+            "ఓం హౌం నమః శివాయ",   # Haum + the core mantra, fuller than a bare syllable
+            "ఓం నమః శివాయ",         # the Panchakshari mantra itself, also used as a seed chant
+            "ఓం సాంబశివాయ నమః",     # Sambashiva form, commonly chanted on Mondays
+        ],
         telugu_hashtags=["#శివుడు", "#మహాదేవుడు", "#సోమవారం_ప్రత్యేకం"],
         english_keywords=[
             "Lord Shiva", "Shiva Panchangam today", "Monday Shiva special",
@@ -40,7 +62,11 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         telugu_name="హనుమంతుడు",
         blessing_phrase="జై హనుమాన్ 🙏",
         mantra="ఓం హనుమతే నమః",
-        beeja_mantram="ఓం హ్రాం హనుమతే నమః",  # Hraam + full mantra, fuller than a bare syllable
+        beeja_mantrams=[
+            "ఓం హ్రాం హనుమతే నమః",   # Hraam + full mantra, fuller than a bare syllable
+            "ఓం హనుమతే నమః",           # base form
+            "ఓం ఆంజనేయాయ నమః",        # Anjaneya form, equally common
+        ],
         telugu_hashtags=["#హనుమంతుడు", "#ఆంజనేయస్వామి", "#మంగళవారం_ప్రత్యేకం"],
         english_keywords=[
             "Lord Hanuman", "Hanuman Panchangam today", "Tuesday Hanuman special",
@@ -51,7 +77,11 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         telugu_name="గణేశుడు",
         blessing_phrase="ఓం గణ గణపతయే నమః 🙏",
         mantra="వక్రతుండ మహాకాయ సూర్యకోటి సమప్రభ నిర్విఘ్నం కురు మే దేవ సర్వ కార్యేషు సర్వదా",
-        beeja_mantram="ఓం గం గణపతయే నమః",  # full traditional Ganesha bija mantra (Om Gam Ganapataye Namaha)
+        beeja_mantrams=[
+            "ఓం గం గణపతయే నమః",     # full traditional Ganesha bija mantra (Om Gam Ganapataye Namaha)
+            "ఓం వక్రతుండాయ నమః",     # Vakratunda form
+            "ఓం శ్రీ గణేశాయ నమః",
+        ],
         telugu_hashtags=["#గణేశుడు", "#వినాయకుడు", "#బుధవారం_ప్రత్యేకం"],
         english_keywords=[
             "Lord Ganesha", "Ganesha Panchangam today", "Wednesday Ganesha special",
@@ -63,21 +93,31 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         blessing_phrase="ఓం సాయి రాం 🙏",
         mantra="శ్రీ సాయినాథాయ నమః",
         # Sai Baba is a 19th/20th-century saint, not a Puranic deity with a
-        # classical Vedic bija syllable -- using the standard short chant
-        # itself here rather than fabricating a beeja that doesn't
-        # traditionally exist.
-        beeja_mantram="ఓం సాయి రాం",
-        telugu_hashtags=["#సాయిబాబా", "#షిర్డీసాయి", "#గురువారం_ప్రత్యేకం"],
+        # classical Vedic bija syllable -- using standard short chants
+        # rather than fabricating a beeja that doesn't traditionally
+        # exist. NOTE: as of the Thursday deity change below, Sai is no
+        # longer in WEEKDAY_DEITY_MAP's daily rotation (Thursday now goes
+        # to Dattatreya, per explicit request to stop it always being
+        # Sai) -- kept here so it's a one-line change to bring back for a
+        # Sai-specific festival post later.
+        beeja_mantrams=[
+            "ఓం సాయి రాం",
+            "శ్రీ సాయినాథాయ నమః",
+        ],
+        telugu_hashtags=["#సాయిబాబా", "#షిర్డీసాయి"],
         english_keywords=[
-            "Shirdi Sai Baba", "Sai Baba Panchangam today", "Thursday Sai special",
-            "Om Sai Ram", "Sai devotional", "Telugu panchangam",
+            "Shirdi Sai Baba", "Sai Baba devotional", "Om Sai Ram", "Telugu panchangam",
         ],
     ),
     Deity.LAKSHMI: DeityContent(
         telugu_name="లక్ష్మీదేవి",
         blessing_phrase="ఓం శ్రీ మహాలక్ష్మ్యై నమః 🙏",
         mantra="ఓం శ్రీం మహాలక్ష్మ్యై నమః",
-        beeja_mantram="ఓం శ్రీం నమః",  # Shreem + namah, fuller than a bare syllable, kept distinct from the main mantra above
+        beeja_mantrams=[
+            "ఓం శ్రీం నమః",                    # Shreem + namah, fuller than a bare syllable
+            "ఓం శ్రీం మహాలక్ష్మ్యై నమః",
+            "ఓం హ్రీం శ్రీం క్లీం మహాలక్ష్మ్యై నమః",  # fuller tantric form, still widely used
+        ],
         telugu_hashtags=["#లక్ష్మీదేవి", "#మహాలక్ష్మి", "#శుక్రవారం_ప్రత్యేకం"],
         english_keywords=[
             "Goddess Lakshmi", "Lakshmi Panchangam today", "Friday Lakshmi special",
@@ -90,7 +130,11 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         mantra="గోవిందా గోవిందా",
         # Less standardized across traditions than Ganesha/Lakshmi's bija --
         # worth a native speaker's confirmation before treating as final.
-        beeja_mantram="ఓం క్లీం వేంకటేశాయ నమః",
+        beeja_mantrams=[
+            "ఓం క్లీం వేంకటేశాయ నమః",
+            "ఓం నమో వేంకటేశాయ",
+            "ఓం శ్రీనివాసాయ నమః",
+        ],
         telugu_hashtags=["#వేంకటేశ్వరుడు", "#తిరుమల", "#శనివారం_ప్రత్యేకం"],
         english_keywords=[
             "Lord Venkateswara", "Venkateswara Panchangam today", "Saturday Balaji special",
@@ -101,11 +145,37 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         telugu_name="సూర్యభగవానుడు",
         blessing_phrase="ఓం సూర్యాయ నమః 🙏",
         mantra="ఓం ఘృణి సూర్యాయ నమః",
-        beeja_mantram="ఓం హ్రాం సూర్యాయ నమః",  # Hraam + full mantra, fuller than a bare syllable
+        beeja_mantrams=[
+            "ఓం హ్రాం సూర్యాయ నమః",   # Hraam + full mantra, fuller than a bare syllable
+            "ఓం ఘృణి సూర్యాయ నమః",     # matches the main mantra, also valid as a seed chant
+            "ఓం సూర్యాయ నమః",
+        ],
         telugu_hashtags=["#సూర్యభగవానుడు", "#ఆదిత్యహృదయం", "#ఆదివారం_ప్రత్యేకం"],
         english_keywords=[
             "Lord Surya", "Surya Panchangam today", "Sunday Surya special",
             "Surya Namaskar devotional", "Aditya Hrudayam", "Telugu panchangam",
+        ],
+    ),
+    Deity.DATTATREYA: DeityContent(
+        telugu_name="దత్తాత్రేయ స్వామి",
+        blessing_phrase="ఓం శ్రీ గురుదేవ దత్త 🙏",
+        mantra="ఓం శ్రీ గురుదేవ దత్త",
+        # Replaces Sai Baba as Thursday's (Guruvaram's) deity per explicit
+        # request. Dattatreya -- combined form of Brahma/Vishnu/Shiva as
+        # the primordial Guru -- is the classical Thursday/Guruvaram
+        # deity in Telugu tradition, distinct from (and older than) the
+        # Sai Baba association. Worth a native speaker's confirmation on
+        # phrasing before treating as final, same caveat as Venkateswara
+        # above.
+        beeja_mantrams=[
+            "ఓం ద్రాం దత్తాత్రేయాయ నమః",   # classical beeja (Om Draam Dattatreyaya Namaha)
+            "ఓం శ్రీ గురుదేవ దత్త",          # most common simple chant among devotees
+            "దిగంబరా దిగంబరా శ్రీపాద వల్లభ దిగంబరా",  # very popular Datta-tradition chant
+        ],
+        telugu_hashtags=["#దత్తాత్రేయుడు", "#గురుదేవదత్త", "#గురువారం_ప్రత్యేకం"],
+        english_keywords=[
+            "Lord Dattatreya", "Dattatreya Panchangam today", "Thursday Guruvaram special",
+            "Om Sri Gurudev Datta", "Dattatreya devotional", "Telugu panchangam",
         ],
     ),
 }
@@ -115,11 +185,19 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
 # Monday=0 ... Sunday=6). Used by anything that needs "today's deity"
 # without also needing an actual selected image (e.g. the alert Shorts,
 # which have no deity image of their own but still want today's mantra).
+#
+# NOTE: Thursday was changed from Sai to Dattatreya per explicit request
+# (Sai was showing every single Thursday with no variety) -- if the main
+# community-post pipeline (currently disabled) is ever revived, its
+# Images/Thursday_Sai folder won't match this mapping until it's renamed
+# or a Thursday_Dattatreya folder with real images is added; the Shorts
+# pipeline (post_alert_shorts.py) doesn't use deity images at all, so
+# this change is fully effective for Shorts right away.
 WEEKDAY_DEITY_MAP: dict[int, Deity] = {
     0: Deity.SHIVA,
     1: Deity.HANUMAN,
     2: Deity.GANESHA,
-    3: Deity.SAI,
+    3: Deity.DATTATREYA,
     4: Deity.LAKSHMI,
     5: Deity.VENKATESWARA,
     6: Deity.SURYA,

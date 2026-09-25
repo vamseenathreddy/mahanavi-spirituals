@@ -16,6 +16,7 @@ class Deity(str, Enum):
     LAKSHMI = "Lakshmi"
     VENKATESWARA = "Venkateswara"
     SURYA = "Surya"
+    DATTATREYA = "Dattatreya"
 
 
 @dataclass(frozen=True, slots=True)
