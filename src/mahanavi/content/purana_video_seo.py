@@ -255,3 +255,48 @@ def build_manasadevi_video_seo() -> PuranaVideoSeoContent:
         next_purana_name_te="కూర్మ పురాణం",
         next_purana_name_en="Kurma Puranam",
     )
+
+
+def build_samudrika_shastra_video_seo() -> PuranaVideoSeoContent:
+    """SEO content for the Samudrika Shastra (physiognomy) episode.
+
+    Deliberately NOT presented as a verbatim shloka-by-shloka reading
+    (unlike episodes 1-3) -- per explicit request, this is a general,
+    non-controversial overview of the tradition (attributed to sage
+    Samudra and referenced across Puranic literature including Sri
+    Bhavishya Puranam), kept gender-neutral and framed as traditional
+    belief rather than definitive prediction, so it stays safe and
+    respectful."""
+    return build_purana_video_seo(
+        story_title_te="సాముద్రిక శాస్త్రం",
+        benefit_te="శరీర లక్షణాల ద్వారా స్వభావాన్ని తెలుసుకునే సాముద్రిక శాస్త్రం",
+        benefit_en="The Ancient Science of Reading Character Through Body Signs",
+        purana_name_te="శ్రీ భవిష్య పురాణం",
+        purana_name_en="Sri Bhavishya Puranam",
+        story_summary_te=(
+            "సాముద్రిక శాస్త్రం అనేది మానవ శరీర లక్షణాలను పరిశీలించి వ్యక్తి స్వభావాన్ని, గుణగణాలను "
+            "అర్థం చేసుకునే ఒక ప్రాచీన భారతీయ సంప్రదాయ విద్య. ఇది సముద్రుడు అనే మహర్షి ప్రవచించినదిగా "
+            "చెప్పబడుతుంది, అందుకే దీనికి 'సాముద్రికం' అనే పేరు వచ్చింది. శ్రీ భవిష్య పురాణం వంటి "
+            "పురాణాలలో శరీర లక్షణాల ప్రాధాన్యత గురించి ప్రస్తావించబడింది. ఈ వీడియోలో నుదురు, కళ్ళు, "
+            "హస్తరేఖలు, వేళ్ళు వంటి అంశాలను సంప్రదాయం ఏ విధంగా చూసేదో తెలుసుకుందాం. ఇది వ్యక్తుల గురించి "
+            "ఖచ్చితమైన నిర్ణయాలు తీసుకోడానికి కాదు, మన పూర్వీకుల పరిశీలనా దృష్టికోణాన్ని అర్థం "
+            "చేసుకోడానికి ఉపయోగపడే ఒక సంప్రదాయ విద్యగా మేము దీన్ని అందిస్తున్నాం. హస్తరేఖా శాస్త్రం, "
+            "ముఖలక్షణాలు, శరీర లక్షణాలు, భారతీయ సంప్రదాయ విద్యలు వంటి అంశాలపై ఆసక్తి ఉన్నవారికి ఈ వీడియో "
+            "ప్రత్యేకంగా ఉపయోగపడుతుంది. తెలుగు భక్తులకు మన సంప్రదాయ విషయాలను సులభంగా, గౌరవప్రదంగా "
+            "అందించాలనే లక్ష్యంతో మహానవి స్పిరిచువల్స్ ఛానల్ ఈ వీడియోను రూపొందించింది."
+        ),
+        story_summary_en=(
+            "Samudrika Shastra is an ancient Indian tradition of reading a person's nature and "
+            "character through physical signs -- traditionally attributed to sage Samudra, and "
+            "referenced across Puranic literature including Sri Bhavishya Puranam. In this video, we "
+            "look at how this tradition has historically viewed features like the forehead, the eyes, "
+            "the lines of the palm, and the fingers. This is presented as a window into how our "
+            "ancestors observed people and life, a traditional belief system, not a set of scientific "
+            "or definitive claims about any individual. If you are interested in palmistry, "
+            "physiognomy, facial features in tradition, or Indian traditional sciences in general, "
+            "this video is for you. Mahanavi Spirituals brings you our traditions in simple, "
+            "respectful Telugu narration, with the goal of making this heritage accessible to "
+            "everyone."
+        ),
+        hashtags=["#SamudrikaShastra", "#సాముద్రికశాస్త్రం", "#Palmistry", "#భవిష్యపురాణం", "#TeluguDevotional"],
+    )
