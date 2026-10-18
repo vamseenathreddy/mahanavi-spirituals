@@ -44,7 +44,10 @@ DEFAULT_ORDER = ("news",)   # current news only: a quiet feed skips the slot ins
 
 # TDP-supportive channel (2026-10-17): Telugu political search feeds, keyword-filtered.
 POLITICAL_QUERY = {
-    "chandrababu": ["చంద్రబాబు నాయుడు", "సీఎం చంద్రబాబు"], "lokesh": ["నారా లోకేశ్", "మంత్రి లోకేశ్"],
+    "chandrababu": ["చంద్రబాబు నాయుడు", "సీఎం చంద్రబాబు"],
+    "lokesh": ["నారా లోకేశ్", "మంత్రి లోకేశ్", "లోకేశ్ సాయం", "లోకేశ్ ఉద్యోగాలు ఐటీ", "లోకేశ్ ఆదుకున్నారు"],
+    "amaravati": ["అమరావతి రాజధాని పనులు", "అమరావతి అభివృద్ధి", "అమరావతి నిర్మాణం"],
+    "local": ["నూజివీడు", "చాట్రాయి", "నూజివీడు నియోజకవర్గం అభివృద్ధి", "చాట్రాయి మండలం"],
     "tdp": ["తెలుగుదేశం పార్టీ", "టీడీపీ"],
     "nda": ["కూటమి ప్రభుత్వం", "కూటమి ప్రభుత్వం ఆంధ్రప్రదేశ్ అభివృద్ధి", "ఎన్డీఏ ఆంధ్రప్రదేశ్"],
     "janasena": ["జనసేన పవన్ కళ్యాణ్", "డిప్యూటీ సీఎం పవన్ కళ్యాణ్"],
@@ -60,6 +63,7 @@ SUBJECT = {  # the headline must actually be about the niche's subject
     "nda": ("కూటమి", "ఎన్డీఏ", "జనసేన", "బీజేపీ"), "janasena": ("జనసేన", "పవన్"),
     "development": ("ఆంధ్రప్రదేశ్", "ఏపీ", "అమరావతి", "రాష్ట్ర", "విశాఖ"),
     "counter": ("వైసీపీ", "వైఎస్ఆర్సీపీ", "జగన్"),
+    "amaravati": ("అమరావతి",), "local": ("నూజివీడు", "చాట్రాయి"),
 }
 # The 'counter' niche: a headline where the government or TDP answers the opposition. Tragedy and crime headlines stay out;
 # the opposition's own names are allowed here (they are the subject), and a reply word is required.
@@ -67,7 +71,7 @@ COUNTER_REPLY = ("కౌంటర్", "స్పందన", "సమాధాన
 COUNTER_BAD = ("అరెస్ట్", "హత్య", "మృతి", "ప్రమాదం", "దాడి", "అత్యాచారం", "మరణ", "ఆత్మహత్య", "దుర్ఘటన", "విషాదం", "దుర్మరణం",
                "సినిమా", "చిత్రం", "హీరో", "మూవీ", "ట్రైలర్")
 POSITIVE = ("అభివృద్ధి", "పెట్టుబడ", "ఉద్యోగ", "ప్రారంభ", "శంకుస్థాపన", "ఒప్పందం", "పథకం", "నిధులు", "ప్రశంస",
-            "హర్షం", "శుభవార్త", "అమరావతి", "ఐటీ", "డేటా సెంటర్", "ఏఐ", "పరిశ్రమ", "రైతు", "మహిళ", "విద్య",
+            "హర్షం", "శుభవార్త", "సాయం", "ఆదుక", "అండగా", "నిర్మాణ", "పనులు", "ప్రారంభం", "మంజూరు", "అమరావతి", "ఐటీ", "డేటా సెంటర్", "ఏఐ", "పరిశ్రమ", "రైతు", "మహిళ", "విద్య",
             "అవార్డు", "కృషి", "ఆవిష్కరణ", "సాంకేతిక", "మంజూరు", "పెంపు", "భరోసా", "సంక్షేమ", "లక్ష")
 # Outlets preferred first (Eenadu, Andhra Jyothy, then other mainstream Telugu outlets).
 PREFERRED = ("ఈనాడు", "Eenadu", "ఆంధ్రజ్యోతి", "Andhra Jyothy", "Andhrajyothy", "సాక్షి_x", "Sakshi_x")

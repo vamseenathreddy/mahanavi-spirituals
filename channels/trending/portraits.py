@@ -76,18 +76,18 @@ def _badge(bg: Image.Image, font_path: str) -> None:
 
 
 def _face_mark(bg: Image.Image, font_path: str) -> None:
-    """Copyright watermark in the same style as the faint @PulseBoosting text: the owner's face, sharp (not blurred), drawn
-    as light white-grey strokes at low opacity behind the text, at the empty bottom-left."""
+    """Copyright watermark in the middle of the card (2026-10-18 request): the owner's face, blurred and very light, in
+    the same faint white as the @PulseBoosting text, drawn behind the text."""
     face = Image.open(PEOPLE / "me_face.png").convert("L")
-    d = 440
+    d = 720
     face = ImageOps.autocontrast(face.resize((d, d), Image.LANCZOS), cutoff=1)
-    alpha = face.point(lambda v: int(55 + v * 0.38))            # about 12% to 30% white, detail kept
+    alpha = face.point(lambda v: int(30 + v * 0.50))            # about 12% to 50% white, features kept
     circle = Image.new("L", (d * 2, d * 2), 0)
     ImageDraw.Draw(circle).ellipse((0, 0, d * 2 - 1, d * 2 - 1), fill=255)
-    alpha = ImageChops.multiply(alpha, circle.resize((d, d), Image.LANCZOS))
+    alpha = ImageChops.multiply(alpha, circle.resize((d, d), Image.LANCZOS)).filter(ImageFilter.GaussianBlur(3))
     layer = Image.new("RGBA", (d, d), (255, 255, 255, 0))
     layer.putalpha(alpha)
-    bg.alpha_composite(layer, (50, 1400))  # the empty bottom-left, clear of text and Shorts buttons
+    bg.alpha_composite(layer, ((W - d) // 2, 620))  # middle of the card, behind the text
 
 
 SHOW_TELEGRAM = True

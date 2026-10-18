@@ -17,24 +17,27 @@ FONTS = REPO_ROOT / "channels/engine/assets/fonts"
 BRAND = "Pulse Boosting"
 HANDLE = "@PulseBoosting"
 LANGS = ["te"]          # 2026-10-17: Telugu only (TDP-supportive channel)
-NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter"]   # Janasena is switched off: TDP-only channel
+NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter", "amaravati", "local"]   # Janasena is switched off: TDP-only channel
 # 2026-10-18: 6 posts a day for now (was 12). One day = these 6 posts in order, repeating daily:
 # 2026-10-18 (later): CURRENT NEWS ONLY, no old achievements. Every post is a fresh headline raised in the voice of a
 # hardcore fan (Babu's stage style: "తెలుగు తమ్ముళ్లూ", "తెలుగుదేశం అభిమానులారా"), and one post a day answers
 # negative propaganda with a fact. The evergreen bank niches (innovations, join, voice) are not in the rotation.
-DAY_PATTERN = ["chandrababu", "tdp", "lokesh", "counter", "development", "nda"]
-NEWS_NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "counter"]   # the only niches that may post
+# 2026-10-18 (focus): Amaravati, Lokesh helping people and rising, positive Nuzvid and Chatrai news.
+DAY_PATTERN = ["amaravati", "lokesh", "local", "chandrababu", "counter", "lokesh"]
+NEWS_NICHES = ["amaravati", "lokesh", "local", "chandrababu", "counter", "tdp", "nda", "development"]   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
 LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "English", "ta": "தமிழ்", "kn": "ಕನ್ನಡ", "ml": "മലയാളം"}
 NICHE_EN = {"chandrababu": "Chandrababu Naidu", "lokesh": "Nara Lokesh", "tdp": "Telugu Desam Party",
             "nda": "NDA Alliance", "development": "AP Development", "innovations": "CM Innovations",
-            "join": "Join TDP", "voice": "Your Constituency", "counter": "Facts and Answers"}
+            "join": "Join TDP", "voice": "Your Constituency", "counter": "Facts and Answers",
+            "amaravati": "Amaravati", "local": "Nuzvid and Chatrai"}
 NICHE_TAG = {"chandrababu": "ChandrababuNaidu", "lokesh": "NaraLokesh", "tdp": "TDP", "nda": "NDAAlliance",
              "development": "APDevelopment", "innovations": "Innovations",
-             "join": "JoinTDP", "voice": "MyConstituency", "counter": "TDPFacts"}
+             "join": "JoinTDP", "voice": "MyConstituency", "counter": "TDPFacts",
+             "amaravati": "Amaravati", "local": "Nuzvid"}
 NICHE_NATIVE = {
-    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం", "నిజం చెబుదాం"],
+    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం", "నిజం చెబుదాం", "అమరావతి", "నూజివీడు, చాట్రాయి"],
     "en": list(NICHE_EN.values()),
 }
 LANG_TAG = {"te": "TeluguNews", "en": "IndiaNews"}
