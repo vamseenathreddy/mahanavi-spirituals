@@ -250,3 +250,11 @@ def test_day_pattern_mix_and_new_banks():
         s = bank_stories(n)[0]
         m = metadata.bundle(s, "te", n)
         assert len(m["title"]) <= 100 and len(m["description"]) < 5000
+
+
+def test_local_niche_posts_once_a_month_on_the_first():
+    import datetime as d
+    assert all(cfg.plan(i, d.date(2026, 11, 5))[1] != "local" for i in range(12))
+    assert cfg.plan(2, d.date(2026, 11, 1))[1] == "local"
+    assert cfg.plan(2, d.date(2026, 11, 1), {"local_month": "2026-11"})[1] != "local"
+    assert "local" not in cfg.DAY_PATTERN and "local" not in cfg.NEWS_NICHES

@@ -23,8 +23,9 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # hardcore fan (Babu's stage style: "తెలుగు తమ్ముళ్లూ", "తెలుగుదేశం అభిమానులారా"), and one post a day answers
 # negative propaganda with a fact. The evergreen bank niches (innovations, join, voice) are not in the rotation.
 # 2026-10-18 (focus): Amaravati, Lokesh helping people and rising, positive Nuzvid and Chatrai news.
-DAY_PATTERN = ["amaravati", "lokesh", "local", "chandrababu", "counter", "lokesh"]
-NEWS_NICHES = ["amaravati", "lokesh", "local", "chandrababu", "counter", "tdp", "nda", "development"]   # the only niches that may post
+# Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
+DAY_PATTERN = ["amaravati", "lokesh", "chandrababu", "development", "counter", "lokesh"]
+NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
 LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "English", "ta": "தமிழ்", "kn": "ಕನ್ನಡ", "ml": "മലയാളം"}
@@ -133,9 +134,13 @@ def niche_label(lang: str, niche: str) -> str:
     return NICHE_NATIVE[lang][NICHES.index(niche)]
 
 
-def plan(seq: int) -> tuple[str, str]:
-    """(language, niche) for the seq-th post: Telugu always; niches follow DAY_PATTERN."""
-    return LANGS[0], DAY_PATTERN[seq % len(DAY_PATTERN)]
+def plan(seq: int, day=None, state: dict | None = None) -> tuple[str, str]:
+    """(language, niche) for the seq-th post: Telugu always; niches follow DAY_PATTERN. On the 1st of a month, the
+    third post of the day is the monthly Nuzvid and Chatrai post, once (state['local_month'] remembers it)."""
+    niche = DAY_PATTERN[seq % len(DAY_PATTERN)]
+    if day is not None and day.day == 1 and seq % len(DAY_PATTERN) == 2 and (state or {}).get("local_month") != day.strftime("%Y-%m"):
+        niche = "local"
+    return LANGS[0], niche
 
 
 def playlist_for(lang: str, niche: str) -> tuple[str, str]:

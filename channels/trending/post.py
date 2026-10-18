@@ -59,7 +59,7 @@ def main(argv=None) -> int:
     if key in st["posted"] and not args.dry_run and os.environ.get("FORCE_POST") != "true":
         print(f"Already posted for {key}. Nothing to do.")
         return 0
-    lang, niche = cfg.plan(st["seq"])
+    lang, niche = cfg.plan(st["seq"], date, st)
     lang, niche = args.lang or lang, args.niche or niche
     print(f"{key} | seq {st['seq']} | {lang} / {niche}")
 
@@ -73,6 +73,8 @@ def main(argv=None) -> int:
         niche, story = niche, SAMPLE
     else:
         niche, story = choose(lang, niche, used, yt)
+        if niche == "local" and story is not None:
+            st["local_month"] = date.strftime("%Y-%m")
     if story is None:
         print("No fresh unused story found in any niche for this language; skipping this slot.")
         return 0
