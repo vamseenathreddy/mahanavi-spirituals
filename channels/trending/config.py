@@ -41,7 +41,7 @@ LANG_TAG = {"te": "TeluguNews", "en": "IndiaNews"}
 # Only exact, official handles, e.g. "@example". Left empty until verified.
 MENTIONS: list[str] = []
 WHATSAPP_URL = "https://chat.whatsapp.com/E70aL6tTrzT4eftmUV9npI"
-TELEGRAM_URL = ""
+TELEGRAM_URL = "https://t.me/PulseBoostingTDP"
 # (subscribe line, join-groups line, comment line), drawn under the headline
 CTA = {
     "te": ("రాష్ట్ర ప్రజలారా, మీ ప్రభుత్వం గురించి తెలుసుకోవడానికి ఇప్పుడే సబ్‌స్క్రైబ్ చేయండి", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",

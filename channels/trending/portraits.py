@@ -90,7 +90,7 @@ def _face_mark(bg: Image.Image, font_path: str) -> None:
     bg.alpha_composite(layer, (50, 1400))  # the empty bottom-left, clear of text and Shorts buttons
 
 
-SHOW_TELEGRAM = False   # switch on once the Telegram group exists
+SHOW_TELEGRAM = True
 QR_FILE = Path(__file__).parent / "assets" / "qr_whatsapp.png"
 
 
