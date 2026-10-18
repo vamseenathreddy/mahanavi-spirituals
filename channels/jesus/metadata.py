@@ -62,10 +62,10 @@ def description(row, special=None, playlist_url=None, contact=None):
         out += [row["text_primary"], row["text_secondary"], "", row["apply_en"], row["apply_te"], ""]
         out += [f"Source: {row['ref_en']} ({row['ref_te']})", ""]
     else:
-        out += [row["question_en"], row["question_te"], "", "Comment A, B, C or D.", ""]
+        out += [row["question_en"], row["question_te"], "", "Pick A, B, C or D, then check the pinned comment.", ""]
         out += [row["opt_a"], row["opt_b"], row["opt_c"], row["opt_d"], "",
                 f"Answer: {row['correct_letter']}) {row['answer']} ({row['ref_en']}) - see the pinned comment.", ""]
-    out += [DISCLOSURE, "", f"Like, share and subscribe to {CHANNEL}: a Bible quote every morning and a Bible quiz every evening."]
+    out += [DISCLOSURE, "", f"Like, share and subscribe to {CHANNEL}: a new Bible verse every day."]
     if playlist_url:
         out += [f"Playlist: {playlist_url}"]
     out += ["", f"© {CHANNEL}."]
@@ -116,7 +116,7 @@ def captions(row):
 def comment(row):
     if row["category"] == "quote":
         return COMMENTS["quote"]
-    return (f"Answer: {row['correct_letter']}) {row['answer']} ({row['ref_en']}). Did you get it right? Comment below! 🙏\n"
+    return (f"Answer: {row['correct_letter']}) {row['answer']} ({row['ref_en']}). Did you get it right? 🙏\n"
             f"సమాధానం: {row['correct_letter']}) {row['answer_te']} ({row['ref_te']}). మీరు సరిగ్గా చెప్పారా? 🙏")
 
 

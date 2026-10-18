@@ -26,8 +26,8 @@ def by_id(verse_id: str) -> dict | None:
     return next((v for v in load_verses() if v["id"] == verse_id), None)
 
 
-SUBSCRIBE_EN = "Subscribe for daily Bible quotes and quiz"
-SUBSCRIBE_TE = "రోజూ బైబిల్ వచనం, క్విజ్ కోసం సబ్‌స్క్రైబ్ చేయండి"
+SUBSCRIBE_EN = "Subscribe for a daily Bible verse"
+SUBSCRIBE_TE = "రోజూ బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేయండి"
 
 
 def quote_row(v: dict) -> dict:
@@ -57,9 +57,9 @@ def quiz_row(v: dict) -> dict:
         "text_primary": v["text_en"], "text_secondary": v["text_te"],
         "question_en": "Which book and chapter is this verse from?",
         "question_te": "ఈ వచనం ఏ పుస్తకం, ఏ అధ్యాయంలోనిది?",
-        "cta_en": "Comment your answer! See this morning's Short.",
-        "cta_te": "మీ సమాధానం కామెంట్ చేయండి!",
-        "sub_en": "Comment your answer!\n" + SUBSCRIBE_EN, "sub_te": "మీ సమాధానం కామెంట్ చేయండి!\n" + SUBSCRIBE_TE,
+        "cta_en": "You may never see this channel again unless you subscribe right now",
+        "cta_te": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు",
+        "sub_en": "You may never see this channel again unless you subscribe right now", "sub_te": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు",
         "answer": v["ref_en"], "answer_te": v["ref_te"], "ref_en": v["ref_en"], "ref_te": v["ref_te"],
         "theme": v.get("theme", ""),
     }
@@ -97,7 +97,7 @@ def trivia_row(q: dict) -> dict:
         "question_en": q["q_en"], "question_te": q["q_te"],
         "text_primary": q["q_en"], "text_secondary": q["q_te"],
         "answer": q["answer"], "answer_te": q["answer_te"], "ref_en": q["ref_en"], "ref_te": q["ref_te"],
-        "sub_en": "Comment your answer!", "sub_te": "మీ సమాధానం కామెంట్ చేయండి!",
+        "sub_en": "You may never see this channel again unless you subscribe right now", "sub_te": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు",
         "theme": "",
     }
     for letter, opt in zip(letters, opts):
