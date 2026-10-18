@@ -19,9 +19,11 @@ HANDLE = "@PulseBoosting"
 LANGS = ["te"]          # 2026-10-17: Telugu only (TDP-supportive channel)
 NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter"]   # Janasena is switched off: TDP-only channel
 # 2026-10-18: 6 posts a day for now (was 12). One day = these 6 posts in order, repeating daily:
-# 2 "what Babu built / innovated in government" posts, 3 latest-news posts raised in the fan's voice,
-# 1 "best answer to the opposition (YCP)" post.
-DAY_PATTERN = ["chandrababu", "innovations", "lokesh", "tdp", "counter", "innovations"]
+# 2026-10-18 (later): CURRENT NEWS ONLY, no old achievements. Every post is a fresh headline raised in the voice of a
+# hardcore fan (Babu's stage style: "తెలుగు తమ్ముళ్లూ", "తెలుగుదేశం అభిమానులారా"), and one post a day answers
+# negative propaganda with a fact. The evergreen bank niches (innovations, join, voice) are not in the rotation.
+DAY_PATTERN = ["chandrababu", "tdp", "lokesh", "counter", "development", "nda"]
+NEWS_NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "counter"]   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
 LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "English", "ta": "தமிழ்", "kn": "ಕನ್ನಡ", "ml": "മലയാളം"}
@@ -44,14 +46,14 @@ WHATSAPP_URL = "https://chat.whatsapp.com/E70aL6tTrzT4eftmUV9npI"
 TELEGRAM_URL = "https://t.me/PulseBoostingTDP"
 # (subscribe line, join-groups line, comment line), drawn under the headline
 CTA = {
-    "te": ("రాష్ట్ర ప్రజలారా, మీ ప్రభుత్వం గురించి తెలుసుకోవడానికి ఇప్పుడే సబ్‌స్క్రైబ్ చేయండి", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
+    "te": ("తెలుగు తమ్ముళ్లూ, ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మళ్లీ కనిపించకపోవచ్చు", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
            "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"),
-    "en": ("12 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
+    "en": ("6 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
            "You may never see this channel again unless you subscribe right now"),
 }
 INTRO = {
-    "te": "తెలుగుదేశం, చంద్రబాబు, లోకేశ్ గారి పాలన, అభివృద్ధిపై వార్తలు. రోజుకు 12 షార్ట్స్.",
-    "en": "News on TDP, Chandrababu Naidu, Nara Lokesh and Andhra Pradesh development. 12 Shorts a day.",
+    "te": "తెలుగుదేశం, చంద్రబాబు, లోకేశ్ గారి పాలన, అభివృద్ధిపై వార్తలు. రోజుకు 6 షార్ట్స్.",
+    "en": "News on TDP, Chandrababu Naidu, Nara Lokesh and Andhra Pradesh development. 6 Shorts a day.",
 }
 
 # (window start hour IST, slot id): one post every 2 hours from midnight, at a random minute inside the first

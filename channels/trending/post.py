@@ -28,8 +28,8 @@ SAMPLE = Story("విశాఖలో గూగుల్ ఏఐ హబ్: ర�
 
 
 def choose(lang: str, niche: str, used: set, yt, fetch=pick_story):
-    """The planned niche first, then the other niches in the same language so a quiet source never wastes a slot."""
-    order = [niche] + [n for n in cfg.NICHES if n != niche]
+    """The planned niche first, then the other news niches in the same language so a quiet source never wastes a slot."""
+    order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche]
     for n in order:
         story = fetch(n, lang, used, yt)
         if story:

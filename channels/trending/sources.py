@@ -38,9 +38,9 @@ NEWS_TOPIC = {"breaking": "NATION", "sports": "SPORTS", "cinema": "ENTERTAINMENT
 YT_CATEGORY = {"breaking": "25", "sports": "17", "cinema": "24", "technology": "28", "viral": None}
 TOP_N = 10
 # order of sources to try per niche
-SOURCE_ORDER = {"innovations": ("bank", "news"), "development": ("news", "bank"), "join": ("bank",), "voice": ("bank",),
+SOURCE_ORDER = {"innovations": ("bank", "news"), "development": ("news",), "join": ("bank",), "voice": ("bank",),
                 "janasena": ("news", "bank")}
-DEFAULT_ORDER = ("news", "bank")
+DEFAULT_ORDER = ("news",)   # current news only: a quiet feed skips the slot instead of posting an old fact
 
 # TDP-supportive channel (2026-10-17): Telugu political search feeds, keyword-filtered.
 POLITICAL_QUERY = {

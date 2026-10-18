@@ -90,7 +90,14 @@ def test_failing_source_does_not_stop_the_slot():
 
     def boom(*_):
         raise RuntimeError("down")
-    assert pick_story("nda", "en", set(), object(), now, fetch_news=boom, fetch_bank=lambda n: [ok]) is ok
+    assert pick_story("innovations", "en", set(), object(), now, fetch_news=boom, fetch_bank=lambda n: [ok]) is ok
+
+
+def test_current_news_niches_never_post_old_facts():
+    from channels.trending import config as cfg
+    assert set(cfg.DAY_PATTERN) <= set(cfg.NEWS_NICHES)
+    old = Story("Old achievement fact headline here", "P", "l", None, "bank")
+    assert pick_story("chandrababu", "te", set(), None, fetch_news=lambda *_: [], fetch_bank=lambda n: [old]) is None
 
 
 def test_choose_falls_through_to_other_niches():
@@ -233,7 +240,7 @@ def test_day_pattern_mix_and_new_banks():
     from channels.trending.bank import bank_stories
     day = [cfg.plan(i)[1] for i in range(12)]
     assert len(cfg.DAY_PATTERN) == 6 and len(cfg.ACTIVE_SLOTS) == 6 and cfg.ACTIVE_SLOTS <= {s for _, s in cfg.SLOTS}
-    assert day[:6].count("innovations") == 2 and day[:6].count("counter") == 1 and "janasena" not in day and "janasena" not in cfg.NICHES
+    assert "innovations" not in day[:6] and day[:6].count("counter") == 1 and "janasena" not in day and "janasena" not in cfg.NICHES
     assert [cfg.plan(i)[1] for i in range(12, 24)] == day and set(day) <= set(cfg.NICHES)
     for n in ("join", "voice"):
         b = bank_stories(n)
