@@ -79,7 +79,16 @@ def main() -> int:
     spans: list = []
     R.build_strip(lang, theme, spans=spans)
     work = out / f"lifestyle_{key}_work"
-    clips = voice.synth_clips(R.narration_texts(lang, theme), ch["voice"], work / "voice")
+    texts = R.narration_texts(lang, theme)
+    own = voice.recording_for(key, theme["slug"])
+    if own is None:
+        clips = voice.synth_clips(texts, ch["voice"], work / "voice")
+    else:
+        print(f"::notice::using the owner's recorded voice: {own}")
+        clips = (voice.clips_from_files(sorted(own.iterdir()), work / "voice") if own.is_dir()
+                 else voice.split_recording(own, len(texts), work / "voice"))
+        if len(clips) != len(texts):
+            raise SystemExit(f"::error::recorded voice has {len(clips)} clips, the video needs {len(texts)}")
     durs = voice.durations(clips)
     starts, total = voice.timeline(durs, R.MIN_SECONDS)
     voice_wav = work / "voice.wav"

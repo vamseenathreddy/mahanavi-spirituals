@@ -1,5 +1,5 @@
 """Gate for the weekly Sunday lifestyle video: posts only on Sunday (IST), inside a day-seeded minute of the
-08:00-08:40 window, and at most once per day per channel (POST_SLOT). FORCE_POST=true bypasses everything.
+10:00-10:30 window, and at most once per day per channel (POST_SLOT). FORCE_POST=true bypasses everything.
 
   LIFESTYLE_LANG=te|hi POST_SLOT=<same> STATE_FILE=data/lifestyle_state_te.json python -m channels.lifestyle.gate
 """
@@ -9,9 +9,9 @@ import sys
 
 from channels.engine import gate
 
-WINDOW_START = dt.time(8, 0)
-WINDOW_MINUTES = 40
-LATEST = dt.time(11, 0)
+WINDOW_START = dt.time(10, 0)
+WINDOW_MINUTES = 30
+LATEST = dt.time(11, 0)  # still posts if the ping is late, never after this
 
 if __name__ == "__main__":
     now = dt.datetime.now(gate.IST)

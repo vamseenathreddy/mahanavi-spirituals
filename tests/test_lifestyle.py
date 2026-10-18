@@ -88,3 +88,25 @@ def test_trance_beats_uses_its_own_backgrounds_and_music():
     ch = post.CHANNELS["tb"]
     assert sorted(ch["assets"].glob(ch["bg_glob"])) and sorted(ch["assets"].glob(ch["music_glob"]))
     assert ch["assets"] != post.CHANNELS["hi"]["assets"]
+
+
+def test_gate_window_is_ten_to_ten_thirty():
+    from channels.lifestyle import gate
+    assert (gate.WINDOW_START.hour, gate.WINDOW_START.minute, gate.WINDOW_MINUTES) == (10, 0, 30)
+
+
+def test_split_recording_cuts_at_pauses(tmp_path):
+    import math, struct, wave
+    from channels.lifestyle import voice
+    R, buf = voice.RATE, bytearray()
+    for i in range(5):
+        buf += b"".join(struct.pack("<h", int(8000 * math.sin(2 * math.pi * (200 + i * 30) * k / R))) for k in range(R * 2))
+        buf += b"\0\0" * int(R * 1.3)
+    src = tmp_path / "take.wav"
+    with wave.open(str(src), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(R); w.writeframes(bytes(buf))
+    clips = voice.split_recording(src, 5, tmp_path / "w")
+    assert len(clips) == 5
+    import pytest
+    with pytest.raises(RuntimeError):
+        voice.split_recording(src, 9, tmp_path / "w2")

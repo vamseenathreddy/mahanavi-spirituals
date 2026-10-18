@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import os
+import re
 import subprocess
 import wave
 from pathlib import Path
@@ -118,3 +119,56 @@ def assemble(clips: list[Path], starts: list[float], total: float, dst: Path) ->
         w.setsampwidth(2)
         w.setframerate(RATE)
         w.writeframes(bytes(buf))
+
+
+def split_recording(src: Path, n: int, workdir: Path, noise_db: int = -35, min_gap: float = 0.35) -> list[Path]:
+    """Cut ONE recording (e.g. a Suno voice take) into n clips at its n-1 longest pauses, in order.
+    Raises if the recording has fewer than n-1 clear pauses, so a bad cut never ships."""
+    workdir.mkdir(parents=True, exist_ok=True)
+    r = subprocess.run(["ffmpeg", "-v", "info", "-i", str(src), "-af", f"silencedetect=n={noise_db}dB:d={min_gap}",
+                        "-f", "null", "-"], capture_output=True, text=True, timeout=300)
+    starts = [float(x) for x in re.findall(r"silence_start: ([\d.]+)", r.stderr)]
+    ends = [(float(a), float(b)) for a, b in re.findall(r"silence_end: ([\d.]+) \| silence_duration: ([\d.]+)", r.stderr)]
+    gaps = [(e - d, e, d) for e, d in ends if e - d > 0.3]   # ignore silence at the very start
+    if len(gaps) < n - 1:
+        raise RuntimeError(f"{src.name}: found {len(gaps)} pauses, need {n - 1} to split into {n} clips. "
+                           "Leave a clear 1-2 second pause between points, or send one file per point.")
+    cuts = sorted((a + b) / 2 for a, b, _d in sorted(gaps, key=lambda g: g[2], reverse=True)[: n - 1])
+    bounds = [0.0] + cuts + [None]
+    out = []
+    for i in range(n):
+        raw, wav = workdir / f"take_{i:02d}.wav", workdir / f"clip_{i:02d}.wav"
+        cmd = ["ffmpeg", "-y", "-v", "error", "-ss", f"{bounds[i]:.3f}", "-i", str(src)]
+        if bounds[i + 1] is not None:
+            cmd += ["-t", f"{bounds[i + 1] - bounds[i]:.3f}"]
+        subprocess.run(cmd + ["-ar", str(RATE), "-ac", "1", str(raw)], check=True, timeout=120)
+        _to_wav(raw, wav)
+        out.append(wav)
+    return out
+
+
+def clips_from_files(files: list[Path], workdir: Path) -> list[Path]:
+    """One recorded file per narrated block, in name order."""
+    workdir.mkdir(parents=True, exist_ok=True)
+    out = []
+    for i, f in enumerate(sorted(files)):
+        wav = workdir / f"clip_{i:02d}.wav"
+        _to_wav(f, wav)
+        out.append(wav)
+    return out
+
+
+RECORDINGS = Path(__file__).parent / "recordings"
+
+
+def recording_for(lang_key: str, slug: str) -> Path | None:
+    """The owner's own recorded narration for this theme, if committed: recordings/<lang>_<slug>.(mp3|wav|m4a)
+    for one file with pauses, or a folder recordings/<lang>_<slug>/ with one numbered file per block."""
+    d = RECORDINGS / f"{lang_key}_{slug}"
+    if d.is_dir():
+        return d
+    for ext in ("wav", "mp3", "m4a"):
+        f = RECORDINGS / f"{lang_key}_{slug}.{ext}"
+        if f.exists():
+            return f
+    return None
