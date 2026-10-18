@@ -158,7 +158,7 @@ def bundle(story: Story, lang: str, niche: str) -> dict:
         "title": title(story, lang, niche),
         "description": description(story, lang, niche),
         "tags": tags(lang, niche, story),
-        "comment": f"{source_line(story)}\n{cfg.CTA[lang][2]} {SLOGAN.get(niche, 'జై తెలుగుదేశం!')}" + ("\n" + "\n".join(join_lines()) if join_lines() else "") + (f"\n{mention_line()}" if cfg.MENTIONS else ""),
+        "comment": f"{source_line(story)}\n{cfg.CTA[lang][2]} {SLOGAN.get(niche, 'జై తెలుగుదేశం!')}" + (f"\n{mention_line()}" if cfg.MENTIONS else ""),
         "language": lang,
     }
 
