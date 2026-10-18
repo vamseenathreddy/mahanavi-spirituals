@@ -45,9 +45,9 @@ TELEGRAM_URL = "https://t.me/PulseBoostingTDP"
 # (subscribe line, join-groups line, comment line), drawn under the headline
 CTA = {
     "te": ("రాష్ట్ర ప్రజలారా, మీ ప్రభుత్వం గురించి తెలుసుకోవడానికి ఇప్పుడే సబ్‌స్క్రైబ్ చేయండి", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
-           "ఈ వార్తపై మీ అభిప్రాయం కామెంట్ చేయండి"),
+           "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"),
     "en": ("12 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
-           "Comment your opinion on this news"),
+           "You may never see this channel again unless you subscribe right now"),
 }
 INTRO = {
     "te": "తెలుగుదేశం, చంద్రబాబు, లోకేశ్ గారి పాలన, అభివృద్ధిపై వార్తలు. రోజుకు 12 షార్ట్స్.",

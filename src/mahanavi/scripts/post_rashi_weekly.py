@@ -42,7 +42,7 @@ def build_seo(date_text: str, rows: list[dict]) -> ShortSeoContent:
         f"{brand_tagline('rashi_mantra')}\n\n"
         f"ఈ వారం ({date_text}) మీ రాశికి సూచించిన మంత్రం:\n\n" + "\n".join(lines_te) +
         "\n\nప్రతి మంత్రం 108 సార్లు చదువుకోండి. గ్రహ స్థితిని బట్టి ప్రతి ఆదివారం కొత్త మంత్రాలు వస్తాయి."
-        "\n\nఈ వీడియోపై మీ అభిప్రాయం కామెంట్ చేయండి, ప్రతి ఆదివారం కోసం సబ్‌స్క్రైబ్ చేయండి."
+        "\n\nఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. ప్రతి ఆదివారం కోసం సబ్‌స్క్రైబ్ చేయండి."
         f"\n\n{_CHANNEL_FOOTER_TE}\n\n---\n\n"
         f"Weekly Rashi (zodiac) mantras for {date_text}, chosen from this week's planetary positions "
         "(traditional Vedic gochara). Chant your rashi's mantra 108 times. New table every Sunday.\n\n"

@@ -51,18 +51,18 @@ _HOOKS_EN = [
 _CTAS_TE = [
     "ప్రతిరోజు ఇలాంటి గీతా శ్లోకాల కోసం ఫాలో అవ్వండి.",
     "ఈ శ్లోకం నచ్చితే షేర్ చేయండి.",
-    "ఈ శ్లోకం మీ జీవితంలో ఎలా వర్తిస్తుందో కామెంట్‌లో చెప్పండి.",
+    "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు.",
 ]
 _CTAS_EN = [
     "Follow for a new Gita verse every day.",
     "Share this if it spoke to you.",
-    "Tell us how this verse applies to your life in the comments.",
+    "You may never see this channel again unless you subscribe right now.",
 ]
 
 _COMMENT_PROMPTS_EN = [
-    "Which Gita chapter should we cover next? Comment below!",
-    "Tag someone who needs to hear this today.",
-    "What does this verse mean to you?",
+    "You may never see this channel again unless you subscribe right now.",
+    "You may never see this channel again unless you subscribe right now!",
+    "You may never see this channel again unless you subscribe right now.",
 ]
 
 
@@ -92,7 +92,7 @@ def build_gita_sloka_seo(
     hook_te, hook_en = _pick_rotating_pair(_HOOKS_TE, _HOOKS_EN, pick_index)
     cta_te, cta_en = _pick_rotating_pair(_CTAS_TE, _CTAS_EN, pick_index + 1)
     comment_en = _pick_rotating(_COMMENT_PROMPTS_EN, pick_index + 2)
-    comment_te = "ఈ శ్లోకం మీకు ఎలా అనిపించిందో కామెంట్‌లో చెప్పండి!"
+    comment_te = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు."
 
     yesterday_te = yesterday_en = ""
     if previous_quiz_sloka is not None:

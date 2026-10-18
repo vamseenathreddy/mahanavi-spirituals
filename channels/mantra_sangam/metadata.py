@@ -21,8 +21,8 @@ EXTRA_KEYWORDS = {
     "aarti": ["popular aarti", "aarti lyrics"],
 }
 COMMENTS = {
-    "mantra": "ॐ नमः शिवाय। कमेंट में जय श्री राम लिखें। \U0001F64F",
-    "quote": "यह बात आपके दिल को छू गई? नीचे बताएं। \U0001F64F",
+    "mantra": "ॐ नमः शिवाय। अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे। \U0001F64F",
+    "quote": "अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे। \U0001F64F",
     "aarti": "आरती के साथ जय बोलो! \U0001F64F",
 }
 DISCLOSURE = "Visuals are digitally created devotional artwork. Background music is an original/royalty-free composition."

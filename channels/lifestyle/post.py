@@ -55,8 +55,8 @@ def metadata(key: str, theme: dict, chapters: list[int]) -> dict:
     tags = [ch["name"], "Puranas", "Dinacharya", "Hindu daily routine", "Garuda Purana", "Vishnu Purana", "Manusmriti",
             "bath rules", "nail cutting rules", ch["english"], f"{ch['tag']} spiritual"]
     return {"title": title, "description": "\n".join(lines), "tags": tags, "language": ch["language"],
-            "comment": {"te": "ఈ నియమాల్లో మీ ఇంట్లో ఏవి పాటిస్తారు? కామెంట్ చేయండి.",
-                        "hi": "इनमें से कौन से नियम आपके घर में माने जाते हैं? कमेंट करें।"}[lang]}
+            "comment": {"te": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు.",
+                        "hi": "अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे।"}[lang]}
 
 
 def main() -> int:

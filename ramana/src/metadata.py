@@ -18,9 +18,9 @@ EXTRA_KEYWORDS = {"quote": ["spiritual quotes", "Ramana Maharshi quotes in Telug
                   "qa": ["satsang", "Ramana Maharshi Q&A", "Ramana Maharshi questions and answers"],
                   "life": ["Ramana Maharshi life story", "Ramana Maharshi biography"]}
 COMMENTS = {
-    "quote": "What does this teaching mean to you? Share your thoughts below. 🙏\nఈ బోధన మీకు ఏమి అనిపించింది? మీ ఆలోచనలను పంచుకోండి. 🙏",
-    "qa": "Which question about Self-inquiry should we answer next? Tell us below. 🙏\nమీరు తర్వాత ఏ ప్రశ్న గురించి తెలుసుకోవాలనుకుంటున్నారు? 🙏",
-    "life": "Which moment from Bhagavan's life would you like to see next? 🙏\nభగవాన్ జీవితంలో మీరు తర్వాత ఏ సంఘటన తెలుసుకోవాలనుకుంటున్నారు? 🙏",
+    "quote": "You may never see this channel again unless you subscribe right now. 🙏\nఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. 🙏",
+    "qa": "You may never see this channel again unless you subscribe right now. 🙏\nఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. 🙏",
+    "life": "You may never see this channel again unless you subscribe right now. 🙏\nఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. 🙏",
 }
 DISCLOSURE = ("Visuals are digitally created devotional artwork inspired by Sri Ramana Maharshi and Arunachala. "
               "The Om chant music is an original composition.")

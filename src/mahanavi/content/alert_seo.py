@@ -324,13 +324,8 @@ _DURMUHURTHAM_HOOKS_EN = [
 # same rotation as the AlertCard render) rather than a third, separate
 # ask, so viewers who don't watch to the end still see the request.
 _COMMENT_ENGAGEMENT_EN = [
-    "Share your thoughts in the comments below! 🙏",
-    "Let us know in the comments! 🙏",
-    "Drop a comment and share your thoughts! 🙏",
-    "We'd love to hear from you in the comments! 🙏",
-    "Comment below and join the conversation! 🙏",
-    "Tell us in the comments below! 🙏",
-]
+    "You may never see this channel again unless you subscribe right now! 🙏",
+] * 6
 
 # Closing CTA sentence in the description also rotates. English pools
 # are paired by INDEX with the Telugu ones (see module docstring) --

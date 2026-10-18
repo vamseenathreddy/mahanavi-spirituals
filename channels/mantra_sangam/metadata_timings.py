@@ -71,10 +71,10 @@ def description(row):
     else:
         lines += [f"दुर्मुहूर्त: {row['durm_times']}", f"राहु काल: {row['rahu']}"]
     lines += ["", f"{row['t_mantra_label']}: {row['t_mantra']}", "",
-              f"रोज़ {hi} जानने के लिए {CHANNEL} को सब्सक्राइब करें। इस वीडियो पर अपनी राय कमेंट करें।", "",
+              f"रोज़ {hi} जानने के लिए {CHANNEL} को सब्सक्राइब करें। अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे।", "",
               f"{en} for {row['weekday_en']} {_d(row)} ({timings.LOCATION_NAME_EN}). Times are calculated for "
               f"{timings.LOCATION_NAME_EN}; they differ by a few minutes in other cities. Subscribe to {CHANNEL} for a new "
-              "Hindu panchang timing every day, and share your opinion on this video in the comments.", ""]
+              "Hindu panchang timing every day. You may never see this channel again unless you subscribe right now.", ""]
     contact = os.environ.get("CONTACT_EMAIL", "")
     if contact:
         lines += [f"Contact: {contact}", ""]

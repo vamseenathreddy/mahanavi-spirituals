@@ -17,7 +17,7 @@ EXTRA_KEYWORDS = {
     "quiz": ["bible quiz", "bible trivia", "bible quiz Telugu", "guess the bible verse", "బైబిల్ క్విజ్"],
 }
 COMMENTS = {
-    "quote": "Which part of this verse speaks to you today? Share below. 🙏\nఈ వచనంలో మీ హృదయానికి తాకిన భాగం ఏది? పంచుకోండి. 🙏",
+    "quote": "You may never see this channel again unless you subscribe right now. 🙏\nఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. 🙏",
 }
 DISCLOSURE = ("Visuals are digitally created worship artwork. Background music is an original "
               "composition. Scripture English text is public-domain (KJV/WEB).")

@@ -9,7 +9,7 @@ from pathlib import Path
 
 DATA = Path(__file__).resolve().parent / "data"
 CHANNEL = "Divine Mantra Sangam"
-OPINION = "इस वीडियो पर अपनी राय कमेंट करें"
+OPINION = "अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे"
 SUB = {"purana": "रोज़ एक पुराण कथा के लिए सब्सक्राइब करें", "rashi": "रोज़ राशि मंत्र के लिए सब्सक्राइब करें"}
 CSV = {"purana": DATA / "purana.csv", "rashi": DATA / "rashi.csv"}
 

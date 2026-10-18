@@ -242,7 +242,7 @@ class PuranaConceptCardRenderer:
             block_gap = int(height * 0.022)
             icon_size = int(width * ICON_FRAC)
 
-            # Fixed engagement line ("comment your opinion on this video") sits at the validated
+            # Fixed engagement line (subscribe reminder) sits at the validated
             # footer_bottom; the subscribe line (and everything above it) moves up by its height.
             opinion_font = self._fit_font_to_width(
                 draw, OPINION_TE, max_width=content_width, start_size=int(width * 0.036), weight="Bold",

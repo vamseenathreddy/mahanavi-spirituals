@@ -84,18 +84,18 @@ _HOOKS_EN = [
 _CTAS_TE = [
     "ప్రతిరోజు ఇలాంటి పురాణ విశేషాల కోసం ఫాలో అవ్వండి.",
     "ఇది నచ్చితే షేర్ చేయండి.",
-    "మీకు తెలిసిన పురాణ విశేషం కామెంట్‌లో చెప్పండి.",
+    "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు.",
 ]
 _CTAS_EN = [
     "Follow for a new Puranic concept every day.",
     "Share this if you found it interesting.",
-    "Tell us a Puranic fact you know in the comments.",
+    "You may never see this channel again unless you subscribe right now.",
 ]
 
 _COMMENT_PROMPTS_EN = [
-    "Which Purana should we cover next? Comment below!",
-    "Tag someone who'd enjoy this.",
-    "Did you know this already? Let us know!",
+    "You may never see this channel again unless you subscribe right now.",
+    "You may never see this channel again unless you subscribe right now!",
+    "You may never see this channel again unless you subscribe right now.",
 ]
 
 
@@ -122,7 +122,7 @@ def build_purana_concept_seo(
     hook_te, hook_en = _pick_rotating_pair(_HOOKS_TE, _HOOKS_EN, pick_index)
     cta_te, cta_en = _pick_rotating_pair(_CTAS_TE, _CTAS_EN, pick_index + 1)
     comment_en = _pick_rotating(_COMMENT_PROMPTS_EN, pick_index + 2)
-    comment_te = "మీకు తెలిసిన పురాణ విశేషం కామెంట్‌లో చెప్పండి!"
+    comment_te = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు."
 
     description_te = (
         f"{hook_te}\n\n"

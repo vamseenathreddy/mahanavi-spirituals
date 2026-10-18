@@ -40,7 +40,7 @@ def description(row):
     else:
         lines += [f"{row['title_hi']} राशि ({row['title_en']}) का मंत्र", "", f"स्वामी ग्रह: {row['planet_hi']} ({row['planet_en']})",
                   f"मंत्र: {row['t_moral']}", f"{row['benefit_hi']}", row["t_invoke"], ""]
-    lines += [f"रोज़ ऐसे शॉर्ट्स के लिए {CHANNEL} को सब्सक्राइब करें। इस वीडियो पर अपनी राय कमेंट करें।", ""]
+    lines += [f"रोज़ ऐसे शॉर्ट्स के लिए {CHANNEL} को सब्सक्राइब करें। अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे।", ""]
     contact = os.environ.get("CONTACT_EMAIL", "")
     if contact:
         lines += [f"Contact: {contact}", ""]
@@ -60,7 +60,7 @@ def tags(row):
 
 
 def bundle(row, special=None):
-    cm = "इस कथा से आपने क्या सीखा? कमेंट करें" if row["category"] == "purana" else "आपकी राशि कौन सी है? कमेंट करें"
+    cm = "अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे"
     return {"title": title(row), "description": description(row), "tags": tags(row), "localizations": None,
             "comment": cm + " \U0001F64F", "language": "hi"}
 

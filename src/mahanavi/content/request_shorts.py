@@ -74,7 +74,7 @@ class RequestShort:
     def first_comment(self) -> str:
         lines = "\n".join(f"{s.label}: {s.text.replace(chr(10), ' ')}" for s in self.slides if s.kind == "mantra")
         return (f"🙏 {self.handle} గారి కోరిక మేరకు {self.deity_te} మంత్రాలు:\n\n{lines}\n\n"
-                "ఏ మంత్రం మీకు ఇష్టం? కామెంట్ చేయండి 🙏")
+                "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు 🙏")
 
 
 HANDLE = "@SsudharshanSsudharshan-h7n"
@@ -105,7 +105,7 @@ _DESC_TE = f"""🙏 {HANDLE} గారి కోరిక మేరకు శ్
 
 ఎలా చదవాలి: శుభ్రంగా, ప్రశాంతంగా కూర్చుని ప్రతి మంత్రం 11, 21 లేదా 108 సార్లు చదవండి. శనివారం మరియు నరసింహ జయంతి రోజున చదవడం శుభప్రదమని సంప్రదాయం. ఉచ్చారణ కోసం గురువు లేదా పెద్దల వద్ద నేర్చుకోవడం మంచిది.
 
-మీ అభిప్రాయాన్ని కామెంట్ చేయండి. మరిన్ని మంత్రాల కోసం మహానవి స్పిరిచువల్స్ ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి 🙏"""
+ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. మరిన్ని మంత్రాల కోసం మహానవి స్పిరిచువల్స్ ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి 🙏"""
 
 _DESC_EN = f"""Narasimha Swamy mantras, including the Beeja (seed) mantra, made on request for {HANDLE}.
 
@@ -116,7 +116,7 @@ _DESC_EN = f"""Narasimha Swamy mantras, including the Beeja (seed) mantra, made 
 
 How to chant: sit calmly in a clean place and chant each mantra 11, 21 or 108 times. Saturdays and Narasimha Jayanti are traditionally considered auspicious. Learn the pronunciation from a guru or elder if you can.
 
-Tell us which mantra you chant in the comments, and subscribe to {BRAND_NAME} for more mantras."""
+You may never see this channel again unless you subscribe right now. Subscribe to {BRAND_NAME} for more mantras."""
 
 NARASIMHA = RequestShort(
     slug="narasimha_mantras",
@@ -130,7 +130,7 @@ NARASIMHA = RequestShort(
     description_te=_DESC_TE,
     description_en=_DESC_EN,
     header="శ్రీ నరసింహ స్వామి",
-    cta_lines=("ఈ వీడియోపై మీ అభిప్రాయాన్ని కామెంట్ చేయండి", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
+    cta_lines=("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
     tag_footer=f"{HANDLE} గారి కోరిక మేరకు",
     hashtags=["#Shorts", "#నరసింహస్వామి", "#NarasimhaMantra", "#NarasimhaSwamy", "#Devotional"],
     tags=[
@@ -178,7 +178,7 @@ SHANI_TE = RequestShort(
 శని బీజ మంత్రం: ఓం ప్రాం ప్రీం ప్రౌం సః శనయే నమః
 108 సార్లు జపించండి (కనీసం 11 సార్లు), ప్రశాంతంగా మాలతో.
 
-మీ అభిప్రాయాన్ని కామెంట్ చేయండి 🙏""",
+ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు 🙏""",
     description_en="""Shani Amavasya, Saturday 10 October 2026 (Amavasya from Fri 9:37 PM to Sat 9:21 PM IST).
 
 Why it matters: Saturday plus Amavasya is traditionally a special day for Shani worship and ancestor offerings (tarpan).
@@ -190,7 +190,7 @@ Shani beeja mantra: Om Pram Preem Proum Sah Shanaye Namah - chant 108 times (at 
           "sade sati", "ఏలినాటి శని", "శని అమావాస్య", "శని మంత్రం", "శని దేవుడు", "10 october 2026 amavasya",
           "telugu devotional", "mahanavi spirituals", "shorts"],
     header="శని అమావాస్య",
-    cta_lines=("ఈ వీడియోపై మీ అభిప్రాయాన్ని కామెంట్ చేయండి", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
+    cta_lines=("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
 )
 
 _HI_FOOTER = """🎬 और भक्ति Shorts देखें: https://www.youtube.com/@divinemantrasangam/shorts
@@ -229,7 +229,7 @@ SHANI_HI = RequestShort(
 शनि बीज मंत्र: ॐ प्रां प्रीं प्रौं सः शनये नमः
 108 बार जपें (कम से कम 11 बार), शांत मन से माला पर।
 
-अपनी राय कमेंट करें 🙏""",
+अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे 🙏""",
     description_en="""Shani Amavasya, Saturday 10 October 2026 (Amavasya from Fri 9:37 PM to Sat 9:21 PM IST).
 
 Why it matters: Saturday plus Amavasya is traditionally a special day for Shani worship and ancestor offerings (tarpan).
@@ -242,7 +242,7 @@ Shani beeja mantra: Om Pram Preem Proum Sah Shanaye Namah - chant 108 times (at 
           "hindi devotional", "divine mantra sangam", "shorts"],
     lang="hi", token_file="youtube_token_mantra_sangam.json", expected_channel="Mantra Sangam",
     watermark="@DivineMantraSangam", header="शनि अमावस्या",
-    cta_lines=("इस वीडियो पर अपनी राय कमेंट करें", "ऐसे और मंत्रों के लिए सब्सक्राइब करें"),
+    cta_lines=("अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे", "ऐसे और मंत्रों के लिए सब्सक्राइब करें"),
     footer_main=_HI_FOOTER,
     footer_en="Divine Mantra Sangam is a Hindi devotional channel: daily Rahu Kaal, Shubh Muhurat, mantras and Purana stories.",
 )
