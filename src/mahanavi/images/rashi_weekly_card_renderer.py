@@ -92,7 +92,11 @@ class RashiWeeklyCardRenderer:
         d.line((c1, y0, c1, y), fill=GOLD, width=3)
         d.rectangle((L, y0, R, y), outline=GOLD, width=3)
         ctr(t["chant"], self._font(lang, 50), mid, y + 28, GOLD)
-        ctr(t["cta"], self._font(lang, 44), mid, y + 100, LIGHT)
+        cta_f, size = self._font(lang, 44), 44
+        while d.textlength(t["cta"], font=cta_f) > W - 240 and size > 24:   # the subscribe line must fit the card width
+            size -= 2
+            cta_f = self._font(lang, size)
+        ctr(t["cta"], cta_f, mid, y + 100, LIGHT)
 
         out_dir = self._settings.output_dir
         out_dir.mkdir(parents=True, exist_ok=True)
