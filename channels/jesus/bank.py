@@ -38,8 +38,8 @@ def quote_row(v: dict) -> dict:
         "apply_en": v["apply_en"], "apply_te": v["apply_te"],
         "ref_en": v["ref_en"], "ref_te": v["ref_te"], "verse_en": v["text_en"], "verse_te": v["text_te"],
         "theme": v.get("theme", ""),
-        "sub_en": "You may never see this channel again unless you subscribe right now\n" + SUBSCRIBE_EN,
-        "sub_te": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు\n" + SUBSCRIBE_TE,
+        "sub_en": "You may never see this channel again unless you subscribe right now",
+        "sub_te": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు",
     }
 
 
