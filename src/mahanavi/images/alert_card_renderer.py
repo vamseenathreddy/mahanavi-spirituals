@@ -59,7 +59,7 @@ from mahanavi.images.fonts import FontManager
 from mahanavi.video.watermark import bake_watermark
 from mahanavi.images.layout import vertical_gradient
 
-from mahanavi.images.opinion_line import OPINION_TE
+from mahanavi.images.opinion_line import OPINION_LINES, OPINION_SIZE_FRAC, OPINION_TE
 logger = logging.getLogger(__name__)
 
 # True YouTube Shorts vertical format (9:16). NOT the same as the main
@@ -219,10 +219,11 @@ class AlertCardRenderer:
             footer_line_gap = int(height * 0.015)
             # Fixed engagement line at the very bottom of the footer block (2026-10-08 request).
             opinion_font = self._fit_font_to_width(
-                draw, OPINION_TE, max_width=content_width, start_size=int(width * SUBSCRIBE_FONT_FRAC), weight="Bold",
+                draw, OPINION_LINES[1], max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
-            opinion_bbox = draw.textbbox((0, 0), OPINION_TE, font=opinion_font)
-            opinion_h = int(opinion_bbox[3] - opinion_bbox[1])
+            opinion_bbox = draw.textbbox((0, 0), OPINION_LINES[1], font=opinion_font)
+            opinion_line_h = int(opinion_font.size * 1.3)
+            opinion_h = opinion_line_h * 2   # two lines
             footer_block_h = (subscribe_h + footer_line_gap + opinion_h
                               + (comment_h + footer_line_gap if card.comment_prompt_text else 0))
             footer_top = footer_bottom - footer_block_h
@@ -376,11 +377,12 @@ class AlertCardRenderer:
                 card.subscribe_text, font=subscribe_font, fill=COLOR_TEXT_LIGHT,
             )
 
-            opinion_w = opinion_bbox[2] - opinion_bbox[0]
-            draw.text(
-                ((width - opinion_w) // 2, opinion_top - opinion_bbox[1]),
-                OPINION_TE, font=opinion_font, fill=COLOR_TEXT_LIGHT,
-            )
+            for _i, _ln in enumerate(OPINION_LINES):
+                _b = draw.textbbox((0, 0), _ln, font=opinion_font)
+                draw.text(
+                    ((width - (_b[2] - _b[0])) // 2, opinion_top + _i * opinion_line_h - _b[1]),
+                    _ln, font=opinion_font, fill=COLOR_TEXT_LIGHT,
+                )
 
             if card.comment_prompt_text and comment_font is not None and comment_bbox is not None:
                 comment_top = subscribe_top - footer_line_gap - comment_h

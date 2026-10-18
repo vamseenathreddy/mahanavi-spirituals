@@ -61,7 +61,7 @@ from mahanavi.images.gita_sloka_card_renderer import (
 from mahanavi.images.layout import vertical_gradient
 from mahanavi.video.watermark import bake_watermark
 
-from mahanavi.images.opinion_line import OPINION_TE
+from mahanavi.images.opinion_line import OPINION_LINES, OPINION_SIZE_FRAC, OPINION_TE
 logger = logging.getLogger(__name__)
 
 CARD_WIDTH = 1080
@@ -176,9 +176,9 @@ class GitaQuizCardRenderer:
             # Fixed engagement line (subscribe reminder) sits at the validated
             # footer_bottom; the subscribe line (and everything above it) moves up by its height.
             opinion_font = self._fit_font_to_width(
-                draw, OPINION_TE, max_width=content_width, start_size=int(width * 0.036), weight="Bold",
+                draw, OPINION_LINES[1], max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
-            opinion_h = int(opinion_font.size * 1.15)
+            opinion_h = int(opinion_font.size * 1.3) * 2   # two lines
             opinion_top = footer_bottom - opinion_h
             subscribe_top = opinion_top - int(height * 0.012) - subscribe_h
             icon_row_top = subscribe_top - block_gap - icon_size if card.icon_paths else subscribe_top
@@ -227,7 +227,8 @@ class GitaQuizCardRenderer:
                 self._draw_icon_row(canvas, card.icon_paths, width, icon_row_top)
 
             self._draw_paragraph(draw, subscribe_lines, subscribe_font, width, subscribe_top, COLOR_TEXT_LIGHT)
-            self._draw_centered_line(draw, OPINION_TE, opinion_font, width, opinion_top, COLOR_TEXT_LIGHT)
+            for _i, _ln in enumerate(OPINION_LINES):
+                self._draw_centered_line(draw, _ln, opinion_font, width, opinion_top + _i * int(opinion_font.size * 1.3), COLOR_TEXT_LIGHT)
 
             if card.next_verse_hint is not None:
                 self._draw_next_hint_block(
