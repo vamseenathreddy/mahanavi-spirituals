@@ -125,6 +125,11 @@ def area_lines(story: Story) -> list[str]:
         "For people across Andhra Pradesh: " + ", ".join(d[1] for d in ds) + " and all 175 assembly constituencies.", ""]
 
 
+def mention_line() -> str:
+    ms = [m if m.startswith("@") else "@" + m for m in cfg.MENTIONS]
+    return " ".join(ms[:8])   # a few well-chosen handles; long lists look like spam to YouTube
+
+
 def description(story: Story, lang: str, niche: str) -> str:
     more = [angle(niche, story.key), ""]
     more += [story.summary, ""] if story.summary else []
@@ -138,6 +143,7 @@ def description(story: Story, lang: str, niche: str) -> str:
         "" if niche == "janasena" else cfg.INTRO["en"], "",
         *area_lines(story),
         *join_lines(), *([""] if join_lines() else []),
+        *([mention_line(), ""] if cfg.MENTIONS else []),
         DISCLOSURE_JSP if niche == "janasena" else DISCLOSURE, "",
         f"{cfg.BRAND}: like, share and subscribe.", "",
         " ".join(hashtags(lang, niche, story)),
@@ -149,7 +155,7 @@ def bundle(story: Story, lang: str, niche: str) -> dict:
         "title": title(story, lang, niche),
         "description": description(story, lang, niche),
         "tags": tags(lang, niche, story),
-        "comment": f"{source_line(story)}\n{cfg.CTA[lang][2]} {SLOGAN.get(niche, 'జై తెలుగుదేశం!')}",
+        "comment": f"{source_line(story)}\n{cfg.CTA[lang][2]} {SLOGAN.get(niche, 'జై తెలుగుదేశం!')}" + (f"\n{mention_line()}" if cfg.MENTIONS else ""),
         "language": lang,
     }
 

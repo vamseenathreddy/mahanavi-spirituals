@@ -37,6 +37,9 @@ NICHE_NATIVE = {
 }
 LANG_TAG = {"te": "TeluguNews", "en": "IndiaNews"}
 # Join links for the community channels. Fill in when the user creates them; empty = line omitted.
+# YouTube @handles to tag in every description and pinned comment (CMO, Chandrababu, Lokesh, TDP leaders and pages).
+# Only exact, official handles, e.g. "@example". Left empty until verified.
+MENTIONS: list[str] = []
 WHATSAPP_URL = ""
 TELEGRAM_URL = ""
 # (subscribe line, join-groups line, comment line), drawn under the headline
