@@ -268,6 +268,23 @@ def _pick_subscribe_text(pool: list[str], for_date: date) -> str:
     return pool[for_date.toordinal() % len(pool)]
 
 
+# Day-wise god photo behind every alert card (owner request 2026-10-19, same idea as the Beej mantra card).
+# Thursday has NO photo on purpose: Sai Baba is dropped and there is no Dattatreya photo yet. Add one as
+# assets/images/deities/dattatreya_g1.jpg and map 3 here.
+_DAY_BG = {0: ("shiva_g1.jpg", "shiva_g2.jpg"), 1: ("hanuman_g1.jpg", "hanuman_g2.jpg"),
+           2: ("ganesha_g1.jpg", "ganesha_g2.jpg"), 4: ("lakshmi_g1.jpg", "lakshmi_g2.jpg"),
+           5: ("venkateswara_g1.jpg",), 6: ("surya_g2.jpg",)}
+
+
+def _day_background(for_date: date) -> Path | None:
+    from mahanavi.config import PROJECT_ROOT
+    names = _DAY_BG.get(for_date.weekday())
+    if not names:
+        return None
+    path = PROJECT_ROOT / "assets" / "images" / "deities" / names[for_date.toordinal() % len(names)]
+    return path if path.exists() else None
+
+
 def _pick_comment_prompt(pool: list[str], for_date: date, offset: int) -> str:
     """Deterministic rotation through the comment-prompt pool, same
     reproducible-by-date pattern as _pick_subscribe_text. `offset` lets
@@ -447,8 +464,8 @@ def main() -> int:
             top_color=COLOR_RAHU_TOP, bottom_color=COLOR_RAHU_BOTTOM,
             filename_suffix="rahu_kalam", icon_paths=icon_paths,
             date_text=date_text, secondary_info=_other_inauspicious_periods(panchang),
-            subscribe_text=_pick_subscribe_text(_RAHU_KALAM_SUBSCRIBE_LINES, for_date),
-            comment_prompt_text=rahu_comment_prompt,
+            subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
+            comment_prompt_text="", bg_image=_day_background(for_date),
             quote_text=rahu_quote, quote_source=rahu_quote_source,
         )
         # Same comment_prompt text/rotation as the on-screen card above --
@@ -479,8 +496,8 @@ def main() -> int:
             top_color=COLOR_SHUBHA_TOP, bottom_color=COLOR_SHUBHA_BOTTOM,
             filename_suffix="shubha_ghadiyalu", icon_paths=icon_paths,
             date_text=date_text,
-            subscribe_text=_pick_subscribe_text(_SHUBHA_GHADIYALU_SUBSCRIBE_LINES, for_date),
-            comment_prompt_text=shubha_comment_prompt,
+            subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
+            comment_prompt_text="", bg_image=_day_background(for_date),
             quote_text=shubha_quote, quote_source=shubha_quote_source,
         )
         shubha_seo = build_shubha_ghadiyalu_seo(
@@ -507,8 +524,8 @@ def main() -> int:
             top_color=COLOR_DURMUHURTHAM_TOP, bottom_color=COLOR_DURMUHURTHAM_BOTTOM,
             filename_suffix="durmuhurtham", icon_paths=icon_paths,
             date_text=date_text,
-            subscribe_text=_pick_subscribe_text(_DURMUHURTHAM_SUBSCRIBE_LINES, for_date),
-            comment_prompt_text=durmuhurtham_comment_prompt,
+            subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
+            comment_prompt_text="", bg_image=_day_background(for_date),
             quote_text=durmuhurtham_quote, quote_source=durmuhurtham_quote_source,
         )
         durmuhurtham_seo = build_durmuhurtham_seo(

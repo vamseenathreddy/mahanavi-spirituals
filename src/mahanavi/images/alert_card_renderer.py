@@ -147,6 +147,7 @@ class AlertCard:
     # 2026-10-04 per explicit request to use that dead space for something devotional rather
     # than leaving it blank on days with short content. Skipped entirely (not shrunk/forced)
     # if there isn't enough vertical room, so it never risks overlapping other text.
+    bg_image: Path | None = None  # optional day-wise deity photo behind the text, dimmed and tinted in the card colour
     quote_source: str = ""  # short attribution shown smaller, directly below quote_text (e.g. "భగవద్గీత")
 
 
@@ -157,6 +158,35 @@ class AlertCardRenderer:
         self._settings = settings
         self._fonts = font_manager or FontManager(settings.telugu_font_path)
 
+    @staticmethod
+    def _with_photo(gradient: Image.Image, path: Path) -> Image.Image:
+        """Deity photo like the Beej mantra card: blurred cover fill plus the sharp photo dropped lower so the
+        face clears the title, then tinted with the card's own gradient (keeps the red / amber / green identity)
+        and darkened behind the text bands."""
+        from PIL import ImageFilter, ImageOps
+        try:
+            with Image.open(path) as raw:
+                src = raw.convert("RGB")
+        except OSError:
+            return gradient
+        w, h = gradient.size
+        base = ImageOps.fit(src, (w, h), method=Image.Resampling.LANCZOS, centering=(0.5, 0.3)).filter(ImageFilter.GaussianBlur(24))
+        sharp = ImageOps.fit(src, (w, h), method=Image.Resampling.LANCZOS, centering=(0.5, 0.3))
+        drop = 330
+        mask = Image.new("L", (w, h), 0)
+        md = ImageDraw.Draw(mask)
+        for y in range(h - drop):
+            md.line((0, y + drop, w, y + drop), fill=min(255, int(255 * y / 160)))
+        base.paste(sharp.transform((w, h), Image.Transform.AFFINE, (1, 0, 0, 0, 1, -drop)), (0, 0), mask)
+        photo = base.convert("RGBA")
+        tinted = Image.blend(photo, gradient, 0.45)
+        shade = Image.new("L", (w, h), 0)
+        sd = ImageDraw.Draw(shade)
+        for y in range(h):  # darker behind the title / time block and the subscribe block
+            t = max(1 - abs(y - 480) / 420, 1 - abs(y - 1270) / 230, 0.0)
+            sd.line((0, y, w, y), fill=int(40 + 110 * t))
+        return Image.composite(Image.new("RGBA", (w, h), (12, 4, 4, 255)), tinted, shade)
+
     def render(self, card: AlertCard, for_date: date) -> Path:
         width = ALERT_CARD_WIDTH
         height = ALERT_CARD_HEIGHT
@@ -164,7 +194,10 @@ class AlertCardRenderer:
         content_width = width - 2 * margin_x
 
         try:
-            canvas = bake_watermark(vertical_gradient(width, height, card.top_color, card.bottom_color).convert("RGBA"))
+            canvas = vertical_gradient(width, height, card.top_color, card.bottom_color).convert("RGBA")
+            if card.bg_image is not None:
+                canvas = self._with_photo(canvas, card.bg_image)
+            canvas = bake_watermark(canvas)
             draw = ImageDraw.Draw(canvas)
 
             icons_bottom = self._draw_icon_row(canvas, card.icon_paths, width)
