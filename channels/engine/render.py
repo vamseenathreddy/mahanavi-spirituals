@@ -298,11 +298,11 @@ def make_text_layer(row, layout, cfg: ChannelConfig, label_primary="", label_sec
     if corner:
         kf = (_mixed_font(cfg.blocks[0].font, 26, cfg.telugu_font) if cfg.telugu_font
               and Path(cfg.blocks[0].font) != Path(cfg.telugu_font) else _font(cfg.blocks[0].font, 26))
-        d.text(((W - d.textlength(corner, font=kf)) / 2 if cfg.scrim is False else 930 - d.textlength(corner, font=kf), 1620), corner, font=kf, fill=tuple(layout['secondary'][:3]) + (110,) if cfg.scrim is False else (255, 255, 255, 70))
+        d.text((90 if cfg.scrim is False else 930 - d.textlength(corner, font=kf), 1560 if cfg.scrim is False else 1620), corner, font=kf, fill=tuple(layout['secondary'][:3]) + (110,) if cfg.scrim is False else (255, 255, 255, 70))
 
     if channel:
         cf = _font(cfg.font_channel_label, 30)
-        d.text(((W - d.textlength(cfg.channel_name, font=cf)) / 2, 1560), cfg.channel_name, font=cf, fill=layout['secondary'] if cfg.scrim is False else SOFT)
+        d.text((90 if cfg.scrim is False else (W - d.textlength(cfg.channel_name, font=cf)) / 2, 1500 if cfg.scrim is False else 1560), cfg.channel_name, font=cf, fill=layout['secondary'] if cfg.scrim is False else SOFT)
 
     blur = shadow.filter(ImageFilter.GaussianBlur(10)).point(lambda v: int(v * 0.8) if cfg.text_shadow else 0)
     shade = Image.new("RGBA", (W, H), (0, 0, 0, 255))

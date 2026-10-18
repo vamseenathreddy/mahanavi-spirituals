@@ -101,8 +101,8 @@ def make_overlay(font_path: str):
                 x -= c.width
                 bg.alpha_composite(c, (x, 118))
                 x -= 8
-            lk = _person("lokesh", 400)
-            bg.alpha_composite(lk, (W - lk.width + 10, H - lk.height - 150))
+            lk = _person("lokesh", 340)   # kept left of the Shorts buttons (x>930) and above the caption (y>1640)
+            bg.alpha_composite(lk, (915 - lk.width, 1630 - lk.height))
         else:  # Janasena cards: Pawan Kalyan only, bottom-left
             pk = _person(a, 330)
             bg.alpha_composite(pk, (0, H - pk.height - 150))

@@ -109,7 +109,7 @@ def render_cfg(lang: str, niche: str) -> ChannelConfig:
         music_rotate=True,
         logo_path=str(CHANNEL_DIR / "assets/logo.png"),
         watermark_handle=HANDLE,
-        safe_bottom=1340,
+        safe_bottom=1290,
         text_max_w=880,
         text_anchor=0.46,
         cta_text=CTA[lang][0],  # subscribe line only (no join-groups line on the card)
