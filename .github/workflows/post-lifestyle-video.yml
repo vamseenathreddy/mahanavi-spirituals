@@ -1,6 +1,6 @@
 name: Weekly | Sunday Lifestyle Video (Telugu + Hindi)
 
-# Weekly 5+ minute scrolling video of 12 daily-life rules from the Puranas (theme rotates by ISO week, see
+# Weekly 5+ minute scrolling video of 30 daily-life rules narrated by a voice from the Puranas (theme rotates by ISO week, see
 # channels/lifestyle/topics.py). Telugu goes to Mahanavi Spirituals, Hindi to Divine Mantra Sangam.
 # Manual runs default to PRIVATE so the owner reviews before it goes live. The Sunday auto-run (gate) is wired later.
 on:
@@ -14,6 +14,10 @@ on:
         description: "private, unlisted or public"
         required: false
         default: private
+      date:
+        description: "Pick the theme for this ISO date (YYYY-MM-DD), e.g. the coming Sunday. Empty = today."
+        required: false
+        default: ''
       render_only:
         description: "true = render only, do not upload"
         required: false
@@ -65,10 +69,12 @@ jobs:
           LANGS: ${{ inputs.lang }}
           PRIVACY: ${{ inputs.privacy }}
           RENDER_ONLY: ${{ inputs.render_only }}
+          THEME_DATE: ${{ inputs.date }}
         run: |
           set -o pipefail
           EXTRA=""
-          if [ "$RENDER_ONLY" = "true" ]; then EXTRA="--render-only"; fi
+          if [ -n "$THEME_DATE" ]; then EXTRA="--date $THEME_DATE"; fi
+          if [ "$RENDER_ONLY" = "true" ]; then EXTRA="$EXTRA --render-only"; fi
           if [ "$LANGS" = "all" ] || [ "$LANGS" = "both" ]; then LIST="te hi tb"; else LIST="$LANGS"; fi
           for L in $LIST; do
             export STATE_FILE=data/lifestyle_state_$L.json

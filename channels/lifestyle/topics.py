@@ -60,5 +60,11 @@ THEMES = [
 
 
 def theme_for(day: date) -> dict:
-    """The week's theme: ISO week number picks from THEMES in rotation."""
+    """The week's theme: the ISO week number picks from THEMES in rotation. Add a theme to THEMES before the list is
+    used up, or the first theme comes round again."""
     return THEMES[day.isocalendar()[1] % len(THEMES)]
+
+
+from channels.lifestyle.theme_home_food import THEME as _HOME_FOOD  # noqa: E402
+
+THEMES.append(_HOME_FOOD)

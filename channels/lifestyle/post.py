@@ -14,23 +14,23 @@ from pathlib import Path
 
 from channels.engine import state as state_mod
 from channels.lifestyle import render as R
-from channels.lifestyle import topics
+from channels.lifestyle import topics, voice
 
 REPO = Path(__file__).resolve().parents[2]
 CHANNELS = {
     "te": {"name": "Mahanavi Spirituals", "token": "data/youtube_token.json", "language": "te", "lang": "te",
            "assets": REPO / "channels/mantra_sangam/assets", "bg_glob": "backgrounds/*.webp", "music_glob": "music/*.mp3",
            "playlist": "జీవన నియమాలు | Daily Life Rules from Puranas | Mahanavi Spirituals",
-           "english": "Purana Life Rules in Telugu", "tag": "Telugu"},
+           "english": "Purana Life Rules in Telugu", "tag": "Telugu", "voice": "te"},
     "hi": {"name": "Divine Mantra Sangam", "token": "data/youtube_token_mantra_sangam.json", "language": "hi", "lang": "hi",
            "assets": REPO / "channels/mantra_sangam/assets", "bg_glob": "backgrounds/*.webp", "music_glob": "music/*.mp3",
            "playlist": "जीवन नियम | Daily Life Rules from Puranas | Divine Mantra Sangam",
-           "english": "Purana Life Rules in Hindi", "tag": "Hindi"},
+           "english": "Purana Life Rules in Hindi", "tag": "Hindi", "voice": "hi"},
     # Hindi again, on the Krishna-themed Trance Beats channel: its own backgrounds and approved music
     "tb": {"name": "Devotional Trance Beats", "token": "data/youtube_token_trance_beats.json", "language": "hi", "lang": "hi",
            "assets": REPO / "channels/trance_beats/assets", "bg_glob": "backgrounds/*.webp", "music_glob": "music/approved/*.mp3",
            "playlist": "जीवन नियम | Daily Life Rules from Puranas | Devotional Trance Beats",
-           "english": "Purana Life Rules in Hindi", "tag": "Hindi"},
+           "english": "Purana Life Rules in Hindi", "tag": "Hindi", "voice": "tb"},
 }
 
 
@@ -42,7 +42,8 @@ def metadata(key: str, theme: dict, chapters: list[int]) -> dict:
     ch = CHANNELS[key]
     lang = ch["lang"]
     data = theme[lang]
-    title = f"{data['title']} | {ch['english']}"[:100]
+    english = f"{theme['english']} in {ch['tag']}" if theme.get("english") else ch["english"]
+    title = f"{data['title']} | {english}"[:100]
     lines = [data["title"], "",
              {"te": "పురాణాలు, స్మృతుల ప్రకారం రోజువారీ జీవన నియమాలు. పాయింట్ల వారీగా చూడండి.",
               "hi": "पुराणों और स्मृतियों के अनुसार दैनिक जीवन के नियम। बिंदुवार देखें।"}[lang], "",
@@ -75,15 +76,23 @@ def main() -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    tops: list[int] = []
-    strip = R.build_strip(lang, theme, tops)
-    chapters = R.chapter_seconds(tops, strip.height)
+    spans: list = []
+    R.build_strip(lang, theme, spans=spans)
+    work = out / f"lifestyle_{key}_work"
+    clips = voice.synth_clips(R.narration_texts(lang, theme), ch["voice"], work / "voice")
+    durs = voice.durations(clips)
+    starts, total = voice.timeline(durs, R.MIN_SECONDS)
+    voice_wav = work / "voice.wav"
+    voice.assemble(clips, starts, total, voice_wav)
+    chapters = R.chapter_seconds(starts)
     backs = sorted(ch["assets"].glob(ch["bg_glob"]))
     music = sorted(ch["assets"].glob(ch["music_glob"]))
     week = day.isocalendar()[1]
     mp4 = out / f"lifestyle_{key}_{day.isoformat()}.mp4"
-    secs = R.render(lang, theme, backs[week % len(backs)], music[week % len(music)], mp4, out / f"lifestyle_{key}_work")
-    print(f"::notice::rendered {mp4.name}: {secs:.0f} s, chapters {chapters}")
+    secs = R.render(lang, theme, backs[week % len(backs)], music[week % len(music)], voice_wav, mp4, work,
+                    spans, starts, durs, total)
+    print(f"::notice::rendered {mp4.name}: {secs:.0f} s, voice {voice.provider()}, {len(chapters)} points, "
+          f"narration {sum(durs):.0f} s")
     meta = metadata(key, theme, chapters)
     if args.render_only:
         print(meta["title"])
