@@ -90,6 +90,24 @@ def _face_mark(bg: Image.Image, font_path: str) -> None:
     bg.alpha_composite(layer, (50, 1400))  # the empty bottom-left, clear of text and Shorts buttons
 
 
+SHOW_TELEGRAM = False   # switch on once the Telegram group exists
+QR_FILE = Path(__file__).parent / "assets" / "qr_whatsapp.png"
+
+
+def _qr_join(bg: Image.Image, font_path: str) -> None:
+    """Scan-to-join WhatsApp QR (white plate, so it scans reliably) with a short call to action, bottom-left above the caption."""
+    if not QR_FILE.exists():
+        return
+    qr = Image.open(QR_FILE).convert("RGB").resize((176, 176), Image.NEAREST)
+    x, y = 60, 1305
+    d = ImageDraw.Draw(bg)
+    d.rounded_rectangle((x - 10, y - 10, x + 186, y + 186), 16, fill=(255, 255, 255, 255))
+    bg.paste(qr, (x, y))
+    f1, f2 = ImageFont.truetype(font_path, 34), ImageFont.truetype(font_path, 28)
+    for i, (t, f) in enumerate((("స్కాన్ చేసి చేరండి", f1), ("WhatsApp గ్రూప్", f1), *((("& Telegram", f2),) if SHOW_TELEGRAM else ()))):
+        d.text((x + 204, y + 14 + i * 50), t, font=f, fill=(60, 20, 0, 255))
+
+
 def make_overlay(font_path: str):
     def overlay(bg: Image.Image, row: dict) -> Image.Image:
         bg = bg.convert("RGBA")
@@ -107,5 +125,6 @@ def make_overlay(font_path: str):
             pk = _person(a, 330)
             bg.alpha_composite(pk, (0, H - pk.height - 150))
         (_face_mark if FACE_WATERMARK else _badge)(bg, font_path)
+        _qr_join(bg, font_path)
         return bg
     return overlay
