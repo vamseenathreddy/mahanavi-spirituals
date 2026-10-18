@@ -17,22 +17,22 @@ FONTS = REPO_ROOT / "channels/engine/assets/fonts"
 BRAND = "Pulse Boosting"
 HANDLE = "@PulseBoosting"
 LANGS = ["te"]          # 2026-10-17: Telugu only (TDP-supportive channel)
-NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice"]   # Janasena is switched off: TDP-only channel
-# One day = 12 posts in this order (repeats every day, so every day has the same mix): 6 news and evergreen posts,
-# 2 "join the TDP" motivation posts, 2 "tell us the development in your constituency" posts, 2 Janasena posts.
-DAY_PATTERN = ["chandrababu", "join", "lokesh", "chandrababu", "development", "voice",
-               "tdp", "lokesh", "innovations", "join", "voice", "nda"]
+NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter"]   # Janasena is switched off: TDP-only channel
+# 2026-10-18: 6 posts a day for now (was 12). One day = these 6 posts in order, repeating daily:
+# 2 "what Babu built / innovated in government" posts, 3 latest-news posts raised in the fan's voice,
+# 1 "best answer to the opposition (YCP)" post.
+DAY_PATTERN = ["chandrababu", "innovations", "lokesh", "tdp", "counter", "innovations"]
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
 LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "English", "ta": "தமிழ்", "kn": "ಕನ್ನಡ", "ml": "മലയാളം"}
 NICHE_EN = {"chandrababu": "Chandrababu Naidu", "lokesh": "Nara Lokesh", "tdp": "Telugu Desam Party",
             "nda": "NDA Alliance", "development": "AP Development", "innovations": "CM Innovations",
-            "join": "Join TDP", "voice": "Your Constituency"}
+            "join": "Join TDP", "voice": "Your Constituency", "counter": "Facts and Answers"}
 NICHE_TAG = {"chandrababu": "ChandrababuNaidu", "lokesh": "NaraLokesh", "tdp": "TDP", "nda": "NDAAlliance",
              "development": "APDevelopment", "innovations": "Innovations",
-             "join": "JoinTDP", "voice": "MyConstituency"}
+             "join": "JoinTDP", "voice": "MyConstituency", "counter": "TDPFacts"}
 NICHE_NATIVE = {
-    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం"],
+    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం", "నిజం చెబుదాం"],
     "en": list(NICHE_EN.values()),
 }
 LANG_TAG = {"te": "TeluguNews", "en": "IndiaNews"}
@@ -58,6 +58,8 @@ INTRO = {
 # 40 minutes of its window. The language rotates each post, so the first six posts (00:00 to 10:00) cover all six.
 SLOTS = [(2 * i, f"t{i + 1}") for i in range(12)]
 WINDOW_MINUTES = 40
+# Only these slots post (the other workflows still get pinged and skip at the gate). Raise back to all 12 to double the volume.
+ACTIVE_SLOTS = {"t1", "t4", "t5", "t7", "t10", "t11"}   # 00:00, 06:00, 08:00, 12:00, 18:00, 20:00 IST
 
 WHITE, GOLD, SOFT = (255, 255, 255), (255, 210, 120), (225, 220, 225)
 INK, RED, BROWN = (28, 8, 0), (150, 10, 20), (70, 30, 0)   # dark text on the TDP-yellow cards

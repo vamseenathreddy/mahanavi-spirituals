@@ -32,9 +32,9 @@ def test_language_matching():
     assert matches_language("ഇന്ത്യ ജയിച്ചു", "ml") and matches_language("भारत जीता", "hi")
 
 
-def test_plan_is_telugu_only_and_cycles_every_niche():
+def test_plan_is_telugu_only_and_cycles_the_day_pattern():
     seen = [cfg.plan(i) for i in range(12)]
-    assert {l for l, _ in seen} == {"te"} and cfg.LANGS == ["te"] and {n for _, n in seen} == set(cfg.NICHES)
+    assert {l for l, _ in seen} == {"te"} and cfg.LANGS == ["te"] and {n for _, n in seen} == set(cfg.DAY_PATTERN)
 
 
 def test_labels_cover_every_language_and_niche():
@@ -232,8 +232,9 @@ def test_seo_covers_regions_and_stays_within_limits():
 def test_day_pattern_mix_and_new_banks():
     from channels.trending.bank import bank_stories
     day = [cfg.plan(i)[1] for i in range(12)]
-    assert day.count("join") == 2 and day.count("voice") == 2 and "janasena" not in day and "janasena" not in cfg.NICHES
-    assert [cfg.plan(i)[1] for i in range(12, 24)] == day and set(day) == set(cfg.NICHES)
+    assert len(cfg.DAY_PATTERN) == 6 and len(cfg.ACTIVE_SLOTS) == 6 and cfg.ACTIVE_SLOTS <= {s for _, s in cfg.SLOTS}
+    assert day[:6].count("innovations") == 2 and day[:6].count("counter") == 1 and "janasena" not in day and "janasena" not in cfg.NICHES
+    assert [cfg.plan(i)[1] for i in range(12, 24)] == day and set(day) <= set(cfg.NICHES)
     for n in ("join", "voice"):
         b = bank_stories(n)
         assert b and len({s.key for s in b}) == len(b) and all(matches_language(s.headline, "te") for s in b)

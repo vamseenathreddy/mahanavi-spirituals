@@ -48,6 +48,7 @@ POLITICAL_QUERY = {
     "tdp": ["తెలుగుదేశం పార్టీ", "టీడీపీ"],
     "nda": ["కూటమి ప్రభుత్వం", "కూటమి ప్రభుత్వం ఆంధ్రప్రదేశ్ అభివృద్ధి", "ఎన్డీఏ ఆంధ్రప్రదేశ్"],
     "janasena": ["జనసేన పవన్ కళ్యాణ్", "డిప్యూటీ సీఎం పవన్ కళ్యాణ్"],
+    "counter": ["వైసీపీ ఆరోపణలకు కూటమి కౌంటర్", "జగన్ ఆరోపణలపై మంత్రి స్పందన", "వైసీపీ విమర్శలకు టీడీపీ సమాధానం"],
     "development": "ఆంధ్రప్రదేశ్ అభివృద్ధి పెట్టుబడులు", "innovations": "ఆంధ్రప్రదేశ్ ప్రభుత్వం కొత్త పథకం సాంకేతికత",
 }
 # Headlines that are about the opposition or about trouble are skipped: the channel only carries positive stories.
@@ -58,7 +59,13 @@ SUBJECT = {  # the headline must actually be about the niche's subject
     "chandrababu": ("చంద్రబాబు", "సీఎం", "బాబు"), "lokesh": ("లోకేశ్", "లోకేష్"), "tdp": ("టీడీపీ", "తెలుగుదేశం", "తెదేపా"),
     "nda": ("కూటమి", "ఎన్డీఏ", "జనసేన", "బీజేపీ"), "janasena": ("జనసేన", "పవన్"),
     "development": ("ఆంధ్రప్రదేశ్", "ఏపీ", "అమరావతి", "రాష్ట్ర", "విశాఖ"),
+    "counter": ("వైసీపీ", "వైఎస్ఆర్సీపీ", "జగన్"),
 }
+# The 'counter' niche: a headline where the government or TDP answers the opposition. Tragedy and crime headlines stay out;
+# the opposition's own names are allowed here (they are the subject), and a reply word is required.
+COUNTER_REPLY = ("కౌంటర్", "స్పందన", "సమాధానం", "ఖండించ", "తిప్పికొట్ట", "మండిపడ్డ", "విమర్శలకు", "ఆరోపణలకు", "అబద్ధ", "నిజం")
+COUNTER_BAD = ("అరెస్ట్", "హత్య", "మృతి", "ప్రమాదం", "దాడి", "అత్యాచారం", "మరణ", "ఆత్మహత్య", "దుర్ఘటన", "విషాదం", "దుర్మరణం",
+               "సినిమా", "చిత్రం", "హీరో", "మూవీ", "ట్రైలర్")
 POSITIVE = ("అభివృద్ధి", "పెట్టుబడ", "ఉద్యోగ", "ప్రారంభ", "శంకుస్థాపన", "ఒప్పందం", "పథకం", "నిధులు", "ప్రశంస",
             "హర్షం", "శుభవార్త", "అమరావతి", "ఐటీ", "డేటా సెంటర్", "ఏఐ", "పరిశ్రమ", "రైతు", "మహిళ", "విద్య",
             "అవార్డు", "కృషి", "ఆవిష్కరణ", "సాంకేతిక", "మంజూరు", "పెంపు", "భరోసా", "సంక్షేమ", "లక్ష")
@@ -95,7 +102,8 @@ def political_stories(niche: str, lang: str = "te") -> list[Story]:
                 found.append(x)
     out = [s for s in found if is_informative(s) and matches_language(s.headline, "te")
            and not any(b in s.publisher for b in BLOCKED_PUBLISHERS)
-           and is_positive(s.headline)
+           and (is_positive(s.headline) if niche != "counter" else
+                (any(w in s.headline for w in COUNTER_REPLY) and not any(b in s.headline for b in COUNTER_BAD)))
            and (niche not in SUBJECT or any(w in s.headline for w in SUBJECT[niche]))]
     from channels.trending.regions import mentioned
 
