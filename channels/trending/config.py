@@ -40,7 +40,7 @@ LANG_TAG = {"te": "TeluguNews", "en": "IndiaNews"}
 # YouTube @handles to tag in every description and pinned comment (CMO, Chandrababu, Lokesh, TDP leaders and pages).
 # Only exact, official handles, e.g. "@example". Left empty until verified.
 MENTIONS: list[str] = []
-WHATSAPP_URL = ""
+WHATSAPP_URL = "https://chat.whatsapp.com/E70aL6tTrzT4eftmUV9npI"
 TELEGRAM_URL = ""
 # (subscribe line, join-groups line, comment line), drawn under the headline
 CTA = {
