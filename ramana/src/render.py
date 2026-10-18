@@ -164,8 +164,9 @@ def _blocks(row, layout):
         blocks.append((" ".join(en_lines), FONT_EN, z, layout["en"], False))
         if attr:
             blocks.append((ATTR_EN, FONT_EN, z, layout["accent"], False))
-    blocks.append((OPINION_TE, FONT_TE, z, layout["accent"], False))
-    blocks.append((OPINION_EN, FONT_EN, z, layout["accent"], False))
+    # the subscribe reminder closes every Short, bold and in capitals so it reads as the call to action
+    blocks.append((OPINION_TE, FONT_TE, z, layout["accent"], True))
+    blocks.append((OPINION_EN.upper(), FONT_EN, z, layout["accent"], True))
     return [b for b in blocks if b[0]]
 
 
