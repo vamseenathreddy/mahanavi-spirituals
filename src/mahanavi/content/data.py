@@ -111,31 +111,6 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
             "Vinayaka devotional", "Ganpati", "Telugu panchangam",
         ],
     ),
-    Deity.SAI: DeityContent(
-        telugu_name="సాయిబాబా",
-        blessing_phrase="ఓం సాయి రాం 🙏",
-        mantra="శ్రీ సాయినాథాయ నమః",
-        # Sai Baba is a 19th/20th-century saint, not a Puranic deity with a
-        # classical Vedic bija syllable -- using standard short chants
-        # rather than fabricating a beeja that doesn't traditionally
-        # exist. NOTE: as of the Thursday deity change below, Sai is no
-        # longer in WEEKDAY_DEITY_MAP's daily rotation (Thursday now goes
-        # to Dattatreya, per explicit request to stop it always being
-        # Sai) -- kept here so it's a one-line change to bring back for a
-        # Sai-specific festival post later.
-        beeja_mantrams=[
-            "ఓం సాయి రాం",
-            "శ్రీ సాయినాథాయ నమః",
-        ],
-        mantra_namalu=[
-            "శ్రీ సాయినాథాయ నమః",
-            "ఓం సాయి రాం",
-        ],
-        telugu_hashtags=["#సాయిబాబా", "#షిర్డీసాయి"],
-        english_keywords=[
-            "Shirdi Sai Baba", "Sai Baba devotional", "Om Sai Ram", "Telugu panchangam",
-        ],
-    ),
     Deity.LAKSHMI: DeityContent(
         telugu_name="లక్ష్మీదేవి",
         blessing_phrase="ఓం శ్రీ మహాలక్ష్మ్యై నమః 🙏",
@@ -207,8 +182,7 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         telugu_name="దత్తాత్రేయ స్వామి",
         blessing_phrase="ఓం శ్రీ గురుదేవ దత్త 🙏",
         mantra="ఓం శ్రీ గురుదేవ దత్త",
-        # Replaces Sai Baba as Thursday's (Guruvaram's) deity per explicit
-        # request. Dattatreya -- combined form of Brahma/Vishnu/Shiva as
+        # Thursday's (Guruvaram's) deity. Dattatreya -- combined form of Brahma/Vishnu/Shiva as
         # the primordial Guru -- is the classical Thursday/Guruvaram
         # deity in Telugu tradition, distinct from (and older than) the
         # Sai Baba association. Worth a native speaker's confirmation on

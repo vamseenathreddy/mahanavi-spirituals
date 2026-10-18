@@ -32,7 +32,6 @@ DEITY_TELUGU_NAMES: dict[Deity, str] = {
     Deity.SHIVA: "శివుడు",
     Deity.HANUMAN: "హనుమంతుడు",
     Deity.GANESHA: "గణేశుడు",
-    Deity.SAI: "సాయిబాబా",
     Deity.LAKSHMI: "లక్ష్మీదేవి",
     Deity.VENKATESWARA: "వేంకటేశ్వర స్వామి",
     Deity.SURYA: "సూర్యభగవానుడు",

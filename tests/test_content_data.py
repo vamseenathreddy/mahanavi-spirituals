@@ -29,13 +29,10 @@ def test_every_deity_has_at_least_one_beeja_mantram() -> None:
         assert DEITY_CONTENT[deity].beeja_mantrams
 
 
-def test_thursday_is_dattatreya_not_sai() -> None:
-    # Explicit request: Thursday used to always be Sai with no variety --
-    # it's now Dattatreya (the classical Guruvaram deity). Sai's content
-    # is kept in DEITY_CONTENT for a possible future Sai-specific post,
-    # but it must not be in the daily weekday rotation anymore.
+def test_thursday_is_dattatreya_and_no_sai_content() -> None:
+    # Owner request 2026-10-19: no Sai mantras anywhere on any channel.
     assert WEEKDAY_DEITY_MAP[3] == Deity.DATTATREYA
-    assert Deity.SAI not in WEEKDAY_DEITY_MAP.values()
+    assert "Sai" not in [d.value for d in Deity]
 
 
 def test_pick_beeja_mantram_is_deterministic_per_date() -> None:

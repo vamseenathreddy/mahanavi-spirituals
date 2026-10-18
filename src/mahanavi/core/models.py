@@ -12,7 +12,6 @@ class Deity(str, Enum):
     SHIVA = "Shiva"
     HANUMAN = "Hanuman"
     GANESHA = "Ganesha"
-    SAI = "Sai"
     LAKSHMI = "Lakshmi"
     VENKATESWARA = "Venkateswara"
     SURYA = "Surya"
