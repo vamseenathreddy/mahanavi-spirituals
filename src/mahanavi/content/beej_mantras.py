@@ -195,11 +195,11 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
     if hi:
         title = f"{name} {kind} | {why} {d.day} {MONTH_NAME[d.month - 1][1]} | Beej Mantra"
         ctas = ("अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे", "रोज़ सुबह 6 बजे नया मंत्र - सब्सक्राइब करें")
-        footer_line = "रोज़ सुबह 6 बजे नया मंत्र · सब्सक्राइब करें"
+        footer_line = ctas[0]
     else:
         title = f"{name} {kind} | {why} {d.day} {MONTH_NAME[d.month - 1][0]} | Beeja Mantra"
         ctas = ("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "ప్రతి రోజూ ఉదయం 6 గంటలకు కొత్త మంత్రం - సబ్‌స్క్రైబ్ చేయండి")
-        footer_line = "ప్రతి రోజూ ఉదయం 6 గంటలకు కొత్త మంత్రం · సబ్‌స్క్రైబ్"
+        footer_line = ctas[0]
     if len(title) > 100:
         title = title[:99] + "…"
     desc_head = (f"🙏 {date_line}\n{why}" + (f" ({tithi_line})" if tithi_line and tithi_line not in why else "") +

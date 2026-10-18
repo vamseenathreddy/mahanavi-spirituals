@@ -21,6 +21,10 @@ from mahanavi.video.watermark import bake_watermark
 W, H = 1080, 1920
 SAFE_L, SAFE_R, SAFE_TOP, SAFE_BOTTOM = 150, 930, 230, 1385
 TEXT_W = SAFE_R - SAFE_L
+
+
+def _is_subscribe(text: str) -> bool:
+    return any(w in text for w in ("సబ్‌స్క్రైబ్", "सब्सक्राइब"))
 # 2026-10-17: only pure white and gold; the old cream and grey-lilac were hard to read on phones.
 GOLD, CREAM, SOFT = (240, 196, 92), (255, 255, 255), (255, 255, 255)
 BENEFITS_HEADING = {"te": "మంత్ర జపం వల్ల లాభాలు", "hi": "मंत्र जाप के लाभ"}
@@ -245,8 +249,12 @@ class RequestCardRenderer:
                 head = BENEFITS_HEADING["hi" if spec.lang == "hi" else "te"]
                 h_lines, h_font, h_lh = self._fit(head, 54, 40, 90)
                 y = self._block(layer, boxes, h_lines, h_font, h_lh, y + 50, GOLD)
-                self._benefit_lines(layer, boxes, list(slide.benefits), y + 18, 1290)
-            if spec.tag_footer:
+                self._benefit_lines(layer, boxes, list(slide.benefits), y + 18, 1215 if _is_subscribe(spec.tag_footer) else 1290)
+            if spec.tag_footer and _is_subscribe(spec.tag_footer):
+                # the subscribe reminder: big, bold gold, two lines, in the free band above the Shorts caption
+                lines, font, lh = self._fit(spec.tag_footer, 60, 34, 150, 1.3)
+                self._block(layer, boxes, lines, font, lh, 1232, GOLD)
+            elif spec.tag_footer:
                 lines, font, lh = self._fit(spec.tag_footer, 38, 24, 60)
                 self._block(layer, boxes, lines, font, lh, 1318, SOFT)
         elif slide.kind == "points":
