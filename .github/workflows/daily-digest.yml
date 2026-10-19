@@ -1,0 +1,50 @@
+name: System | Daily channel digest (Telegram)
+
+# Every morning 7:30 AM IST: one summary message plus one detailed message per channel (subscribers, views,
+# watch time, likes, comments, top videos, traffic sources, countries, takeaways). Read-only.
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Comma separated channel keys (mahanavi, mantra_sangam, trance, jesus, ramana, pulse). Empty = all."
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps
+        run: pip install google-auth google-api-python-client requests
+
+      - name: Restore tokens from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Build and send the digest
+        env:
+          MAHANAVI_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          MAHANAVI_TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/ci/daily_digest.py --only "${{ inputs.only }}"
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/ci/notify_failure.py "System | Daily channel digest"
