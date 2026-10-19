@@ -1,0 +1,33 @@
+name: Cron jobs | Prune unused (list or delete)
+
+# Lists cron-job.org jobs nothing uses (disabled, workflow file gone, duplicate pings). Delete only when asked.
+on:
+  workflow_dispatch:
+    inputs:
+      delete:
+        description: "Actually delete the listed jobs (off = list only)."
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Prune
+        env:
+          CRONJOB_ORG_API_KEY: ${{ secrets.CRONJOB_ORG_API_KEY }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.delete }}" = "true" ]; then ARGS="--delete"; fi
+          set -o pipefail
+          python3 scripts/ci/cronjob_prune.py $ARGS 2>&1 | tee run.log
+          echo "::notice::$(grep -E 'DELETE|would delete|keeping' run.log | cut -c1-110 | tr '\n' '|' | cut -c1-3500)"
