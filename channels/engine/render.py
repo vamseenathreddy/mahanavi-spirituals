@@ -85,6 +85,7 @@ class ChannelConfig:
     text_anchor: float = 0.0         # >0: keep the text block centred here even over a photo (default: photo pushes it low)
     cta_text: str = ""               # optional call-to-action (e.g. subscribe line) drawn under the text block
     cta_size: int = 46
+    cta_max_w: int = 0               # 0 = same as text_max_w; narrower keeps the CTA clear of the Shorts like/comment column
     photo_shade_from: int = 900      # y where the dark scrim under the text starts fading in
     corner_field: str = ""          # row field drawn small and very faint in the bottom-right corner (e.g. a source credit)
     safe_top: int = 0                # 0 = default SAFE_TOP; lower lets a text-heavy card start higher
@@ -222,7 +223,7 @@ def _cta_lines(draw, cfg: ChannelConfig):
     font = _font(cfg.font_channel_label, cfg.cta_size)
     lines = []
     for para in cfg.cta_text.split("\n"):  # "\n" starts a separate line (e.g. subscribe + comment prompt)
-        lines += _wrap(draw, para, font, 0, cfg.text_max_w)
+        lines += _wrap(draw, para, font, 0, cfg.cta_max_w or cfg.text_max_w)
     return lines, font
 
 

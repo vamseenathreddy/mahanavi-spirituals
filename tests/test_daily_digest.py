@@ -28,3 +28,10 @@ def test_channel_message_and_summary():
     s = dd.build_summary([("Mahanavi", {"views": 1050, "prev_views": 400, "net": 14, "subs": 1234, "likes": 50}, ""), ("Y", None, "token not available")],
                          dt.date(2026, 10, 19), 7)
     assert "Mahanavi" in s and "token not available" in s and "All channels" in s
+
+
+def test_trending_text_ends_cleanly():
+    from channels.trending.sources import complete
+    assert complete("ఒకటి ఇది? రెండు ఇదే! మూడు సగం...", 100, soft=False) == "ఒకటి ఇది? రెండు ఇదే!"
+    assert complete("headline with no stop and a dangling tail...", 100, soft=False) == ""
+    assert not complete("నాడు నీతులా?: వైఎస్...", 100).endswith(("…", "..."))

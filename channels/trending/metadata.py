@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from channels.trending import config as cfg
 from channels.trending import regions
-from channels.trending.sources import Story, trim
+from channels.trending.sources import Story, complete, trim
 
 DISCLOSURE = ("ఈ ఛానెల్ తెలుగుదేశం పార్టీ అనుకూల దృక్పథంతో నడుస్తుంది. ఇందులోని విశ్లేషణ మా అభిప్రాయం; వార్తలు పేర్కొన్న "
               "మూలాల నుంచి తీసుకున్నవి. హక్కులు ఆయా ప్రచురణకర్తలవి.\n"
@@ -181,10 +181,9 @@ def row_for(story: Story, lang: str, niche: str) -> dict:
     head = story.headline
     if story.kind == "news":  # a fan's reaction in front of the latest news headline
         head = f"{hook(niche, story.key)} {head}"
-    if len(head) > 110:
-        head = head[:110].rsplit(" ", 1)[0].rstrip(",.:;-") + "…"
+    head = complete(head, 130) or head  # no trailing '…' or half sentence on the card
     kind = "Source"
     related = "\n".join([angle(niche, story.key)] + [f"• {h}" for h, _ in story.related[:2]])
     return {"id": story.key, "category": niche, "special": "",
-            "text_primary": head, "text_summary": trim(story.summary, 190), "text_related": related,
+            "text_primary": head, "text_summary": complete(story.summary, 190, soft=False), "text_related": related,
             "text_secondary": f"{kind}: {story.publisher}"}

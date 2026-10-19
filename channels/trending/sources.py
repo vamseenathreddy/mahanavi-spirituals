@@ -263,6 +263,30 @@ def trim(text: str, limit: int) -> str:
     return text[:limit].rsplit(" ", 1)[0].rstrip(",.:;-") + "…"
 
 
+_ELLIPSIS = re.compile(r"\s*(\.{2,}|…)\s*$")
+_STOPS = "?!.।|"
+_SOFT = ":;,–—"
+
+
+def complete(text: str, limit: int, soft: bool = True) -> str:
+    """Text that ends cleanly, never with '…' or a half sentence. A source that already cut its own text ('...')
+    loses the dangling fragment; text over `limit` is cut back to the last full sentence (or, for headlines, the
+    last clause). Returns '' when nothing complete is left (callers then show less rather than a broken line)."""
+    text = re.sub(r"\s+", " ", text or "").strip()
+    cut = bool(_ELLIPSIS.search(text))
+    text = _ELLIPSIS.sub("", text)
+    if cut or len(text) > limit:
+        window = text[:limit] if not cut or len(text) > limit else text
+        stops = _STOPS + (_SOFT if soft else "")
+        i = max(window.rfind(c) for c in stops)
+        if i < len(window) * 0.35:  # no usable boundary: a headline keeps its words, a summary is dropped
+            if not soft:
+                return ""
+            return window.rsplit(" ", 1)[0].rstrip(",.:;-–—|")
+        text = window[: i + 1] if text[i] in _STOPS else window[:i]
+    return text.strip().rstrip(":;,–—|").strip()
+
+
 def article_summary(link: str, lang: str, headline: str, timeout: int = 15) -> str:
     """The publisher's own summary line (its meta description) for the story, or ''. Resolves Google News' encoded
     link first. Never copies article body text. Any failure returns ''."""
@@ -280,7 +304,7 @@ def article_summary(link: str, lang: str, headline: str, timeout: int = 15) -> s
         if not text or not matches_language(text, lang) or text.casefold().startswith(headline.casefold()[:40]):
             print(f"::notice::no summary (page meta unusable: {text[:60]!r})")
             return ""
-        return trim(text, 260)
+        return complete(text, 260, soft=False)
     except Exception as exc:  # noqa: BLE001
         print(f"::notice::no summary ({type(exc).__name__}: {exc})")
         return ""
@@ -290,7 +314,7 @@ def enrich(story: Story, lang: str) -> Story:
     """Add reading matter: the publisher's summary and up to four related headlines in the same language."""
     if story.kind == "news":
         story.summary = article_summary(story.link, lang, story.headline)
-    story.related = tuple((trim(h, 90), p) for h, p in story.related if matches_language(h, lang))[:4]
+    story.related = tuple((complete(h, 100), p) for h, p in story.related if matches_language(h, lang) and complete(h, 100))[:4]
     return story
 
 

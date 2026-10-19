@@ -122,6 +122,7 @@ def render_cfg(lang: str, niche: str) -> ChannelConfig:
         text_anchor=0.46,
         cta_text=CTA[lang][0],  # subscribe line only (no join-groups line on the card)
         cta_size=46,
+        cta_max_w=780,
         logo_width=170,
         logo_y=235,
         safe_top=330,
