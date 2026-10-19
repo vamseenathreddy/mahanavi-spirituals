@@ -153,12 +153,22 @@ def build(theme_key: str, theme: dict, workdir: Path, out_mp4: Path, seed: int =
     listing.write_text("".join(f"file '{c.resolve()}'\n" for c in clips), encoding="utf-8")
     vlist = workdir / "voice.txt"
     vlist.write_text("".join(f"file '{p.resolve()}'\n" for p in voice_parts), encoding="utf-8")
-    pad = audio.pad_loop(workdir / "pad.wav")
+    bed = audio.music_bed(workdir / "bed.wav", rotate=seed)
+    if bed is not None:
+        # the owner's songs: low, softened (highs rolled off so vocals do not fight the reading), and pushed down
+        # further whenever the narrator speaks; the voice stays clearly on top
+        mixgraph = ("[1:a]aresample=44100,volume=2.0,asplit=2[v][vsc];"
+                    "[2:a]aresample=44100,lowpass=f=4200,highpass=f=60,volume=0.22[m0];"
+                    "[m0][vsc]sidechaincompress=threshold=0.015:ratio=10:attack=30:release=900:makeup=1[m];"
+                    f"[v][m]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,afade=t=out:st={total - 5:.2f}:d=5[a]")
+        music_in = bed
+    else:
+        music_in = audio.pad_loop(workdir / "pad.wav")
+        mixgraph = (f"[1:a]aresample=44100,volume=1.9[v];[2:a]aresample=44100,volume=0.30,aecho=0.8:0.6:900:0.25[m];"
+                    f"[v][m]amix=inputs=2:duration=first:dropout_transition=0,afade=t=out:st={total - 4:.2f}:d=4[a]")
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(listing), "-f", "concat", "-safe", "0",
-                    "-i", str(vlist), "-stream_loop", "-1", "-i", str(pad),
-                    "-filter_complex",
-                    f"[1:a]aresample=44100,volume=1.9[v];[2:a]aresample=44100,volume=0.30,aecho=0.8:0.6:900:0.25[m];"
-                    f"[v][m]amix=inputs=2:duration=first:dropout_transition=0,afade=t=out:st={total - 4:.2f}:d=4[a]",
+                    "-i", str(vlist), "-stream_loop", "-1", "-i", str(music_in),
+                    "-filter_complex", mixgraph,
                     "-map", "0:v", "-map", "[a]", "-t", f"{total:.2f}", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
                     "-movflags", "+faststart", str(out_mp4)], check=True)
     return {"duration": round(total, 1), "chapters": chapters, "verses": len(verses)}

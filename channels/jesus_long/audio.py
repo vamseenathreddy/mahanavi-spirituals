@@ -78,3 +78,35 @@ def silence(path: Path, seconds: float) -> Path:
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", f"anullsrc=r=24000:cl=mono", "-t", f"{seconds:.2f}",
                     "-c:a", "libmp3lame", str(path)], check=True)
     return path
+
+
+MUSIC_DIR = Path(__file__).resolve().parent / "assets/music"
+
+
+def music_tracks() -> list[Path]:
+    return sorted(MUSIC_DIR.glob("*.mp3"))
+
+
+def music_bed(path: Path, rotate: int = 0) -> Path | None:
+    """The owner's own worship songs joined with 6 s crossfades into one bed (rotated so each video starts on a
+    different song). The caller loops it. Returns None when no songs are present, so the generated pad is used."""
+    tracks = music_tracks()
+    if not tracks:
+        return None
+    k = rotate % len(tracks)
+    tracks = tracks[k:] + tracks[:k]
+    cmd = ["ffmpeg", "-y", "-v", "error"]
+    for t in tracks:
+        cmd += ["-i", str(t)]
+    if len(tracks) == 1:
+        graph, last = "", "0:a"
+    else:
+        parts, last = [], "0:a"
+        for i in range(1, len(tracks)):
+            parts.append(f"[{last}][{i}:a]acrossfade=d=6:c1=tri:c2=tri[x{i}]")
+            last = f"x{i}"
+        graph, last = ";".join(parts), f"x{len(tracks) - 1}"
+    cmd += ["-filter_complex", graph, "-map", f"[{last}]"] if graph else ["-map", "0:a"]
+    cmd += ["-ar", "44100", "-ac", "2", str(path)]
+    subprocess.run(cmd, check=True)
+    return path
