@@ -25,15 +25,15 @@ def description(theme: dict, chapters: list[tuple[int, str]]) -> str:
              "Good for prayer time, morning devotion, or winding down at night.",
              "", "Chapters (each verse):"]
     lines += [f"{_ts(s)} {label}" for s, label in chapters]
-    lines += ["", f"Scripture is read from the {load()['translation']}. The music is an original ambient track made for this channel.",
-              "", "Subscribe to Jesus Worship Waves for new Bible verse readings every week.",
-              "", "#BibleVerses #Scripture #Jesus #Prayer #WorshipMusic"]
+    lines += ["", f"Scripture is read from the {load()['translation']}. The worship music is original, created for this channel.",
+              "", "Subscribe to Jesus Worship Waves for a new Bible verse reading every day.",
+              "", f"#BibleVerses #{theme['title'].split()[0]} #Scripture #Jesus #WorshipMusic"]
     return "\n".join(lines)
 
 
 def tags(theme: dict) -> list[str]:
     base = [f"bible verses for {theme['phrase']}", "bible verses", "scripture reading", "bible reading with music", "worship music",
-            "calming scripture", "morning devotion", "bible verses for sleep", "kjv bible verses", "christian meditation",
+            "calming scripture", "morning devotion", "bible verses for sleep", f"{theme['phrase']} bible verses", "bible verses with music", "christian worship music", "scriptures for peace", "kjv bible verses", "christian meditation",
             "prayer", "jesus", "daily bible verse", "Jesus Worship Waves"]
     out, n = [], 0
     for t in base:

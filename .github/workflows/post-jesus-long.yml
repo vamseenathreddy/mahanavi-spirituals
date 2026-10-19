@@ -1,17 +1,17 @@
-name: Jesus | Long Bible Verse Video (Mon/Wed/Fri 5:30 PM IST)
+name: Jesus | Long Bible Verse Video (Daily 5:30 PM IST)
 
 # Long (8+ minute) English Bible-verse reading with an original ambient pad, for the US audience (higher ad rates than the
-# Telugu Shorts). Monday, Wednesday, Friday at a random minute in 17:30-18:10 IST (8:00 AM US Eastern); other days the gate
-# skips. Shares data/jesus_state.json with the Shorts (marker key '<date>#long'), so it uses their concurrency group.
-# STARTS UNLISTED (public defaults to off) until the owner has watched a test video; the cron-job.org ping is added after that.
+# Telugu Shorts). Every day at a random minute in 17:30-18:10 IST (8:00 AM US Eastern); the gate
+# Shares data/jesus_state.json with the Shorts (marker key '<date>#long'), so it uses their concurrency group.
+# Public by default (owner approved the test video 2026-10-19). One video a day, theme chosen by weekday.
 on:
   workflow_dispatch:
     inputs:
       public:
-        description: "Upload as public. Off (unlisted) until the owner has reviewed a test video."
+        description: "Upload as public. Turn off to upload unlisted for a test."
         required: false
         type: boolean
-        default: false
+        default: true
       dry_run:
         description: "Render only; nothing is uploaded."
         required: false

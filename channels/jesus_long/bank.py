@@ -5,7 +5,9 @@ import json
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parent / "data" / "themes.json"
-ORDER = ["peace", "anxiety", "strength", "hope", "healing", "love"]
+ORDER = ["peace", "anxiety", "strength", "hope", "healing", "love", "sleep"]
+# One theme per weekday (Monday = 0). Strength starts the week, sleep lands on Saturday night in the US.
+WEEKDAY = ["strength", "anxiety", "peace", "hope", "healing", "sleep", "love"]
 
 
 def load() -> dict:
@@ -14,4 +16,9 @@ def load() -> dict:
 
 def theme_for(index: int) -> tuple[str, dict]:
     key = ORDER[index % len(ORDER)]
+    return key, load()["themes"][key]
+
+
+def theme_for_date(day) -> tuple[str, dict]:
+    key = WEEKDAY[day.weekday()]
     return key, load()["themes"][key]

@@ -36,7 +36,7 @@ def main(argv=None) -> int:
         print(f"Already posted for {key}. Nothing to do.")
         return 0
     idx = int(st.get("long_idx", 0))
-    theme_key, theme = (args.theme, bank.load()["themes"][args.theme]) if args.theme else bank.theme_for(idx)
+    theme_key, theme = (args.theme, bank.load()["themes"][args.theme]) if args.theme else bank.theme_for_date(today)
     print(f"{key}: theme {theme_key} ({len(theme['verses'])} verses)")
     out = Path(args.out)
     info = video.build(theme_key, theme, out, out / "long.mp4", seed=today.toordinal())
