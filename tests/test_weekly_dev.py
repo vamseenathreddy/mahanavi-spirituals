@@ -32,3 +32,11 @@ def test_metadata_seo():
     assert len(t) <= 100 and "AP" in t and "19-23 Oct 2026" in t
     assert "19 అక్టోబర్" in d and "Eenadu" in d and "#APDevelopment" in d and "—" not in d
     assert sum(len(x) + 1 for x in metadata.tags(items)) <= 500
+
+
+def test_campaign_appeals_are_not_government_actions():
+    today = dt.date(2026, 10, 23)
+    stories = [_story("కూటమి అభ్యర్థులను గెలిపించండి, అభివృద్ధికి సహకరించండి", 21), _story("శ్రీకాళహస్తిలో జనసేన పార్టీ అభివృద్ధికి కృషి", 20),
+               _story("అమరావతి నిర్మాణానికి మరో రూ.15,000 కోట్ల లోన్ మంజూరు", 22)]
+    items = collect.pick(stories, today, set())
+    assert len(items) == 1 and "లోన్" in items[0]["headline"]

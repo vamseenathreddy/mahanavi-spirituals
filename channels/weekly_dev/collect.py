@@ -23,8 +23,11 @@ QUERIES = {
     "lokesh": ["మంత్రి లోకేశ్ ఉద్యోగాలు పెట్టుబడులు", "లోకేశ్ విద్య ఐటీ ప్రారంభం"],
     "nda": ["కూటమి ప్రభుత్వం ఆంధ్రప్రదేశ్ అభివృద్ధి"],
 }
-ACTION = ("శంకుస్థాపన", "ప్రారంభ", "ఒప్పందం", "మంజూరు", "నిధులు", "పెట్టుబడ", "ఉద్యోగ", "పథకం", "నిర్మాణ", "పనులు", "అనుమతి",
-          "ఆమోదం", "కేటాయిం", "విడుదల", "అభివృద్ధి", "పరిశ్రమ", "హబ్", "ప్రాజెక్టు", "రహదారి", "విమానాశ్రయ", "పోర్టు")
+# a concrete government action: launch, approval, funds, investment, project. 'అభివృద్ధి' alone is not enough.
+ACTION = ("శంకుస్థాపన", "ప్రారంభ", "ఒప్పందం", "ఎంవోయూ", "మంజూరు", "నిధులు", "రూ.", "కోట్ల", "పెట్టుబడ", "ఉద్యోగాలు", "పథకం", "నిర్మాణం",
+          "అనుమతి", "ఆమోదం", "కేటాయిం", "విడుదల", "పరిశ్రమ", "హబ్", "ప్రాజెక్టు", "రహదారి", "విమానాశ్రయ", "పోర్టు", "లోన్", "రుణ")
+# campaign appeals and party talk are not government actions
+NOT_ACTION = ("గెలిపించ", "అభ్యర్థ", "ఓటు", "ఎన్నికల", "మద్దతు ఇవ్వండి", "పార్టీ అభివృద్ధి", "పట్టం కట్టండి", "ప్రచారం", "సభ", "పర్యటన")
 
 
 def telugu_date(d: dt.date, weekday: bool = False) -> str:
@@ -50,7 +53,7 @@ def pick(stories: list[Story], today: dt.date, used: set[str], limit: int = MAX_
         head = complete(s.headline, 200)
         if not (start <= day <= today) or not head or s.key in used:
             continue
-        if not any(w in head for w in ACTION):
+        if not any(w in head for w in ACTION) or any(w in head for w in NOT_ACTION):
             continue
         if any(_same_story(head, it["headline"]) for it in items):
             continue
