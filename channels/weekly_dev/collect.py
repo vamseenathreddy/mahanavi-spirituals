@@ -41,7 +41,7 @@ def _tokens(text: str) -> set[str]:
 
 def _same_story(a: str, b: str) -> bool:
     ta, tb = _tokens(a), _tokens(b)
-    return bool(ta and tb) and len(ta & tb) / min(len(ta), len(tb)) >= 0.6
+    return bool(ta and tb) and len(ta & tb) / min(len(ta), len(tb)) >= 0.45
 
 
 def pick(stories: list[Story], today: dt.date, used: set[str], limit: int = MAX_ITEMS) -> list[dict]:
