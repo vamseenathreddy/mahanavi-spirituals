@@ -65,6 +65,7 @@ def main(argv=None) -> int:
         print(f"::warning::DUPLICATE BLOCKED, nothing uploaded: {dup}")
         return 0
     print(f"UPLOADED ({privacy}) {video_id}\nWatch: https://www.youtube.com/watch?v={video_id}")
+    print(f"::notice title=uploaded::{privacy} https://www.youtube.com/watch?v={video_id}")
     state_mod.mark_posted(st, today.isoformat(), f"long_{theme_key}", video_id, False, now.isoformat(timespec="seconds"))
     if not args.theme:
         st["long_idx"] = idx + 1
@@ -75,9 +76,20 @@ def main(argv=None) -> int:
     except Exception as exc:  # noqa: BLE001 - needs a verified channel
         print(f"::warning::thumbnail failed: {str(exc)[:160]}")
     try:
+        import time
+
+        from googleapiclient.errors import HttpError
+
         pl = upload.find_or_create_playlist(yt, metadata.PLAYLIST, "Bible verses read slowly with soft worship music.", "en")
-        upload.add_to_playlist(yt, video_id, pl)
-        print("playlist added")
+        for attempt in range(6):   # a freshly created playlist answers 404/409 for a few seconds
+            try:
+                upload.add_to_playlist(yt, video_id, pl)
+                print("playlist added")
+                break
+            except HttpError as exc:
+                if exc.resp.status not in (404, 409) or attempt == 5:
+                    raise
+                time.sleep(10)
     except Exception as exc:  # noqa: BLE001
         print(f"::warning::playlist failed: {exc}")
     try:
