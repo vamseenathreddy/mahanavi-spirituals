@@ -85,15 +85,15 @@ def is_positive(headline: str, summary: str = "") -> bool:
     return any(x in text for x in POSITIVE)
 
 
-def political_stories(niche: str, lang: str = "te") -> list[Story]:
+def political_stories(niche: str, lang: str = "te", days: int | None = None, queries=None) -> list[Story]:
     """Telugu Google News search for the niche's subject: positive, non-opposition headlines, preferred outlets first."""
     import urllib.parse
 
-    queries = POLITICAL_QUERY[niche]
+    queries = queries or POLITICAL_QUERY[niche]
     queries = [queries] if isinstance(queries, str) else queries
     found, seen = [], set()
     for text in queries:  # several searches per niche = a wider pool of the latest stories
-        q = urllib.parse.quote(f"{text} when:{'30d' if niche == 'local' else '2d'}")   # the monthly local post may use a month-old story
+        q = urllib.parse.quote(f"{text} when:{days or (30 if niche == 'local' else 2)}d")   # the monthly local post may use a month-old story
         url = f"https://news.google.com/rss/search?q={q}&hl=te&gl=IN&ceid=IN:te"
         try:
             batch = parse_rss(_get(url))

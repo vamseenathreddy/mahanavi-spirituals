@@ -66,6 +66,8 @@ TARGETS = [
     ("post-trending-t10.yml", "Trending - Slot 10 (18:00)", *_every_10(18, 0, 12)),
     ("post-trending-t11.yml", "Trending - Slot 11 (20:00)", *_every_10(20, 0, 12)),
     ("post-trending-t12.yml", "Trending - Slot 12 (22:00)", *_every_10(22, 0, 12)),
+    # Friday AP development video (Pulse Boosting): the gate only acts on Fridays, 19:00-19:40 IST.
+    ("post-weekly-dev.yml", "Trending - Friday AP Development Video (19:00)", *_every_10(19, 0, 12)),
     ("post-beej-mahanavi.yml", "Mahanavi - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),
     ("post-beej-mantra-sangam.yml", "Mantra Sangam - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),
     ("post-beej-trance-beats.yml", "Trance Beats - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),

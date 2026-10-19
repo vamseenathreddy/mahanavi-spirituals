@@ -1,0 +1,102 @@
+name: Trending | Friday AP Development Video (7 PM IST)
+
+# Every Friday: one video (Pulse Boosting) listing the week's Andhra Pradesh government development actions with their dates,
+# scrolling upward. Posts at a random minute in 19:00-19:40 IST (Friday evening peak); other weekdays the gate skips.
+# cron-job.org pings every 10 minutes 19:00-21:00 (cronjob_create.py).
+# Shares data/trending_state.json with the Shorts (marker key '<date>#weekly'), so it runs in the same concurrency group. PUBLIC by default.
+on:
+  workflow_dispatch:
+    inputs:
+      public:
+        description: "Upload as public. Uncheck for an unlisted test run."
+        required: false
+        type: boolean
+        default: true
+      dry_run:
+        description: "Collect the week's stories and render only; nothing is uploaded (the stories are listed in the run annotations)."
+        required: false
+        type: boolean
+        default: false
+      bypass_gate:
+        description: "Post immediately, ignoring the window and this slot's already-posted marker (testing only)."
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: post-trending
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  post-trending:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      POST_SLOT: weekly
+      STATE_FILE: data/trending_state.json
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync + gate
+        run: pip install google-auth google-api-python-client pillow
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Decide whether this call should post
+        id: gate
+        env:
+          FORCE_POST: ${{ inputs.bypass_gate && 'true' || 'false' }}
+        run: python -m channels.weekly_dev.gate
+
+      - name: Install ffmpeg + text shaping libs
+        if: steps.gate.outputs.post == 'true'
+        run: |
+          bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
+
+      - name: Install full Python dependencies
+        if: steps.gate.outputs.post == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Post the trending Short
+        if: steps.gate.outputs.post == 'true'
+        env:
+          MAHANAVI_TRENDING_YOUTUBE_TOKEN_FILE: ./data/youtube_token_pulse_boosting.json
+          FORCE_POST: ${{ inputs.bypass_gate && 'true' || 'false' }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ "${{ inputs.public }}" != "false" ]; then
+            ARGS="$ARGS --public"
+          fi
+          python3 -m channels.weekly_dev.post $ARGS
+
+      - name: Push state to Drive
+        if: always() && steps.gate.outputs.post == 'true'
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/ci/notify_failure.py "Trending | Friday AP Development Video"
