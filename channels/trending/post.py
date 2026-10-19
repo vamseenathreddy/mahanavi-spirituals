@@ -83,8 +83,8 @@ def main(argv=None) -> int:
         story = enrich(story, lang)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    row = metadata.row_for(story, lang, niche)
     rcfg = dataclasses.replace(cfg.render_cfg(lang, niche), music_offset=st["seq"])  # a different clip each post
+    row = metadata.fit_row(metadata.row_for(story, lang, niche), rcfg)
     info = render.render(row, str(out / "short.mp4"), date.isoformat(), rcfg, None, str(out), 4.9)
     meta = metadata.bundle(story, lang, niche)
     (out / "meta.json").write_text(json.dumps({**meta, "story": story.__dict__ | {"published": str(story.published)},

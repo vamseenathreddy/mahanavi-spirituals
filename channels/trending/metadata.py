@@ -181,9 +181,43 @@ def row_for(story: Story, lang: str, niche: str) -> dict:
     head = story.headline
     if story.kind == "news":  # a fan's reaction in front of the latest news headline
         head = f"{hook(niche, story.key)} {head}"
-    head = complete(head, 130) or head  # no trailing '…' or half sentence on the card
+    head = complete(head, 260) or head  # no trailing '…' or half sentence on the card
     kind = "Source"
     related = "\n".join([angle(niche, story.key)] + [f"• {h}" for h, _ in story.related[:2]])
     return {"id": story.key, "category": niche, "special": "",
-            "text_primary": head, "text_summary": complete(story.summary, 190, soft=False), "text_related": related,
+            "text_primary": head, "text_summary": complete(story.summary, 400, soft=False), "text_related": related,
             "text_secondary": f"{kind}: {story.publisher}"}
+
+
+MIN_CARD_SCALE = 0.58   # below this the text is too small to read on a phone; trim the reading matter instead
+
+
+def fit_row(row: dict, rcfg) -> dict:
+    """Shrinking alone cannot fit a very long story. Keep the headline whole and the text as large as MIN_CARD_SCALE,
+    and drop the least important reading matter step by step: second related line, both related lines, the summary's
+    later sentences, the whole summary. Nothing is ever cut mid-sentence or ended with '...'."""
+    from channels.engine import render
+    layout = dict(anchor=0.44, primary=(0, 0, 0), secondary=(0, 0, 0), accent=(0, 0, 0), ornament=False)
+
+    def ok(r: dict) -> bool:
+        _laid, _total, fits, scale = render.fit_text(r, layout, rcfg)
+        return fits and scale >= MIN_CARD_SCALE
+
+    row = dict(row)
+    if ok(row):
+        return row
+    rel = row["text_related"].split("\n")
+    for keep in (2, 1):          # angle line + one bullet, then the angle line alone
+        row["text_related"] = "\n".join(rel[:keep])
+        if ok(row):
+            return row
+    summary = row["text_summary"]
+    first = complete(summary, 400, soft=False)
+    for i in range(len(first) - 1, 0, -1):   # keep only the first sentence of the summary
+        if first[i] in "?!.।" and i < len(first) - 1:
+            row["text_summary"] = first[: i + 1]
+            break
+    if ok(row):
+        return row
+    row["text_summary"] = ""
+    return row

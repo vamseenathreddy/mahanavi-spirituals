@@ -112,13 +112,13 @@ def make_overlay(font_path: str):
     def overlay(bg: Image.Image, row: dict) -> Image.Image:
         bg = bg.convert("RGBA")
         a, b = WHO.get(row.get("category", ""), ("cbn", "lokesh"))
-        if b:  # TDP cards: round coins (NTR, Chandrababu, Pawan, Modi) top-right; Lokesh alone at the bottom-right
-            x = W - 24
-            for who in ("ntr", "cbn", "pawan_smile", "modi"):
-                c = _coin(who, 88)
-                x -= c.width
+        if b:  # TDP cards: round coins (NTR, Chandrababu, Pawan, Modi) centred at the top with a gap between each; Lokesh alone at the bottom-right
+            coins = [_coin(who, 88) for who in ("ntr", "cbn", "pawan_smile", "modi")]
+            gap = 40                                      # clear space between the coins
+            x = (W - (sum(c.width for c in coins) + gap * (len(coins) - 1))) // 2   # row centred on the card
+            for c in coins:
                 bg.alpha_composite(c, (x, 118))
-                x -= 8
+                x += c.width + gap
             lk = _person("lokesh", 340)   # kept left of the Shorts buttons (x>930) and above the caption (y>1640)
             bg.alpha_composite(lk, (915 - lk.width, 1630 - lk.height))
         else:  # Janasena cards: Pawan Kalyan only, bottom-left
