@@ -253,7 +253,7 @@ def main() -> int:
             d = collect(path, today, a.days)
         except Exception as exc:  # noqa: BLE001
             note = f"no data ({type(exc).__name__}); re-run auth setup with the analytics scope" if "scope" in str(exc).lower() or "403" in str(exc) else f"failed ({type(exc).__name__})"
-            print(f"{label}: {exc}", file=sys.stderr)
+            print(f"{label}: {str(exc)[:200]}", file=sys.stderr)
             summary_rows.append((label, None, note))
             continue
         cur = d["daily"][-a.days:]
@@ -261,6 +261,8 @@ def main() -> int:
                                      "net": sum(r["gained"] - r["lost"] for r in cur), "subs": d["subs"],
                                      "likes": sum(r["likes"] for r in cur)}, ""))
         messages.append(build_channel_message(d["name"] or label, d, today, a.days))
+    for label, t, note in summary_rows:  # shows up as run annotations, since the Telegram text itself is not visible in the log
+        print(f"::notice title=digest::{label}: " + (f"ok, {t['views']} views in window" if t else note))
     out = [build_summary(summary_rows, today, a.days), *messages]
     for m in out:
         print(m + "\n" + "-" * 40)
