@@ -20,7 +20,7 @@ PHOTOS = {
     "annapurna": ['annapurna_n1', 'annapurna_n2'],
     "gita": ['gita_n1', 'gita_n2', 'gita_n3', 'gita_n4', 'gita_n5', 'gita_n6', 'gita_n7', 'gita_n8', 'gita_n9', 'gita_n10'],
 
-    "shiva": ["shiva_g1", "shiva_g2", "shivafamily_n1", "shivafamily_n2"], "hanuman": ["hanuman_g1", "hanuman_g2"], "ganesha": ["ganesha_g1", "ganesha_g2"],
+    "shiva": ["shiva_g1", "shiva_g2", "shivafamily_n1", "shivafamily_n2", "shiva_n1", "shiva_n2", "shiva_n3", "shiva_n4", "shiva_n5", "shiva_n6", "shiva_n7", "shiva_n8", "shiva_n9", "shiva_n10"], "hanuman": ["hanuman_g1", "hanuman_g2"], "ganesha": ["ganesha_g1", "ganesha_g2"],
     "vishnu": ["vishnu_g1", "vishnu_g3", "vishnu_g5", "vishnu_g2"], "lakshmi": ["lakshmi_g1", "lakshmi_g2"],
     "shani": ["shani_g1", "shani_g3", "shani_g5"], "surya": ["surya_g2"], "durga": ["durga_g1", "durga_g2", "durga_n1", "durga_n2", "durga_n3", "durga_n4", "durga_n5", "durga_n6", "durga_n7", "durga_n8", "durga_n9", "durga_n10"],
     "krishna": ["krishna_g1", "krishna_n1", "krishna_n2", "krishna_n3", "krishna_n4", "krishna_n5", "krishna_n6", "krishna_n7", "krishna_n8", "krishna_n9", "krishna_n10"], "rama": ["rama_g1", "rama_g2", "rama_n1", "rama_n2", "rama_n3", "rama_n4", "rama_n5", "rama_n6", "rama_n7", "rama_n8", "rama_n9", "rama_n10"], "narasimha": ["narasimha_g1", "narasimha_g2", "narasimha_n1", "narasimha_n2", "narasimha_n3"],
