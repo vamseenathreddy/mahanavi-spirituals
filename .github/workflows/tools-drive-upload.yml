@@ -1,0 +1,32 @@
+name: Tools | Upload staged file to Drive
+
+# One-off: copies a file committed under staging/ into the shared Drive folder as an UPDATE of an existing
+# placeholder file of the same name (a service account cannot create files; create the placeholder first).
+# Delete the staged file from the repo afterwards.
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "File name under staging/ (also the name in the Drive folder)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Install minimal deps
+        run: pip install google-auth google-api-python-client
+      - name: Push to Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/push_drive_asset.py "staging/${{ inputs.name }}" "${{ inputs.name }}"
