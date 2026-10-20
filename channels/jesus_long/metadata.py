@@ -13,15 +13,25 @@ def _ts(sec: int) -> str:
     return f"{h}:{m:02d}:{s:02d}" if h else f"{m}:{s:02d}"
 
 
-def title(theme: dict) -> str:
+TITLES = [  # rotated by ISO week so a theme that comes round again each week never repeats last week's title
+    "{n} Bible Verses for {t} | Calming Scripture Reading with Soft Worship Music",
+    "Bible Verses for {t} | {n} Scriptures Read Slowly with Peaceful Worship Music",
+    "{n} Bible Verses for {t} | Daily Devotion with Gentle Worship Music",
+    "Read the Word: {n} Bible Verses for {t} | Quiet Prayer Time with Worship Music",
+]
+
+
+def title(theme: dict, day=None) -> str:
     n = len(theme["verses"])
-    t = f"{n} Bible Verses for {theme['title']} | Calming Scripture Reading with Soft Worship Music"
+    week = day.isocalendar()[1] if day is not None else 0
+    t = TITLES[week % len(TITLES)].format(n=n, t=theme["title"])
     return t if len(t) <= 100 else f"{n} Bible Verses for {theme['title']} | Scripture Reading with Worship Music"[:100]
 
 
-def description(theme: dict, chapters: list[tuple[int, str]]) -> str:
+def description(theme: dict, chapters: list[tuple[int, str]], day=None) -> str:
     n = len(theme["verses"])
-    lines = [f"{n} Bible verses for {theme['phrase']}, read slowly with soft worship music. Sit back, breathe, and let the word of God settle your heart. "
+    stamp = f"{day.day} {day.strftime('%B %Y')}: " if day is not None else ""
+    lines = [f"{stamp}{n} Bible verses for {theme['phrase']}, read slowly with soft worship music. Sit back, breathe, and let the word of God settle your heart. "
              "Good for prayer time, morning devotion, or winding down at night.",
              "", "Chapters (each verse):"]
     lines += [f"{_ts(s)} {label}" for s, label in chapters]

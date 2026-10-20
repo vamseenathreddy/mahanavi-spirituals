@@ -41,7 +41,7 @@ def main(argv=None) -> int:
     out = Path(args.out)
     info = video.build(theme_key, theme, out, out / "long.mp4", seed=today.toordinal())
     video.thumbnail(theme, out / "thumb.png", seed=today.toordinal())
-    meta = {"title": metadata.title(theme), "description": metadata.description(theme, info["chapters"]),
+    meta = {"title": metadata.title(theme, today), "description": metadata.description(theme, info["chapters"], today),
             "tags": metadata.tags(theme), "comment": metadata.comment(theme)}
     (out / "meta.json").write_text(json.dumps({**meta, "render": info}, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"::notice title=long video::{theme_key}: {info['duration']} s, title: {meta['title']}")
