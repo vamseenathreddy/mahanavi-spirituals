@@ -258,7 +258,7 @@ class AlertCardRenderer:
                 # The playlist line sits ABOVE the subscribe block. The footer moves down by exactly its height
                 # (the phone screenshot shows free space between the subscribe lines and the caption), so the
                 # content above keeps its size; capped well clear of the caption zone.
-                footer_bottom = min(footer_bottom + comment_h + footer_line_gap, int(height * 0.84))
+                footer_bottom = min(footer_bottom + comment_h + footer_line_gap, int(height * 0.75))  # 2026-10-21: was 0.84; Super Thanks button overlapped the subscribe line
             # Fixed engagement line at the very bottom of the footer block (2026-10-08 request).
             opinion_font = self._fit_font_to_width(
                 draw, OPINION_LINES[1], max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
