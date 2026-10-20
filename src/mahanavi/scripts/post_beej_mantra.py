@@ -75,6 +75,15 @@ def main(argv: list[str] | None = None) -> int:
             top = playlist_links.block(youtube, settings, "beej")
             if top:
                 spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
+        elif args.channel in ("mantra_sangam", "trance_beats"):
+            import dataclasses
+
+            from channels import playlist_links
+
+            items = playlist_links.MS_ITEMS if args.channel == "mantra_sangam" else playlist_links.TB_ITEMS
+            top = playlist_links.block_items(youtube, items, "बीज मंत्र", "हमारी प्लेलिस्ट (Playlists):")
+            if top:
+                spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
         video_id = upload(youtube, spec, video, "public" if args.public else "unlisted")
         print(f"Channel: {got}\nUploaded: https://www.youtube.com/watch?v={video_id}")
         state = state_mod.load()

@@ -86,6 +86,7 @@ class ChannelConfig:
     text_anchor: float = 0.0         # >0: keep the text block centred here even over a photo (default: photo pushes it low)
     cta_text: str = ""               # optional call-to-action (e.g. subscribe line) drawn under the text block
     cta_size: int = 46
+    playlist_cta: str = ""           # short gold lines ("\n"-separated) just above the CTA: points viewers to the description's playlists
     cta_max_w: int = 0               # 0 = same as text_max_w; narrower keeps the CTA clear of the Shorts like/comment column
     photo_shade_from: int = 900      # y where the dark scrim under the text starts fading in
     corner_field: str = ""          # row field drawn small and very faint in the bottom-right corner (e.g. a source credit)
@@ -233,6 +234,21 @@ def _cta_height(draw, cfg: ChannelConfig):
     return len(lines) * int(cfg.cta_size * 1.45) + 50 if lines else 0
 
 
+def _playlist_lines(draw, cfg: ChannelConfig):
+    if not cfg.playlist_cta:
+        return [], None
+    font = _font(cfg.font_channel_label, cfg.cta_size)
+    lines = []
+    for para in cfg.playlist_cta.split("\n"):
+        lines += _wrap(draw, para, font, 0, cfg.cta_max_w or cfg.text_max_w or MAX_TEXT_W)
+    return lines, font
+
+
+def _playlist_height(draw, cfg: ChannelConfig):
+    lines, _ = _playlist_lines(draw, cfg)
+    return len(lines) * int(cfg.cta_size * 1.45) + 30 if lines else 0
+
+
 def fit_text(row, layout, cfg: ChannelConfig, max_h=None):
     """Largest scale at which the text block fits. Returns (laid, total_height, fits, scale)."""
     probe = ImageDraw.Draw(Image.new("L", (W, H)))
@@ -263,8 +279,10 @@ def make_text_layer(row, layout, cfg: ChannelConfig, label_primary="", label_sec
     shadow = Image.new("L", (W, H), 0)
     d, sd = ImageDraw.Draw(text_l), ImageDraw.Draw(shadow)
     cta_h = _cta_height(d, cfg)
-    y = int(layout["anchor"] * H - (total + cta_h) / 2)
-    y = max((cfg.safe_top or SAFE_TOP) + 40, min(y, (bottom or cfg.safe_bottom or SAFE_BOTTOM) - total - cta_h))
+    pl_h = _playlist_height(d, cfg)  # free space below the text: the text is NOT shrunk for it
+    y = int(layout["anchor"] * H - (total + cta_h + pl_h) / 2)
+    bottom_lim = min((bottom or cfg.safe_bottom or SAFE_BOTTOM) + pl_h, 1640 if bottom else 1540) if pl_h else (bottom or cfg.safe_bottom or SAFE_BOTTOM)
+    y = max((cfg.safe_top or SAFE_TOP) + 40, min(y, bottom_lim - total - cta_h - pl_h))
 
     if layout.get("ornament"):
         d.line((W // 2 - 70, y, W // 2 + 70, y), fill=layout["accent"], width=3)
@@ -278,6 +296,14 @@ def make_text_layer(row, layout, cfg: ChannelConfig, label_primary="", label_sec
             y += lh
         y += 34
 
+    pl_lines, pl_font = _playlist_lines(d, cfg)
+    for ln in pl_lines:
+        xy = ((W - d.textlength(ln, font=pl_font)) / 2, y)
+        sd.text(xy, ln, font=pl_font, fill=255, stroke_width=3)
+        d.text(xy, ln, font=pl_font, fill=GOLD)
+        y += int(cfg.cta_size * 1.45)
+    if pl_lines:
+        y += 30
     cta_lines, cta_font = _cta_lines(d, cfg)
     if cta_lines:
         y += 20

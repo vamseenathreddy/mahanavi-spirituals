@@ -44,6 +44,9 @@ class ChannelPipeline:
     playlist_title: str = ""         # used (find or create) when playlist_id is empty
     playlist_description: str = ""
     duration: float = 4.9
+    playlist_items: tuple = ()       # (label, kind, value) series playlists linked at the top of the description (channels/playlist_links.py)
+    playlist_current: str = ""       # label of this Short's own series: listed first
+    playlist_header: str = "Playlists:"
 
 
 def run(ch: ChannelPipeline, argv=None) -> int:
@@ -112,6 +115,15 @@ def run(ch: ChannelPipeline, argv=None) -> int:
         if ch.expected_channel.lower() not in got.lower():
             raise SystemExit(f"::error::NOT posting: the saved token acts as channel '{got}', not '{ch.expected_channel}'. "
                              "Re-run the one-time auth and pick the right channel at the Google consent screen.")
+    if ch.playlist_items:  # the series playlists, at the top of the description (never fatal)
+        try:
+            from channels import playlist_links
+
+            top = playlist_links.block_items(yt, ch.playlist_items, ch.playlist_current, ch.playlist_header)
+            if top:
+                meta["description"] = f"{top}\n\n{meta['description']}"
+        except Exception as e:  # noqa: BLE001
+            print(f"::warning::playlist links skipped: {e}")
     privacy_status = "public" if args.public else "unlisted"
     if not args.public:
         print("Uploading as UNLISTED (default). Pass --public once you're happy with the result.")

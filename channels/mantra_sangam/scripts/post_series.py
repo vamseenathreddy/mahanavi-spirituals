@@ -22,12 +22,17 @@ def main():
 
     kind = os.environ["SERIES_KIND"]
     settings = get_settings()
+    from channels import playlist_links
+
     title, desc = PLAYLISTS[kind]
+    cur = {"purana": "पुराण कथाएँ", "rashi": "राशि मंत्र"}[kind]
     pipeline = ChannelPipeline(
         channel_key=f"mantra_{kind}",
         expected_channel="Mantra Sangam",
         fetch_row=series.fetch_row_for(kind),
-        render_cfg=dataclasses.replace(channel_config.SERIES_CFG, music_offset={"purana": 7, "rashi": 9}[kind]),
+        render_cfg=dataclasses.replace(channel_config.SERIES_CFG, music_offset={"purana": 7, "rashi": 9}[kind],
+                                       playlist_cta=playlist_links.HI_LINE.format(x=cur)),
+        playlist_items=playlist_links.MS_ITEMS, playlist_current=cur, playlist_header="हमारी प्लेलिस्ट (Playlists):",
         metadata_bundle=metadata_series.bundle,
         metadata_captions=metadata_series.captions,
         youtube_token_file=settings.mantra_sangam_youtube_token_file,

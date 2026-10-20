@@ -14,6 +14,10 @@ CHANNEL_DIR = Path(__file__).resolve().parents[1]
 
 
 def main():
+    import dataclasses
+
+    from channels import playlist_links
+
     from mahanavi.config import get_settings
 
     settings = get_settings()
@@ -22,13 +26,15 @@ def main():
         expected_channel="Mantra Sangam",
         content_csv=CHANNEL_DIR / "data" / "content.csv",
         special_csv=None,
-        render_cfg=channel_config.RENDER_CFG,
+        render_cfg=dataclasses.replace(channel_config.RENDER_CFG, playlist_cta=playlist_links.HI_LINE.format(x="मंत्र")),
         rotation=channel_config.ROTATION,
         metadata_bundle=metadata.bundle,
         metadata_captions=metadata.captions,
         youtube_token_file=settings.mantra_sangam_youtube_token_file,
         blogger_blog_id=settings.mantra_sangam_blogger_blog_id,
         playlist_id=settings.mantra_sangam_playlist_id,
+        playlist_items=playlist_links.MS_ITEMS,
+        playlist_header="हमारी प्लेलिस्ट (Playlists):",
     )
     return run(pipeline)
 

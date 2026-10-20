@@ -252,7 +252,7 @@ class RequestCardRenderer:
                 self._benefit_lines(layer, boxes, list(slide.benefits), y + 18, 1215 if _is_subscribe(spec.tag_footer) else 1290)
             if spec.tag_footer and _is_subscribe(spec.tag_footer):
                 # the subscribe reminder: big, bold gold, two lines, in the free band above the Shorts caption
-                sub_y = 1232
+                sub_y = max(1232, max((bx[3] for bx in boxes), default=0) + 14) if spec.playlist_line else 1232
                 if spec.playlist_line:  # "all such mantras are in the description playlists", before the subscribe ask
                     pl_y = sub_y
                     for ln in spec.playlist_line.split("\n"):

@@ -37,11 +37,16 @@ def main(argv=None):
         print("No approved BGM in channels/jesus/assets/music/approved/ yet -- NOT posting. "
               "(Slice the song with scripts/dev/slice_bgm.py and approve the clips first.)")
         return 0
+    import dataclasses
+
+    from channels import playlist_links
+
     settings = get_settings()
     pipeline = ChannelPipeline(
         channel_key="jesus",
         fetch_row=fetch_row,
-        render_cfg=channel_config.QUOTE_CFG,
+        render_cfg=dataclasses.replace(channel_config.QUOTE_CFG, playlist_cta=playlist_links.EN_LINE),
+        playlist_items=playlist_links.jesus_items(settings), playlist_current="Bible Quotes",
         metadata_bundle=metadata.bundle,
         metadata_captions=metadata.captions,
         youtube_token_file=settings.jesus_youtube_token_file,

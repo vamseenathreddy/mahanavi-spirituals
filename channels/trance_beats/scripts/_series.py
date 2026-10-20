@@ -40,7 +40,11 @@ SERIES = {
 def main(series: str):
     from mahanavi.config import get_settings
 
+    from channels import playlist_links
+
     key, csv_name, rotation, _ = SERIES[series]
+    cur = {"gita": "भगवद्गीता श्लोक", "bhagavatam": "श्रीमद्भागवत कथा", "mantra": "कृष्ण मंत्र और भजन"}[series]
+    x = {"gita": "गीता श्लोक", "bhagavatam": "भागवत कथाएँ", "mantra": "मंत्र और भजन"}[series]
     settings = get_settings()
     # Playlists are found (or created) by title on the channel, so no playlist secret is needed and
     # an old mixed playlist can never receive these series.
@@ -49,7 +53,9 @@ def main(series: str):
         expected_channel="Trance",
         content_csv=DATA / csv_name,
         special_csv=None,
-        render_cfg=dataclasses.replace(channel_config.RENDER_CFG, cta_text=channel_config.CTA[series]),
+        render_cfg=dataclasses.replace(channel_config.RENDER_CFG, cta_text=channel_config.CTA[series],
+                                       playlist_cta=playlist_links.HI_LINE.format(x=x)),
+        playlist_items=playlist_links.TB_ITEMS, playlist_current=cur, playlist_header="हमारी प्लेलिस्ट (Playlists):",
         rotation=rotation,
         metadata_bundle=metadata.bundle,
         metadata_captions=metadata.captions,

@@ -77,3 +77,70 @@ class WithPlaylists:
     def full_caption(self) -> str:
         base = self._seo.full_caption()
         return f"{self._top}\n\n{base}" if self._top else base
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# Other channels (owner request 2026-10-20: "do the same for all channels"): the engine pipelines and the beej script
+# for the Hindi / Jesus channels use the same two pieces: a card pointer (ChannelConfig.playlist_cta) and a block of
+# playlist links at the top of the description. Items are (label, kind, value): kind "title" (found by exact title),
+# "id" (a known playlist id) or "beej" (the shared beej playlist of that channel key).
+# ---------------------------------------------------------------------------------------------------------------
+HI_LINE = "ऐसे और {x} एक ही जगह!\nडिस्क्रिप्शन में प्लेलिस्ट लिंक\nदिए हैं, कृपया ज़रूर देखें"
+EN_LINE = "More like this, all in one place!\nPlaylist links are in the\ndescription, please check"
+
+MS_ITEMS = (
+    ("बीज मंत्र", "beej", "mantra_sangam"),
+    ("पुराण कथाएँ", "title", "पुराण कथाएँ | Purana Stories (Hindi)"),
+    ("आज का पंचांग", "title", "आज का पंचांग | Daily Panchang: Rahu Kaal, Shubh Muhurat, Durmuhurat (Hindi)"),
+    ("राशि मंत्र", "title", "राशि मंत्र | Rashi Mantras (Hindi)"),
+)
+TB_ITEMS = (
+    ("बीज मंत्र", "beej", "trance_beats"),
+    ("भगवद्गीता श्लोक", "title", "भगवद्गीता श्लोक | Bhagavad Gita Daily Shloka (Hindi)"),
+    ("श्रीमद्भागवत कथा", "title", "श्रीमद्भागवत कथा | Shrimad Bhagavatam Daily Stories (Hindi)"),
+    ("कृष्ण मंत्र और भजन", "title", "कृष्ण मंत्र और भजन | Krishna Mantra and Bhajan of the Day"),
+)
+
+
+def jesus_items(settings) -> tuple:
+    from channels.jesus import bank
+
+    return (("Bible Quotes", "id", bank.playlist_id("quotes", settings.jesus_playlist_id) or ""),
+            ("Bible Quiz", "id", bank.playlist_id("quiz", settings.jesus_quiz_playlist_id) or ""))
+
+
+def resolve_items(youtube, items) -> dict[str, str]:
+    """{label: playlist id} for the items that can be found. Never raises."""
+    out: dict[str, str] = {}
+    by_title = None
+    for label, kind, value in items:
+        try:
+            if kind == "id" and value:
+                out[label] = value
+            elif kind == "beej":
+                from channels.beej import playlists as bp
+
+                out[label] = bp.ensure_playlist(youtube, value)
+            elif kind == "title":
+                if by_title is None:
+                    from channels.beej import playlists as bp
+
+                    by_title = {t: i for i, t, _n in bp.list_playlists(youtube)}
+                if value in by_title:
+                    out[label] = by_title[value]
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("playlist %s lookup failed: %s", label, exc)
+    return out
+
+
+def block_items(youtube, items, current: str = "", header: str = "Playlists:", here: str = "▶") -> str:
+    """Description block: the current series first, then the others. '' when nothing was found."""
+    try:
+        ids = resolve_items(youtube, items)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("playlist links unavailable: %s", exc)
+        return ""
+    labels = [lb for lb, _k, _v in items]
+    order = ([current] if current in labels else []) + [lb for lb in labels if lb != current]
+    lines = [f"{here} {lb}: {URL}{ids[lb]}" for lb in order if lb in ids]
+    return f"{header}\n" + "\n".join(lines) if lines else ""

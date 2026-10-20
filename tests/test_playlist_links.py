@@ -41,3 +41,29 @@ def test_block_empty_on_failure(monkeypatch):
 def test_card_lines_three_short_lines():
     for v in pl.CARD_LINES.values():
         assert len(v.split("\n")) == 3
+
+
+def test_block_items_current_first_skips_missing(monkeypatch):
+    items = (("A", "id", "1"), ("B", "id", "2"), ("C", "id", ""))
+    out = pl.block_items(None, items, current="B", header="H:")
+    lines = out.splitlines()
+    assert lines[0] == "H:" and lines[1].startswith("▶ B:") and lines[2].startswith("▶ A:") and len(lines) == 3
+
+
+def test_block_items_empty_when_nothing_found():
+    assert pl.block_items(None, (("A", "id", ""),), current="A") == ""
+
+
+def test_engine_playlist_cta_does_not_shrink_text():
+    import dataclasses
+
+    from channels.engine import render
+    from channels.mantra_sangam import channel_config as mc
+
+    row = {"text_primary": "ॐ गं गणपतये नमः", "text_secondary": "x", "id": "1", "category": "mantra"}
+    base = mc.RENDER_CFG
+    with_pl = dataclasses.replace(base, playlist_cta=pl.HI_LINE.format(x="मंत्र"))
+    lay = base.layouts[0]
+    assert render.fit_text(row, lay, base)[3] == render.fit_text(row, lay, with_pl)[3]
+    layer = render.make_text_layer(row, lay, with_pl)
+    assert layer.size == (1080, 1920)

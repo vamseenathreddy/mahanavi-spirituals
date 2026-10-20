@@ -19,13 +19,17 @@ PLAYLIST_DESC = ("हर दिन का राहु काल, शुभ म�
 def main():
     from mahanavi.config import get_settings
 
+    from channels import playlist_links
+
     kind = os.environ["TIMING_KIND"]
     settings = get_settings()
     pipeline = ChannelPipeline(
         channel_key={"rahu": "mantra_rahu", "shubh": "mantra_shubh", "durm": "mantra_durm"}[kind],
         expected_channel="Mantra Sangam",
         fetch_row=timings.fetch_row_for(kind),
-        render_cfg=dataclasses.replace(channel_config.TIMING_CFG, music_offset={"rahu": 0, "shubh": 3, "durm": 5}[kind]),
+        render_cfg=dataclasses.replace(channel_config.TIMING_CFG, music_offset={"rahu": 0, "shubh": 3, "durm": 5}[kind],
+                                       playlist_cta=playlist_links.HI_LINE.format(x="पंचांग")),
+        playlist_items=playlist_links.MS_ITEMS, playlist_current="आज का पंचांग", playlist_header="हमारी प्लेलिस्ट (Playlists):",
         metadata_bundle=metadata_timings.bundle,
         metadata_captions=metadata_timings.captions,
         youtube_token_file=settings.mantra_sangam_youtube_token_file,
