@@ -10,6 +10,12 @@ from pathlib import Path
 DEITIES = Path(__file__).resolve().parents[2] / "assets" / "images" / "deities"
 
 PHOTOS = {
+    "kurma": ["puranic_kurma", "puranic_manthan"], "manthan": ["puranic_manthan"], "varaha": ["puranic_varaha"],
+    "dashavatara": ["puranic_dashavatara"], "garuda": ["puranic_garuda"], "dakshinamurthy": ["puranic_dakshinamurthy"],
+    "sheshashayi": ["puranic_sheshashayi"],
+    "g_surya": ["graha_surya"], "g_chandra": ["graha_chandra"], "g_mangala": ["graha_mangala"], "g_budha": ["graha_budha"],
+    "g_guru": ["graha_guru"], "g_shukra": ["graha_shukra"], "g_shani": ["graha_shani"], "g_rahu": ["graha_rahu"],
+    "g_ketu": ["graha_ketu"],
     "ayyappa": ['ayyappa_n1', 'ayyappa_n2', 'ayyappa_n3'],
     "annapurna": ['annapurna_n1', 'annapurna_n2'],
     "gita": ['gita_n1', 'gita_n2', 'gita_n3', 'gita_n4', 'gita_n5', 'gita_n6', 'gita_n7', 'gita_n8', 'gita_n9', 'gita_n10'],
@@ -22,9 +28,10 @@ PHOTOS = {
     "dattatreya": ["dattatreya_g1", "dattatreya_g3", "dattatreya_g5"], "venkateswara": ["venkateswara_g1"],
 }
 WEEKDAY = ["shiva", "hanuman", "ganesha", "vishnu", "lakshmi", "shani", "surya"]
-PLANET = {"mars": "hanuman", "venus": "lakshmi", "mercury": "vishnu", "jupiter": "dattatreya", "saturn": "shani",
-          "sun": "surya", "moon": "shiva", "rahu": "durga", "ketu": "ganesha"}
+PLANET = {"mars": "g_mangala", "venus": "g_shukra", "mercury": "g_budha", "jupiter": "g_guru", "saturn": "g_shani",
+          "sun": "g_surya", "moon": "g_chandra", "rahu": "g_rahu", "ketu": "g_ketu"}
 KEYWORDS = [
+    ("कूर्म", "kurma"), ("समुद्र मंथन", "manthan"), ("समुद्रमंथन", "manthan"), ("वराह", "varaha"), ("दशावतार", "dashavatara"), ("गरुड़", "garuda"), ("दक्षिणामूर्ति", "dakshinamurthy"), ("शेषशायी", "sheshashayi"), ("अनंतशयन", "sheshashayi"),
     ("अयप्पा", "ayyappa"), ("अन्नपूर्णा", "annapurna"),  # first match wins, so the specific forms come before the general ones
     ("नरसिंह", "narasimha"), ("हनुमान", "hanuman"), ("गणेश", "ganesha"), ("गजानन", "ganesha"), ("सरस्वती", "saraswati"),
     ("लक्ष्मी", "lakshmi"), ("दुर्गा", "durga"), ("पार्वती", "parvati"), ("कार्तिकेय", "murugan"), ("स्कंद", "murugan"),

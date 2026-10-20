@@ -9,6 +9,12 @@ from PIL import Image, ImageDraw, ImageFilter, ImageOps
 
 DEITIES = Path(__file__).resolve().parents[3] / "assets" / "images" / "deities"
 PHOTOS = {
+    "kurma": ["puranic_kurma", "puranic_manthan"], "manthan": ["puranic_manthan"], "varaha": ["puranic_varaha"],
+    "dashavatara": ["puranic_dashavatara"], "garuda": ["puranic_garuda"], "dakshinamurthy": ["puranic_dakshinamurthy"],
+    "sheshashayi": ["puranic_sheshashayi"],
+    "g_surya": ["graha_surya"], "g_chandra": ["graha_chandra"], "g_mangala": ["graha_mangala"], "g_budha": ["graha_budha"],
+    "g_guru": ["graha_guru"], "g_shukra": ["graha_shukra"], "g_shani": ["graha_shani"], "g_rahu": ["graha_rahu"],
+    "g_ketu": ["graha_ketu"],
     "ayyappa": ['ayyappa_n1', 'ayyappa_n2', 'ayyappa_n3'],
     "annapurna": ['annapurna_n1', 'annapurna_n2'],
     "gita": ['gita_n1', 'gita_n2', 'gita_n3', 'gita_n4', 'gita_n5', 'gita_n6', 'gita_n7', 'gita_n8', 'gita_n9', 'gita_n10'],
@@ -21,9 +27,10 @@ PHOTOS = {
     "dattatreya": ["dattatreya_g1", "dattatreya_g3", "dattatreya_g5"], "venkateswara": ["venkateswara_g1"],
 }
 # Mesha, Vrishabha, Mithuna, Karka, Simha, Kanya, Tula, Vrischika, Dhanus, Makara, Kumbha, Meena
-RASHI_GOD = ["hanuman", "lakshmi", "vishnu", "shiva", "surya", "vishnu", "lakshmi", "hanuman", "dattatreya", "shani",
-             "shani", "dattatreya"]
+RASHI_GOD = ["g_mangala", "g_shukra", "g_budha", "g_chandra", "g_surya", "g_budha", "g_shukra", "g_mangala", "g_guru",
+             "g_shani", "g_shani", "g_guru"]
 KEYWORDS = [
+    ("కూర్మ", "kurma"), ("సముద్ర మథన", "manthan"), ("క్షీరసాగర", "manthan"), ("వరాహ", "varaha"), ("దశావతార", "dashavatara"), ("గరుడ", "garuda"), ("దక్షిణామూర్తి", "dakshinamurthy"), ("శేషశయన", "sheshashayi"), ("అనంతశయన", "sheshashayi"),
     ("అయ్యప్ప", "ayyappa"), ("అన్నపూర్ణ", "annapurna"),  # first match wins
     ("నరసింహ", "narasimha"), ("హనుమ", "hanuman"), ("ఆంజనేయ", "hanuman"), ("గణేశ", "ganesha"), ("గణపతి", "ganesha"),
     ("సరస్వతి", "saraswati"), ("లక్ష్మి", "lakshmi"), ("దుర్గ", "durga"), ("పార్వతి", "parvati"),
@@ -67,7 +74,22 @@ def with_photo(base: Image.Image, path: Path | None, mix: float = 0.55, dim: int
     except OSError:
         return base
     w, h = base.size
-    photo = ImageOps.fit(src, (w, h), method=Image.Resampling.LANCZOS, centering=(0.5, 0.3)).filter(ImageFilter.GaussianBlur(3))
+    if src.width > src.height:  # landscape scene: blurred cover fill plus the sharp scene fitted to the width
+        back = ImageOps.fit(src, (w, h), method=Image.Resampling.LANCZOS).filter(ImageFilter.GaussianBlur(30))
+        if src.width / src.height < 2.2:  # single-subject scene: crop to the centre so the deity fills the width
+            cx, cw = src.width // 2, int(src.width * 0.62)
+            src = src.crop((cx - cw // 2, 0, cx + cw // 2, src.height))
+        fg = src.resize((w, int(src.height * w / src.width)), Image.Resampling.LANCZOS)
+        fm = Image.new("L", fg.size, 255)
+        fd = ImageDraw.Draw(fm)
+        for i in range(40):
+            fd.line((0, i, w, i), fill=int(255 * i / 40))
+            fd.line((0, fg.height - 1 - i, w, fg.height - 1 - i), fill=int(255 * i / 40))
+        back.paste(fg, (0, int(h * 0.40 - fg.height / 2)), fm)
+        photo = back
+    else:
+        photo = None
+    photo = photo if photo is not None else ImageOps.fit(src, (w, h), method=Image.Resampling.LANCZOS, centering=(0.5, 0.3)).filter(ImageFilter.GaussianBlur(3))
     tinted = Image.blend(photo.convert("RGBA"), base.convert("RGBA"), mix)
     shade = Image.new("L", (w, h), 0)
     sd = ImageDraw.Draw(shade)
