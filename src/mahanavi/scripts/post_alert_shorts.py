@@ -269,10 +269,10 @@ def _pick_subscribe_text(pool: list[str], for_date: date) -> str:
 
 
 # Day-wise god photo behind every alert card (owner request 2026-10-19, same idea as the Beej mantra card).
-# Thursday has NO photo on purpose: Sai Baba is dropped and there is no Dattatreya photo yet. Add one as
-# assets/images/deities/dattatreya_g1.jpg and map 3 here.
+# Thursday is Dattatreya (never Sai Baba); the owner supplied the Dattatreya photos on 2026-10-20.
 _DAY_BG = {0: ("shiva_g1.jpg", "shiva_g2.jpg"), 1: ("hanuman_g1.jpg", "hanuman_g2.jpg"),
-           2: ("ganesha_g1.jpg", "ganesha_g2.jpg"), 4: ("lakshmi_g1.jpg", "lakshmi_g2.jpg"),
+           2: ("ganesha_g1.jpg", "ganesha_g2.jpg"),
+           3: ("dattatreya_g1.jpg", "dattatreya_g3.jpg", "dattatreya_g5.jpg"), 4: ("lakshmi_g1.jpg", "lakshmi_g2.jpg"),
            5: ("venkateswara_g1.jpg",), 6: ("surya_g2.jpg",)}
 
 
