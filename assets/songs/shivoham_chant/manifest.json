@@ -1,0 +1,53 @@
+{
+  "slug": "shivoham_chant",
+  "clips": [
+    {
+      "file": "shivoham_chant_01.mp3",
+      "start": 8.0,
+      "end": 20.65,
+      "seconds": 12.6
+    },
+    {
+      "file": "shivoham_chant_02.mp3",
+      "start": 45.15,
+      "end": 55.3,
+      "seconds": 10.1
+    },
+    {
+      "file": "shivoham_chant_03.mp3",
+      "start": 68.5,
+      "end": 79.0,
+      "seconds": 10.5
+    },
+    {
+      "file": "shivoham_chant_04.mp3",
+      "start": 79.0,
+      "end": 91.4,
+      "seconds": 12.4
+    },
+    {
+      "file": "shivoham_chant_05.mp3",
+      "start": 91.4,
+      "end": 101.3,
+      "seconds": 9.9
+    },
+    {
+      "file": "shivoham_chant_06.mp3",
+      "start": 114.85,
+      "end": 128.75,
+      "seconds": 13.9
+    },
+    {
+      "file": "shivoham_chant_07.mp3",
+      "start": 128.75,
+      "end": 138.45,
+      "seconds": 9.7
+    },
+    {
+      "file": "shivoham_chant_08.mp3",
+      "start": 177.3,
+      "end": 186.3,
+      "seconds": 9.0
+    }
+  ]
+}

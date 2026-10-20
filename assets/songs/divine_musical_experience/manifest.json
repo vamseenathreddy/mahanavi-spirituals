@@ -1,0 +1,53 @@
+{
+  "slug": "divine_musical_experience",
+  "clips": [
+    {
+      "file": "divine_musical_experience_01.mp3",
+      "start": 32.2,
+      "end": 43.9,
+      "seconds": 11.7
+    },
+    {
+      "file": "divine_musical_experience_02.mp3",
+      "start": 43.9,
+      "end": 58.15,
+      "seconds": 14.2
+    },
+    {
+      "file": "divine_musical_experience_03.mp3",
+      "start": 58.15,
+      "end": 70.9,
+      "seconds": 12.8
+    },
+    {
+      "file": "divine_musical_experience_04.mp3",
+      "start": 70.9,
+      "end": 83.1,
+      "seconds": 12.2
+    },
+    {
+      "file": "divine_musical_experience_05.mp3",
+      "start": 97.5,
+      "end": 107.0,
+      "seconds": 9.5
+    },
+    {
+      "file": "divine_musical_experience_06.mp3",
+      "start": 107.0,
+      "end": 119.2,
+      "seconds": 12.2
+    },
+    {
+      "file": "divine_musical_experience_07.mp3",
+      "start": 119.2,
+      "end": 131.35,
+      "seconds": 12.1
+    },
+    {
+      "file": "divine_musical_experience_08.mp3",
+      "start": 145.7,
+      "end": 155.55,
+      "seconds": 9.9
+    }
+  ]
+}

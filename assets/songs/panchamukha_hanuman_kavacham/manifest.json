@@ -1,0 +1,53 @@
+{
+  "slug": "panchamukha_hanuman_kavacham",
+  "clips": [
+    {
+      "file": "panchamukha_hanuman_kavacham_01.mp3",
+      "start": 419.1,
+      "end": 431.6,
+      "seconds": 12.5
+    },
+    {
+      "file": "panchamukha_hanuman_kavacham_02.mp3",
+      "start": 431.6,
+      "end": 444.3,
+      "seconds": 12.7
+    },
+    {
+      "file": "panchamukha_hanuman_kavacham_03.mp3",
+      "start": 464.0,
+      "end": 475.35,
+      "seconds": 11.4
+    },
+    {
+      "file": "panchamukha_hanuman_kavacham_04.mp3",
+      "start": 475.35,
+      "end": 485.65,
+      "seconds": 10.3
+    },
+    {
+      "file": "panchamukha_hanuman_kavacham_05.mp3",
+      "start": 535.95,
+      "end": 545.1,
+      "seconds": 9.1
+    },
+    {
+      "file": "panchamukha_hanuman_kavacham_06.mp3",
+      "start": 545.1,
+      "end": 556.6,
+      "seconds": 11.5
+    },
+    {
+      "file": "panchamukha_hanuman_kavacham_07.mp3",
+      "start": 696.8,
+      "end": 707.1,
+      "seconds": 10.3
+    },
+    {
+      "file": "panchamukha_hanuman_kavacham_08.mp3",
+      "start": 719.9,
+      "end": 732.6,
+      "seconds": 12.7
+    }
+  ]
+}

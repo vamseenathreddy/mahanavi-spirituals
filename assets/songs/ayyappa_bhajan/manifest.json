@@ -1,0 +1,53 @@
+{
+  "slug": "ayyappa_bhajan",
+  "clips": [
+    {
+      "file": "ayyappa_bhajan_01.mp3",
+      "start": 48.7,
+      "end": 59.7,
+      "seconds": 11.0
+    },
+    {
+      "file": "ayyappa_bhajan_02.mp3",
+      "start": 59.7,
+      "end": 69.7,
+      "seconds": 10.0
+    },
+    {
+      "file": "ayyappa_bhajan_03.mp3",
+      "start": 93.5,
+      "end": 104.9,
+      "seconds": 11.4
+    },
+    {
+      "file": "ayyappa_bhajan_04.mp3",
+      "start": 104.9,
+      "end": 114.2,
+      "seconds": 9.3
+    },
+    {
+      "file": "ayyappa_bhajan_05.mp3",
+      "start": 114.2,
+      "end": 123.6,
+      "seconds": 9.4
+    },
+    {
+      "file": "ayyappa_bhajan_06.mp3",
+      "start": 123.6,
+      "end": 134.95,
+      "seconds": 11.3
+    },
+    {
+      "file": "ayyappa_bhajan_07.mp3",
+      "start": 134.95,
+      "end": 149.25,
+      "seconds": 14.3
+    },
+    {
+      "file": "ayyappa_bhajan_08.mp3",
+      "start": 149.25,
+      "end": 162.9,
+      "seconds": 13.7
+    }
+  ]
+}

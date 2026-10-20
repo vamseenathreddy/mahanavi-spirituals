@@ -1,0 +1,79 @@
+name: Channel A | Song Clip Short (manual)
+
+# One sung-line Short cut from the owner's own songs (assets/songs, made by scripts/slice_song_clips.py).
+# MANUAL ONLY: no schedule, no cron-job.org ping. Uploads UNLISTED unless "public" is ticked.
+on:
+  workflow_dispatch:
+    inputs:
+      public:
+        description: "Upload as public. Leave unticked to upload unlisted for review."
+        required: false
+        type: boolean
+        default: false
+      date:
+        description: "Optional ISO date (picks that day's song and clip). Blank = today."
+        required: false
+        default: ''
+      offset:
+        description: "Shift the rotation (0 = normal). Use 1, 2, ... for another Short the same day."
+        required: false
+        default: '0'
+
+concurrency:
+  group: post-song-clip
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  post-song-clip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Install ffmpeg + text shaping libs
+        run: bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
+
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Build and upload the song clip Short
+        env:
+          MAHANAVI_IMAGES_ROOT: ./Images
+          MAHANAVI_ASSETS_DIR: ./assets
+          MAHANAVI_OUTPUT_DIR: ./data/generated
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
+        run: |
+          ARGS="--offset ${{ inputs.offset }}"
+          if [ "${{ inputs.public }}" = "true" ]; then ARGS="$ARGS --public"; fi
+          if [ -n "${{ inputs.date }}" ]; then ARGS="$ARGS --date ${{ inputs.date }}"; fi
+          python3 -m mahanavi.scripts.post_song_clip $ARGS
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/ci/notify_failure.py "Channel A | Song Clip Short (manual)"

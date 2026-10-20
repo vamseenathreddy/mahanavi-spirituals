@@ -1,0 +1,53 @@
+{
+  "slug": "subrahmanya_ashtakam",
+  "clips": [
+    {
+      "file": "subrahmanya_ashtakam_01.mp3",
+      "start": 56.5,
+      "end": 69.7,
+      "seconds": 13.2
+    },
+    {
+      "file": "subrahmanya_ashtakam_02.mp3",
+      "start": 92.4,
+      "end": 103.5,
+      "seconds": 11.1
+    },
+    {
+      "file": "subrahmanya_ashtakam_03.mp3",
+      "start": 140.05,
+      "end": 154.45,
+      "seconds": 14.4
+    },
+    {
+      "file": "subrahmanya_ashtakam_04.mp3",
+      "start": 154.45,
+      "end": 168.8,
+      "seconds": 14.4
+    },
+    {
+      "file": "subrahmanya_ashtakam_05.mp3",
+      "start": 179.1,
+      "end": 191.7,
+      "seconds": 12.6
+    },
+    {
+      "file": "subrahmanya_ashtakam_06.mp3",
+      "start": 201.4,
+      "end": 213.5,
+      "seconds": 12.1
+    },
+    {
+      "file": "subrahmanya_ashtakam_07.mp3",
+      "start": 213.5,
+      "end": 224.25,
+      "seconds": 10.8
+    },
+    {
+      "file": "subrahmanya_ashtakam_08.mp3",
+      "start": 246.55,
+      "end": 260.85,
+      "seconds": 14.3
+    }
+  ]
+}

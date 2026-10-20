@@ -1,0 +1,53 @@
+{
+  "slug": "chandrashekhara_ashtakam",
+  "clips": [
+    {
+      "file": "chandrashekhara_ashtakam_01.mp3",
+      "start": 30.8,
+      "end": 43.9,
+      "seconds": 13.1
+    },
+    {
+      "file": "chandrashekhara_ashtakam_02.mp3",
+      "start": 43.9,
+      "end": 56.4,
+      "seconds": 12.5
+    },
+    {
+      "file": "chandrashekhara_ashtakam_03.mp3",
+      "start": 70.25,
+      "end": 83.3,
+      "seconds": 13.0
+    },
+    {
+      "file": "chandrashekhara_ashtakam_04.mp3",
+      "start": 109.65,
+      "end": 120.0,
+      "seconds": 10.3
+    },
+    {
+      "file": "chandrashekhara_ashtakam_05.mp3",
+      "start": 142.3,
+      "end": 151.9,
+      "seconds": 9.6
+    },
+    {
+      "file": "chandrashekhara_ashtakam_06.mp3",
+      "start": 175.2,
+      "end": 187.7,
+      "seconds": 12.5
+    },
+    {
+      "file": "chandrashekhara_ashtakam_07.mp3",
+      "start": 201.45,
+      "end": 214.6,
+      "seconds": 13.2
+    },
+    {
+      "file": "chandrashekhara_ashtakam_08.mp3",
+      "start": 246.35,
+      "end": 257.4,
+      "seconds": 11.0
+    }
+  ]
+}

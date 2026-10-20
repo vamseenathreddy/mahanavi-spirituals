@@ -1,0 +1,53 @@
+{
+  "slug": "dayananda_saraswati",
+  "clips": [
+    {
+      "file": "dayananda_saraswati_01.mp3",
+      "start": 51.3,
+      "end": 64.25,
+      "seconds": 13.0
+    },
+    {
+      "file": "dayananda_saraswati_02.mp3",
+      "start": 76.8,
+      "end": 90.4,
+      "seconds": 13.6
+    },
+    {
+      "file": "dayananda_saraswati_03.mp3",
+      "start": 90.4,
+      "end": 103.25,
+      "seconds": 12.8
+    },
+    {
+      "file": "dayananda_saraswati_04.mp3",
+      "start": 137.15,
+      "end": 146.45,
+      "seconds": 9.3
+    },
+    {
+      "file": "dayananda_saraswati_05.mp3",
+      "start": 175.85,
+      "end": 190.0,
+      "seconds": 14.2
+    },
+    {
+      "file": "dayananda_saraswati_06.mp3",
+      "start": 190.0,
+      "end": 199.65,
+      "seconds": 9.7
+    },
+    {
+      "file": "dayananda_saraswati_07.mp3",
+      "start": 208.7,
+      "end": 222.3,
+      "seconds": 13.6
+    },
+    {
+      "file": "dayananda_saraswati_08.mp3",
+      "start": 222.3,
+      "end": 235.15,
+      "seconds": 12.8
+    }
+  ]
+}

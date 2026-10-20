@@ -1,0 +1,53 @@
+{
+  "slug": "jogulamba_ashtakam",
+  "clips": [
+    {
+      "file": "jogulamba_ashtakam_01.mp3",
+      "start": 55.1,
+      "end": 64.5,
+      "seconds": 9.4
+    },
+    {
+      "file": "jogulamba_ashtakam_02.mp3",
+      "start": 77.35,
+      "end": 89.95,
+      "seconds": 12.6
+    },
+    {
+      "file": "jogulamba_ashtakam_03.mp3",
+      "start": 102.85,
+      "end": 115.5,
+      "seconds": 12.7
+    },
+    {
+      "file": "jogulamba_ashtakam_04.mp3",
+      "start": 125.2,
+      "end": 138.25,
+      "seconds": 13.0
+    },
+    {
+      "file": "jogulamba_ashtakam_05.mp3",
+      "start": 138.25,
+      "end": 151.15,
+      "seconds": 12.9
+    },
+    {
+      "file": "jogulamba_ashtakam_06.mp3",
+      "start": 151.15,
+      "end": 161.6,
+      "seconds": 10.4
+    },
+    {
+      "file": "jogulamba_ashtakam_07.mp3",
+      "start": 161.6,
+      "end": 170.9,
+      "seconds": 9.3
+    },
+    {
+      "file": "jogulamba_ashtakam_08.mp3",
+      "start": 207.3,
+      "end": 217.95,
+      "seconds": 10.6
+    }
+  ]
+}

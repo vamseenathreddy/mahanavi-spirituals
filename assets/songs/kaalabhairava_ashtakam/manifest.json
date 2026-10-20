@@ -1,0 +1,53 @@
+{
+  "slug": "kaalabhairava_ashtakam",
+  "clips": [
+    {
+      "file": "kaalabhairava_ashtakam_01.mp3",
+      "start": 30.25,
+      "end": 39.4,
+      "seconds": 9.1
+    },
+    {
+      "file": "kaalabhairava_ashtakam_02.mp3",
+      "start": 39.4,
+      "end": 51.05,
+      "seconds": 11.6
+    },
+    {
+      "file": "kaalabhairava_ashtakam_03.mp3",
+      "start": 65.0,
+      "end": 78.8,
+      "seconds": 13.8
+    },
+    {
+      "file": "kaalabhairava_ashtakam_04.mp3",
+      "start": 99.7,
+      "end": 113.45,
+      "seconds": 13.8
+    },
+    {
+      "file": "kaalabhairava_ashtakam_05.mp3",
+      "start": 123.75,
+      "end": 133.55,
+      "seconds": 9.8
+    },
+    {
+      "file": "kaalabhairava_ashtakam_06.mp3",
+      "start": 158.45,
+      "end": 169.1,
+      "seconds": 10.7
+    },
+    {
+      "file": "kaalabhairava_ashtakam_07.mp3",
+      "start": 169.1,
+      "end": 182.75,
+      "seconds": 13.7
+    },
+    {
+      "file": "kaalabhairava_ashtakam_08.mp3",
+      "start": 273.15,
+      "end": 287.3,
+      "seconds": 14.2
+    }
+  ]
+}
