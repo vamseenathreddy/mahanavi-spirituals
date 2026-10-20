@@ -7,6 +7,7 @@ font (visually in the same spirit as Ponnala, the Telugu font the rest of this r
 from pathlib import Path
 
 from channels.engine.render import ChannelConfig, TextBlock
+from channels.mantra_sangam import deity_photos
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CHANNEL_DIR = Path(__file__).resolve().parent
@@ -71,6 +72,7 @@ TIMING_CFG = ChannelConfig(
     logo_path=str(CHANNEL_DIR / "assets" / "logo.png"), logo_width=170, logo_y=230,
     photo_text_h=1090, photo_text_bottom=1470, safe_bottom=1470, safe_top=430, text_max_w=880,
     photo_shade_from=420, photo_shade_alpha=0.88,
+    photo_picker=deity_photos.picker,
 )
 
 
@@ -96,4 +98,5 @@ SERIES_CFG = ChannelConfig(
     logo_path=str(CHANNEL_DIR / "assets" / "logo.png"), logo_width=170, logo_y=230,
     photo_text_h=1090, photo_text_bottom=1470, safe_bottom=1470, safe_top=430, text_max_w=880,
     photo_shade_from=420, photo_shade_alpha=0.88,
+    photo_picker=deity_photos.picker,
 )

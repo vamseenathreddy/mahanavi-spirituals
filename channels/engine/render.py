@@ -71,6 +71,7 @@ class ChannelConfig:
     layouts: list = dataclasses.field(default_factory=lambda: DEFAULT_LAYOUTS)
     palettes: list = dataclasses.field(default_factory=lambda: DEFAULT_PALETTES)
     photo_box_override: dict = dataclasses.field(default_factory=dict)  # {"photo_04.jpg": 1020}
+    photo_picker: object = None      # optional callable(date_key, row) -> photo path (or None): a deity photo matched to the row's mantra
     zoom: float = 0.0                # 0 = completely still picture
     watermark_handle: str = ""       # e.g. "@MyChannel"; empty -> falls back to channel_name
     # Text-heavy channels (Jesus quote/quiz) can claim more of the photo's height for text:
@@ -157,8 +158,8 @@ def photo_for(date_key, cfg: ChannelConfig):
     return photos[dt.date.fromisoformat(date_key).toordinal() % len(photos)]
 
 
-def make_background(rng, date_key, cfg: ChannelConfig):
-    photo = photo_for(date_key, cfg)
+def make_background(rng, date_key, cfg: ChannelConfig, row=None):
+    photo = (cfg.photo_picker(date_key, row) if cfg.photo_picker else None) or photo_for(date_key, cfg)
     if photo:
         src = Image.open(photo).convert("RGB")
         back = _cover(src).filter(ImageFilter.GaussianBlur(40))
@@ -351,7 +352,7 @@ def render(row, out_mp4, date_key, cfg: ChannelConfig, special=None, workdir="ou
     work = Path(workdir)
     work.mkdir(parents=True, exist_ok=True)
     bg_path, tx_path = work / "bg.png", work / "text.png"
-    bg = _watermark(make_background(rng, date_key, cfg).convert("RGBA"), cfg.watermark_handle or cfg.channel_name, cfg.font_channel_label)
+    bg = _watermark(make_background(rng, date_key, cfg, row).convert("RGBA"), cfg.watermark_handle or cfg.channel_name, cfg.font_channel_label)
     if cfg.bg_overlay:
         bg = cfg.bg_overlay(bg, row)
     bg.convert("RGB").save(bg_path)
