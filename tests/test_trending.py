@@ -152,7 +152,8 @@ def test_enrich_keeps_only_same_language_related_and_row_has_source_last():
     enrich(s, "te")
     assert len(s.related) == 3 and all("India" not in h for h, _ in s.related)
     row = metadata.row_for(s, "te", "development")
-    assert row["text_summary"] and "• " in row["text_related"] and row["text_secondary"] == "Source: Eenadu"
+    assert row["text_summary"] and "• " in row["_bullets"] and row["text_secondary"] == "Source: Eenadu"
+    assert metadata.note("development", s.key) in row["text_related"]   # the 2 to 3 line fan note sits under the angle line
     assert "Also in the news:" in metadata.description(s, "te", "development")
 
 
@@ -258,3 +259,22 @@ def test_local_niche_posts_once_a_month_on_the_first():
     assert cfg.plan(2, d.date(2026, 11, 1))[1] == "local"
     assert cfg.plan(2, d.date(2026, 11, 1), {"local_month": "2026-11"})[1] != "local"
     assert "local" not in cfg.DAY_PATTERN and "local" not in cfg.NEWS_NICHES
+
+
+def test_ntr_history_posts_every_other_day_and_are_complete():
+    import datetime as dt
+    from channels.trending import ntr_bank
+    d1, d2 = dt.date(2026, 10, 21), dt.date(2026, 10, 22)
+    assert cfg.plan(3, d1)[1] != cfg.plan(3, d2)[1] and "ntr" in (cfg.plan(3, d1)[1], cfg.plan(3, d2)[1])
+    assert cfg.plan(0, d1)[1] == cfg.DAY_PATTERN[0] and cfg.plan(3)[1] == cfg.DAY_PATTERN[3]
+    stories = ntr_bank.ntr_stories()
+    assert len(stories) >= 20 and len({s.key for s in stories}) == len(stories)
+    for s in stories:
+        meta = metadata.bundle(s, "te", "ntr")
+        assert "NTR" in meta["title"] and len(meta["title"]) <= 100 and "#NTR" in meta["description"]
+        assert s.summary and len(s.related) == 2 and ntr_bank.english_line(s.headline)
+
+
+def test_every_news_niche_has_a_fan_note():
+    for n in ("amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "local"):
+        assert all(len(x) > 40 for x in metadata.NOTES[n]) and metadata.note(n, "abcdef0123456789")

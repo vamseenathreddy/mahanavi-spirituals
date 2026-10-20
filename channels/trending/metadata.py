@@ -10,6 +10,10 @@ DISCLOSURE = ("ఈ ఛానెల్ తెలుగుదేశం పార�
               "This channel is run from a pro-TDP point of view. The analysis is our opinion; the facts come from public news "
               "reports.")
 
+DISCLOSURE_HISTORY = ("ఈ పోస్ట్ తెలుగుదేశం పార్టీ చరిత్ర, ఎన్టీఆర్, చంద్రబాబు గారి గురించి బహిరంగంగా లభించే సమాచారం ఆధారంగా అభిమానుల దృక్పథంతో రూపొందింది. ఇందులోని విశ్లేషణ మా అభిప్రాయం.\n"
+                      "This post is built from publicly available Telugu Desam Party history, told from a supporter's point of view. "
+                      "The analysis is our opinion.")
+
 DISCLOSURE_JSP = ("ఈ పోస్ట్ జనసేన పార్టీ దృక్పథంతో ఉంది. ఇందులోని విశ్లేషణ మా అభిప్రాయం; వార్తలు పబ్లిక్ వార్తా నివేదికల నుంచి "
                   "తీసుకున్నవి.\n"
                   "This post is from a Janasena point of view. The analysis is our opinion; the facts come from public news "
@@ -49,6 +53,43 @@ ANGLES = {
                 "మాటలు కాదు, చేతలు! నిజం నిప్పులాంటిది! జై టీడీపీ!"],
     "janasena": ["జనసేనాని అంటే జనం గుండె చప్పుడు! జై జనసేన!", "జై పవన్ కళ్యాణ్! జై జనసేన!", "ప్రజల పక్షాన జనసేన గళం! జై జనసేన!"],
 }
+ANGLES["ntr"] = ["జై ఎన్టీఆర్! జై తెలుగుదేశం!", "తెలుగు తమ్ముళ్లూ, అన్న ఎన్టీఆర్ స్ఫూర్తి మనతోనే! జై టీడీపీ!",
+                 "తెలుగు వారి ఆత్మగౌరవం మన తెలుగుదేశం! జై ఎన్టీఆర్! జై బాబు!"]
+
+# Two or three more lines under every news post, so the card reads like a short fan note and not just a headline
+# (owner request 2026-10-20). Fan voice, no claim beyond what the story says. Chosen by the story key.
+NOTES = {
+    "amaravati": ["అమరావతి అంటే ఐదు కోట్ల ఆంధ్రుల కల. రాజధాని నిర్మాణం ముందుకు సాగితే రాష్ట్ర భవిష్యత్తు మారుతుంది. ఈ వార్త ఆ దిశగా మరో అడుగు.",
+                  "రాజధాని పనులు వేగం అందుకుంటే ఉద్యోగాలు, పెట్టుబడులు పెరుగుతాయి. అమరావతి మన ఆత్మగౌరవం అని తెలుగు తమ్ముళ్లు గర్వంగా చెబుతారు.",
+                  "అమరావతి కోసం భూములిచ్చిన రైతుల త్యాగాన్ని మరచిపోకూడదు. వారి కలను నిజం చేసే ప్రతి అడుగూ మనందరికీ గర్వకారణం."],
+    "lokesh": ["కష్టంలో ఉన్నవారికి వెంటనే స్పందించే నాయకుడిని ప్రజలు గుర్తుపెట్టుకుంటారు. యువతకు ఉద్యోగాలు, అవకాశాలు ఇవ్వాలన్నదే లోకేశ్ గారి ధ్యేయం అని అభిమానులు చెబుతారు.",
+               "చిన్న సమస్యకైనా అండగా నిలవడం నాయకత్వ లక్షణం. లోకేశ్ గారి ఈ వేగం యువతకు స్ఫూర్తి అని పసుపు సైన్యం గర్వపడుతోంది.",
+               "ఎదుగుతున్న నాయకుడు ప్రజల మధ్యే ఉండాలి. ఆ దారిలోనే లోకేశ్ గారు ముందుకు సాగుతున్నారని తెలుగు తమ్ముళ్లు అంటున్నారు."],
+    "chandrababu": ["అభివృద్ధి, సంక్షేమం రెండింటినీ సమన్వయం చేయడం చంద్రబాబు గారి పాలనా శైలి అని అభిమానులు అంటారు. ఈ వార్త ఆ దిశలో మరో సూచన.",
+                    "విజన్ ఉన్న నాయకుడు ముందు చూపుతో నిర్ణయాలు తీసుకుంటారు. రాష్ట్రం కోసం రాత్రింబవళ్లు పనిచేసే నాయకుడు మన చంద్రబాబు గారు అని కార్యకర్తలు గర్వంగా చెబుతారు.",
+                    "అనుభవం, దూరదృష్టి కలిసిన నాయకత్వం రాష్ట్రానికి భరోసా. ఈ వార్తను అందరికీ షేర్ చేయండి."],
+    "counter": ["ప్రచారం కాదు, వాస్తవమే ముఖ్యం. ఏ విషయమైనా నిజమా కాదా చూసి నమ్మడం మనందరి బాధ్యత.",
+                "తప్పుడు ప్రచారం ఎంత వేగంగా వ్యాపిస్తుందో, నిజం అంత వేగంగా చేరాలి. మీ మిత్రులకు ఈ నిజాన్ని షేర్ చేయండి.",
+                "అసత్యాన్ని నమ్మే ముందు ఒక్కసారి ఆధారాలు చూడండి. నిజం ఎప్పుడూ నిలుస్తుంది."],
+    "tdp": ["తెలుగుదేశం కార్యకర్తల కష్టమే పార్టీ బలం. ఇలాంటి వార్తలు వారికి మరింత ఉత్సాహాన్నిస్తాయి.",
+            "పసుపు జెండా కోసం ఏళ్ల తరబడి శ్రమించిన కార్యకర్తలకు వందనాలు. ఈ వార్తను మీ తెలుగు తమ్ముళ్లందరికీ షేర్ చేయండి.",
+            "తెలుగు ప్రజల ఆత్మగౌరవమే తెలుగుదేశం పునాది. ఆ స్ఫూర్తితో అందరం కలిసి ముందుకు సాగుదాం."],
+    "nda": ["కూటమి బలం అంటే మూడు పార్టీల సమన్వయం. రాష్ట్ర అభివృద్ధి కోసం అందరూ కలిసి పనిచేయడం ప్రజలకు భరోసా.",
+            "కేంద్రం, రాష్ట్రం కలిసి నడిస్తే అభివృద్ధికి రెట్టింపు వేగం వస్తుందని కూటమి అభిమానులు నమ్ముతారు.",
+            "ఐక్యతే బలం. ఈ కూటమి కృషి ఫలితాలు ప్రజలకు చేరాలని ఆశిద్దాం."],
+    "development": ["రోడ్లు, పరిశ్రమలు, ఉద్యోగాలు: అభివృద్ధి కళ్లముందే కనిపిస్తే ప్రజలకు నమ్మకం పెరుగుతుంది. ఈ వార్త అలాంటి ఒక అడుగు.",
+                    "ఒక్క పెట్టుబడి వేల కుటుంబాలకు ఉపాధి అవుతుంది. అభివృద్ధి వేగం ఇలాగే కొనసాగాలని తెలుగు తమ్ముళ్లు కోరుకుంటున్నారు.",
+                    "రాష్ట్రం ముందుకు సాగుతుంటే ప్రతి తెలుగువాడికీ గర్వమే. ఈ వార్తను మీ ఊరి వాళ్లకూ చేరవేయండి."],
+    "local": ["మన ఊరి అభివృద్ధి మన గర్వం. ఇలాంటి మంచి వార్తలను అందరికీ చేరవేద్దాం.",
+              "నూజివీడు, చాట్రాయి ప్రజల కోసం జరిగే ప్రతి మంచి పనికీ మన మద్దతు ఉండాలి."],
+}
+
+
+def note(niche: str, key: str = "") -> str:
+    lines = NOTES.get(niche, [])
+    return lines[int(key[2:8] or "0", 16) % len(lines)] if lines and key else ""
+
+
 ANGLE = {k: v[0] for k, v in ANGLES.items()}   # first line of each, for tests and fallbacks
 SLOGAN = {"janasena": "జై జనసేన!"}
 
@@ -86,6 +127,9 @@ def hashtags(lang: str, niche: str, story: Story | None = None) -> list[str]:
                 "#JanaSenaParty", "#DeputyCM"]
     if niche == "join":
         tags += ["#JoinTDP", "#TDPMembership"]
+    if niche == "ntr":
+        tags = ["#NTR", "#TDP", "#TeluguDesam", "#PulseBoosting", "#Shorts", "#NandamuriTarakaRamaRao", "#TDPHistory",
+                "#JaiNTR", "#AnnaNTR", "#ChandrababuNaidu", "#AndhraPradesh", "#TeluguPride", "#TeluguNews"]
     if story is not None:
         for _te, en, region in regions.for_post(story.key, f"{story.headline} {story.summary}", 3):
             tags += ["#" + en.replace(" ", ""), "#" + region]
@@ -98,7 +142,7 @@ def hashtags(lang: str, niche: str, story: Story | None = None) -> list[str]:
 
 
 def title(story: Story, lang: str, niche: str) -> str:
-    tail = f" | {'Janasena' if niche == 'janasena' else 'TDP'} | {cfg.BRAND}"
+    tail = f" | {'Janasena' if niche == 'janasena' else 'NTR | TDP' if niche == 'ntr' else 'TDP'} | {cfg.BRAND}"
     head = story.headline
     if len(head) + len(tail) <= 100:
         return head + tail
@@ -113,7 +157,12 @@ def tags(lang: str, niche: str, story: Story | None = None) -> list[str]:
     if niche == "janasena":
         words = [cfg.BRAND, "Janasena", "జనసేన", "Pawan Kalyan", "పవన్ కళ్యాణ్", "Deputy CM Pawan Kalyan", "Janasena Party",
                  "Andhra Pradesh", "ఆంధ్రప్రదేశ్", "Telugu news", "తెలుగు వార్తలు", "AP news", "AP politics", "shorts"]
-    if story is not None:
+    if niche == "ntr":
+        words = [cfg.BRAND, "NTR", "ఎన్టీఆర్", "N. T. Rama Rao", "Nandamuri Taraka Rama Rao", "Anna NTR", "Telugu Desam Party",
+                 "తెలుగుదేశం పార్టీ", "TDP history", "తెలుగుదేశం చరిత్ర", "Telugu Vari Atma Gouravam", "తెలుగు వారి ఆత్మగౌరవం",
+                 "Chandrababu Naidu", "చంద్రబాబు నాయుడు", "Telugu Desam founder", "NTR Bhavan", "Andhra Pradesh", "Telugu pride",
+                 "Anna Canteen", "TDP", "shorts"]
+    elif story is not None:
         for te, en, region in regions.for_post(story.key, f"{story.headline} {story.summary}", 5):
             words += [en, te, f"{en} news"]
     out, total, seen = [], 0, set()
@@ -135,6 +184,9 @@ def source_line(story: Story) -> str:
 
 def area_lines(story: Story) -> list[str]:
     """Where this matters: districts the story names, then a rotation, across all three regions of Andhra Pradesh."""
+    if story.kind == "ntr":
+        return ["తెలుగు ప్రజలందరి కోసం: ఆంధ్రప్రదేశ్, తెలంగాణ, ప్రపంచవ్యాప్తంగా ఉన్న తెలుగు వారు.",
+                "For Telugu people everywhere: Andhra Pradesh, Telangana and the Telugu diaspora.", ""]
     ds = regions.for_post(story.key, f"{story.headline} {story.summary}", 8)
     return [
         "ఈ వార్త ఆంధ్రప్రదేశ్‌లోని అన్ని జిల్లాలు, 175 నియోజకవర్గాల ప్రజల కోసం: " + ", ".join(d[0] for d in ds) + " మరియు ఉత్తరాంధ్ర, కోస్తాంధ్ర, రాయలసీమ ప్రాంతాలు.",
@@ -149,8 +201,13 @@ def mention_line() -> str:
 def description(story: Story, lang: str, niche: str) -> str:
     more = [angle(niche, story.key), ""]
     more += [story.summary, ""] if story.summary else []
+    if note(niche, story.key):
+        more += [note(niche, story.key), ""]
     if story.related:
-        more += ["Also in the news:"] + [f"- {h}" for h, _ in story.related] + [""]
+        more += ["ముఖ్యాంశాలు (Key points):" if niche == "ntr" else "Also in the news:"] + [f"- {h}" for h, _ in story.related] + [""]
+    if niche == "ntr":
+        from channels.trending.ntr_bank import english_line
+        more += [english_line(story.headline) + ". Telugu Desam Party history, NTR and Chandrababu Naidu, told for Telugu supporters.", ""]
     return "\n".join([
         story.headline, "",
         *more,
@@ -159,7 +216,7 @@ def description(story: Story, lang: str, niche: str) -> str:
         *area_lines(story),
         *join_lines(), *([""] if join_lines() else []),
         *([mention_line(), ""] if cfg.MENTIONS else []),
-        DISCLOSURE_JSP if niche == "janasena" else DISCLOSURE, "",
+        DISCLOSURE_JSP if niche == "janasena" else DISCLOSURE_HISTORY if niche == "ntr" else DISCLOSURE, "",
         f"{cfg.BRAND}: like, share and subscribe.", "",
         " ".join(hashtags(lang, niche, story)),
     ])
@@ -182,13 +239,17 @@ def row_for(story: Story, lang: str, niche: str) -> dict:
         head = f"{hook(niche, story.key)} {head}"
     head = complete(head, 260) or head  # no trailing '…' or half sentence on the card
     kind = "Source"
-    related = "\n".join([angle(niche, story.key)] + [f"• {h}" for h, _ in story.related[:2]])
+    bullets = "\n".join([angle(niche, story.key)] + [f"• {h}" for h, _ in story.related[:2]])
+    extra = note(niche, story.key)
+    # The fan note (2 or 3 lines) takes the place of the other outlets' headlines on the card; those stay in the description.
+    related = f"{angle(niche, story.key)}\n{extra}" if extra else bullets
     return {"id": story.key, "category": niche, "special": "",
-            "text_primary": head, "text_summary": complete(story.summary, 400, soft=False), "text_related": related,
-            "text_secondary": f"{kind}: {story.publisher}"}
+            "text_primary": head, "text_summary": complete(story.summary, 400, soft=False),
+            "text_related": related, "_bullets": bullets,
+            "text_secondary": story.publisher if story.kind == "ntr" else f"{kind}: {story.publisher}"}
 
 
-MIN_CARD_SCALE = 0.58   # below this the text is too small to read on a phone; trim the reading matter instead
+MIN_CARD_SCALE = 0.5   # below this the text is too small to read on a phone; trim the reading matter instead
 
 
 def fit_row(row: dict, rcfg) -> dict:
@@ -205,6 +266,10 @@ def fit_row(row: dict, rcfg) -> dict:
     row = dict(row)
     if ok(row):
         return row
+    if row.get("_bullets") and row["_bullets"] != row["text_related"]:   # the fan note does not fit: fall back to the headlines
+        row["text_related"] = row["_bullets"]
+        if ok(row):
+            return row
     rel = row["text_related"].split("\n")
     for keep in (2, 1):          # angle line + one bullet, then the angle line alone
         row["text_related"] = "\n".join(rel[:keep])

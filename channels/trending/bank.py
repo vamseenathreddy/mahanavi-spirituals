@@ -113,6 +113,9 @@ def _templated(templates, niche: str) -> list[Story]:
 
 
 def bank_stories(niche: str = "innovations") -> list[Story]:
+    if niche == "ntr":
+        from channels.trending.ntr_bank import ntr_stories
+        return ntr_stories()
     if niche == "join":
         return _templated(JOIN, niche)
     if niche == "voice":

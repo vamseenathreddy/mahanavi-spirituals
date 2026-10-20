@@ -17,7 +17,7 @@ FONTS = REPO_ROOT / "channels/engine/assets/fonts"
 BRAND = "Pulse Boosting"
 HANDLE = "@PulseBoosting"
 LANGS = ["te"]          # 2026-10-17: Telugu only (TDP-supportive channel)
-NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter", "amaravati", "local"]   # Janasena is switched off: TDP-only channel
+NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter", "amaravati", "local", "ntr"]   # Janasena is switched off: TDP-only channel
 # 2026-10-18: 6 posts a day for now (was 12). One day = these 6 posts in order, repeating daily:
 # 2026-10-18 (later): CURRENT NEWS ONLY, no old achievements. Every post is a fresh headline raised in the voice of a
 # hardcore fan (Babu's stage style: "తెలుగు తమ్ముళ్లూ", "తెలుగుదేశం అభిమానులారా"), and one post a day answers
@@ -32,13 +32,13 @@ LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "En
 NICHE_EN = {"chandrababu": "Chandrababu Naidu", "lokesh": "Nara Lokesh", "tdp": "Telugu Desam Party",
             "nda": "NDA Alliance", "development": "AP Development", "innovations": "CM Innovations",
             "join": "Join TDP", "voice": "Your Constituency", "counter": "Facts and Answers",
-            "amaravati": "Amaravati", "local": "Nuzvid and Chatrai"}
+            "amaravati": "Amaravati", "local": "Nuzvid and Chatrai", "ntr": "NTR and TDP History"}
 NICHE_TAG = {"chandrababu": "ChandrababuNaidu", "lokesh": "NaraLokesh", "tdp": "TDP", "nda": "NDAAlliance",
              "development": "APDevelopment", "innovations": "Innovations",
              "join": "JoinTDP", "voice": "MyConstituency", "counter": "TDPFacts",
-             "amaravati": "Amaravati", "local": "Nuzvid"}
+             "amaravati": "Amaravati", "local": "Nuzvid", "ntr": "NTR"}
 NICHE_NATIVE = {
-    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం", "నిజం చెబుదాం", "అమరావతి", "నూజివీడు, చాట్రాయి"],
+    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం", "నిజం చెబుదాం", "అమరావతి", "నూజివీడు, చాట్రాయి", "ఎన్టీఆర్, తెలుగుదేశం చరిత్ర"],
     "en": list(NICHE_EN.values()),
 }
 LANG_TAG = {"te": "TeluguNews", "en": "IndiaNews"}
@@ -104,9 +104,9 @@ def render_cfg(lang: str, niche: str) -> ChannelConfig:
         assets_dir=CHANNEL_DIR / "assets",
         # 2026-10-17: no "TRENDING #n" label on the Short (rank and niche live in the description); bigger text,
         # more reading matter (summary + up to four related headlines) filling the space the label and big logo used.
-        blocks=[TextBlock(field="text_primary", font=main, size=124, color_key="primary", bold=True),
-                TextBlock(field="text_summary", font=main, size=98, color_key="secondary", bold=False),
-                TextBlock(field="text_related", font=main, size=90, color_key="secondary", bold=False)],
+        blocks=[TextBlock(field="text_primary", font=main, size=96, color_key="primary", bold=True),
+                TextBlock(field="text_summary", font=main, size=78, color_key="secondary", bold=False),
+                TextBlock(field="text_related", font=main, size=74, color_key="secondary", bold=False)],
         corner_field="text_secondary",
         bg_overlay=portraits.make_overlay(str(main)),
         text_shadow=False,
@@ -121,8 +121,8 @@ def render_cfg(lang: str, niche: str) -> ChannelConfig:
         text_max_w=880,
         text_anchor=0.46,
         cta_text=CTA[lang][0],  # subscribe line only (no join-groups line on the card)
-        cta_size=46,
-        cta_max_w=780,
+        cta_size=38,
+        cta_max_w=960,
         logo_width=170,
         logo_y=235,
         safe_top=330,
@@ -139,6 +139,8 @@ def plan(seq: int, day=None, state: dict | None = None) -> tuple[str, str]:
     """(language, niche) for the seq-th post: Telugu always; niches follow DAY_PATTERN. On the 1st of a month, the
     third post of the day is the monthly Nuzvid and Chatrai post, once (state['local_month'] remembers it)."""
     niche = DAY_PATTERN[seq % len(DAY_PATTERN)]
+    if day is not None and seq % len(DAY_PATTERN) == 3 and day.toordinal() % 2 == 0:
+        niche = "ntr"   # every other day the fourth post is NTR and Telugu Desam history instead of a news post
     if day is not None and day.day == 1 and seq % len(DAY_PATTERN) == 2 and (state or {}).get("local_month") != day.strftime("%Y-%m"):
         niche = "local"
     return LANGS[0], niche

@@ -39,7 +39,7 @@ YT_CATEGORY = {"breaking": "25", "sports": "17", "cinema": "24", "technology": "
 TOP_N = 10
 # order of sources to try per niche
 SOURCE_ORDER = {"innovations": ("bank", "news"), "development": ("news",), "join": ("bank",), "voice": ("bank",),
-                "janasena": ("news", "bank")}
+                "janasena": ("news", "bank"), "ntr": ("bank",)}
 DEFAULT_ORDER = ("news",)   # current news only: a quiet feed skips the slot instead of posting an old fact
 
 # TDP-supportive channel (2026-10-17): Telugu political search feeds, keyword-filtered.
@@ -341,7 +341,8 @@ def pick_story(niche: str, lang: str, used: set[str], yt=None, now: datetime | N
             # Only the source's top 10. Widest coverage first (most outlets carrying the story = most reach), then
             # shorter headlines (they read better on a 5 second card), then the source's own order.
             top = [x for x in pool if 0 < x.rank <= TOP_N or x.rank == 0]
-            for s in sorted(top, key=lambda x: (-len(x.related), len(x.headline) > 85, x.rank)):
+            ordered = top if niche == "ntr" else sorted(top, key=lambda x: (-len(x.related), len(x.headline) > 85, x.rank))
+            for s in ordered:
                 if s.key not in used and fresh_enough(s, now, hours):
                     return s
     return None
