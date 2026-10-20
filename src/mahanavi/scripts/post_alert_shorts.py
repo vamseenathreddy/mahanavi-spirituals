@@ -314,19 +314,14 @@ def _mantra_lines(for_date: date, offset: int) -> list[tuple[str, str]]:
     own names/mantras -- but two entries from OTHER deities are folded
     in too, so not all three of a day's Shorts have to be the same
     deity. Which other deities appear also varies day to day."""
+    # Owner request 2026-10-20 (replaces the 2026-10-03 rotation): all three Shorts of a day show the SAME mantra,
+    # the weekday deity's own (Tuesday = Hanuman, matching the photo background), so the day has one clear theme.
+    # The mantra name rotates day to day within that deity's list; `offset` is kept only for the call signature.
     today_deity = WEEKDAY_DEITY_MAP[for_date.weekday()]
     today_content = DEITY_CONTENT[today_deity]
-    beeja_today = pick_beeja_mantram(today_content, for_date)
-
-    pool: list[tuple[str, str]] = [(namam, beeja_today) for namam in today_content.mantra_namalu]
-
-    other_deities = [d for d in DEITY_CONTENT if d != today_deity]
-    for i in range(2):
-        other_deity = other_deities[(for_date.toordinal() + i) % len(other_deities)]
-        other_content = DEITY_CONTENT[other_deity]
-        pool.append((other_content.mantra_namalu[0], pick_beeja_mantram(other_content, for_date)))
-
-    mantra, beeja = pool[(for_date.toordinal() + offset) % len(pool)]
+    beeja = pick_beeja_mantram(today_content, for_date)
+    namalu = [n for n in today_content.mantra_namalu if n != beeja] or list(today_content.mantra_namalu)
+    mantra = namalu[for_date.toordinal() % len(namalu)]   # never the same line twice on one card
     return [
         ("మంత్రం", mantra),
         ("బీజ మంత్రం (శుభఫలితాల కోసం 11 సార్లు పఠించండి)", beeja),
