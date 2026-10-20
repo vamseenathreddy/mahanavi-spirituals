@@ -20,7 +20,7 @@ LANGS = ["te"]          # 2026-10-17: Telugu only (TDP-supportive channel)
 NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter", "amaravati", "local", "ntr"]   # Janasena is switched off: TDP-only channel
 # 2026-10-18: 6 posts a day for now (was 12). One day = these 6 posts in order, repeating daily:
 # 2026-10-18 (later): CURRENT NEWS ONLY, no old achievements. Every post is a fresh headline raised in the voice of a
-# hardcore fan (Babu's stage style: "తెలుగు తమ్ముళ్లూ", "తెలుగుదేశం అభిమానులారా"), and one post a day answers
+# hardcore fan (Babu's stage style: "తమ్ముళ్లూ", "తెలుగుదేశం అభిమానులారా"), and one post a day answers
 # negative propaganda with a fact. The evergreen bank niches (innovations, join, voice) are not in the rotation.
 # 2026-10-18 (focus): Amaravati, Lokesh helping people and rising, positive Nuzvid and Chatrai news.
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
@@ -50,7 +50,7 @@ WHATSAPP_URL = "https://chat.whatsapp.com/E70aL6tTrzT4eftmUV9npI"
 TELEGRAM_URL = "https://t.me/PulseBoostingTDP"
 # (subscribe line, join-groups line, comment line), drawn under the headline
 CTA = {
-    "te": ("తెలుగు తమ్ముళ్లూ, ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మళ్లీ కనిపించకపోవచ్చు", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
+    "te": ("తమ్ముళ్లూ, ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మళ్లీ కనిపించకపోవచ్చు", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
            "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"),
     "en": ("6 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
            "You may never see this channel again unless you subscribe right now"),
