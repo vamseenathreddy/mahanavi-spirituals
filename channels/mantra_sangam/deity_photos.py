@@ -10,17 +10,22 @@ from pathlib import Path
 DEITIES = Path(__file__).resolve().parents[2] / "assets" / "images" / "deities"
 
 PHOTOS = {
-    "shiva": ["shiva_g1", "shiva_g2"], "hanuman": ["hanuman_g1", "hanuman_g2"], "ganesha": ["ganesha_g1", "ganesha_g2"],
+    "ayyappa": ['ayyappa_n1', 'ayyappa_n2', 'ayyappa_n3'],
+    "annapurna": ['annapurna_n1', 'annapurna_n2'],
+    "gita": ['gita_n1', 'gita_n2', 'gita_n3', 'gita_n4', 'gita_n5', 'gita_n6', 'gita_n7', 'gita_n8', 'gita_n9', 'gita_n10'],
+
+    "shiva": ["shiva_g1", "shiva_g2", "shivafamily_n1", "shivafamily_n2"], "hanuman": ["hanuman_g1", "hanuman_g2"], "ganesha": ["ganesha_g1", "ganesha_g2"],
     "vishnu": ["vishnu_g1", "vishnu_g3", "vishnu_g5", "vishnu_g2"], "lakshmi": ["lakshmi_g1", "lakshmi_g2"],
-    "shani": ["shani_g1", "shani_g3", "shani_g5"], "surya": ["surya_g2"], "durga": ["durga_g1", "durga_g2"],
-    "krishna": ["krishna_g1"], "rama": ["rama_g1", "rama_g2"], "narasimha": ["narasimha_g1", "narasimha_g2"],
-    "saraswati": ["saraswati_g2"], "murugan": ["murugan_g1", "murugan_g2"], "parvati": ["parvati_g2"],
+    "shani": ["shani_g1", "shani_g3", "shani_g5"], "surya": ["surya_g2"], "durga": ["durga_g1", "durga_g2", "durga_n1", "durga_n2", "durga_n3", "durga_n4", "durga_n5", "durga_n6", "durga_n7", "durga_n8", "durga_n9", "durga_n10"],
+    "krishna": ["krishna_g1", "krishna_n1", "krishna_n2", "krishna_n3", "krishna_n4", "krishna_n5", "krishna_n6", "krishna_n7", "krishna_n8", "krishna_n9", "krishna_n10"], "rama": ["rama_g1", "rama_g2", "rama_n1", "rama_n2", "rama_n3", "rama_n4", "rama_n5", "rama_n6", "rama_n7", "rama_n8", "rama_n9", "rama_n10"], "narasimha": ["narasimha_g1", "narasimha_g2", "narasimha_n1", "narasimha_n2", "narasimha_n3"],
+    "saraswati": ["saraswati_g2", "saraswati_n1", "saraswati_n2", "saraswati_n3", "saraswati_n4", "saraswati_n5", "saraswati_n6", "saraswati_n7", "saraswati_n8", "saraswati_n9", "saraswati_n10"], "murugan": ["murugan_g1", "murugan_g2"], "parvati": ["parvati_g2"],
     "dattatreya": ["dattatreya_g1", "dattatreya_g3", "dattatreya_g5"], "venkateswara": ["venkateswara_g1"],
 }
 WEEKDAY = ["shiva", "hanuman", "ganesha", "vishnu", "lakshmi", "shani", "surya"]
 PLANET = {"mars": "hanuman", "venus": "lakshmi", "mercury": "vishnu", "jupiter": "dattatreya", "saturn": "shani",
           "sun": "surya", "moon": "shiva", "rahu": "durga", "ketu": "ganesha"}
-KEYWORDS = [  # first match wins, so the specific forms come before the general ones
+KEYWORDS = [
+    ("अयप्पा", "ayyappa"), ("अन्नपूर्णा", "annapurna"),  # first match wins, so the specific forms come before the general ones
     ("नरसिंह", "narasimha"), ("हनुमान", "hanuman"), ("गणेश", "ganesha"), ("गजानन", "ganesha"), ("सरस्वती", "saraswati"),
     ("लक्ष्मी", "lakshmi"), ("दुर्गा", "durga"), ("पार्वती", "parvati"), ("कार्तिकेय", "murugan"), ("स्कंद", "murugan"),
     ("कृष्ण", "krishna"), ("राम", "rama"), ("शिव", "shiva"), ("महादेव", "shiva"), ("शनि", "shani"), ("सूर्य", "surya"),

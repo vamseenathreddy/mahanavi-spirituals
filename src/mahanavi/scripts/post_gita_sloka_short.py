@@ -63,6 +63,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from mahanavi.images import deity_bg
 from mahanavi.config import Settings, get_settings
 from mahanavi.content.bhagavad_gita_slokas import GITA_SLOKAS, GitaSloka
 from mahanavi.content.category_comments import build_category_comment
@@ -224,6 +225,7 @@ def main() -> int:
             verse_card = GitaSlokaCard(
                 sloka=sloka, icon_paths=_icon_paths(settings), previous_quiz_sloka=previous_quiz_sloka,
                 invocation_text=pick_invocation(today.toordinal()),
+                bg_image=deity_bg.pick("gita", today),
             )
             image_path = GitaSlokaCardRenderer(settings).render(verse_card)
             print(f"Rendered card: {image_path}")

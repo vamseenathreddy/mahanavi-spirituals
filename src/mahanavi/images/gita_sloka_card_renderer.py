@@ -188,6 +188,7 @@ class GitaSlokaCard:
     # original fixed line, but post_gita_sloka_short.py overrides it
     # with pick_invocation(for_date) so it rotates day-to-day.
     invocation_text: str = DEFAULT_INVOCATION
+    bg_image: Path | None = None  # rotating Krishna-Arjuna scene; falls back to the configured artwork
 
 
 class GitaSlokaCardRenderer:
@@ -206,7 +207,7 @@ class GitaSlokaCardRenderer:
         content_width = width - 2 * margin_x
 
         try:
-            canvas = self._build_background(width, height)
+            canvas = self._build_background(width, height, card.bg_image)
             self._draw_border(canvas)
 
             draw = ImageDraw.Draw(canvas)
@@ -351,12 +352,12 @@ class GitaSlokaCardRenderer:
             outline=BORDER_ACCENT, width=2,
         )
 
-    def _build_background(self, width: int, height: int) -> Image.Image:
+    def _build_background(self, width: int, height: int, override: Path | None = None) -> Image.Image:
         """Real Krishna-Arjuna artwork, cover-fit to the card and dimmed
         under a flat dark overlay so text stays readable -- falls back
         to the plain gradient if the configured image is missing/
         unreadable, so a missing asset never breaks the render."""
-        bg_path = self._settings.gita_background_image_path
+        bg_path = override if override is not None and override.exists() else self._settings.gita_background_image_path
         if bg_path is not None and bg_path.exists():
             try:
                 with Image.open(bg_path) as raw:
