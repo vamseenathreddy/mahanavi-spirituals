@@ -62,7 +62,7 @@ def hashtags(row):
 def description(row):
     hi, en = NAMES[row["category"]]
     k = row["category"]
-    lines = [f"{timings.date_hi(__import__('datetime').date.fromisoformat(row['date_iso']))} का {hi} ({timings.LOCATION_NAME_HI} के अनुसार)", ""]
+    lines = [f"{timings.date_hi(__import__('datetime').date.fromisoformat(row['date_iso']))} का {hi}", ""]
     if k == "rahu":
         lines += [f"राहु काल: {row['rahu']}", f"यमगंड: {row['yamagandam']}", f"गुलिक काल: {row['gulika']}",
                   f"वर्ज्य: {row['varjyam']}", f"दुर्मुहूर्त: {row['durm_times']}"]
@@ -72,8 +72,8 @@ def description(row):
         lines += [f"दुर्मुहूर्त: {row['durm_times']}", f"राहु काल: {row['rahu']}"]
     lines += ["", f"{row['t_mantra_label']}: {row['t_mantra']}", "",
               f"रोज़ {hi} जानने के लिए {CHANNEL} को सब्सक्राइब करें। अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे।", "",
-              f"{en} for {row['weekday_en']} {_d(row)} ({timings.LOCATION_NAME_EN}). Times are calculated for "
-              f"{timings.LOCATION_NAME_EN}; they differ by a few minutes in other cities. Subscribe to {CHANNEL} for a new "
+              f"{en} for {row['weekday_en']} {_d(row)}. Times are in Indian Standard Time and "
+              f"may differ by a few minutes in other cities. Subscribe to {CHANNEL} for a new "
               "Hindu panchang timing every day. You may never see this channel again unless you subscribe right now.", ""]
     contact = os.environ.get("CONTACT_EMAIL", "")
     if contact:

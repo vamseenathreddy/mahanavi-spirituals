@@ -2,7 +2,7 @@
 
 Hindi version of Channel A' three daily timing Shorts. The times are computed locally
 with the Swiss Ephemeris (mahanavi.panchang.local_provider), so no Panchang API and no quota is
-used. Location is New Delhi (the card says so); change LOCATION to use another city.
+used. Times are computed for New Delhi coordinates, but no city name is shown anywhere (owner request 2026-10-20).
 """
 from datetime import date, timedelta
 
@@ -67,7 +67,7 @@ def timing_row(kind: str, d: date) -> dict:
     row = {
         "id": f"{kind}-{d.isoformat()}", "category": kind, "special": "", "source": "Local Swiss Ephemeris panchang",
         "text_primary": "", "text_secondary": "",
-        "t_date": f"{date_hi(d)} ({LOCATION_NAME_HI})", "t_place": "",
+        "t_date": date_hi(d), "t_place": "",
         "t_mantra_label": f"आज के देव: {deity}", "t_mantra": mantra,
         "t_comment": pick, "t_sub": CTA[kind], "t_opinion": OPINION,
         "weekday_en": WEEKDAY_EN[d.weekday()], "date_iso": d.isoformat(),

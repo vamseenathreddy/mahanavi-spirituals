@@ -12,7 +12,7 @@ from channels.mantra_sangam import channel_config, metadata_timings, timings
 PLAYLIST_TITLE = "आज का पंचांग | Daily Panchang: Rahu Kaal, Shubh Muhurat, Durmuhurat (Hindi)"
 PLAYLIST_DESC = ("हर दिन का राहु काल, शुभ मुहूर्त (अभिजीत और ब्रह्म मुहूर्त) और दुर्मुहूर्त, सरल हिंदी में एक शॉर्ट में। "
                  "रोज़ अपडेट के लिए Divine Mantra Sangam को सब्सक्राइब करें।\n\nDaily Rahu Kaal, Shubh Muhurat (Abhijit and "
-                 "Brahma Muhurat) and Durmuhurat in simple Hindi, one short every day. Times are calculated for New Delhi.\n\n"
+                 "Brahma Muhurat) and Durmuhurat in simple Hindi, one short every day. Times are in Indian Standard Time.\n\n"
                  "#RahuKaal #ShubhMuhurat #Durmuhurat #Panchang #HindiDevotional")
 
 
