@@ -41,6 +41,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from mahanavi.images import deity_bg
 from mahanavi.config import Settings, get_settings
 from mahanavi.content.category_comments import build_category_comment
 from mahanavi.content.purana_concept_seo import build_purana_concept_seo
@@ -154,7 +155,10 @@ def main() -> int:
     today = datetime.now(tz).date()
 
     try:
-        card = PuranaConceptCard(concept=concept, icon_paths=_icon_paths(settings))
+        card = PuranaConceptCard(
+            concept=concept, icon_paths=_icon_paths(settings),
+            bg_image=deity_bg.photo_for_story(today, concept.title_te, concept.invocation_te, concept.body_te),
+        )
         renderer = PuranaConceptCardRenderer(settings)
         layers = renderer.render_layers(card)
         print(f"Rendered layers: {layers.background_path}, {layers.chakra_path}, {layers.text_path}")

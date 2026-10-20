@@ -59,6 +59,7 @@ import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from mahanavi.images import deity_bg
 from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
 
 from mahanavi.config import Settings
@@ -132,6 +133,7 @@ class PuranaShortCard:
     episode_number: int = 1  # ever-incrementing posting count, NOT the 0-9 content rotation index -- see module docstring
     subscribe_text: str = DEFAULT_SUBSCRIBE_TEXT
     icon_paths: list[Path] = field(default_factory=list)
+    bg_image: Path | None = None  # deity photo of the story, behind the text
 
 
 @dataclass(frozen=True, slots=True)
@@ -239,6 +241,7 @@ class PuranaShortCardRenderer:
 
         try:
             background = vertical_gradient(width, height, COLOR_PURANA_TOP, COLOR_PURANA_BOTTOM).convert("RGBA")
+            background = deity_bg.with_photo(background, card.bg_image, mix=0.6, dim=95)
             self._draw_border(background)
             background = bake_watermark(background)
 

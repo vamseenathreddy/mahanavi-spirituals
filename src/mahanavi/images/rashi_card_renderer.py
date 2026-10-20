@@ -37,6 +37,7 @@ import logging
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 
+from mahanavi.images import deity_bg
 from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
 
 from mahanavi.config import Settings
@@ -128,6 +129,7 @@ class RashiCard:
     subscribe_text: str = DEFAULT_SUBSCRIBE_TEXT
     comment_prompt_text: str = ""
     icon_paths: list[Path] = field(default_factory=list)  # e.g. [Lakshmi, Ganesha, Kubera], left-to-right
+    bg_image: Path | None = None  # ruling planet's deity photo behind the text
 
 
 class RashiCardRenderer:
@@ -143,7 +145,7 @@ class RashiCardRenderer:
         content_width = width - 2 * margin_x
 
         try:
-            canvas = bake_watermark(self._load_background(card.rashi_index).convert("RGBA"))
+            canvas = bake_watermark(deity_bg.with_photo(self._load_background(card.rashi_index).convert("RGBA"), card.bg_image))
             draw = ImageDraw.Draw(canvas)
 
             # Content starts just below the muggu roundel (drawn by the

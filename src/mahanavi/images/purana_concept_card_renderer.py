@@ -56,6 +56,7 @@ import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from mahanavi.images import deity_bg
 from PIL import Image, ImageDraw, ImageFont, UnidentifiedImageError
 
 from mahanavi.config import Settings
@@ -115,6 +116,7 @@ class PuranaConceptCard:
     concept: PuranaConceptShort
     subscribe_text: str = DEFAULT_SUBSCRIBE_TEXT
     icon_paths: list[Path] = field(default_factory=list)
+    bg_image: Path | None = None  # deity photo matching the concept, behind the text
 
 
 @dataclass(frozen=True, slots=True)
@@ -203,6 +205,7 @@ class PuranaConceptCardRenderer:
 
         try:
             background = vertical_gradient(width, height, COLOR_CONCEPT_TOP, COLOR_CONCEPT_BOTTOM).convert("RGBA")
+            background = deity_bg.with_photo(background, card.bg_image, mix=0.6, dim=95)
             self._draw_border(background)
             background = bake_watermark(background)
 

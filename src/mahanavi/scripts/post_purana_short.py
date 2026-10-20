@@ -39,6 +39,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from mahanavi.images import deity_bg
 from mahanavi.config import Settings, get_settings
 from mahanavi.content.category_comments import build_category_comment
 from mahanavi.content.purana_short_seo import build_purana_short_seo
@@ -207,7 +208,10 @@ def main() -> int:
     episode_number = episode_count + 1
 
     try:
-        card = PuranaShortCard(story=story, episode_number=episode_number, icon_paths=_icon_paths(settings))
+        card = PuranaShortCard(
+            story=story, episode_number=episode_number, icon_paths=_icon_paths(settings),
+            bg_image=deity_bg.photo_for_story(today, story.title_te, story.invocation_te, story.story_te),
+        )
         renderer = PuranaShortCardRenderer(settings)
         layers = renderer.render_layers(card)
         print(f"Rendered layers: {layers.background_path}, {layers.chakra_path}, {layers.text_path}")
