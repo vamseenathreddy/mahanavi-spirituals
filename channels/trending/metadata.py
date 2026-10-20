@@ -1,19 +1,19 @@
-"""Title, description, tags and comment for a trending Short. The source is always named and linked."""
+"""Title, description, tags and comment for a trending Short. Descriptions carry a short summary only: no source names or links (owner request 2026-10-20); the card keeps its small source line."""
 from __future__ import annotations
 
 from channels.trending import config as cfg
 from channels.trending import regions
 from channels.trending.sources import Story, complete, trim
 
-DISCLOSURE = ("ఈ ఛానెల్ తెలుగుదేశం పార్టీ అనుకూల దృక్పథంతో నడుస్తుంది. ఇందులోని విశ్లేషణ మా అభిప్రాయం; వార్తలు పేర్కొన్న "
-              "మూలాల నుంచి తీసుకున్నవి. హక్కులు ఆయా ప్రచురణకర్తలవి.\n"
-              "This channel is run from a pro-TDP point of view. The analysis is our opinion; the facts come from the "
-              "sources named above. All rights belong to the original publishers.")
+DISCLOSURE = ("ఈ ఛానెల్ తెలుగుదేశం పార్టీ అనుకూల దృక్పథంతో నడుస్తుంది. ఇందులోని విశ్లేషణ మా అభిప్రాయం; వార్తలు "
+              "పబ్లిక్ వార్తా నివేదికల నుంచి తీసుకున్నవి.\n"
+              "This channel is run from a pro-TDP point of view. The analysis is our opinion; the facts come from public news "
+              "reports.")
 
-DISCLOSURE_JSP = ("ఈ పోస్ట్ జనసేన పార్టీ దృక్పథంతో ఉంది. ఇందులోని విశ్లేషణ మా అభిప్రాయం; వార్తలు పేర్కొన్న మూలాల నుంచి "
-                  "తీసుకున్నవి. హక్కులు ఆయా ప్రచురణకర్తలవి.\n"
-                  "This post is from a Janasena point of view. The analysis is our opinion; the facts come from the "
-                  "sources named above. All rights belong to the original publishers.")
+DISCLOSURE_JSP = ("ఈ పోస్ట్ జనసేన పార్టీ దృక్పథంతో ఉంది. ఇందులోని విశ్లేషణ మా అభిప్రాయం; వార్తలు పబ్లిక్ వార్తా నివేదికల నుంచి "
+                  "తీసుకున్నవి.\n"
+                  "This post is from a Janasena point of view. The analysis is our opinion; the facts come from public news "
+                  "reports.")
 INTRO_JSP = "జనసేన, పవన్ కళ్యాణ్ గారి కార్యక్రమాలు, ప్రజా సమస్యలపై వార్తలు."
 
 # The channel speaks as a hardcore fan: passionate slogans, never attacks on anyone, never a claim the story does not
@@ -150,11 +150,10 @@ def description(story: Story, lang: str, niche: str) -> str:
     more = [angle(niche, story.key), ""]
     more += [story.summary, ""] if story.summary else []
     if story.related:
-        more += ["Also reported:"] + [f"- {h} ({p})" for h, p in story.related] + [""]
+        more += ["Also in the news:"] + [f"- {h}" for h, _ in story.related] + [""]
     return "\n".join([
         story.headline, "",
         *more,
-        source_line(story), "",
         INTRO_JSP if niche == "janasena" else cfg.INTRO[lang],
         "" if niche == "janasena" else cfg.INTRO["en"], "",
         *area_lines(story),
@@ -171,7 +170,7 @@ def bundle(story: Story, lang: str, niche: str) -> dict:
         "title": title(story, lang, niche),
         "description": description(story, lang, niche),
         "tags": tags(lang, niche, story),
-        "comment": f"{source_line(story)}\n{cfg.CTA[lang][2]} {SLOGAN.get(niche, 'జై తెలుగుదేశం!')}" + (f"\n{mention_line()}" if cfg.MENTIONS else ""),
+        "comment": f"{cfg.CTA[lang][2]} {SLOGAN.get(niche, 'జై తెలుగుదేశం!')}" + (f"\n{mention_line()}" if cfg.MENTIONS else ""),
         "language": lang,
     }
 

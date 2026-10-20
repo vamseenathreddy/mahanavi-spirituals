@@ -76,7 +76,7 @@ def test_card_has_positive_angle_and_description_has_disclosure():
     row = metadata.row_for(s, "te", "development")
     assert "TRENDING" not in "".join(str(v) for v in row.values()) and any(row["text_related"].startswith(a) for a in metadata.ANGLES["development"])
     d = metadata.description(s, "te", "development")
-    assert "pro-TDP" in d and "Source: Eenadu" in d and "#TDP" in d
+    assert "pro-TDP" in d and "Source:" not in d and "Eenadu" not in d and "#TDP" in d
     assert "| TDP |" in metadata.title(s, "te", "development")
 
 
@@ -115,8 +115,8 @@ def test_metadata_names_source_and_mixes_english():
     s = Story("ఆసియా కప్ ఫైనల్‌లో భారత్ ఘన విజయం", "Eenadu", "https://n/1", None)
     m = metadata.bundle(s, "te", "development")
     assert len(m["title"]) <= 100 and "Pulse Boosting" in m["title"]
-    assert "Source: Eenadu" in m["description"] and "https://n/1" in m["description"]
-    assert "Link: https://n/1" in m["comment"] and m["language"] == "te"
+    assert "Source:" not in m["description"] and "Eenadu" not in m["description"] and "https://n/1" not in m["description"]
+    assert "https://n/1" not in m["comment"] and m["language"] == "te"
     assert len(metadata.hashtags("te", "development")) <= 15 and sum(len(t) + 1 for t in m["tags"]) <= 500
 
 
@@ -153,7 +153,7 @@ def test_enrich_keeps_only_same_language_related_and_row_has_source_last():
     assert len(s.related) == 3 and all("India" not in h for h, _ in s.related)
     row = metadata.row_for(s, "te", "development")
     assert row["text_summary"] and "• " in row["text_related"] and row["text_secondary"] == "Source: Eenadu"
-    assert "Also reported:" in metadata.description(s, "te", "development")
+    assert "Also in the news:" in metadata.description(s, "te", "development")
 
 
 def test_news_stories_drops_other_language_headlines(monkeypatch):
