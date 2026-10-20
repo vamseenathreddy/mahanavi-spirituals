@@ -210,7 +210,7 @@ def main() -> int:
     try:
         card = PuranaShortCard(
             story=story, episode_number=episode_number, icon_paths=_icon_paths(settings),
-            bg_image=deity_bg.photo_for_story(today, story.title_te, story.invocation_te, story.story_te),
+            bg_image=deity_bg.photo_for_story(today, title_en=story.title_en, *(story.title_te, story.invocation_te, story.story_te)),
         )
         renderer = PuranaShortCardRenderer(settings)
         layers = renderer.render_layers(card)

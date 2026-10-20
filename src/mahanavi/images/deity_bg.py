@@ -41,6 +41,31 @@ KEYWORDS = [
 ]
 WEEKDAY = ["shiva", "hanuman", "ganesha", "vishnu", "lakshmi", "shani", "surya"]
 
+import re as _re
+
+EN_RULES = [  # English title keywords, first match wins (the English title names the story's main deity most reliably)
+    ("narasimha", "narasimha"), ("kurma", "kurma"), ("varaha", "varaha"), ("dattatreya", "dattatreya"),
+    ("venkateswara", "venkateswara"), ("annapurna", "annapurna"), ("ayyappa", "ayyappa"), ("kartikeya", "murugan"),
+    ("hanuman", "hanuman"), ("ganesha", "ganesha"), ("lakshmi", "lakshmi"), ("deepavali", "lakshmi"),
+    ("savitri", "lakshmi"), ("krishna", "krishna"), ("kaliya", "krishna"), ("rukmini", "krishna"), ("sudama", "krishna"),
+    ("draupadi", "krishna"), ("rama", "rama"), ("shabari", "rama"), ("jatayu", "rama"), ("ahalya", "rama"),
+    ("vibhishana", "rama"), ("saraswati", "saraswati"), ("gayatri", "surya"), ("surya", "surya"), ("shani", "shani"),
+    ("parvati", "parvati"), ("kedara gauri", "parvati"), ("durga", "durga"), ("devi", "durga"), ("goddess", "durga"),
+    ("kali", "durga"), ("lalita", "durga"), ("chamunda", "durga"), ("shami", "durga"), ("shiva", "shiva"),
+    ("shivaratri", "shiva"), ("pradosham", "shiva"), ("kannappa", "shiva"), ("lingodbhava", "shiva"),
+    ("kamadahana", "shiva"), ("atmalinga", "shiva"), ("tripura", "shiva"), ("somnath", "shiva"), ("bhairava", "shiva"),
+    ("bhagiratha", "shiva"), ("markandeya", "shiva"), ("meenakshi", "shiva"), ("vishnu", "vishnu"), ("hayagriva", "vishnu"),
+    ("ekadashi", "vishnu"), ("gajendra", "vishnu"), ("vamana", "vishnu"), ("matsya", "vishnu"), ("tulasi", "vishnu"),
+]
+
+
+def god_for_title_en(title_en: str) -> str | None:
+    t = (title_en or "").lower()
+    for word, god in EN_RULES:
+        if _re.search(r"\b" + _re.escape(word), t):
+            return god
+    return None
+
 
 def pick(god: str, day: dt.date) -> Path | None:
     files = [DEITIES / f"{n}.jpg" for n in PHOTOS.get(god, []) if (DEITIES / f"{n}.jpg").exists()]
@@ -59,8 +84,8 @@ def photo_for_rashi(rashi_index: int, day: dt.date) -> Path | None:
     return pick(RASHI_GOD[rashi_index % 12], day)
 
 
-def photo_for_story(day: dt.date, *texts: str) -> Path | None:
-    return pick(god_for_text(*texts) or WEEKDAY[day.weekday()], day)
+def photo_for_story(day: dt.date, *texts: str, title_en: str = "") -> Path | None:
+    return pick(god_for_title_en(title_en) or god_for_text(*texts) or WEEKDAY[day.weekday()], day)
 
 
 def with_photo(base: Image.Image, path: Path | None, mix: float = 0.55, dim: int = 70) -> Image.Image:

@@ -40,6 +40,31 @@ KEYWORDS = [
     ("मत्स्य", "vishnu"), ("दत्तात्रेय", "dattatreya"), ("देवी", "durga"),
 ]
 
+import re as _re
+
+EN_RULES = [  # English title keywords, first match wins (the English title names the story's main deity most reliably)
+    ("narasimha", "narasimha"), ("kurma", "kurma"), ("varaha", "varaha"), ("dattatreya", "dattatreya"),
+    ("venkateswara", "venkateswara"), ("annapurna", "annapurna"), ("ayyappa", "ayyappa"), ("kartikeya", "murugan"),
+    ("hanuman", "hanuman"), ("ganesha", "ganesha"), ("lakshmi", "lakshmi"), ("deepavali", "lakshmi"),
+    ("savitri", "lakshmi"), ("krishna", "krishna"), ("kaliya", "krishna"), ("rukmini", "krishna"), ("sudama", "krishna"),
+    ("draupadi", "krishna"), ("rama", "rama"), ("shabari", "rama"), ("jatayu", "rama"), ("ahalya", "rama"),
+    ("vibhishana", "rama"), ("saraswati", "saraswati"), ("gayatri", "surya"), ("surya", "surya"), ("shani", "shani"),
+    ("parvati", "parvati"), ("kedara gauri", "parvati"), ("durga", "durga"), ("devi", "durga"), ("goddess", "durga"),
+    ("kali", "durga"), ("lalita", "durga"), ("chamunda", "durga"), ("shami", "durga"), ("shiva", "shiva"),
+    ("shivaratri", "shiva"), ("pradosham", "shiva"), ("kannappa", "shiva"), ("lingodbhava", "shiva"),
+    ("kamadahana", "shiva"), ("atmalinga", "shiva"), ("tripura", "shiva"), ("somnath", "shiva"), ("bhairava", "shiva"),
+    ("bhagiratha", "shiva"), ("markandeya", "shiva"), ("meenakshi", "shiva"), ("vishnu", "vishnu"), ("hayagriva", "vishnu"),
+    ("ekadashi", "vishnu"), ("gajendra", "vishnu"), ("vamana", "vishnu"), ("matsya", "vishnu"), ("tulasi", "vishnu"),
+]
+
+
+def god_for_title_en(title_en: str) -> str | None:
+    t = (title_en or "").lower()
+    for word, god in EN_RULES:
+        if _re.search(r"\b" + _re.escape(word), t):
+            return god
+    return None
+
 
 def _pick(god: str, date_key: str) -> Path | None:
     files = [DEITIES / f"{n}.jpg" for n in PHOTOS.get(god, []) if (DEITIES / f"{n}.jpg").exists()]
@@ -63,7 +88,7 @@ def picker(date_key: str, row: dict | None):
         planet = (row.get("planet_en") or "").lower()
         god = next((g for k, g in PLANET.items() if k in planet), weekday)
     elif cat == "purana":
-        god = god_for_text(row.get("title_hi", ""), row.get("invocation_hi", ""), row.get("moral_hi", ""),
+        god = god_for_title_en(row.get("title_en", "")) or god_for_text(row.get("title_hi", ""), row.get("invocation_hi", ""), row.get("moral_hi", ""),
                            row.get("purana_hi", ""), row.get("t_story", "")) or weekday
     else:
         god = weekday            # Rahu Kaal / Shubh Muhurat / Durmuhurat, mantra of the day

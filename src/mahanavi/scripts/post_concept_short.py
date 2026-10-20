@@ -157,7 +157,7 @@ def main() -> int:
     try:
         card = PuranaConceptCard(
             concept=concept, icon_paths=_icon_paths(settings),
-            bg_image=deity_bg.photo_for_story(today, concept.title_te, concept.invocation_te, concept.body_te),
+            bg_image=deity_bg.photo_for_story(today, title_en=concept.title_en, *(concept.title_te, concept.invocation_te, concept.body_te)),
         )
         renderer = PuranaConceptCardRenderer(settings)
         layers = renderer.render_layers(card)
