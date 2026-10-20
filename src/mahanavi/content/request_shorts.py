@@ -52,6 +52,7 @@ class RequestShort:
     expected_channel: str = "Mahanavi"    # refuse to upload unless the token's channel title contains this
     watermark: str = "@MahanaviSpirituals"
     header: str = ""                      # small line at the top of the mantra/points slides
+    playlist_line: str = ""              # lines drawn just above the subscribe reminder (playlist pointer)
     cta_lines: tuple[str, ...] = ()       # closing lines on the outro (comment + subscribe)
     tag_footer: str = ""                  # footer on mantra slides ("" = none)
     footer_main: str = _CHANNEL_FOOTER_TE

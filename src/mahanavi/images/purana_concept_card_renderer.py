@@ -116,6 +116,7 @@ class PuranaConceptCard:
     concept: PuranaConceptShort
     subscribe_text: str = DEFAULT_SUBSCRIBE_TEXT
     icon_paths: list[Path] = field(default_factory=list)
+    playlist_line: str = ""  # optional lines drawn just above the subscribe reminder
     bg_image: Path | None = None  # deity photo matching the concept, behind the text
 
 
@@ -253,7 +254,23 @@ class PuranaConceptCardRenderer:
             opinion_h = int(opinion_font.size * 1.3) * 2   # two lines
             opinion_top = footer_bottom - opinion_h
             subscribe_top = opinion_top - int(height * 0.012) - subscribe_h
-            icon_row_top = subscribe_top - block_gap - icon_size if card.icon_paths else subscribe_top
+            lead_top = subscribe_top        # everything above the footer is laid out against this, as before
+            pl_lines = [ln for ln in card.playlist_line.split("\n") if ln.strip()]
+            pl_top = pl_h = 0
+            if pl_lines:
+                # The playlist line goes where the subscribe reminder used to start and the reminder moves down by
+                # its height (free space under it on the phone screen), so the story keeps its size.
+                pl_font = self._fit_font_to_width(
+                    draw, max(pl_lines, key=len), max_width=content_width, start_size=int(width * 0.046), weight="Bold",
+                )
+                pl_lh = int(pl_font.size * 1.25)
+                pl_h = pl_lh * len(pl_lines) + int(height * 0.012)
+                shift = max(min(pl_h, int(height * 0.86) - footer_bottom), 0)
+                lead_top -= pl_h - shift       # only if the cap is hit does the story area give up the shortfall
+                pl_top = lead_top
+                subscribe_top += shift
+                opinion_top += shift
+            icon_row_top = lead_top - block_gap - icon_size if card.icon_paths else lead_top
             source_top = icon_row_top - block_gap - source_h
 
             body_box_top = (
@@ -284,6 +301,8 @@ class PuranaConceptCardRenderer:
             if card.icon_paths:
                 self._draw_icon_row(text_layer, card.icon_paths, width, icon_row_top)
 
+            for _k, _pl in enumerate(pl_lines):
+                self._draw_centered_line(draw, _pl, pl_font, width, pl_top + _k * pl_lh, COLOR_GOLD)
             self._draw_centered_line(draw, card.subscribe_text, subscribe_font, width, subscribe_top, COLOR_TEXT_LIGHT)
             for _i, _ln in enumerate(OPINION_LINES):
                 self._draw_centered_line(draw, _ln, opinion_font, width, opinion_top + _i * int(opinion_font.size * 1.3), COLOR_TEXT_LIGHT)

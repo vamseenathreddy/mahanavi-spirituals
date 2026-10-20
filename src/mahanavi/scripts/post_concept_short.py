@@ -41,6 +41,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from channels import playlist_links
 from mahanavi.images import deity_bg
 from mahanavi.config import Settings, get_settings
 from mahanavi.content.category_comments import build_category_comment
@@ -157,6 +158,7 @@ def main() -> int:
     try:
         card = PuranaConceptCard(
             concept=concept, icon_paths=_icon_paths(settings),
+            playlist_line=playlist_links.CARD_LINES["puranas"],
             bg_image=deity_bg.photo_for_story(today, title_en=concept.title_en, *(concept.title_te, concept.invocation_te, concept.body_te)),
         )
         renderer = PuranaConceptCardRenderer(settings)
@@ -183,6 +185,10 @@ def main() -> int:
 
         seo = build_purana_concept_seo(concept, concept_index, today.toordinal())
         uploader = YouTubeShortsUploader(settings)
+        try:  # the three series playlists at the top of the description; never blocks the upload
+            seo = playlist_links.WithPlaylists(seo, playlist_links.block(uploader._build_service(), settings, "puranas"))  # noqa: SLF001
+        except Exception as exc:  # noqa: BLE001
+            print(f"Note: playlist links skipped ({type(exc).__name__}).")
         result = uploader.upload(video_path, seo, privacy_status=privacy_status)
 
         if not result.success:

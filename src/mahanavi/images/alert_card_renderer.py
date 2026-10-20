@@ -230,13 +230,17 @@ class AlertCardRenderer:
             comment_font = None
             comment_bbox = None
             comment_h = 0
-            if card.comment_prompt_text:
+            comment_lines = [ln for ln in card.comment_prompt_text.split("\n") if ln.strip()]
+            comment_line_h = 0
+            if comment_lines:
+                longest = max(comment_lines, key=len)
                 comment_font = self._fit_font_to_width(
-                    draw, card.comment_prompt_text, max_width=content_width,
+                    draw, longest, max_width=content_width,
                     start_size=int(width * SUBSCRIBE_FONT_FRAC), weight="Bold",
                 )
-                comment_bbox = draw.textbbox((0, 0), card.comment_prompt_text, font=comment_font)
-                comment_h = int(comment_bbox[3] - comment_bbox[1])
+                comment_bbox = draw.textbbox((0, 0), longest, font=comment_font)
+                comment_line_h = int(comment_font.size * 1.3)
+                comment_h = comment_line_h * len(comment_lines)  # one or two lines, never shrunk below the fit width
 
             # Real evidence from the actual mobile app (a screenshot showed
             # our own content overlapping YouTube's channel handle, caption
@@ -250,6 +254,11 @@ class AlertCardRenderer:
             # always lands in the same already-validated-safe spot.
             footer_bottom = int(height * 0.715)  # 2026-10-17: was 0.68; uses the blank band, still above y~1385
             footer_line_gap = int(height * 0.015)
+            if comment_lines:
+                # The playlist line sits ABOVE the subscribe block. The footer moves down by exactly its height
+                # (the phone screenshot shows free space between the subscribe lines and the caption), so the
+                # content above keeps its size; capped well clear of the caption zone.
+                footer_bottom = min(footer_bottom + comment_h + footer_line_gap, int(height * 0.84))
             # Fixed engagement line at the very bottom of the footer block (2026-10-08 request).
             opinion_font = self._fit_font_to_width(
                 draw, OPINION_LINES[1], max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
@@ -258,7 +267,7 @@ class AlertCardRenderer:
             opinion_line_h = int(opinion_font.size * 1.3)
             opinion_h = opinion_line_h * 2   # two lines
             footer_block_h = (subscribe_h + footer_line_gap + opinion_h
-                              + (comment_h + footer_line_gap if card.comment_prompt_text else 0))
+                              + (comment_h + footer_line_gap if comment_lines else 0))
             footer_top = footer_bottom - footer_block_h
 
             content_top = badge_bottom + int(height * 0.025) if card.date_text else (
@@ -417,13 +426,14 @@ class AlertCardRenderer:
                     _ln, font=opinion_font, fill=COLOR_TEXT_LIGHT,
                 )
 
-            if card.comment_prompt_text and comment_font is not None and comment_bbox is not None:
+            if comment_lines and comment_font is not None:
                 comment_top = subscribe_top - footer_line_gap - comment_h
-                comment_w = comment_bbox[2] - comment_bbox[0]
-                draw.text(
-                    ((width - comment_w) // 2, comment_top - comment_bbox[1]),
-                    card.comment_prompt_text, font=comment_font, fill=COLOR_TEXT_LIGHT,
-                )
+                for _i, _ln in enumerate(comment_lines):
+                    _b = draw.textbbox((0, 0), _ln, font=comment_font)
+                    draw.text(
+                        ((width - (_b[2] - _b[0])) // 2, comment_top + _i * comment_line_h - _b[1]),
+                        _ln, font=comment_font, fill=COLOR_TEXT_LIGHT,
+                    )
 
             output_path = self._build_output_path(card, for_date)
             final = canvas.convert("RGB")

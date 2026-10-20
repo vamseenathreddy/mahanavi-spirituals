@@ -44,7 +44,7 @@ def test_build_valid_seo_and_safe_zone(channel: str, tmp_path: Path):
     assert len(spec.slides) == 1 and spec.total_seconds <= 15 and spec.lang == bm.CHANNELS[channel]["lang"]
     for s in RequestCardRenderer(get_settings()).render_all(spec, tmp_path):
         for x0, y0, x1, y1 in s.boxes:
-            assert x0 >= SAFE_L - 4 and x1 <= SAFE_R + 4 and y0 >= SAFE_TOP and y1 <= SAFE_BOTTOM
+            assert x0 >= SAFE_L - 4 and x1 <= SAFE_R + 4 and y0 >= SAFE_TOP and y1 <= (1660 if spec.playlist_line else SAFE_BOTTOM)  # caption row starts ~1720
 
 
 def test_every_day_to_year_end_builds_and_titles_fit():
@@ -95,7 +95,7 @@ def test_benefit_lines_big_inside_safe_zone_and_never_overlap(channel: str, tmp_
         rendered = r.render_all(spec, tmp_path / key)[0]
         boxes = sorted(rendered.boxes, key=lambda b: b[1])
         for x0, y0, x1, y1 in boxes:
-            assert x0 >= SAFE_L - 4 and x1 <= SAFE_R + 4 and y0 >= SAFE_TOP and y1 <= SAFE_BOTTOM, key
+            assert x0 >= SAFE_L - 4 and x1 <= SAFE_R + 4 and y0 >= SAFE_TOP and y1 <= (1660 if spec.playlist_line else SAFE_BOTTOM), key
         for a, b in zip(boxes, boxes[1:]):
             assert b[1] >= a[3] - 6, (key, a, b)  # next line starts below the previous one (small glyph slack)
         # benefit lines are large: 6 of them fit with a line height of at least ~40px

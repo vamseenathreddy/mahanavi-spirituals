@@ -177,6 +177,11 @@ def pick(d: date, tithi: str) -> tuple[Deity, str, str]:
     return DEITIES[WEEKDAY[wd]], WEEKDAY_NAME[wd][0], WEEKDAY_NAME[wd][1]
 
 
+from channels.playlist_links import CARD_LINES as _CARD_LINES  # noqa: E402
+
+_PLAYLIST_LINE = _CARD_LINES["beej"]
+
+
 def build(channel: str, d: date, tithi: str) -> RequestShort:
     cfg = CHANNELS[channel]
     hi = cfg["lang"] == "hi"
@@ -234,5 +239,5 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
         description_te=desc_head, description_en=desc_en, hashtags=hashtags, tags=tags,
         bg_image=DEITY_IMAGE.get(dei.key, ""),
         lang=cfg["lang"], token_file=cfg["token_file"], expected_channel=cfg["expected"], watermark=cfg["watermark"],
-        header=f"{date_line} · {tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why}", tag_footer=footer_line, cta_lines=ctas, footer_main=footer, footer_en=footer_en,
+        header=f"{date_line} · {tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why}", tag_footer=footer_line, cta_lines=ctas, playlist_line=_PLAYLIST_LINE if channel == "mahanavi" else "", footer_main=footer, footer_en=footer_en,
     )

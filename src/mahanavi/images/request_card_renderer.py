@@ -252,8 +252,15 @@ class RequestCardRenderer:
                 self._benefit_lines(layer, boxes, list(slide.benefits), y + 18, 1215 if _is_subscribe(spec.tag_footer) else 1290)
             if spec.tag_footer and _is_subscribe(spec.tag_footer):
                 # the subscribe reminder: big, bold gold, two lines, in the free band above the Shorts caption
+                sub_y = 1232
+                if spec.playlist_line:  # "all such mantras are in the description playlists", before the subscribe ask
+                    pl_y = sub_y
+                    for ln in spec.playlist_line.split("\n"):
+                        pl_lines, pl_font, pl_lh = self._fit(ln, 46, 30, 70)
+                        pl_y = self._block(layer, boxes, pl_lines, pl_font, pl_lh, pl_y, GOLD)
+                    sub_y = pl_y + 40
                 lines, font, lh = self._fit(spec.tag_footer, 60, 34, 150, 1.3)
-                self._block(layer, boxes, lines, font, lh, 1232, GOLD)
+                self._block(layer, boxes, lines, font, lh, sub_y, GOLD if not spec.playlist_line else CREAM)
             elif spec.tag_footer:
                 lines, font, lh = self._fit(spec.tag_footer, 38, 24, 60)
                 self._block(layer, boxes, lines, font, lh, 1318, SOFT)

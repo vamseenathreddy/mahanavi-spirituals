@@ -67,6 +67,14 @@ def main(argv: list[str] | None = None) -> int:
         got = youtube.channels().list(part="snippet", mine=True).execute()["items"][0]["snippet"]["title"]
         if spec.expected_channel.lower() not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected '{spec.expected_channel}'.")
+        if args.channel == "mahanavi":  # the 3 series playlists at the top of the description
+            import dataclasses
+
+            from channels import playlist_links
+
+            top = playlist_links.block(youtube, settings, "beej")
+            if top:
+                spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
         video_id = upload(youtube, spec, video, "public" if args.public else "unlisted")
         print(f"Channel: {got}\nUploaded: https://www.youtube.com/watch?v={video_id}")
         state = state_mod.load()

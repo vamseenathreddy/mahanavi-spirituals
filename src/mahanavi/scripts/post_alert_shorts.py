@@ -48,6 +48,7 @@ from datetime import time as dt_time
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from channels import playlist_links
 from mahanavi.config import Settings, get_settings
 from mahanavi.content.alert_seo import (
     ShortSeoContent,
@@ -357,6 +358,10 @@ def _process_one(
         )
         print(f"Assembled: {video_path}")
 
+        try:  # the three series playlists at the top of the description; never blocks the upload
+            seo = playlist_links.WithPlaylists(seo, playlist_links.block(uploader._build_service(), settings, "muhurtas"))  # noqa: SLF001
+        except Exception as exc:  # noqa: BLE001
+            print(f"Note: playlist links skipped ({type(exc).__name__}).")
         result = uploader.upload(video_path, seo, privacy_status=privacy_status)
         if result.success:
             print(f"Uploaded ({privacy_status}): {result.post_url}")
@@ -460,7 +465,7 @@ def main() -> int:
             filename_suffix="rahu_kalam", icon_paths=icon_paths,
             date_text=date_text, secondary_info=_other_inauspicious_periods(panchang),
             subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
-            comment_prompt_text="", bg_image=_day_background(for_date),
+            comment_prompt_text=playlist_links.CARD_LINES["muhurtas"], bg_image=_day_background(for_date),
             quote_text=rahu_quote, quote_source=rahu_quote_source,
         )
         # Same comment_prompt text/rotation as the on-screen card above --
@@ -492,7 +497,7 @@ def main() -> int:
             filename_suffix="shubha_ghadiyalu", icon_paths=icon_paths,
             date_text=date_text,
             subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
-            comment_prompt_text="", bg_image=_day_background(for_date),
+            comment_prompt_text=playlist_links.CARD_LINES["muhurtas"], bg_image=_day_background(for_date),
             quote_text=shubha_quote, quote_source=shubha_quote_source,
         )
         shubha_seo = build_shubha_ghadiyalu_seo(
@@ -520,7 +525,7 @@ def main() -> int:
             filename_suffix="durmuhurtham", icon_paths=icon_paths,
             date_text=date_text,
             subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
-            comment_prompt_text="", bg_image=_day_background(for_date),
+            comment_prompt_text=playlist_links.CARD_LINES["muhurtas"], bg_image=_day_background(for_date),
             quote_text=durmuhurtham_quote, quote_source=durmuhurtham_quote_source,
         )
         durmuhurtham_seo = build_durmuhurtham_seo(
