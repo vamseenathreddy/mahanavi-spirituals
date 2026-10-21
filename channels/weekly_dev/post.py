@@ -67,7 +67,7 @@ def main(argv=None) -> int:
     yt = upload.service(settings.trending_youtube_token_file)
     got = yt.channels().list(part="snippet", mine=True).execute()["items"][0]["snippet"]["title"]
     if "pulse" not in got.lower():
-        raise SystemExit(f"::error::NOT posting: the saved token acts as channel '{got}', not Pulse Boosting.")
+        raise SystemExit(f"::error::NOT posting: the saved token acts as channel '{got}', not Pulse TDP Fans.")
     privacy = "public" if args.public else "unlisted"
     try:
         video_id = upload.upload_video(yt, str(out / "weekly.mp4"), meta["title"], meta["description"], meta["tags"], None,

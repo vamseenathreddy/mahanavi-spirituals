@@ -7,7 +7,7 @@ import datetime as dt
 from channels.trending import config as cfg
 from channels.weekly_dev.collect import MONTHS, telugu_date
 
-PLAYLIST_TITLE = "ఏపీ అభివృద్ధి వారపు నివేదిక | AP Development Weekly - Pulse Boosting"
+PLAYLIST_TITLE = "ఏపీ అభివృద్ధి వారపు నివేదిక | AP Development Weekly - Pulse TDP Fans"
 EN_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
@@ -30,7 +30,7 @@ def title(items: list[dict]) -> str:
 def tags(items: list[dict]) -> list[str]:
     base = ["ఆంధ్రప్రదేశ్ అభివృద్ధి", "ఏపీ ప్రభుత్వం", "AP development", "Andhra Pradesh development", "AP government",
             "Amaravati", "అమరావతి", "Chandrababu Naidu", "చంద్రబాబు నాయుడు", "Nara Lokesh", "నారా లోకేశ్", "TDP", "తెలుగుదేశం",
-            "Telugu news", "AP news today", "weekly update", "AP development works", "ఈ వారం అభివృద్ధి", "Pulse Boosting"]
+            "Telugu news", "AP news today", "weekly update", "AP development works", "ఈ వారం అభివృద్ధి", "Pulse TDP Fans"]
     out, n = [], 0
     for t in base:
         if n + len(t) + 1 > 480:
@@ -50,7 +50,7 @@ def description(items: list[dict]) -> str:
         lines.append(f"• {d.day} {MONTHS[d.month - 1]}: {it['headline']} (మూలం: {it['publisher']})")
     lines += ["", "ప్రతి శుక్రవారం ఈ వారం అభివృద్ధి వార్తలు. అన్ని వార్తలు తెలుగు వార్తా సంస్థల నుంచి తీసుకున్నవి; ప్రతి అంశానికి మూలం పేరు ఇచ్చాం.",
               "", cfg.CTA["te"][2], f"💬 WhatsApp: {cfg.WHATSAPP_URL}", f"✈️ Telegram: {cfg.TELEGRAM_URL}", "",
-              "#APDevelopment #Amaravati #TDP #AndhraPradesh #TeluguNews #PulseBoosting"]
+              "#APDevelopment #Amaravati #TDP #AndhraPradesh #TeluguNews #PulseTDPFans"]
     return "\n".join(lines)
 
 

@@ -71,13 +71,13 @@ def _badge(bg: Image.Image, font_path: str) -> None:
     ring.alpha_composite(me, (4, 4))
     bg.paste(ring, (x + 8, y + 3), mask)
     f1, f2 = ImageFont.truetype(font_path, 27), ImageFont.truetype(font_path, 22)
-    d.text((x + 134, y + 18), "Pulse Boosting", font=f1, fill=(255, 255, 255, 255))
+    d.text((x + 134, y + 18), "Pulse TDP Fans", font=f1, fill=(255, 255, 255, 255))
     d.text((x + 134, y + 58), "తెలుగు వార్తలు", font=f2, fill=(255, 235, 150, 255))
 
 
 def _face_mark(bg: Image.Image, font_path: str) -> None:
     """Copyright watermark in the middle of the card (2026-10-18 request): the owner's face, blurred and very light, in
-    the same faint white as the @PulseBoosting text, drawn behind the text."""
+    the same faint white as the @PulseTDPFans text, drawn behind the text."""
     face = Image.open(PEOPLE / "me_face.png").convert("L")
     d = 720
     face = ImageOps.autocontrast(face.resize((d, d), Image.LANCZOS), cutoff=1)

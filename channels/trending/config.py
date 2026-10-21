@@ -14,8 +14,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CHANNEL_DIR = Path(__file__).resolve().parent
 FONTS = REPO_ROOT / "channels/engine/assets/fonts"
 
-BRAND = "Pulse Boosting"
-HANDLE = "@PulseBoosting"
+BRAND = "Pulse TDP Fans"
+HANDLE = "@PulseTDPFans"
 LANGS = ["te"]          # 2026-10-17: Telugu only (TDP-supportive channel)
 NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter", "amaravati", "local", "ntr"]   # Janasena is switched off: TDP-only channel
 # 2026-10-18: 6 posts a day for now (was 12). One day = these 6 posts in order, repeating daily:
@@ -151,5 +151,5 @@ def playlist_for(lang: str, niche: str) -> tuple[str, str]:
     title = f"{en} | {nat} (Telugu) - {BRAND}"[:150]
     desc = (f"{INTRO[lang]}\n\nSourced coverage of {en} in Telugu. Every Short names its source and links "
             f"the original story. Subscribe to {BRAND}.\n\n"
-            f"#{NICHE_TAG[niche]} #{LANG_TAG[lang]} #TDP #Shorts #PulseBoosting")
+            f"#{NICHE_TAG[niche]} #{LANG_TAG[lang]} #TDP #Shorts #PulseTDPFans")
     return title, desc

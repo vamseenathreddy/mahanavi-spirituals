@@ -114,7 +114,7 @@ def test_choose_falls_through_to_other_niches():
 def test_metadata_names_source_and_mixes_english():
     s = Story("ఆసియా కప్ ఫైనల్‌లో భారత్ ఘన విజయం", "Eenadu", "https://n/1", None)
     m = metadata.bundle(s, "te", "development")
-    assert len(m["title"]) <= 100 and "Pulse Boosting" in m["title"]
+    assert len(m["title"]) <= 100 and "Pulse TDP Fans" in m["title"]
     assert "Source:" not in m["description"] and "Eenadu" not in m["description"] and "https://n/1" not in m["description"]
     assert "https://n/1" not in m["comment"] and m["language"] == "te"
     assert len(metadata.hashtags("te", "development")) <= 15 and sum(len(t) + 1 for t in m["tags"]) <= 500

@@ -120,15 +120,15 @@ def join_lines() -> list[str]:
 
 def hashtags(lang: str, niche: str, story: Story | None = None) -> list[str]:
     """YouTube shows the first three above the title: keep those the strongest. Then the district tags for this post."""
-    tags = ["#TDP", "#AndhraPradesh", "#ChandrababuNaidu", "#PulseBoosting", "#Shorts", f"#{cfg.NICHE_TAG[niche]}",
+    tags = ["#TDP", "#AndhraPradesh", "#ChandrababuNaidu", "#PulseTDPFans", "#Shorts", f"#{cfg.NICHE_TAG[niche]}",
             "#NaraLokesh", "#TeluguNews", "#TeluguDesam"]
     if niche == "janasena":  # Janasena point of view only: no TDP tags
-        tags = ["#Janasena", "#PawanKalyan", "#AndhraPradesh", "#PulseBoosting", "#Shorts", "#TeluguNews",
+        tags = ["#Janasena", "#PawanKalyan", "#AndhraPradesh", "#PulseTDPFans", "#Shorts", "#TeluguNews",
                 "#JanaSenaParty", "#DeputyCM"]
     if niche == "join":
         tags += ["#JoinTDP", "#TDPMembership"]
     if niche == "ntr":
-        tags = ["#NTR", "#TDP", "#TeluguDesam", "#PulseBoosting", "#Shorts", "#NandamuriTarakaRamaRao", "#TDPHistory",
+        tags = ["#NTR", "#TDP", "#TeluguDesam", "#PulseTDPFans", "#Shorts", "#NandamuriTarakaRamaRao", "#TDPHistory",
                 "#JaiNTR", "#AnnaNTR", "#ChandrababuNaidu", "#AndhraPradesh", "#TeluguPride", "#TeluguNews"]
     if story is not None:
         for _te, en, region in regions.for_post(story.key, f"{story.headline} {story.summary}", 3):

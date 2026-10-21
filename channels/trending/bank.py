@@ -81,7 +81,7 @@ JANASENA = [
      "2024 అక్టోబర్‌లో ప్రారంభమైన 'పల్లె పండుగ' కార్యక్రమం ద్వారా గ్రామాల్లో రోడ్లు, ఇతర మౌలిక వసతుల పనులను ప్రభుత్వం చేపట్టింది.",
      AP),
 ]
-CHANNEL = "https://www.youtube.com/@PulseBoosting"
+CHANNEL = "https://www.youtube.com/@PulseTDPFans"
 JOIN = [
     ("{d} పసుపు సైనికులారా! కదలిరండి, తెలుగుదేశంతో కలిసి నడవండి! జై టీడీపీ!",
      "రాష్ట్ర అభివృద్ధి కోసం పనిచేసే తెలుగుదేశం కుటుంబంలో భాగం కండి. సభ్యత్వం కోసం మీ ప్రాంత టీడీపీ కార్యాలయాన్ని సంప్రదించండి. ఈ వీడియోను మిత్రులకు షేర్ చేయండి!"),
@@ -106,7 +106,7 @@ def _templated(templates, niche: str) -> list[Story]:
 
     from channels.trending.regions import DISTRICTS
 
-    out = [Story(h.format(d=d[0]), "Pulse Boosting", CHANNEL, None, "bank", summary=s)
+    out = [Story(h.format(d=d[0]), "Pulse TDP Fans", CHANNEL, None, "bank", summary=s)
            for h, s in templates for d in DISTRICTS]
     random.Random(f"{datetime.date.today()}-{niche}").shuffle(out)  # a different order each day
     return out
