@@ -86,6 +86,7 @@ def main(argv=None) -> int:
         story = enrich(story, lang)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+    metadata.VARIANT = st.setdefault("fan", {}).get(niche, 0)  # walks the fan lines in order, no repeats until the pool is used
     rcfg = dataclasses.replace(cfg.render_cfg(lang, niche), music_offset=st["seq"])  # a different clip each post
     row = metadata.fit_row(metadata.row_for(story, lang, niche), rcfg)
     info = render.render(row, str(out / "short.mp4"), date.isoformat(), rcfg, None, str(out), 4.9)
@@ -115,6 +116,7 @@ def main(argv=None) -> int:
     state_mod.mark_posted(st, date.isoformat(), story.key, video_id, False, now.isoformat(timespec="seconds"))
     st["used_ids"] = st["used_ids"][-USED_CAP:]
     dedupe.remember(st, story.headline, story.link)
+    st["fan"][niche] = st["fan"].get(niche, 0) + 1
     st["seq"] += 1
     state_mod.save(st)  # saved before the optional extras so a failure there never causes a second post
     try:

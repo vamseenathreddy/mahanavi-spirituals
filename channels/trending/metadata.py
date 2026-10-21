@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from channels.trending import config as cfg
+from channels.trending import fan_lines
 from channels.trending import regions
 from channels.trending.sources import Story, complete, trim
 
@@ -92,9 +93,26 @@ NOTES = {
 }
 
 
+# Per-niche rotation counter, set by post.py from the state file before the card is built. With it, the angle and the note
+# walk through their pools in order (the pools have different lengths, so the pairs keep changing) and a line returns
+# only after the whole pool was used. Without it (tests, other tools) the story key picks the line as before.
+VARIANT: int | None = None
+
+
+def _pool(base: dict, more: dict, niche: str) -> list:
+    return list(base.get(niche, [])) + list(more.get(niche, []))
+
+
+def _pick(lines: list, key: str, lo: int, shift: int = 0) -> str:
+    if not lines:
+        return ""
+    if VARIANT is not None:
+        return lines[(VARIANT + shift) % len(lines)]
+    return lines[int(key[lo:lo + 6] or "0", 16) % len(lines)]
+
+
 def note(niche: str, key: str = "") -> str:
-    lines = NOTES.get(niche, [])
-    return lines[int(key[2:8] or "0", 16) % len(lines)] if lines and key else ""
+    return _pick(_pool(NOTES, fan_lines.NOTES_MORE, niche), key, 2, 3) if key else ""
 
 
 ANGLE = {k: v[0] for k, v in ANGLES.items()}   # first line of each, for tests and fallbacks
@@ -108,12 +126,12 @@ HOOKS_JSP = ["జై జనసేన!", "జనసేన శ్రేణుల�
 
 def hook(niche: str, key: str) -> str:
     hooks = HOOKS_JSP if niche == "janasena" else HOOKS_COUNTER if niche in ("counter", "ysrcp") else HOOKS
-    return hooks[int(key[6:10] or "0", 16) % len(hooks)]
+    return _pick(hooks, key, 6, 1)
 
 
 def angle(niche: str, key: str = "") -> str:
-    lines = ANGLES[niche]
-    return lines[int(key[:6] or "0", 16) % len(lines)] if key else lines[0]
+    lines = _pool(ANGLES, fan_lines.ANGLES_MORE, niche)
+    return _pick(lines, key, 0) if key else lines[0]
 
 
 def join_lines() -> list[str]:

@@ -74,7 +74,7 @@ def test_only_top_10_and_widest_coverage_first():
 def test_card_has_positive_angle_and_description_has_disclosure():
     s = Story("అమరావతిలో కొత్త ఐటీ పార్క్ ప్రారంభం", "Eenadu", "l", None, rank=3)
     row = metadata.row_for(s, "te", "development")
-    assert "TRENDING" not in "".join(str(v) for v in row.values()) and any(row["text_related"].startswith(a) for a in metadata.ANGLES["development"])
+    assert "TRENDING" not in "".join(str(v) for v in row.values()) and any(row["text_related"].startswith(a) for a in metadata.ANGLES["development"] + metadata.fan_lines.ANGLES_MORE["development"])
     d = metadata.description(s, "te", "development")
     assert "pro-TDP" in d and "Source:" not in d and "Eenadu" not in d and "#TDP" in d
     assert "| TDP |" in metadata.title(s, "te", "development")
@@ -333,3 +333,20 @@ def test_ysrcp_niche_keeps_reported_exposures_and_drops_violence_family_and_film
     assert len(got) == 2 and all("హత్య" not in g and "కుటుంబ" not in g and "విమర్శ" not in g for g in got)
     from channels.trending import config as cfg, metadata
     assert cfg.niche_label("te", "ysrcp") and metadata.angle("ysrcp", "abcdef1234")
+
+
+def test_fan_lines_rotate_and_do_not_repeat_until_the_pool_is_used():
+    from channels.trending import metadata
+
+    try:
+        for niche in ("amaravati", "lokesh", "ysrcp", "development"):
+            seen_a, seen_n = [], []
+            for v in range(10):
+                metadata.VARIANT = v
+                seen_a.append(metadata.angle(niche, "abcdef123456"))
+                seen_n.append(metadata.note(niche, "abcdef123456"))
+            assert len(set(seen_a)) == 10 and len(set(seen_n)) >= 9
+            pairs = {(a, n) for a, n in zip(seen_a, seen_n)}
+            assert len(pairs) == 10
+    finally:
+        metadata.VARIANT = None
