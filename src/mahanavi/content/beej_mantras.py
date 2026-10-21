@@ -152,6 +152,22 @@ _TRANCE_FOOTER = ("🎬 और भक्ति Shorts देखें: https://w
 DEITY_IMAGE: dict[str, str] = {"durga": "durga_kanakadurga.jpg", "durgadevi": "durga_kanakadurga.jpg"}
 
 
+# Beej deity -> photo family in images/deity_bg.PHOTOS (every card gets a real deity photo, never a blank gradient).
+_PHOTO_GOD = {"bala": "parvati", "durgadevi": "durga", "kali": "durga", "lalita": "durga", "mahishasuramardini": "durga",
+              "rajarajeshwari": "durga", "gayatri": "saraswati", "subrahmanya": "murugan"}
+
+
+def _photo_for(key: str, d: date) -> str:
+    """Path under assets/images/ of today's photo for this deity ('' -> plain gradient if no photo exists)."""
+    from mahanavi.images import deity_bg
+
+    path = deity_bg.pick(_PHOTO_GOD.get(key, key), d) or DEITY_IMAGE.get(key) and None
+    if path is None:
+        fallback = DEITY_IMAGE.get(key, "")
+        return fallback
+    return f"deities/{path.name}"
+
+
 def split_tithi(tithi: str) -> tuple[str, str]:
     """"Shukla Chaturthi" -> ("shukla", "chaturthi"); tolerant of spelling variants."""
     low = tithi.lower().replace("shashti", "shashthi").replace("poornima", "purnima").replace("pournami", "purnima")
@@ -239,7 +255,7 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
         ),
         title=title, title_en=f"{dei.key.title()} {kind_en} Mantra - {d.strftime('%d %b %Y')} | Chant 108 Times",
         description_te=desc_head, description_en=desc_en, hashtags=hashtags, tags=tags,
-        bg_image=DEITY_IMAGE.get(dei.key, ""),
+        bg_image=_photo_for(dei.key, d),
         lang=cfg["lang"], token_file=cfg["token_file"], expected_channel=cfg["expected"], watermark=cfg["watermark"],
         header=f"{date_line} · {tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why}", tag_footer=footer_line, cta_lines=ctas, playlist_line=_PLAYLIST_LINE if channel == "mahanavi" else _HI_LINE.format(x="बीज मंत्र"), footer_main=footer, footer_en=footer_en,
     )

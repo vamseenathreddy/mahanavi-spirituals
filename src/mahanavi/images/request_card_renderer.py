@@ -120,9 +120,9 @@ class RequestCardRenderer:
         im = base
         shade = Image.new("L", (W, H), 0)
         sd = ImageDraw.Draw(shade)
-        for y in range(H):  # darker behind the text band (y 230-1100), lighter lower where the face is
-            t = 1 - abs((y - 640) / 640)
-            sd.line((0, y, W, y), fill=int(70 + 130 * max(0.0, min(1.0, t))))
+        for y in range(H):  # darker behind the whole text stack (y 150-1520, it now runs down to the footer), lighter below
+            t = min(1.0, y / 220, max(0.0, (1760 - y) / 240))
+            sd.line((0, y, W, y), fill=int(70 + 125 * max(0.0, t)))
         im = Image.composite(Image.new("RGB", (W, H), (10, 4, 4)), im, shade)
         d = ImageDraw.Draw(im)
         d.rectangle((30, 30, W - 30, H - 30), outline=GOLD, width=4)
@@ -217,6 +217,7 @@ class RequestCardRenderer:
             mantra_idx = sum(1 for x in spec.slides[:index] if x.kind == "mantra")
             total = sum(1 for x in spec.slides if x.kind == "mantra")
             compact = bool(slide.benefits)  # benefits card: tighter top so six big lines fit above the footer
+            dy = -90 if (compact and _is_subscribe(spec.tag_footer)) else 0  # use the empty top band so the footer clears the Shorts channel row
             if spec.header and not compact:  # the benefits card drops the date line (date stays in title + description)
                 if self._probe.textlength(spec.header, font=self._font(40)) <= TEXT_W:
                     self._line(layer, boxes, spec.header, self._font(40), 262, SOFT)
@@ -226,10 +227,10 @@ class RequestCardRenderer:
             if total > 1:
                 self._dots(layer, mantra_idx, total, 345)
             lines, font, lh = self._fit(slide.label, 70 if compact else 76, 50 if compact else 52, 110)
-            self._block(layer, boxes, lines, font, lh, 240 if compact else 420, GOLD)
+            self._block(layer, boxes, lines, font, lh, (240 + dy) if compact else 420, GOLD)
             # Fit the three blocks into the band between the heading and the footer tag: shrink the mantra a
             # little at a time until the whole stack fits, so a long verse never crowds the footer.
-            stack_top, stack_h = (330, 320) if compact else (STACK_TOP, STACK_H)
+            stack_top, stack_h = (330 + dy, 320) if compact else (STACK_TOP, STACK_H)
             budget = 240 if compact else 430
             while True:
                 m_lines, m_font, m_lh = self._fit(slide.text, 80 if compact else 92, 44, budget)
@@ -249,16 +250,16 @@ class RequestCardRenderer:
                 head = BENEFITS_HEADING["hi" if spec.lang == "hi" else "te"]
                 h_lines, h_font, h_lh = self._fit(head, 54, 40, 90)
                 y = self._block(layer, boxes, h_lines, h_font, h_lh, y + 50, GOLD)
-                self._benefit_lines(layer, boxes, list(slide.benefits), y + 18, 1215 if _is_subscribe(spec.tag_footer) else 1290)
+                self._benefit_lines(layer, boxes, list(slide.benefits), y + 18, (1215 + dy) if _is_subscribe(spec.tag_footer) else 1290)
             if spec.tag_footer and _is_subscribe(spec.tag_footer):
                 # the subscribe reminder: big, bold gold, two lines, in the free band above the Shorts caption
-                sub_y = max(1232, max((bx[3] for bx in boxes), default=0) + 14) if spec.playlist_line else 1232
+                sub_y = max(1232 + dy, max((bx[3] for bx in boxes), default=0) + 14) if spec.playlist_line else 1232 + dy
                 if spec.playlist_line:  # "all such mantras are in the description playlists", before the subscribe ask
                     pl_y = sub_y
                     for ln in spec.playlist_line.split("\n"):
                         pl_lines, pl_font, pl_lh = self._fit(ln, 46, 30, 70)
                         pl_y = self._block(layer, boxes, pl_lines, pl_font, pl_lh, pl_y, GOLD)
-                    sub_y = pl_y + 40
+                    sub_y = pl_y + 24
                 lines, font, lh = self._fit(spec.tag_footer, 60, 34, 150, 1.3)
                 self._block(layer, boxes, lines, font, lh, sub_y, GOLD if not spec.playlist_line else CREAM)
             elif spec.tag_footer:
