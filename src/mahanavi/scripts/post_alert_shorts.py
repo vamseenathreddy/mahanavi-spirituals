@@ -465,7 +465,7 @@ def main() -> int:
             filename_suffix="rahu_kalam", icon_paths=icon_paths,
             date_text=date_text, secondary_info=_other_inauspicious_periods(panchang),
             subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
-            comment_prompt_text=playlist_links.CARD_LINES["muhurtas"], bg_image=_day_background(for_date),
+            comment_prompt_text="", bg_image=_day_background(for_date),
             quote_text=rahu_quote, quote_source=rahu_quote_source,
         )
         # Same comment_prompt text/rotation as the on-screen card above --
@@ -497,7 +497,7 @@ def main() -> int:
             filename_suffix="shubha_ghadiyalu", icon_paths=icon_paths,
             date_text=date_text,
             subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
-            comment_prompt_text=playlist_links.CARD_LINES["muhurtas"], bg_image=_day_background(for_date),
+            comment_prompt_text="", bg_image=_day_background(for_date),
             quote_text=shubha_quote, quote_source=shubha_quote_source,
         )
         shubha_seo = build_shubha_ghadiyalu_seo(
@@ -525,7 +525,7 @@ def main() -> int:
             filename_suffix="durmuhurtham", icon_paths=icon_paths,
             date_text=date_text,
             subscribe_text="",  # the big two-line reminder is the only subscribe ask on the card
-            comment_prompt_text=playlist_links.CARD_LINES["muhurtas"], bg_image=_day_background(for_date),
+            comment_prompt_text="", bg_image=_day_background(for_date),
             quote_text=durmuhurtham_quote, quote_source=durmuhurtham_quote_source,
         )
         durmuhurtham_seo = build_durmuhurtham_seo(
