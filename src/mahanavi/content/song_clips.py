@@ -29,19 +29,20 @@ class Song:
     key: str                 # English tag word
     image: str               # file under assets/images/
     palette: tuple
+    match: tuple[str, ...] = ()   # lower-case words that identify the full video's title on the channel
 
 
 SONGS: tuple[Song, ...] = (
-    Song("ayyappa_bhajan", "అయ్యప్ప భజన", "Ayyappa Bhajan", "ayyappa", "deities/ayyappa_n1.jpg", _BLUE),
-    Song("shivoham_chant", "శివోహం", "Shivoham Chant", "shiva", "deities/shiva_n1.jpg", _BLUE),
-    Song("kaalabhairava_ashtakam", "శ్రీ కాలభైరవ అష్టకం", "Kaalabhairava Ashtakam", "kalabhairava", "deities/shiva_n2.jpg", _WARM),
-    Song("subrahmanya_ashtakam", "శ్రీ సుబ్రహ్మణ్య అష్టకం", "Subrahmanya Ashtakam", "subrahmanya", "deities/murugan_g1.jpg", _SAFFRON),
-    Song("panchamukha_hanuman_kavacham", "పంచముఖ ఆంజనేయ కవచం", "Panchamukha Hanuman Kavacham", "hanuman", "deities/hanuman_g1.jpg", _SAFFRON),
-    Song("chandrashekhara_ashtakam", "శ్రీ చంద్రశేఖర అష్టకం", "Chandrashekhara Ashtakam", "shiva", "deities/shiva_n3.jpg", _BLUE),
-    Song("jogulamba_ashtakam", "శ్రీ జోగులాంబ అష్టకం", "Sri Jogulamba Ashtakam", "jogulamba", "deities/durga_g1.jpg", _WARM),
-    Song("dhanvantari_mantra", "ధన్వంతరి మంత్రం", "Dhanvantari Mantra", "dhanvantari", "deities/vishnu_g1.jpg", _SAFFRON),
-    Song("dayananda_saraswati", "శ్రీ దయానంద సరస్వతి కృతి", "Sri Dayananda Saraswati Composition", "shiva", "deities/shiva_n4.jpg", _BLUE),
-    Song("divine_musical_experience", "దివ్య సంగీత అనుభవం", "A Divine Musical Experience", "devotional", "deities/shivafamily_n1.jpg", _WARM),
+    Song("ayyappa_bhajan", "అయ్యప్ప భజన", "Ayyappa Bhajan", "ayyappa", "deities/ayyappa_n1.jpg", _BLUE, match=('ayyappa')),
+    Song("shivoham_chant", "శివోహం", "Shivoham Chant", "shiva", "deities/shiva_n1.jpg", _BLUE, match=('shivoham')),
+    Song("kaalabhairava_ashtakam", "శ్రీ కాలభైరవ అష్టకం", "Kaalabhairava Ashtakam", "kalabhairava", "deities/shiva_n2.jpg", _WARM, match=('kaalabhairava', 'kalabhairava', 'kala bhairava')),
+    Song("subrahmanya_ashtakam", "శ్రీ సుబ్రహ్మణ్య అష్టకం", "Subrahmanya Ashtakam", "subrahmanya", "deities/murugan_g1.jpg", _SAFFRON, match=('subrahmanya')),
+    Song("panchamukha_hanuman_kavacham", "పంచముఖ ఆంజనేయ కవచం", "Panchamukha Hanuman Kavacham", "hanuman", "deities/hanuman_g1.jpg", _SAFFRON, match=('panchamukha', 'hanuman')),
+    Song("chandrashekhara_ashtakam", "శ్రీ చంద్రశేఖర అష్టకం", "Chandrashekhara Ashtakam", "shiva", "deities/shiva_n3.jpg", _BLUE, match=('chandrashekhara')),
+    Song("jogulamba_ashtakam", "శ్రీ జోగులాంబ అష్టకం", "Sri Jogulamba Ashtakam", "jogulamba", "deities/durga_g1.jpg", _WARM, match=('jogulamba')),
+    Song("dhanvantari_mantra", "ధన్వంతరి మంత్రం", "Dhanvantari Mantra", "dhanvantari", "deities/vishnu_g1.jpg", _SAFFRON, match=('dhanvantari')),
+    Song("dayananda_saraswati", "శ్రీ దయానంద సరస్వతి కృతి", "Sri Dayananda Saraswati Composition", "shiva", "deities/shiva_n4.jpg", _BLUE, match=('dayananda')),
+    Song("divine_musical_experience", "దివ్య సంగీత అనుభవం", "A Divine Musical Experience", "devotional", "deities/shivafamily_n1.jpg", _WARM, match=('divine musical experience')),
 )
 
 
@@ -85,3 +86,21 @@ def build(d: date, offset: int = 0) -> tuple[RequestShort, Path]:
         footer_main=_CHANNEL_FOOTER_TE, footer_en=_CHANNEL_FOOTER_EN, bg_image=song.image,
     )
     return spec, clip
+
+
+def full_video_link(youtube, song: Song) -> str:
+    """URL of the full song on the channel (matched by title words in the channel's uploads); "" if not found."""
+    if not song.match:
+        return ""
+    uploads = youtube.channels().list(part="contentDetails", mine=True).execute()["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+    token = None
+    while True:
+        resp = youtube.playlistItems().list(part="snippet", playlistId=uploads, maxResults=50, pageToken=token).execute()
+        for it in resp.get("items", []):
+            sn = it["snippet"]
+            title = sn.get("title", "").lower()
+            if any(w in title for w in song.match):
+                return f"https://www.youtube.com/watch?v={sn['resourceId']['videoId']}"
+        token = resp.get("nextPageToken")
+        if not token:
+            return ""

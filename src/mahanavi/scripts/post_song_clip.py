@@ -58,6 +58,18 @@ def main(argv: list[str] | None = None) -> int:
         got = youtube.channels().list(part="snippet", mine=True).execute()["items"][0]["snippet"]["title"]
         if spec.expected_channel.lower() not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected '{spec.expected_channel}'.")
+        try:  # link the full song at the top of the description; never blocks the upload
+            import dataclasses
+
+            song = song_clips.pick(today, args.offset)[0]
+            link = song_clips.full_video_link(youtube, song)
+            if link:
+                spec = dataclasses.replace(spec, description_te=f"▶ పూర్తి పాట / Full song: {link}\n\n{spec.description_te}")
+                print(f"Full song: {link}")
+            else:
+                print("Note: full song not found on the channel; no link added.")
+        except Exception as exc:  # noqa: BLE001
+            print(f"Note: full-song link skipped ({type(exc).__name__}).")
         video_id = upload(youtube, spec, video, "public" if args.public else "unlisted")
         print(f"Channel: {got}\nUploaded: https://www.youtube.com/watch?v={video_id}")
         return 0

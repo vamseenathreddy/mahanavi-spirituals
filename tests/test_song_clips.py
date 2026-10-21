@@ -19,3 +19,20 @@ def test_rotation_uses_each_song_then_each_clip_without_early_repeat():
 def test_build_spec_fits_a_short():
     spec, clip = song_clips.build(date(2026, 10, 21))
     assert spec.total_seconds < 15 and clip.exists() and len(spec.title) <= 100
+
+
+def test_every_song_can_be_matched_to_its_full_video_title():
+    assert all(s.match for s in song_clips.SONGS)
+
+    class Fake:
+        def channels(self): return self
+        def playlistItems(self): return self
+        def list(self, **kw):
+            self.kw = kw; return self
+        def execute(self):
+            if "mine" in self.kw:
+                return {"items": [{"contentDetails": {"relatedPlaylists": {"uploads": "U"}}}]}
+            return {"items": [{"snippet": {"title": "Sri Jogulamba Ashtakam Can CHANGE Your Life", "resourceId": {"videoId": "abc"}}}]}
+
+    jog = next(s for s in song_clips.SONGS if s.slug == "jogulamba_ashtakam")
+    assert song_clips.full_video_link(Fake(), jog).endswith("abc")
