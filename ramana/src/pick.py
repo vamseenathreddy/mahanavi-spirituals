@@ -28,6 +28,8 @@ def choose_row(rows, date: dt.date, used_ids, slot=None):
     cat_pool = [r for r in pool if r["category"] == want]
     reason = f"rotation:{want}" if cat_pool else "fallback"
     cat_pool = sorted(cat_pool or pool, key=lambda r: r["id"])
+    devotee = [r for r in cat_pool if r["id"].startswith("d")]  # devotee stories first (2026-10-21: a top search on this channel)
+    cat_pool = devotee or cat_pool
     return random.Random(date.toordinal()).choice(cat_pool), reason
 
 

@@ -50,8 +50,14 @@ def title(row, special):
     word = CAT_WORD[row["category"]]
     if row["category"] in ("quote", "qa") and any(w in en.lower() for w in MEDITATION_WORDS):
         word = "Meditation Technique (Self-Enquiry)"
+    elif row["id"].startswith("d") and not special:
+        word = "Devotees Experiences"
     elif not special:
         word = SEARCH_WORD[row["category"]]
+    if row["id"].startswith("d") and not special:  # devotee story: the search phrase first, then as much of the sentence as fits
+        head = "Ramana Maharshi Devotees Experiences: "
+        cut = en if len(head + en) <= 100 else en[: 100 - len(head) - 1].rsplit(" ", 1)[0].rstrip(",.:;") + "…"
+        return head + cut
     if special:
         en = f"{special['label_en']}: {en}"
     for cand in (f"{en} | Ramana Maharshi {word} | {te}", f"{en} | Ramana Maharshi {word}", f"{en} | Ramana Maharshi"):
