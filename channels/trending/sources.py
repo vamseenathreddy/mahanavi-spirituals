@@ -18,6 +18,8 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
+from channels.trending import dedupe
+
 USER_AGENT = "Mozilla/5.0 (compatible; trending-shorts-bot/1.0)"
 
 # language -> (hl, gl, ceid, unicode block start, end) ; en uses Latin.
@@ -319,7 +321,7 @@ def enrich(story: Story, lang: str) -> Story:
 
 
 def pick_story(niche: str, lang: str, used: set[str], yt=None, now: datetime | None = None,
-               fetch_news=news_stories, fetch_yt=youtube_stories, fetch_bank=None) -> Story | None:
+               fetch_news=news_stories, fetch_yt=youtube_stories, fetch_bank=None, recent=()) -> Story | None:
     """First unused, informative, recent story for this niche and language. Tries the niche's sources in order, then
     widens the freshness window from 8 to 30 hours. Returns None when nothing qualifies."""
     now = now or datetime.now(timezone.utc)
@@ -343,6 +345,9 @@ def pick_story(niche: str, lang: str, used: set[str], yt=None, now: datetime | N
             top = [x for x in pool if 0 < x.rank <= TOP_N or x.rank == 0]
             ordered = top if niche == "ntr" else sorted(top, key=lambda x: (-len(x.related), len(x.headline) > 85, x.rank))
             for s in ordered:
-                if s.key not in used and fresh_enough(s, now, hours):
-                    return s
+                if s.key in used or not fresh_enough(s, now, hours):
+                    continue
+                if recent and s.kind in ("news", "yt") and dedupe.is_duplicate(s.headline, s.link, recent):
+                    continue  # the same story worded by another outlet
+                return s
     return None

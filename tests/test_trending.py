@@ -278,3 +278,40 @@ def test_ntr_history_posts_every_other_day_and_are_complete():
 def test_every_news_niche_has_a_fan_note():
     for n in ("amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "local"):
         assert all(len(x) > 40 for x in metadata.NOTES[n]) and metadata.note(n, "abcdef0123456789")
+
+
+def test_same_story_from_another_outlet_is_skipped():
+    from datetime import datetime, timezone
+
+    from channels.trending import dedupe
+    from channels.trending.sources import Story, pick_story
+
+    now = datetime.now(timezone.utc)
+    first = Story("అమరావతిలో కొత్త సచివాలయ భవనం పనులు వేగంగా సాగుతున్నాయి", "A", "https://a.com/x", now)
+    reworded = Story("అమరావతి సచివాలయ భవనం పనులు వేగంగా సాగుతున్నాయి", "B", "https://b.com/y", now)
+    other = Story("లోకేశ్ ఐటీ ఉద్యోగాల కోసం కొత్త పథకం ప్రకటించారు", "C", "https://c.com/z", now)
+    recent = [dedupe.entry(first.headline, first.link)]
+    got = pick_story("development", "te", set(), None, now, fetch_bank=lambda n: [], fetch_news=lambda n, l: [reworded, other], recent=recent)
+    assert got is other
+    assert dedupe.is_duplicate("x", "https://www.a.com/x/", recent)  # same link, trailing slash and www ignored
+
+
+def test_ntr_bank_never_repeats_a_title_or_text_and_never_ends():
+    from channels.trending import ntr_bank
+
+    posts = ntr_bank.ntr_stories()
+    assert len({p.headline for p in posts}) == len(posts) == len(ntr_bank.ITEMS) * len(ntr_bank.OPENERS)
+    assert len({p.summary for p in posts}) > len(posts) * 0.9
+
+
+def test_choose_falls_back_to_ntr_history_when_news_is_quiet():
+    from channels.trending import post
+
+    calls = []
+
+    def fetch(n, lang, used, yt, **kw):
+        calls.append(n)
+        return "history" if n == "ntr" else None
+
+    niche, got = post.choose("te", "lokesh", set(), None, fetch=fetch)
+    assert (niche, got) == ("ntr", "history")

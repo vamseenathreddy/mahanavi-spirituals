@@ -16,7 +16,7 @@ from zoneinfo import ZoneInfo
 from channels.engine import render
 from channels.engine import state as state_mod
 from channels.trending import config as cfg
-from channels.trending import metadata, playlists
+from channels.trending import dedupe, metadata, playlists
 from channels.trending.sources import Story, enrich, pick_story
 
 IST = ZoneInfo("Asia/Kolkata")
@@ -27,11 +27,14 @@ SAMPLE = Story("విశాఖలో గూగుల్ ఏఐ హబ్: ర�
                related=(("ఏఐ హబ్‌తో ఆంధ్రప్రదేశ్‌కు కొత్త గుర్తింపు", "Andhra Jyothy"),))
 
 
-def choose(lang: str, niche: str, used: set, yt, fetch=pick_story):
-    """The planned niche first, then the other news niches in the same language so a quiet source never wastes a slot."""
-    order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche]
-    for n in order:
-        story = fetch(n, lang, used, yt)
+def choose(lang: str, niche: str, used: set, yt, fetch=pick_story, recent=()):
+    """The planned niche first, then the other news niches in the same language so a quiet source never wastes a slot.
+    If the news is quiet everywhere, an NTR and TDP history post (reframed each round, see ntr_bank) fills the slot, so
+    the channel never runs dry. Stories that look like a recent post (same story, another outlet) are skipped."""
+    extra = {"recent": recent} if recent else {}
+    order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche] + (["ntr"] if niche != "ntr" else [])
+    for n in dict.fromkeys(order):
+        story = fetch(n, lang, used, yt, **extra)
         if story:
             return n, story
     return niche, None
@@ -72,7 +75,7 @@ def main(argv=None) -> int:
     if args.sample:
         niche, story = niche, SAMPLE
     else:
-        niche, story = choose(lang, niche, used, yt)
+        niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
         if niche == "local" and story is not None:
             st["local_month"] = date.strftime("%Y-%m")
     if story is None:
@@ -111,6 +114,7 @@ def main(argv=None) -> int:
     print(f"UPLOADED ({privacy}) {video_id}\nWatch: https://www.youtube.com/watch?v={video_id}")
     state_mod.mark_posted(st, date.isoformat(), story.key, video_id, False, now.isoformat(timespec="seconds"))
     st["used_ids"] = st["used_ids"][-USED_CAP:]
+    dedupe.remember(st, story.headline, story.link)
     st["seq"] += 1
     state_mod.save(st)  # saved before the optional extras so a failure there never causes a second post
     try:

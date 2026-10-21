@@ -99,13 +99,34 @@ ITEMS = [
 ]
 
 
-def ntr_stories() -> list[Story]:
-    return [Story(h, PUBLISHER, LINK, None, "ntr", summary=s, related=tuple((b, "") for b in bullets))
-            for h, s, bullets, _en in ITEMS]
+# Never-ending supply: after every item has been posted once, each comes back reframed. The title opener, the closing line
+# and the card bullets are different each round, so neither a title nor the text is ever repeated exactly. 12 rounds
+# of 20 items last far longer than a year at one post every other day.
+OPENERS = ["", "తమ్ముళ్లూ, మీకు తెలుసా? ", "గుర్తుందా? ", "పసుపు సైనికులారా, ", "చరిత్ర పుటల్లో: ", "జై టీడీపీ! ",
+           "అభిమానుల మాట: ", "తెలుగుదేశం అంటే: ", "కార్యకర్తలారా, ", "తెలుగు జాతి గర్వం: ", "మళ్లీ గుర్తు చేసుకుందాం: ", "నేటి తరానికి తెలియాల్సిన నిజం: "]
+CLOSERS = ["", " జై టీడీపీ!", " జై ఎన్టీఆర్!", " ఈ వీడియోను మిత్రులకు షేర్ చేయండి.", " మీ అభిప్రాయాన్ని కామెంట్‌లో రాయండి.",
+           " తమ్ముళ్లందరికీ ఇది చేరాలి.", " పసుపు జెండా ఎప్పటికీ ఎగురుతుంది!", " మన చరిత్ర, మన గర్వం.", " లైక్ చేసి షేర్ చేయండి.",
+           " తెలుగుదేశం జిందాబాద్!", " మన పార్టీ, మన బలం.", " ఇదే కార్యకర్తల స్ఫూర్తి."]
+BULLET_SETS = [None, ("తెలుగుదేశం స్ఫూర్తి", "కార్యకర్తల గర్వం"), ("ప్రజల పార్టీ", "ఆత్మగౌరవ నినాదం"), ("చరిత్ర మరువలేనిది", "ముందుకు సాగుదాం")]
+
+
+def variant(i: int, rnd: int) -> Story:
+    h, s, bullets, _en = ITEMS[i]
+    r = rnd % len(OPENERS)
+    head = OPENERS[r] + h
+    bs = BULLET_SETS[rnd % len(BULLET_SETS)] or bullets
+    return Story(head, PUBLISHER, LINK, None, "ntr", summary=(s + CLOSERS[(r + i) % len(CLOSERS)]).strip(),
+                 related=tuple((b, "") for b in bs))
+
+
+def ntr_stories(rounds: int = len(OPENERS)) -> list[Story]:
+    """Round 0 is the original wording; later rounds reframe each item. Order is round by round, so nothing returns
+    before every other item has been used in that round."""
+    return [variant(i, rnd) for rnd in range(rounds) for i in range(len(ITEMS))]
 
 
 def english_line(headline: str) -> str:
     for h, _s, _b, en in ITEMS:
-        if h == headline:
+        if headline == h or headline.endswith(h):
             return en
     return ""
