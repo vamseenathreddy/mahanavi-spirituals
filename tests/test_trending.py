@@ -315,3 +315,21 @@ def test_choose_falls_back_to_ntr_history_when_news_is_quiet():
 
     niche, got = post.choose("te", "lokesh", set(), None, fetch=fetch)
     assert (niche, got) == ("ntr", "history")
+
+
+def test_ysrcp_niche_keeps_reported_exposures_and_drops_violence_family_and_film(monkeypatch):
+    from channels.trending import sources
+
+    heads = ["వైసీపీ హయాంలో మద్యం కుంభకోణం: సిట్ విచారణలో కీలక వివరాలు బయటపడ్డాయి - ఈనాడు",
+             "జగన్ హయాంలో నిధుల దుర్వినియోగం బయటపడింది: కాగ్ నివేదిక వెల్లడి - ఆంధ్రజ్యోతి",
+             "వైసీపీ నేత హత్య కేసులో కొత్త మలుపు - ఈనాడు",
+             "జగన్ కుటుంబ వివాదంపై కొత్త కేసు - ఈనాడు",
+             "జగన్ కూటమి ప్రభుత్వాన్ని తీవ్రంగా విమర్శించారు కేసు వివరాలు - ఈనాడు",
+             "అమరావతిలో కొత్త భవనం ప్రారంభం - ఈనాడు"]
+    items = "".join(f"<item><title>{h}</title><link>https://x.test/{i}</link><pubDate>Wed, 21 Oct 2026 04:00:00 GMT</pubDate>"
+                    f"<source url='https://x.test'>{h.rsplit(' - ', 1)[1]}</source></item>" for i, h in enumerate(heads))
+    monkeypatch.setattr(sources, "_get", lambda url, timeout=20: f"<rss><channel>{items}</channel></rss>")
+    got = [s.headline for s in sources.political_stories("ysrcp", queries=["x"])]
+    assert len(got) == 2 and all("హత్య" not in g and "కుటుంబ" not in g and "విమర్శ" not in g for g in got)
+    from channels.trending import config as cfg, metadata
+    assert cfg.niche_label("te", "ysrcp") and metadata.angle("ysrcp", "abcdef1234")

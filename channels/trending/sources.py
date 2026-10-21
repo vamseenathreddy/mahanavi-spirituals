@@ -54,6 +54,8 @@ POLITICAL_QUERY = {
     "nda": ["కూటమి ప్రభుత్వం", "కూటమి ప్రభుత్వం ఆంధ్రప్రదేశ్ అభివృద్ధి", "ఎన్డీఏ ఆంధ్రప్రదేశ్"],
     "janasena": ["జనసేన పవన్ కళ్యాణ్", "డిప్యూటీ సీఎం పవన్ కళ్యాణ్"],
     "counter": ["వైసీపీ ఆరోపణలకు కూటమి కౌంటర్", "జగన్ ఆరోపణలపై మంత్రి స్పందన", "వైసీపీ విమర్శలకు టీడీపీ సమాధానం", "వైసీపీపై మంత్రి ఫైర్", "జగన్‌పై మంత్రి ధ్వజం", "వైసీపీ నేతలకు కౌంటర్"],
+    "ysrcp": ["జగన్ హయాంలో కుంభకోణం", "వైసీపీ హయాంలో అవినీతి", "వైసీపీ హయాంలో అక్రమాలు", "జగన్ అక్రమాస్తుల కేసు విచారణ",
+              "లిక్కర్ స్కామ్ వైసీపీ", "వైసీపీ నేతలపై కేసు", "వైసీపీ తప్పుడు ప్రచారం బయటపడింది", "వైసీపీ హయాంలో నిధుల దుర్వినియోగం"],
     "development": "ఆంధ్రప్రదేశ్ అభివృద్ధి పెట్టుబడులు", "innovations": "ఆంధ్రప్రదేశ్ ప్రభుత్వం కొత్త పథకం సాంకేతికత",
 }
 # Headlines that are about the opposition or about trouble are skipped: the channel only carries positive stories.
@@ -64,7 +66,7 @@ SUBJECT = {  # the headline must actually be about the niche's subject
     "chandrababu": ("చంద్రబాబు", "సీఎం", "బాబు"), "lokesh": ("లోకేశ్", "లోకేష్"), "tdp": ("టీడీపీ", "తెలుగుదేశం", "తెదేపా"),
     "nda": ("కూటమి", "ఎన్డీఏ", "జనసేన", "బీజేపీ"), "janasena": ("జనసేన", "పవన్"),
     "development": ("ఆంధ్రప్రదేశ్", "ఏపీ", "అమరావతి", "రాష్ట్ర", "విశాఖ"),
-    "counter": ("వైసీపీ", "వైఎస్ఆర్సీపీ", "జగన్"),
+    "counter": ("వైసీపీ", "వైఎస్ఆర్సీపీ", "జగన్"), "ysrcp": ("వైసీపీ", "వైఎస్ఆర్సీపీ", "జగన్"),
     "amaravati": ("అమరావతి",), "local": ("నూజివీడు", "చాట్రాయి"),
 }
 # The 'counter' niche: a headline where the government or TDP answers the opposition. Tragedy and crime headlines stay out;
@@ -72,6 +74,13 @@ SUBJECT = {  # the headline must actually be about the niche's subject
 COUNTER_REPLY = ("కౌంటర్", "స్పందన", "సమాధానం", "ఖండించ", "తిప్పికొట్ట", "మండిపడ్డ", "విమర్శలకు", "ఆరోపణలకు", "అబద్ధ", "నిజం", "ఫైర్", "ధ్వజ", "చురక", "గట్టి సమాధానం")
 COUNTER_BAD = ("అరెస్ట్", "హత్య", "మృతి", "ప్రమాదం", "దాడి", "అత్యాచారం", "మరణ", "ఆత్మహత్య", "దుర్ఘటన", "విషాదం", "దుర్మరణం",
                "సినిమా", "చిత్రం", "హీరో", "మూవీ", "ట్రైలర్")
+# The 'ysrcp' niche: reported cases, scams and exposures from the previous government's time. The headline must name YSRCP or
+# Jagan AND carry a reporting word; violence, deaths, women, family and film headlines stay out, and so do headlines where
+# the opposition is itself the one making charges (we would be amplifying it).
+YSRCP_REPORT = ("కుంభకోణం", "స్కామ్", "అవినీతి", "అక్రమ", "దుర్వినియోగం", "కేసు", "సీబీఐ", "ఈడీ", "సిట్", "చార్జిషీట్", "విచారణ",
+                "తప్పుడు ప్రచారం", "బయటపడ", "కాగ్", "దోపిడీ", "మోసం", "హయాం", "హయాంలో", "బండారం", "బకాయి", "అప్పులు", "శ్వేతపత్రం")
+YSRCP_BAD = COUNTER_BAD + ("విమర్శ", "మండిపడ్డ", "ఆరోపణలు చేశ", "సినిమా", "భార్య", "కుమార్తె", "తల్లి", "చెల్లి", "షర్మిల", "భారతి", "కుటుంబ",
+                           "మహిళ", "బాలిక", "మైనర్", "వ్యక్తిగత", "అక్రమ సంబంధ", "సాక్షి")
 POSITIVE = ("అభివృద్ధి", "పెట్టుబడ", "ఉద్యోగ", "ప్రారంభ", "శంకుస్థాపన", "ఒప్పందం", "పథకం", "నిధులు", "ప్రశంస",
             "హర్షం", "శుభవార్త", "సాయం", "ఆదుక", "అండగా", "నిర్మాణ", "పనులు", "ప్రారంభం", "మంజూరు", "అమరావతి", "ఐటీ", "డేటా సెంటర్", "ఏఐ", "పరిశ్రమ", "రైతు", "మహిళ", "విద్య",
             "అవార్డు", "కృషి", "ఆవిష్కరణ", "సాంకేతిక", "మంజూరు", "పెంపు", "భరోసా", "సంక్షేమ", "లక్ష")
@@ -108,8 +117,9 @@ def political_stories(niche: str, lang: str = "te", days: int | None = None, que
                 found.append(x)
     out = [s for s in found if is_informative(s) and matches_language(s.headline, "te")
            and not any(b in s.publisher for b in BLOCKED_PUBLISHERS)
-           and (is_positive(s.headline) if niche != "counter" else
-                (any(w in s.headline for w in COUNTER_REPLY) and not any(b in s.headline for b in COUNTER_BAD)))
+           and (is_positive(s.headline) if niche not in ("counter", "ysrcp") else
+                (any(w in s.headline for w in COUNTER_REPLY) and not any(b in s.headline for b in COUNTER_BAD)) if niche == "counter" else
+                (any(w in s.headline for w in YSRCP_REPORT) and not any(b in s.headline for b in YSRCP_BAD)))
            and (niche not in SUBJECT or any(w in s.headline for w in SUBJECT[niche]))]
     from channels.trending.regions import mentioned
 
