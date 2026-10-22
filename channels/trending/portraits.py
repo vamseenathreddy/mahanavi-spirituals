@@ -125,6 +125,6 @@ def make_overlay(font_path: str):
             pk = _person(a, 330)
             bg.alpha_composite(pk, (0, H - pk.height - 150))
         (_face_mark if FACE_WATERMARK else _badge)(bg, font_path)
-        _qr_join(bg, font_path)
+        # 2026-10-22: WhatsApp QR removed from cards (reach test); _qr_join kept for later
         return bg
     return overlay
