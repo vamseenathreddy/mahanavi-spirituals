@@ -1,5 +1,6 @@
 """Gate for the Mahanavi calendar Shorts (three kinds, one workflow each). Posts only when there is something to post:
 
+  tips      : every day 20:30-21:10 IST, one pooja rule (content/calendar_days.TIPS)
   tomorrow  : daily 19:30-20:10 IST, only when tomorrow has a festival / vrata
   festivals : the 28th of the month (monthly festival list for NEXT month), 19:00-19:40 IST
   vratas    : the 30th (or last day of a shorter month), Ekadashi / Pradosham / Sankashti list for NEXT month, 19:00-19:40 IST
@@ -15,7 +16,8 @@ from channels.engine import gate
 from mahanavi.content import calendar_days
 
 IST = gate.IST
-WINDOWS = {"tomorrow": (dt.time(19, 30), 40, dt.time(22, 0)),
+WINDOWS = {"tips": (dt.time(20, 30), 40, dt.time(22, 30)),
+           "tomorrow": (dt.time(19, 30), 40, dt.time(22, 0)),
            "festivals": (dt.time(19, 0), 40, dt.time(22, 0)),
            "vratas": (dt.time(19, 0), 40, dt.time(22, 0))}
 
@@ -25,6 +27,8 @@ def next_month(d: dt.date) -> tuple[int, int]:
 
 
 def eligible(kind: str, today: dt.date) -> bool:
+    if kind == "tips":
+        return True
     if kind == "tomorrow":
         return calendar_days.next_special(today) is not None
     last = calendar.monthrange(today.year, today.month)[1]

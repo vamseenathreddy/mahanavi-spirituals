@@ -18,7 +18,7 @@ from mahanavi.content.request_shorts import RequestShort, Slide
 from mahanavi.panchang.local_provider import HYDERABAD, LocalPanchangProvider
 
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
-CATEGORIES = ("tomorrow", "festivals", "vratas")
+CATEGORIES = ("tomorrow", "festivals", "vratas", "tips")
 
 
 @dataclass(frozen=True)
@@ -197,11 +197,14 @@ PLAYLIST_TITLES = {
                  "Tomorrow's festival or vratam in Telugu, with simple do's and don'ts: Ekadashi, Pradosham, Sankashti, Pournami, Amavasya."),
     "festivals": ("పండుగల క్యాలెండర్ | Telugu Festival Calendar 2026",
                   "ప్రతి నెలలో వచ్చే పండుగలు, ముఖ్యమైన తేదీలు ముందే తెలుసుకోండి.\nMonth-wise Telugu festival dates, Karthika Masam, Diwali, Shivaratri and more."),
+    "tips": ("పూజా నియమాలు | Pooja Rules and Tips in Telugu",
+             "పూజ ఎలా చేయాలి, ఏం చేయకూడదు? తులసి, దీపారాధన, నైవేద్యం, ప్రదక్షిణ నియమాలు.\nSimple pooja rules, do's and don'ts in Telugu: tulasi, deepam, naivedyam, pradakshina."),
     "vratas": ("ఏకాదశి ప్రదోషం సంకష్టహర చతుర్థి క్యాలెండర్ | Telugu Vrata Calendar",
                "ప్రతి నెలా ఏకాదశి, ప్రదోషం, సంకష్టహర చతుర్థి, పౌర్ణమి, అమావాస్య తేదీలు.\nMonthly Ekadashi, Pradosham, Sankashti Chaturthi, Pournami and Amavasya dates in Telugu."),
 }
-PLAYLIST_LABELS = {"tomorrow": "రేపు విశేషం", "festivals": "పండుగల క్యాలెండర్", "vratas": "వ్రతాల క్యాలెండర్"}
+PLAYLIST_LABELS = {"tips": "పూజా నియమాలు", "tomorrow": "రేపు విశేషం", "festivals": "పండుగల క్యాలెండర్", "vratas": "వ్రతాల క్యాలెండర్"}
 PLAYLIST_LINES = {
+    "tips": "ఇలాంటి పూజా నియమాలన్నీ ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
     "tomorrow": "ఇలాంటి రేపటి విశేషాలన్నీ ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
     "festivals": "అన్ని పండుగల తేదీలు ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
     "vratas": "అన్ని వ్రతాల తేదీలు ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
@@ -213,11 +216,11 @@ DISCLAIMER_TE = "తేదీలు హైదరాబాద్ సూర్య�
 DISCLAIMER_EN = "Dates follow the Hyderabad sunrise panchang. Please also check your local panchangam or priest."
 
 
-def _common(slug: str, obs_key: str, slides: tuple[Slide, ...], title: str, title_en: str, desc_te: str, desc_en: str,
+def _common(slug: str, obs_key, slides: tuple[Slide, ...], title: str, title_en: str, desc_te: str, desc_en: str,
             tags: list[str], hashtags: list[str], header: str, category: str, photo_day: dt.date) -> RequestShort:
     from mahanavi.images import deity_bg
 
-    o = OBS[obs_key]
+    o = obs_key if isinstance(obs_key, Obs) else OBS[obs_key]
     dei = DEITIES[o.god]
     top, mid, bottom, glow = dei.palette
     path = deity_bg.pick(o.photo, photo_day)
@@ -308,3 +311,87 @@ def playlist_block(youtube, current: str) -> str:
     order = [current] + [c for c in CATEGORIES if c != current]
     return "▶ ప్లేలిస్ట్‌లు (Playlists):\n" + "\n".join(
         f"{'▶' if c == current else '•'} {PLAYLIST_LABELS[c]}: https://www.youtube.com/playlist?list={ids[c]}" for c in order if c in ids)
+
+
+# ---------------------------------------------------------------------------------------------------- pooja tips
+@dataclass(frozen=True)
+class Tip:
+    title: str
+    points: tuple[str, ...]
+    god: str
+    photo: str
+    tags: tuple[str, ...]
+
+
+TIPS: tuple[Tip, ...] = (
+    Tip("తులసి చెట్టును తాకకూడని సమయాలు",
+        ("రాత్రి సమయంలో తాకకూడదు", "ఆదివారం, అమావాస్య, ద్వాదశి రోజున ఆకులు కోయకూడదు", "స్నానం చేయకముందు తాకకూడదు",
+         "సాయంత్రం తర్వాత ఆకులు కోయకూడదు", "కోపంతో, నిర్లక్ష్యంగా తాకకూడదు"), "vishnu", "vishnu", ("tulasi rules", "tulasi plant telugu")),
+    Tip("పూజకు పూలు లేనప్పుడు ఏం చేయాలి",
+        ("అక్షతలతో పూజ చేయవచ్చు", "పూలను చించి అక్షతల్లో కలపకండి", "ఒకటి రెండు పూలు ఉంటే దేవుడి చిత్రపటానికి సమర్పించండి",
+         "నామాలు చదువుతూ అక్షతలు సమర్పించవచ్చు", "భక్తి, శుద్ధమైన మనసు ముఖ్యం"), "lakshmi", "lakshmi", ("pooja without flowers", "akshatalu")),
+    Tip("దీపారాధన నియమాలు",
+        ("దీపం తూర్పు లేదా ఉత్తరం వైపు వెలిగించండి", "దీపాన్ని నోటితో ఊది ఆర్పకూడదు", "శుభ్రమైన నూనె, కొత్త వత్తులు వాడండి",
+         "సంధ్యా సమయంలో తప్పక దీపం వెలిగించండి", "దీపం కొండెక్కిన తర్వాత నమస్కరించండి"), "lakshmi", "lakshmi", ("deepam rules", "deeparadhana")),
+    Tip("శివుడికి సమర్పించకూడనివి",
+        ("తులసి దళాలు సమర్పించకూడదు", "మొగలి పువ్వు (కేతకి) వద్దు", "పసుపు, కుంకుమ లింగానికి వద్దు",
+         "బిల్వ దళాలు, తెల్లని పూలు ప్రీతికరం", "శుద్ధ జలం, పాలతో అభిషేకం చేయండి"), "shiva", "shiva", ("shiva pooja rules", "lord shiva songs")),
+    Tip("గణపతికి ఏవి సమర్పించాలి",
+        ("గరిక (దూర్వా) గణపతికి అతి ప్రీతి", "ఎర్రని పూలు సమర్పించండి", "తులసి దళాలు గణపతికి వద్దు",
+         "మోదకాలు, ఉండ్రాళ్లు నివేదించండి", "ఓం గం గణపతయే నమః జపించండి"), "ganesha", "ganesha", ("ganesha pooja", "ganapati stotram telugu")),
+    Tip("హనుమంతుడికి ప్రీతికరమైనవి",
+        ("సింధూరం సమర్పించండి", "తమలపాకుల మాల వేయండి", "మంగళవారం, శనివారం విశేషం",
+         "హనుమాన్ చాలీసా పఠించండి", "శుభ్రంగా, నియమంగా పూజ చేయండి"), "hanuman", "hanuman", ("hanuman pooja", "hanuman chalisa telugu")),
+    Tip("ఇంటి గడప నియమాలు",
+        ("ఉదయం గడపకు పసుపు, కుంకుమ పెట్టండి", "గుమ్మం ముందు ముగ్గు వేయండి", "గడప మీద కూర్చోకూడదు",
+         "గడపపై నిలబడి మాట్లాడకూడదు", "సాయంత్రం గుమ్మం దగ్గర దీపం వెలిగించండి"), "lakshmi", "lakshmi", ("home vastu telugu", "gadapa pooja")),
+    Tip("సంధ్యా సమయంలో చేయకూడనివి",
+        ("నిద్రపోకూడదు", "భోజనం చేయకూడదు", "ఇల్లు ఊడ్చకూడదు", "గోళ్లు, జుట్టు కత్తిరించకూడదు", "కోపం, గొడవలు వద్దు, దీపం పెట్టి దేవుని స్మరించండి"),
+        "lakshmi", "lakshmi", ("sandhya samayam", "evening pooja rules")),
+    Tip("శనివారం చేయవలసినవి",
+        ("శనికి నువ్వుల నూనెతో దీపం వెలిగించండి", "నల్ల నువ్వులు దానం చేయండి", "హనుమాన్ చాలీసా పఠించండి",
+         "పేదలకు అన్నదానం చేయండి", "రావి చెట్టుకు ప్రదక్షిణ చేయండి"), "shani", "shani", ("saturday pooja", "shani pooja telugu")),
+    Tip("పూజకు ముందు పాటించాల్సినవి",
+        ("స్నానం చేసి శుభ్రమైన వస్త్రాలు ధరించండి", "తూర్పు లేదా ఉత్తరం వైపు కూర్చోండి", "ఆసనం మీద కూర్చుని పూజ చేయండి",
+         "సంకల్పం చెప్పుకోండి", "పూజ గదిని శుభ్రంగా ఉంచండి"), "ganesha", "ganesha", ("pooja vidhanam", "pooja rules telugu")),
+    Tip("నైవేద్యం పెట్టేటప్పుడు గుర్తుంచుకోండి",
+        ("నైవేద్యం తాజాగా వండి శుభ్రంగా సిద్ధం చేయండి", "వండేటప్పుడు రుచి చూడకూడదు", "ఉల్లి, వెల్లుల్లి లేకుండా చేయండి",
+         "తులసి దళం వేసి నివేదించండి", "నివేదన తర్వాత ప్రసాదంగా స్వీకరించండి"), "lakshmi", "lakshmi", ("naivedyam rules", "prasadam telugu")),
+    Tip("ప్రదక్షిణల సంఖ్య",
+        ("గణపతికి 1 లేదా 3 ప్రదక్షిణలు", "ఆంజనేయుడికి 11 ప్రదక్షిణలు", "నవగ్రహాలకు 9 ప్రదక్షిణలు",
+         "శివాలయంలో సోమసూత్ర ప్రదక్షిణ చేయాలి", "ప్రదక్షిణ చేసేటప్పుడు నామస్మరణ చేయండి"), "shiva", "shiva", ("pradakshina rules", "temple rules telugu")),
+    Tip("ఉదయం లేవగానే చేయవలసినది",
+        ("కళ్లు తెరవగానే అరచేతులు చూడండి", "కరాగ్రే వసతే లక్ష్మీ శ్లోకం చదవండి", "భూమాతకు నమస్కరించి కాలు పెట్టండి",
+         "ఇష్ట దైవాన్ని స్మరించండి", "కొద్దిసేపు ప్రశాంతంగా కూర్చోండి"), "lakshmi", "lakshmi", ("morning slokas telugu", "karagre vasate lakshmi")),
+    Tip("కార్తీక మాసంలో చేయవలసినవి",
+        ("తెల్లవారుజామున స్నానం చేసి దీపం వెలిగించండి", "ఉసిరి చెట్టు కింద దీపారాధన చేయండి", "తులసి కోట దగ్గర రోజూ దీపం పెట్టండి",
+         "శివాలయంలో దీపదానం చేయండి", "సోమవారాల్లో శివుడికి అభిషేకం చేయండి"), "shiva", "shiva", ("karthika masam", "karthika deepam")),
+    Tip("శుక్రవారం లక్ష్మీ పూజ",
+        ("ఇంటిని శుభ్రం చేసి ముగ్గు వేయండి", "లక్ష్మీదేవికి ఎర్రని పూలు సమర్పించండి", "సాయంత్రం దీపం వెలిగించండి",
+         "లక్ష్మీ అష్టోత్తరం పఠించండి", "పాయసం లేదా పండ్లు నివేదించండి"), "lakshmi", "lakshmi", ("friday lakshmi pooja", "lakshmi devi songs")),
+    Tip("శంఖం, గంట వాడే నియమాలు",
+        ("పూజ ప్రారంభంలో గంట మోగించండి", "శంఖాన్ని నేలపై నేరుగా పెట్టకూడదు", "శంఖాన్ని శుభ్రంగా కడిగి ఉంచండి",
+         "శంఖ జలాన్ని పూజ తర్వాత చల్లుకోండి", "గంటను నిర్లక్ష్యంగా మోగించకండి"), "vishnu", "vishnu", ("shankham rules", "pooja items telugu")),
+)
+
+
+def tip_for(day: dt.date) -> Tip:
+    return TIPS[day.toordinal() % len(TIPS)]
+
+
+def build_tip(day: dt.date) -> RequestShort:
+    t = tip_for(day)
+    o = Obs("tip", "పూజా నియమాలు", "Pooja Rules", t.god, t.photo, t.title, ("", "", ""), ("", "", ""), t.tags)
+    slides = (
+        Slide("points", 5.0, "పూజా నియమాలు", t.title),
+        Slide("points", 12.0, "తెలుసుకోండి", "\n".join(t.points)),
+        Slide("outro", 5.0, "షేర్ చేయండి", "పూజా నియమాలు\nప్రతి రోజూ కొత్తవి"),
+    )
+    title = f"{t.title} | పూజా నియమాలు"
+    title_en = f"{t.tags[0].title()} | Pooja Rules in Telugu"
+    desc_te = f"🙏 {t.title}\n\n" + "\n".join(f"• {p}" for p in t.points) + "\n\nఇవి సంప్రదాయ నమ్మకాలు. మీ కుటుంబ ఆచారం, పండితుల సలహా కూడా పాటించండి 🙏"
+    desc_en = f"{t.tags[0].title()}: simple pooja rules in Telugu, as traditionally followed. Follow your family custom and priest's advice."
+    tags = [*t.tags, "pooja rules telugu", "pooja niyamalu", "పూజా నియమాలు", "devotional tips telugu"]
+    hashtags = ["#Shorts", "#PoojaRules", "#Devotional", "#Telugu", "#SanatanaDharma"]
+    return _common(f"cal_tips_{day.isoformat()}", o, slides, title, title_en, desc_te, desc_en, tags, hashtags,
+                   _long_date(day), "tips", day)

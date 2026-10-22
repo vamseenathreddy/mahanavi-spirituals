@@ -32,3 +32,12 @@ def test_tags_fit_youtube_limits():
     for s in (cal.build_tomorrow(dt.date(2026, 10, 29), ["sankashti"]), cal.build_vratas(2026, 11), cal.build_festivals(2026, 11)):
         assert all(len(t) <= 30 for t in s.tags)
         assert sum(len(t) + (2 if " " in t else 0) + 1 for t in s.tags) <= 450
+
+
+def test_tips_bank():
+    assert len({t.title for t in cal.TIPS}) == len(cal.TIPS)
+    for t in cal.TIPS:
+        assert len(t.points) == 5
+    s = cal.build_tip(dt.date(2026, 10, 23))
+    assert all(len(x) <= 30 for x in s.tags) and len(s.title) <= 100
+    assert gate.eligible("tips", dt.date(2026, 10, 23))

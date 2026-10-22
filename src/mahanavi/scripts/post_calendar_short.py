@@ -30,6 +30,8 @@ IST = ZoneInfo("Asia/Kolkata")
 def build(kind: str, today: dt.date):
     if cal.stale(today):
         print(f"::warning::calendar_days.FESTIVALS ends {cal.FESTIVALS_END}; add next year's festival dates", file=sys.stderr)
+    if kind == "tips":
+        return cal.build_tip(today)
     if kind == "tomorrow":
         nxt = cal.next_special(today)
         if nxt is None:

@@ -73,6 +73,7 @@ TARGETS = [
     ("post-beej-mantra-sangam.yml", "Mantra Sangam - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),
     ("post-beej-trance-beats.yml", "Trance Beats - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),
     ("post-calendar-tomorrow.yml", "Mahanavi - Tomorrow Special Short (7:30 PM)", *_every_10(19, 30, 5)),
+    ("post-calendar-tips.yml", "Mahanavi - Pooja Rules Short (8:30 PM)", *_every_10(20, 30, 5)),
     ("post-calendar-festivals.yml", "Mahanavi - Monthly Festival List (7 PM)", *_every_10(19, 0, 6)),
     ("post-calendar-vratas.yml", "Mahanavi - Monthly Vrata Calendar (7 PM)", *_every_10(19, 0, 6)),
     ("post-trance-bhagavatam.yml", "Trance Beats - Bhagavatam Short (7 AM)", *_every_10(7, 0, 12)),
