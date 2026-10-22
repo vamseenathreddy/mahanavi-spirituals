@@ -322,6 +322,22 @@ def article_summary(link: str, lang: str, headline: str, timeout: int = 15) -> s
         return ""
 
 
+TEASER = ("ప్రత్యేకతలివే", "ప్రత్యేకతలు ఇవే", "ఇవే", "ఇదే", "తెలుసా", "ఏంటో", "ఎవరో", "చూడండి", "ఎందుకంటే", "అసలు కారణం")
+
+
+def has_substance(story: Story) -> bool:
+    """A news card must carry facts, not a promise. Needs the publisher's own summary; a headline that teases
+    ('ప్రత్యేకతలివే', 'తెలుసా') needs a fuller one so the card actually lists what it promised."""
+    if story.kind != "news":
+        return True
+    summary = (story.summary or "").strip()
+    if len(summary) < 60:
+        return False
+    if any(w in story.headline for w in TEASER) and len(summary) < 110:
+        return False
+    return True
+
+
 def enrich(story: Story, lang: str) -> Story:
     """Add reading matter: the publisher's summary and up to four related headlines in the same language."""
     if story.kind == "news":

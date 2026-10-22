@@ -17,7 +17,7 @@ from channels.engine import render
 from channels.engine import state as state_mod
 from channels.trending import config as cfg
 from channels.trending import dedupe, metadata, playlists
-from channels.trending.sources import Story, enrich, pick_story
+from channels.trending.sources import Story, enrich, has_substance, pick_story
 
 IST = ZoneInfo("Asia/Kolkata")
 USED_CAP = 2000
@@ -84,6 +84,21 @@ def main(argv=None) -> int:
 
     if not args.sample:
         story = enrich(story, lang)
+        # 2026-10-22: no empty promises. A news card needs the publisher's own summary (facts); otherwise take the next story.
+        tries = 0
+        while story is not None and not has_substance(story) and tries < 8:
+            print(f"::notice::skipping a thin story (no usable summary): {story.headline[:70]}")
+            used.add(story.key)
+            tries += 1
+            niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
+            story = enrich(story, lang) if story is not None else None
+        if story is not None and not has_substance(story):
+            niche, story = "ntr", pick_story("ntr", lang, used, yt, recent=st.get("recent", []))
+            if story is not None:
+                story = enrich(story, lang)
+        if story is None:
+            print("No story with real substance found; skipping this slot.")
+            return 0
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     metadata.VARIANT = st.setdefault("fan", {}).get(niche, 0)  # walks the fan lines in order, no repeats until the pool is used

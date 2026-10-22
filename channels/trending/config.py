@@ -50,8 +50,8 @@ WHATSAPP_URL = "https://chat.whatsapp.com/E70aL6tTrzT4eftmUV9npI"
 TELEGRAM_URL = "https://t.me/PulseBoostingTDP"
 # (subscribe line, join-groups line, comment line), drawn under the headline
 CTA = {
-    "te": ("తమ్ముళ్లూ, ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మళ్లీ కనిపించకపోవచ్చు", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
-           "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"),
+    "te": ("తమ్ముళ్లూ, ఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
+           "ఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి"),
     "en": ("6 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
            "You may never see this channel again unless you subscribe right now"),
 }

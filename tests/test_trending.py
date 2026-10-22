@@ -350,3 +350,14 @@ def test_fan_lines_rotate_and_do_not_repeat_until_the_pool_is_used():
             assert len(pairs) == 10
     finally:
         metadata.VARIANT = None
+
+
+def test_has_substance_gate():
+    from channels.trending.sources import Story, has_substance
+    bare = Story("అమరావతి సంగమం ప్రత్యేకతలివే!", "Oneindia", "x")
+    assert not has_substance(bare)                      # no summary: a promise with nothing behind it
+    thin = Story("అమరావతి సంగమం ప్రత్యేకతలివే!", "Oneindia", "x", summary="రూ.597 కోట్లతో సంగమం నిర్మాణం జరుగుతోంది ఇది ఒక వార్త మాత్రమే.")
+    assert not has_substance(thin)                      # teaser headline needs a fuller summary
+    full = Story("అమరావతి సంగమం ప్రత్యేకతలివే!", "Oneindia", "x", summary="రూ.597 కోట్లతో నిర్మించే సంగమంలో వంతెన, పార్కులు, వాటర్ ఫ్రంట్, పర్యాటక కేంద్రాలు ఉంటాయి. పనులు వచ్చే ఏడాది ప్రారంభమవుతాయి.")
+    assert has_substance(full)
+    assert has_substance(Story("చంద్రబాబు సమీక్ష", "Eenadu", "x", summary="ముఖ్యమంత్రి చంద్రబాబు అమరావతి పనులపై సమీక్ష నిర్వహించి అధికారులకు ఆదేశాలు ఇచ్చారు."))
