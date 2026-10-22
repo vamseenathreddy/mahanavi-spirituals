@@ -86,9 +86,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     except (MahanaviError, YouTubeUploadError) as exc:
         print(f"FAILED: {exc}", file=sys.stderr)
+        print(f"::error::calendar short failed: {str(exc)[:400]}")
         return 1
     except Exception as exc:  # noqa: BLE001
         print(f"FAILED: {type(exc).__name__}: {exc}", file=sys.stderr)
+        print(f"::error::calendar short failed: {type(exc).__name__}: {str(exc)[:400]}")
         return 1
 
 
