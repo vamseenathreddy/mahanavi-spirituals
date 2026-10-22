@@ -75,7 +75,12 @@ def main(argv=None) -> int:
     if args.sample:
         niche, story = niche, SAMPLE
     else:
-        niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
+        from channels.trending import ntr_bank
+        first = next((x for x in ntr_bank.priority_stories() if x.key not in used), None)   # owner-requested NTR posts go first
+        if first is not None:
+            niche, story = "ntr", first
+        else:
+            niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
         if niche == "local" and story is not None:
             st["local_month"] = date.strftime("%Y-%m")
     if story is None:
