@@ -76,6 +76,7 @@ def main(argv: list[str] | None = None) -> int:
         privacy = "public" if args.public else ("private" if args.private else "unlisted")
         video_id = upload(youtube, spec, video, privacy)
         print(f"Channel: {got}\nUploaded ({privacy}): https://www.youtube.com/watch?v={video_id}")
+        print(f"::notice::calendar short uploaded ({privacy}): https://www.youtube.com/watch?v={video_id}")
         state = state_mod.load()
         state_mod.mark_posted(state, today.isoformat(), spec.slug, video_id, True, dt.datetime.now(IST).isoformat())
         state_mod.save(state)
