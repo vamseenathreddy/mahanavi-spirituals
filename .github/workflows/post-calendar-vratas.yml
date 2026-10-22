@@ -47,6 +47,12 @@ jobs:
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: python scripts/ci/drive_state_sync.py pull
 
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
       - name: Decide whether this call should post today
         id: gate
         env:
@@ -59,13 +65,6 @@ jobs:
       - name: Install ffmpeg + text shaping libs
         if: steps.gate.outputs.post == 'true'
         run: bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
-
-      - name: Install full Python dependencies
-        if: steps.gate.outputs.post == 'true'
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -e .
 
       - name: Build and upload the calendar Short
         if: steps.gate.outputs.post == 'true'
