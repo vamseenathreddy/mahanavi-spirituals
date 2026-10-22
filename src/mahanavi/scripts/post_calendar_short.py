@@ -27,7 +27,17 @@ from mahanavi.scripts.post_request_short import assemble, upload
 IST = ZoneInfo("Asia/Kolkata")
 
 
-def build(kind: str, today: dt.date):
+def build(kind: str, today: dt.date, channel: str = "mahanavi"):
+    if channel != "mahanavi":  # Hindi channels (content/calendar_days_hi.py)
+        from mahanavi.content import calendar_days_hi as hi
+
+        if hi.stale(today):
+            print(f"::warning::calendar_days_hi.FESTIVALS ends {hi.FESTIVALS_END}; add the next dates", file=sys.stderr)
+        if kind == "tomorrow":
+            nxt = hi.next_special(today)
+            return hi.build_tomorrow(channel, *nxt) if nxt else None
+        y, m = next_month(today)
+        return hi.build_festivals(channel, y, m) if kind == "festivals" else hi.build_vratas(channel, y, m)
     if cal.stale(today):
         print(f"::warning::calendar_days.FESTIVALS ends {cal.FESTIVALS_END}; add next year's festival dates", file=sys.stderr)
     if kind == "tips":
@@ -44,6 +54,7 @@ def build(kind: str, today: dt.date):
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--kind", required=True, choices=cal.CATEGORIES)
+    ap.add_argument("--channel", default="mahanavi", choices=["mahanavi", "mantra_sangam", "trance_beats"])
     ap.add_argument("--public", action="store_true")
     ap.add_argument("--private", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
@@ -52,16 +63,23 @@ def main(argv: list[str] | None = None) -> int:
     settings = get_settings()
     today = dt.date.fromisoformat(args.date) if args.date else dt.datetime.now(IST).date()
     try:
-        spec = build(args.kind, today)
+        if args.channel != "mahanavi" and args.kind == "tips":
+            raise MahanaviError("pooja-rule tips exist only for the Telugu channel")
+        spec = build(args.kind, today, args.channel)
         if spec is None:
             print("nothing special tomorrow: no post")
             return 0
         print(f"{today} -> {spec.slug}: {spec.title}")
         out_dir = settings.output_dir / "calendar" / spec.slug
         slides = RequestCardRenderer(settings).render_all(spec, out_dir)
-        music = settings.alert_short_music_path
-        if music is None or not music.exists():
-            raise MahanaviError(f"Music file missing: {music}")
+        if args.channel == "mahanavi":
+            music = settings.alert_short_music_path
+            if music is None or not music.exists():
+                raise MahanaviError(f"Music file missing: {music}")
+        else:
+            from mahanavi.scripts.post_beej_mantra import music_for
+
+            music = music_for(args.channel, today, settings.alert_short_music_path)
         video = assemble(spec, [s.path for s in slides], music, out_dir / f"{spec.slug}.mp4")
         print(f"Assembled: {video} ({spec.total_seconds:.1f}s)")
         if args.dry_run:
@@ -70,7 +88,12 @@ def main(argv: list[str] | None = None) -> int:
         got = youtube.channels().list(part="snippet", mine=True).execute()["items"][0]["snippet"]["title"]
         if spec.expected_channel.lower() not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected '{spec.expected_channel}'.")
-        top = cal.playlist_block(youtube, args.kind)
+        if args.channel == "mahanavi":
+            top = cal.playlist_block(youtube, args.kind)
+        else:
+            from mahanavi.content import calendar_days_hi as hi
+
+            top = hi.playlist_block(youtube, args.kind)
         if top:
             spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
         privacy = "private" if args.private else "public"   # 2026-10-22: never unlisted
@@ -81,7 +104,12 @@ def main(argv: list[str] | None = None) -> int:
         state_mod.mark_posted(state, today.isoformat(), spec.slug, video_id, True, dt.datetime.now(IST).isoformat())
         state_mod.save(state)
         try:
-            pid = cal.playlist_ids(youtube)[args.kind]
+            if args.channel == "mahanavi":
+                pid = cal.playlist_ids(youtube)[args.kind]
+            else:
+                from mahanavi.content import calendar_days_hi as hi
+
+                pid = hi.playlist_ids(youtube)[args.kind]
             eng_upload.add_to_playlist(youtube, video_id, pid)
             print("Playlist: added")
         except Exception as exc:  # noqa: BLE001

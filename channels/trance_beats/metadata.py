@@ -4,8 +4,10 @@ import os
 import re
 
 CHANNEL = "Devotional Trance Beats"
-CAT_WORD = {"bhajan": "Bhajan", "kirtan": "Kirtan", "quote": "Teaching", "gita": "Bhagavad Gita",
-            "bhagavatam": "Shrimad Bhagavatam", "mantra": "Krishna Mantra"}
+CAT_WORD = {"bhajan": "Krishna Bhajan Hindi", "kirtan": "Krishna Kirtan", "quote": "Krishna Teachings", "gita": "Bhagavad Gita",
+            "bhagavatam": "Shrimad Bhagavatam", "mantra": "Krishna Mantra Jaap"}
+# 2026-10-22: searchable Hindi words in the title, ahead of the lyric line's tail (the bare lyric line was never searched for)
+HI_SEARCH = {"bhajan": "कृष्ण भजन", "kirtan": "कृष्ण कीर्तन", "quote": "कृष्ण वचन", "mantra": "कृष्ण मंत्र जाप"}
 CAT_TAGS = {
     "bhajan": ["#Bhajan", "#KrishnaBhajan", "#RadheRadhe"],
     "kirtan": ["#Kirtan", "#HareKrishna", "#Sankirtan"],
@@ -58,7 +60,9 @@ def title(row, special):
     if special:
         hi = f"{special['label_primary']}: {hi}"
     pre = TITLE_PREFIX.get(row["category"], "")
-    for cand in (f"{pre}{hi} | {word} | {CHANNEL}", f"{pre}{hi} | {word}", f"{hi} | {word}"):
+    hs = HI_SEARCH.get(row["category"])
+    cands = [f"{pre}{hi} | {hs} | {word}"] if hs else []
+    for cand in (*cands, f"{pre}{hi} | {word} | {CHANNEL}", f"{pre}{hi} | {word}", f"{hi} | {word}"):
         if len(cand) <= 100:
             return cand
     tail = f" | {word}"

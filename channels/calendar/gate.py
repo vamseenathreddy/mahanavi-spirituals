@@ -26,10 +26,13 @@ def next_month(d: dt.date) -> tuple[int, int]:
     return (d.year + (d.month == 12), d.month % 12 + 1)
 
 
-def eligible(kind: str, today: dt.date) -> bool:
+def eligible(kind: str, today: dt.date, channel: str = "mahanavi") -> bool:
     if kind == "tips":
-        return True
+        return channel == "mahanavi"
     if kind == "tomorrow":
+        if channel != "mahanavi":
+            from mahanavi.content import calendar_days_hi
+            return calendar_days_hi.next_special(today) is not None
         return calendar_days.next_special(today) is not None
     last = calendar.monthrange(today.year, today.month)[1]
     return today.day == (min(28, last) if kind == "festivals" else min(30, last))
@@ -37,8 +40,9 @@ def eligible(kind: str, today: dt.date) -> bool:
 
 def main() -> int:
     kind = os.environ["CAL_KIND"]
+    channel = os.environ.get("CAL_CHANNEL", "mahanavi")
     today = dt.datetime.now(IST).date()
-    if os.environ.get("FORCE_POST") != "true" and not eligible(kind, today):
+    if os.environ.get("FORCE_POST") != "true" and not eligible(kind, today, channel):
         print(f"DECISION: skip, nothing to post for '{kind}' today")
         out = os.environ.get("GITHUB_OUTPUT")
         if out:

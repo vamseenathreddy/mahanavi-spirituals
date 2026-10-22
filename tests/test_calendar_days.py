@@ -41,3 +41,13 @@ def test_tips_bank():
     s = cal.build_tip(dt.date(2026, 10, 23))
     assert all(len(x) <= 30 for x in s.tags) and len(s.title) <= 100
     assert gate.eligible("tips", dt.date(2026, 10, 23))
+
+
+def test_hindi_calendar():
+    from mahanavi.content import calendar_days_hi as hi
+    assert hi.observances(dt.date(2026, 11, 8)) == ["diwali"] and hi.observances(dt.date(2026, 11, 6))[0] == "dhanteras"
+    assert hi.next_special(dt.date(2026, 11, 5))[0] == dt.date(2026, 11, 6)
+    for spec in (hi.build_vratas("trance_beats", 2026, 11), hi.build_festivals("trance_beats", 2026, 11),
+                 hi.build_tomorrow("trance_beats", dt.date(2026, 11, 6), ["dhanteras"])):
+        assert spec.lang == "hi" and len(spec.slides) == 1 and len(spec.title) <= 100 and not spec.title.endswith("…")
+        assert all(len(t) <= 30 for t in spec.tags)
