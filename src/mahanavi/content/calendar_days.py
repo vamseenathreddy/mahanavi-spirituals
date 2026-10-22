@@ -1,0 +1,310 @@
+"""Calendar-style Telugu Shorts for Mahanavi: "tomorrow's special" (do / don't), the monthly festival list
+and the monthly vrata calendar (Ekadashi, Pradosham, Sankashti ...).
+
+Dates: curated festivals (FESTIVALS, refresh yearly; a warning is printed once the list runs out) plus vratas
+computed from the real Swiss-Ephemeris tithi at Hyderabad (sunrise for Ekadashi / Amavasya / Purnima / Ashtami /
+Shashthi / Chaturthi, evening for Pradosham / Sankashti / Masa Shivaratri). Built as `RequestShort`
+(points slides), so the existing renderer, assembler and uploader are reused.
+"""
+from __future__ import annotations
+
+import datetime as dt
+from dataclasses import dataclass
+from functools import lru_cache
+
+from mahanavi.content.alert_seo import _CHANNEL_FOOTER_EN, _CHANNEL_FOOTER_TE
+from mahanavi.content.beej_mantras import DEITIES, MONTH_NAME, WEEKDAY_NAME
+from mahanavi.content.request_shorts import RequestShort, Slide
+from mahanavi.panchang.local_provider import HYDERABAD, LocalPanchangProvider
+
+IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+CATEGORIES = ("tomorrow", "festivals", "vratas")
+
+
+@dataclass(frozen=True)
+class Obs:
+    key: str
+    te: str
+    en: str
+    god: str            # beej_mantras.DEITIES key (palette) and photo family
+    photo: str          # deity_bg photo family
+    why: str            # one Telugu line: what the day is
+    dos: tuple[str, str, str]
+    donts: tuple[str, str, str]
+    tags: tuple[str, ...] = ()   # extra SEO tags (search-trend terms)
+
+
+OBS: dict[str, Obs] = {o.key: o for o in (
+    Obs("ekadashi", "ఏకాదశి", "Ekadashi", "vishnu", "vishnu", "శ్రీ మహావిష్ణువుకు ప్రీతికరమైన ఏకాదశి వ్రతం",
+        ("ఉపవాసం లేదా ఫలహారం చేయండి", "విష్ణు సహస్రనామం పఠించండి", "తులసి దళాలతో విష్ణువును పూజించండి"),
+        ("అన్నం, ధాన్యాలు తినకండి", "పగటిపూట నిద్రపోకండి", "ఉల్లి, వెల్లుల్లి, మాంసాహారం వద్దు"),
+        ("ekadashi vratham", "vishnu sahasranamam", "ekadashi telugu")),
+    Obs("pradosham", "ప్రదోషం", "Pradosham", "shiva", "shiva", "సాయంత్రం శివారాధనకు విశేషమైన ప్రదోష కాలం",
+        ("సాయంత్రం శివాలయ దర్శనం చేయండి", "శివుడికి అభిషేకం, బిల్వ దళాలు సమర్పించండి", "ఓం నమః శివాయ జపం చేయండి"),
+        ("సంధ్యా సమయంలో నిద్రపోకండి", "మాంసాహారం, మద్యం వద్దు", "కోపం, కలహాలు వద్దు"),
+        ("pradosham", "lord shiva songs", "shiva stotram telugu")),
+    Obs("sankashti", "సంకష్టహర చతుర్థి", "Sankashti Chaturthi", "ganesha", "ganesha", "గణపతికి ప్రీతికరమైన సంకష్టహర చతుర్థి",
+        ("గణపతికి గరిక, ఎర్ర పూలు సమర్పించండి", "సంకష్టహర గణపతి స్తోత్రం పఠించండి", "చంద్రోదయం తర్వాత పూజ చేసి ఉపవాసం విరమించండి"),
+        ("చంద్రోదయానికి ముందు భోజనం వద్దు", "ఉల్లి, వెల్లుల్లి వద్దు", "మాంసాహారం వద్దు"),
+        ("sankashtahara ganapathi stotram", "sankashti chaturthi", "ganapati stotram telugu")),
+    Obs("shivaratri", "మాస శివరాత్రి", "Masa Shivaratri", "shiva", "shiva", "ప్రతి నెలా వచ్చే శివరాత్రి వ్రతం",
+        ("శివుడికి అభిషేకం చేయండి", "బిల్వార్చన చేయండి", "రాత్రి శివ నామ స్మరణ చేయండి"),
+        ("మాంసాహారం, మద్యం వద్దు", "వృథా కాలక్షేపం వద్దు", "కోపం, కలహాలు వద్దు"),
+        ("masa shivaratri", "lord shiva songs", "om namah shivaya")),
+    Obs("purnima", "పౌర్ణమి", "Pournami", "lakshmi", "lakshmi", "సత్యనారాయణ వ్రతానికి శుభప్రదమైన పౌర్ణమి",
+        ("సత్యనారాయణ స్వామి వ్రతం చేయండి", "చంద్రుడికి నమస్కరించి పాలు నివేదించండి", "దానధర్మాలు చేయండి"),
+        ("మాంసాహారం, మద్యం వద్దు", "ఎవరినీ దూషించకండి", "తామసిక ఆహారం వద్దు"),
+        ("pournami", "satyanarayana vratham", "lakshmi devi songs")),
+    Obs("amavasya", "అమావాస్య", "Amavasya", "shiva", "shiva", "పితృ దేవతలను స్మరించే అమావాస్య",
+        ("పితృ తర్పణం ఇవ్వండి", "పేదలకు అన్నదానం చేయండి", "ఇంట్లో దీపం వెలిగించండి"),
+        ("కొత్త పనులు ప్రారంభించకండి", "జుట్టు, గోళ్లు కత్తిరించకండి", "మాంసాహారం వద్దు"),
+        ("amavasya", "pitru tarpanam", "amavasya telugu")),
+    Obs("bhairava", "కాలభైరవ అష్టమి", "Kalabhairava Ashtami", "shiva", "shiva", "కాలభైరవ స్వామిని ఆరాధించే అష్టమి",
+        ("కాలభైరవ అష్టకం పఠించండి", "ఆవనూనె దీపం వెలిగించండి", "కుక్కలకు ఆహారం పెట్టండి"),
+        ("మాంసాహారం, మద్యం వద్దు", "అబద్ధాలు, అహంకారం వద్దు", "బలహీనులను బాధపెట్టకండి"),
+        ("kalabhairava ashtakam", "bhairava", "lord shiva songs")),
+    Obs("shashthi", "సుబ్రహ్మణ్య షష్ఠి", "Subramanya Shashthi", "subrahmanya", "murugan", "కుమార స్వామి ఆరాధనకు విశేషమైన షష్ఠి",
+        ("సుబ్రహ్మణ్య స్వామికి అభిషేకం చేయండి", "సుబ్రహ్మణ్య భుజంగం పఠించండి", "పాలు, పండ్లు నివేదించండి"),
+        ("మాంసాహారం వద్దు", "మద్యం వద్దు", "అబద్ధాలు ఆడకండి"),
+        ("subramanya shashti", "subramanya bhujangam", "murugan songs telugu")),
+    Obs("vinayaka", "వినాయక చవితి (నెలవారీ)", "Vinayaka Chaturthi", "ganesha", "ganesha", "గణపతి ఆరాధనకు శుక్ల చతుర్థి",
+        ("గణపతికి గరిక, మోదకాలు సమర్పించండి", "ఓం గం గణపతయే నమః జపం చేయండి", "గణేశ అష్టోత్తరం పఠించండి"),
+        ("తులసి దళాలతో గణపతిని పూజించకండి", "మాంసాహారం వద్దు", "పూజలో తొందర వద్దు"),
+        ("vinayaka chaturthi", "ganesha songs telugu", "ganapati stotram telugu")),
+    # curated festivals
+    Obs("diwali", "దీపావళి", "Deepavali", "lakshmi", "lakshmi", "దీపాల పండుగ, లక్ష్మీ పూజ",
+        ("సాయంత్రం లక్ష్మీ పూజ చేసి దీపాలు వెలిగించండి", "ఇల్లు శుభ్రం చేసి ముగ్గు వేయండి", "పెద్దలకు నమస్కరించి స్వీట్లు పంచండి"),
+        ("సాయంత్రం ఇంట్లో చీకటి ఉంచకండి", "టపాసులు జాగ్రత్తగా కాల్చండి", "అప్పులు ఇచ్చి పుచ్చుకోవడం వద్దు (సంప్రదాయం)"),
+        ("diwali lakshmi puja", "lakshmi devi songs", "deepavali telugu")),
+    Obs("karthika", "కార్తీక మాసం ప్రారంభం", "Karthika Masam begins", "shiva", "shiva", "శివారాధనకు అత్యంత పవిత్రమైన కార్తీక మాసం",
+        ("తెల్లవారుజామున స్నానం చేసి దీపం వెలిగించండి", "ఉసిరి చెట్టు కింద దీపారాధన చేయండి", "శివాలయంలో దీపదానం చేయండి"),
+        ("మాంసాహారం, మద్యం వద్దు", "ఉల్లి, వెల్లుల్లి వద్దు", "దీపారాధన మానకండి"),
+        ("karthika masam", "karthika deepam", "lord shiva songs")),
+    Obs("karthika_somavaram", "కార్తీక సోమవారం", "Karthika Somavaram", "shiva", "shiva", "కార్తీక మాసంలో శివుడికి ప్రీతికరమైన సోమవారం",
+        ("శివుడికి అభిషేకం, బిల్వార్చన చేయండి", "ఉపవాసం ఉండి సాయంత్రం దీపం వెలిగించండి", "శివ పంచాక్షరి జపం చేయండి"),
+        ("మాంసాహారం, ఉల్లి, వెల్లుల్లి వద్దు", "పగటి నిద్ర వద్దు", "మద్యం, పొగాకు వద్దు"),
+        ("karthika somavaram", "lord shiva songs", "shiva abhishekam")),
+    Obs("karthika_pournami", "కార్తీక పౌర్ణమి", "Karthika Pournami", "shiva", "shiva", "కార్తీక మాసంలో అత్యంత పవిత్రమైన పౌర్ణమి",
+        ("నదీ స్నానం చేసి దీపదానం చేయండి", "శివాలయంలో దీపాలు వెలిగించండి", "సత్యనారాయణ వ్రతం చేయండి"),
+        ("మాంసాహారం, మద్యం వద్దు", "పగటి నిద్ర వద్దు", "ఎవరినీ దూషించకండి"),
+        ("karthika pournami", "karthika deepam", "lord shiva songs")),
+)}
+
+# curated 2026 festival dates -> Obs key (extend each year; a warning is printed when this list runs out)
+FESTIVALS: dict[dt.date, str] = {
+    dt.date(2026, 11, 8): "diwali",
+    dt.date(2026, 11, 10): "karthika",
+    dt.date(2026, 11, 16): "karthika_somavaram",
+    dt.date(2026, 11, 23): "karthika_somavaram",
+    dt.date(2026, 11, 24): "karthika_pournami",
+    dt.date(2026, 11, 30): "karthika_somavaram",
+    dt.date(2026, 12, 7): "karthika_somavaram",
+}
+FESTIVALS_END = max(FESTIVALS)
+PRIORITY = ["diwali", "karthika", "karthika_somavaram", "karthika_pournami", "ekadashi", "pradosham", "sankashti",
+            "shivaratri", "purnima", "amavasya", "bhairava", "shashthi", "vinayaka"]
+VRATAS = ("ekadashi", "pradosham", "sankashti", "shivaratri", "purnima", "amavasya")
+
+_prov = LocalPanchangProvider(*HYDERABAD)
+
+
+def _tithi_no(t: dt.datetime) -> int:
+    sun, moon = _prov._longitudes(t)  # noqa: SLF001
+    return int(((moon - sun) % 360) // 12) + 1   # 1..30 (15 purnima, 30 amavasya)
+
+
+@lru_cache(maxsize=1024)
+def computed(d: dt.date) -> tuple[str, ...]:
+    """Vrata keys that fall on this date from the real tithi (Hyderabad)."""
+    import swisseph as swe
+
+    rise = _prov._rise_set(d, swe.CALC_RISE)  # noqa: SLF001
+    set_ = _prov._rise_set(d, swe.CALC_SET)  # noqa: SLF001
+    sr = _tithi_no(rise)
+    ev = _tithi_no(set_ + dt.timedelta(minutes=30))     # pradosham: trayodashi in the evening
+    night = _tithi_no(set_ + dt.timedelta(hours=3))     # moonrise / night tithi
+    out: list[str] = []
+    if sr in (11, 26):
+        out.append("ekadashi")
+    if sr == 15:
+        out.append("purnima")
+    if sr == 30:
+        out.append("amavasya")
+    if sr == 23:
+        out.append("bhairava")
+    if sr == 6:
+        out.append("shashthi")
+    if sr == 4:
+        out.append("vinayaka")
+    if ev in (13, 28):
+        out.append("pradosham")
+    if night == 19:
+        out.append("sankashti")
+    if _tithi_no(set_ + dt.timedelta(hours=5)) == 29 and night in (28, 29):
+        out.append("shivaratri")
+    return tuple(out)
+
+
+def _dedupe_spans(d: dt.date, keys: list[str]) -> list[str]:
+    """A tithi that spans two sunrises/evenings would repeat on the next day: keep only the first day."""
+    prev = set(computed(d - dt.timedelta(days=1)))
+    return [k for k in keys if k not in prev]
+
+
+def observances(d: dt.date) -> list[str]:
+    keys = [FESTIVALS[d]] if d in FESTIVALS else []
+    keys += _dedupe_spans(d, [k for k in computed(d)])
+    if d in FESTIVALS:  # a curated day replaces the generic one it coincides with (Diwali amavasya, Karthika purnima)
+        keys = [k for k in keys if k not in ("amavasya", "purnima")]
+    return sorted(dict.fromkeys(keys), key=PRIORITY.index)
+
+
+def stale(d: dt.date) -> bool:
+    return d > FESTIVALS_END
+
+
+def next_special(after: dt.date, horizon: int = 10) -> tuple[dt.date, list[str]] | None:
+    """Tomorrow-type post for the day after `after` only (None when it is an ordinary day)."""
+    day = after + dt.timedelta(days=1)
+    obs = observances(day)
+    return (day, obs) if obs else None
+
+
+def month_items(year: int, month: int, kinds: tuple[str, ...]) -> list[tuple[dt.date, str]]:
+    d = dt.date(year, month, 1)
+    out: list[tuple[dt.date, str]] = []
+    while d.month == month:
+        for k in observances(d):
+            if k in kinds:
+                out.append((d, k))
+        d += dt.timedelta(days=1)
+    return out
+
+
+# ---------------------------------------------------------------------------------------------------- building
+def _short_date(d: dt.date) -> str:
+    return f"{d.day} {MONTH_NAME[d.month - 1][0]}"
+
+
+def _long_date(d: dt.date) -> str:
+    return f"{WEEKDAY_NAME[d.weekday()][0]} · {d.day} {MONTH_NAME[d.month - 1][0]} {d.year}"
+
+
+CTA = ("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "ప్రతి పండుగ, వ్రతం ముందే తెలుసుకోండి - సబ్‌స్క్రైబ్ చేయండి")
+PLAYLIST_TITLES = {
+    "tomorrow": ("రేపు విశేషం | చేయవలసినవి, చేయకూడనివి | Telugu Festival Do's and Don'ts",
+                 "రేపు వచ్చే పండుగ, వ్రతం ఏమిటి? ఏం చేయాలి, ఏం చేయకూడదు? ప్రతి ప్రత్యేక రోజుకు ముందు రోజు సాయంత్రం.\n"
+                 "Tomorrow's festival or vratam in Telugu, with simple do's and don'ts: Ekadashi, Pradosham, Sankashti, Pournami, Amavasya."),
+    "festivals": ("పండుగల క్యాలెండర్ | Telugu Festival Calendar 2026",
+                  "ప్రతి నెలలో వచ్చే పండుగలు, ముఖ్యమైన తేదీలు ముందే తెలుసుకోండి.\nMonth-wise Telugu festival dates, Karthika Masam, Diwali, Shivaratri and more."),
+    "vratas": ("ఏకాదశి ప్రదోషం సంకష్టహర చతుర్థి క్యాలెండర్ | Telugu Vrata Calendar",
+               "ప్రతి నెలా ఏకాదశి, ప్రదోషం, సంకష్టహర చతుర్థి, పౌర్ణమి, అమావాస్య తేదీలు.\nMonthly Ekadashi, Pradosham, Sankashti Chaturthi, Pournami and Amavasya dates in Telugu."),
+}
+PLAYLIST_LABELS = {"tomorrow": "రేపు విశేషం", "festivals": "పండుగల క్యాలెండర్", "vratas": "వ్రతాల క్యాలెండర్"}
+PLAYLIST_LINES = {
+    "tomorrow": "ఇలాంటి రేపటి విశేషాలన్నీ ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
+    "festivals": "అన్ని పండుగల తేదీలు ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
+    "vratas": "అన్ని వ్రతాల తేదీలు ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
+}
+BASE_TAGS = ["telugu panchangam", "telugu calendar", "telugu festivals", "telugu devotional", "devotional songs telugu",
+             "spiritual mantras for meditation", "powerful god mantras in telugu", "hindu festivals", "sanatana dharma",
+             "తెలుగు పంచాంగం", "పండుగలు", "వ్రతం", "shorts"]
+DISCLAIMER_TE = "తేదీలు హైదరాబాద్ సూర్యోదయ పంచాంగం ప్రకారం. స్థానిక పంచాంగం, పండితుల సలహా కూడా చూడండి 🙏"
+DISCLAIMER_EN = "Dates follow the Hyderabad sunrise panchang. Please also check your local panchangam or priest."
+
+
+def _common(slug: str, obs_key: str, slides: tuple[Slide, ...], title: str, title_en: str, desc_te: str, desc_en: str,
+            tags: list[str], hashtags: list[str], header: str, category: str, photo_day: dt.date) -> RequestShort:
+    from mahanavi.images import deity_bg
+
+    o = OBS[obs_key]
+    dei = DEITIES[o.god]
+    top, mid, bottom, glow = dei.palette
+    path = deity_bg.pick(o.photo, photo_day)
+    tags = list(dict.fromkeys(tags + BASE_TAGS))
+    while len(", ".join(tags)) > 480:
+        tags.pop(-2)
+    return RequestShort(
+        slug=slug, handle="", comment_id="", deity_te=o.te, bg_top=top, bg_mid=mid, bg_bottom=bottom, glow=glow,
+        slides=slides, title=title[:99] + ("…" if len(title) > 100 else ""), title_en=title_en[:100],
+        description_te=desc_te, description_en=desc_en, hashtags=hashtags, tags=tags,
+        bg_image=f"deities/{path.name}" if path else "", header=header, tag_footer=CTA[0], cta_lines=CTA,
+        playlist_line=PLAYLIST_LINES[category], footer_main=_CHANNEL_FOOTER_TE, footer_en=_CHANNEL_FOOTER_EN)
+
+
+def build_tomorrow(day: dt.date, keys: list[str]) -> RequestShort:
+    o = OBS[keys[0]]
+    others = [OBS[k].te for k in keys[1:]]
+    name = o.te + (f" + {', '.join(others)}" if others else "")
+    en = o.en + (f" + {', '.join(OBS[k].en for k in keys[1:])}" if others else "")
+    head = _long_date(day)
+    slides = (
+        Slide("points", 5.5, "రేపు విశేషం", f"{name}\n{o.why}"),
+        Slide("points", 7.5, "రేపు చేయవలసినవి", "\n".join(o.dos)),
+        Slide("points", 7.5, "రేపు చేయకూడనివి", "\n".join(o.donts)),
+        Slide("outro", 5.0, "రేపు మిస్ అవ్వకండి", f"{name}\n{_short_date(day)}"),
+    )
+    title = f"రేపు {name} | {_short_date(day)}: చేయవలసినవి, చేయకూడనివి"
+    title_en = f"Tomorrow {en} ({day.day} {day.strftime('%b')}): Do's and Don'ts"
+    desc_te = (f"🙏 రేపు ({head}): {name}\n{o.why}\n\n✅ చేయవలసినవి:\n" + "\n".join(f"• {x}" for x in o.dos)
+               + "\n\n❌ చేయకూడనివి:\n" + "\n".join(f"• {x}" for x in o.donts) + f"\n\n{DISCLAIMER_TE}")
+    desc_en = f"Tomorrow, {day.strftime('%A %d %B %Y')}: {en}. Simple do's and don'ts in Telugu.\n{DISCLAIMER_EN}"
+    tags = [f"{o.en.lower()}", f"{o.en.lower()} {day.year}", f"{o.en.lower()} date", f"{o.en.lower()} telugu", *o.tags, o.te]
+    hashtags = ["#Shorts", f"#{o.en.split()[0]}", "#TeluguPanchangam", "#Devotional", "#Telugu"]
+    return _common(f"cal_tomorrow_{day.isoformat()}", keys[0], slides, title, title_en, desc_te, desc_en, tags, hashtags,
+                   head, "tomorrow", day)
+
+
+def _chunks(items: list[str], size: int = 5) -> list[list[str]]:
+    n = max(1, -(-len(items) // size))
+    per = -(-len(items) // n)
+    return [items[i:i + per] for i in range(0, len(items), per)]
+
+
+def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, heading: str, cover: str, en: str) -> RequestShort:
+    items = month_items(year, month, kinds)
+    mname = MONTH_NAME[month - 1][0]
+    lines = []
+    for d, k in items:
+        wd = WEEKDAY_NAME[d.weekday()][0].removesuffix("వారం")
+        lines.append(f"{d.day} {mname} ({wd}) · {OBS[k].te}")
+    pages = _chunks(lines) if lines else [["ఈ నెలలో ప్రత్యేక తేదీలు లేవు"]]
+    slides = tuple(Slide("points", 6.5, f"{heading} {i + 1}/{len(pages)}" if len(pages) > 1 else heading, "\n".join(p))
+                   for i, p in enumerate(pages))
+    slides += (Slide("outro", 5.0, "సేవ్ చేసుకోండి", f"{mname} {year}\n{heading}"),)
+    title = f"{mname} {year} {heading} | {en}"
+    title_en = f"{en} - {dt.date(year, month, 1).strftime('%B %Y')} Telugu Calendar"
+    desc_te = (f"🙏 {mname} {year} {heading}:\n\n" + "\n".join(f"• {ln}" for ln in lines) + f"\n\n{DISCLAIMER_TE}")
+    desc_en = f"{en} for {dt.date(year, month, 1).strftime('%B %Y')} in Telugu.\n{DISCLAIMER_EN}"
+    tags = [en.lower(), f"{en.lower()} {year}", f"{mname} {year}", f"{dt.date(year, month, 1).strftime('%B').lower()} {year} festivals",
+            "telugu calendar 2026", "ekadashi dates", "pradosham dates", "sankashti dates", "karthika masam"]
+    hashtags = ["#Shorts", "#TeluguCalendar", f"#{en.split()[0]}", "#Panchangam", "#Telugu"]
+    return _common(f"cal_{category}_{year}-{month:02d}", cover, slides, title, title_en, desc_te, desc_en, tags, hashtags,
+                   f"{mname} {year}", category, dt.date(year, month, 1))
+
+
+def build_festivals(year: int, month: int) -> RequestShort:
+    kinds = ("diwali", "karthika", "karthika_somavaram", "karthika_pournami")
+    items = month_items(year, month, kinds)
+    cover = items[0][1] if items else "karthika"
+    return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Festivals List")
+
+
+def build_vratas(year: int, month: int) -> RequestShort:
+    return _list_post(year, month, VRATAS, "vratas", "వ్రత తేదీలు", "ekadashi", "Ekadashi Pradosham Sankashti Dates")
+
+
+def playlist_ids(youtube) -> dict[str, str]:
+    from channels.engine import upload
+
+    return {cat: upload.find_or_create_playlist(youtube, t, d, "te") for cat, (t, d) in PLAYLIST_TITLES.items()}
+
+
+def playlist_block(youtube, current: str) -> str:
+    try:
+        ids = playlist_ids(youtube)
+    except Exception:  # noqa: BLE001
+        return ""
+    order = [current] + [c for c in CATEGORIES if c != current]
+    return "▶ ప్లేలిస్ట్‌లు (Playlists):\n" + "\n".join(
+        f"{'▶' if c == current else '•'} {PLAYLIST_LABELS[c]}: https://www.youtube.com/playlist?list={ids[c]}" for c in order if c in ids)
