@@ -26,3 +26,9 @@ def test_gate_eligibility():
     assert gate.eligible("festivals", dt.date(2026, 10, 28)) and not gate.eligible("festivals", dt.date(2026, 10, 29))
     assert gate.eligible("vratas", dt.date(2026, 11, 30)) and gate.eligible("vratas", dt.date(2026, 2, 28))
     assert gate.next_month(dt.date(2026, 12, 28)) == (2027, 1)
+
+
+def test_tags_fit_youtube_limits():
+    for s in (cal.build_tomorrow(dt.date(2026, 10, 29), ["sankashti"]), cal.build_vratas(2026, 11), cal.build_festivals(2026, 11)):
+        assert all(len(t) <= 30 for t in s.tags)
+        assert sum(len(t) + (2 if " " in t else 0) + 1 for t in s.tags) <= 450

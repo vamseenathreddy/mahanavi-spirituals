@@ -46,7 +46,7 @@ OBS: dict[str, Obs] = {o.key: o for o in (
     Obs("sankashti", "సంకష్టహర చతుర్థి", "Sankashti Chaturthi", "ganesha", "ganesha", "గణపతికి ప్రీతికరమైన సంకష్టహర చతుర్థి",
         ("గణపతికి గరిక, ఎర్ర పూలు సమర్పించండి", "సంకష్టహర గణపతి స్తోత్రం పఠించండి", "చంద్రోదయం తర్వాత పూజ చేసి ఉపవాసం విరమించండి"),
         ("చంద్రోదయానికి ముందు భోజనం వద్దు", "ఉల్లి, వెల్లుల్లి వద్దు", "మాంసాహారం వద్దు"),
-        ("sankashtahara ganapathi stotram", "sankashti chaturthi", "ganapati stotram telugu")),
+        ("sankashtahara ganapati stotram", "sankashti chaturthi", "ganapati stotram telugu")),
     Obs("shivaratri", "మాస శివరాత్రి", "Masa Shivaratri", "shiva", "shiva", "ప్రతి నెలా వచ్చే శివరాత్రి వ్రతం",
         ("శివుడికి అభిషేకం చేయండి", "బిల్వార్చన చేయండి", "రాత్రి శివ నామ స్మరణ చేయండి"),
         ("మాంసాహారం, మద్యం వద్దు", "వృథా కాలక్షేపం వద్దు", "కోపం, కలహాలు వద్దు"),
@@ -207,7 +207,7 @@ PLAYLIST_LINES = {
     "vratas": "అన్ని వ్రతాల తేదీలు ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి",
 }
 BASE_TAGS = ["telugu panchangam", "telugu calendar", "telugu festivals", "telugu devotional", "devotional songs telugu",
-             "spiritual mantras for meditation", "powerful god mantras in telugu", "hindu festivals", "sanatana dharma",
+             "spiritual mantras meditation", "powerful god mantras telugu", "hindu festivals", "sanatana dharma",
              "తెలుగు పంచాంగం", "పండుగలు", "వ్రతం", "shorts"]
 DISCLAIMER_TE = "తేదీలు హైదరాబాద్ సూర్యోదయ పంచాంగం ప్రకారం. స్థానిక పంచాంగం, పండితుల సలహా కూడా చూడండి 🙏"
 DISCLAIMER_EN = "Dates follow the Hyderabad sunrise panchang. Please also check your local panchangam or priest."
@@ -221,8 +221,8 @@ def _common(slug: str, obs_key: str, slides: tuple[Slide, ...], title: str, titl
     dei = DEITIES[o.god]
     top, mid, bottom, glow = dei.palette
     path = deity_bg.pick(o.photo, photo_day)
-    tags = list(dict.fromkeys(tags + BASE_TAGS))
-    while len(", ".join(tags)) > 480:
+    tags = [t for t in dict.fromkeys(tags + BASE_TAGS) if len(t) <= 30]   # YouTube: each tag <= 30 chars
+    while sum(len(t) + (2 if " " in t else 0) + 1 for t in tags) > 440:      # and ~500 total, spaced tags are quoted
         tags.pop(-2)
     return RequestShort(
         slug=slug, handle="", comment_id="", deity_te=o.te, bg_top=top, bg_mid=mid, bg_bottom=bottom, glow=glow,
