@@ -24,8 +24,8 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # negative propaganda with a fact. The evergreen bank niches (innovations, join, voice) are not in the rotation.
 # 2026-10-18 (focus): Amaravati, Lokesh helping people and rising, positive Nuzvid and Chatrai news.
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
-DAY_PATTERN = ["amaravati", "lokesh", "chandrababu", "development", "counter", "ysrcp"]
-NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "ysrcp", "tdp", "nda", "development"]   # "local" only posts monthly   # the only niches that may post
+DAY_PATTERN = ["amaravati", "lokesh", "chandrababu", "development", "counter", "lokesh"]   # 2026-10-22: ysrcp paused, reach test
+NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
 LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "English", "ta": "தமிழ்", "kn": "ಕನ್ನಡ", "ml": "മലയാളം"}
