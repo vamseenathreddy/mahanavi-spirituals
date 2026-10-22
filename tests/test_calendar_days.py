@@ -16,9 +16,9 @@ def test_tomorrow_and_lists():
     assert day == dt.date(2026, 11, 5) and keys == ["ekadashi"]
     assert cal.next_special(dt.date(2026, 11, 17)) is None
     s = cal.build_tomorrow(day, keys)
-    assert "ఏకాదశి" in s.title and len(s.title) <= 100 and s.slides[1].text.count("\n") == 2
+    assert "ఏకాదశి" in s.title and len(s.title) <= 100 and len(s.slides) == 1 and s.slides[0].text.count("\n") >= 6
     v = cal.build_vratas(2026, 11)
-    assert all(len(sl.text.split("\n")) <= 5 for sl in v.slides if sl.kind == "points")
+    assert all(len(sl.text.split("\n")) <= 12 for sl in v.slides if sl.kind == "points")
     assert cal.build_festivals(2026, 11).slides[0].text
 
 

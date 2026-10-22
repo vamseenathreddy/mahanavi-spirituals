@@ -4,7 +4,7 @@ post_calendar_short.py: Mahanavi calendar Shorts (content/calendar_days.py).
     python -m mahanavi.scripts.post_calendar_short --kind tomorrow --dry-run [--date 2026-10-28]
     python -m mahanavi.scripts.post_calendar_short --kind festivals --date 2026-10-28 --dry-run
     POST_SLOT=cal_tomorrow STATE_FILE=data/beej_state.json python -m mahanavi.scripts.post_calendar_short --kind tomorrow --public
---date is "today" (the post covers tomorrow / next month). Uploads unlisted unless --public or --private.
+--date is "today" (the post covers tomorrow / next month). Uploads public unless --private.
 """
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ def main(argv: list[str] | None = None) -> int:
         top = cal.playlist_block(youtube, args.kind)
         if top:
             spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
-        privacy = "public" if args.public else ("private" if args.private else "unlisted")
+        privacy = "private" if args.private else "public"   # 2026-10-22: never unlisted
         video_id = upload(youtube, spec, video, privacy)
         print(f"Channel: {got}\nUploaded ({privacy}): https://www.youtube.com/watch?v={video_id}")
         print(f"::notice::calendar short uploaded ({privacy}): https://www.youtube.com/watch?v={video_id}")

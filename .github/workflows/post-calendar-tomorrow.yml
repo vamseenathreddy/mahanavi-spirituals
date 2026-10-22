@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       public:
-        description: "Upload as public. Uncheck for an unlisted test run."
+        description: "Upload as public. Uncheck for a private test run."
         required: false
         type: boolean
         default: true
@@ -80,7 +80,7 @@ jobs:
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
         run: |
           ARGS="--kind tomorrow"
-          if [ "${{ inputs.public }}" != "false" ]; then ARGS="$ARGS --public"; fi
+          if [ "${{ inputs.public }}" != "false" ]; then ARGS="$ARGS --public"; else ARGS="$ARGS --private"; fi
           if [ -n "${{ inputs.date }}" ]; then ARGS="$ARGS --date ${{ inputs.date }}"; fi
           python3 -m mahanavi.scripts.post_calendar_short $ARGS
 

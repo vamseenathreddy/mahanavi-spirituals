@@ -241,12 +241,8 @@ def build_tomorrow(day: dt.date, keys: list[str]) -> RequestShort:
     name = o.te + (f" + {', '.join(others)}" if others else "")
     en = o.en + (f" + {', '.join(OBS[k].en for k in keys[1:])}" if others else "")
     head = _long_date(day)
-    slides = (
-        Slide("points", 5.5, "రేపు విశేషం", f"{name}\n{o.why}"),
-        Slide("points", 7.5, "రేపు చేయవలసినవి", "\n".join(o.dos)),
-        Slide("points", 7.5, "రేపు చేయకూడనివి", "\n".join(o.donts)),
-        Slide("outro", 5.0, "రేపు మిస్ అవ్వకండి", f"{name}\n{_short_date(day)}"),
-    )
+    body = [name, o.why, *(f"చేయండి: {x}" for x in o.dos), *(f"వద్దు: {x}" for x in o.donts)]
+    slides = (Slide("points", 16.0, f"రేపు విశేషం · {_short_date(day)}", "\n".join(body)),)   # one card
     title = f"రేపు {name} | {_short_date(day)}: చేయవలసినవి, చేయకూడనివి"
     title_en = f"Tomorrow {en} ({day.day} {day.strftime('%b')}): Do's and Don'ts"
     desc_te = (f"🙏 రేపు ({head}): {name}\n{o.why}\n\n✅ చేయవలసినవి:\n" + "\n".join(f"• {x}" for x in o.dos)
@@ -271,10 +267,8 @@ def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, hea
     for d, k in items:
         wd = WEEKDAY_NAME[d.weekday()][0].removesuffix("వారం")
         lines.append(f"{d.day} {mname} ({wd}) · {OBS[k].te}")
-    pages = _chunks(lines) if lines else [["ఈ నెలలో ప్రత్యేక తేదీలు లేవు"]]
-    slides = tuple(Slide("points", 6.5, f"{heading} {i + 1}/{len(pages)}" if len(pages) > 1 else heading, "\n".join(p))
-                   for i, p in enumerate(pages))
-    slides += (Slide("outro", 5.0, "సేవ్ చేసుకోండి", f"{mname} {year}\n{heading}"),)
+    # one card for the whole list (2026-10-22: no 1/2, 2/2 split, no separate outro card)
+    slides = (Slide("points", 14.0, f"{mname} {year} {heading}", "\n".join(lines) if lines else "ఈ నెలలో ప్రత్యేక తేదీలు లేవు"),)
     title = f"{mname} {year} {heading} | {en}"
     title_en = f"{en} - {dt.date(year, month, 1).strftime('%B %Y')} Telugu Calendar"
     desc_te = (f"🙏 {mname} {year} {heading}:\n\n" + "\n".join(f"• {ln}" for ln in lines) + f"\n\n{DISCLAIMER_TE}")
@@ -382,11 +376,7 @@ def tip_for(day: dt.date) -> Tip:
 def build_tip(day: dt.date) -> RequestShort:
     t = tip_for(day)
     o = Obs("tip", "పూజా నియమాలు", "Pooja Rules", t.god, t.photo, t.title, ("", "", ""), ("", "", ""), t.tags)
-    slides = (
-        Slide("points", 5.0, "పూజా నియమాలు", t.title),
-        Slide("points", 12.0, "తెలుసుకోండి", "\n".join(t.points)),
-        Slide("outro", 5.0, "షేర్ చేయండి", "పూజా నియమాలు\nప్రతి రోజూ కొత్తవి"),
-    )
+    slides = (Slide("points", 16.0, t.title, "\n".join(t.points)),)   # one card
     title = f"{t.title} | పూజా నియమాలు"
     title_en = f"{t.tags[0].title()} | Pooja Rules in Telugu"
     desc_te = f"🙏 {t.title}\n\n" + "\n".join(f"• {p}" for p in t.points) + "\n\nఇవి సంప్రదాయ నమ్మకాలు. మీ కుటుంబ ఆచారం, పండితుల సలహా కూడా పాటించండి 🙏"
