@@ -371,3 +371,10 @@ def test_ntr_is_once_a_week():
     ntr_days = [d for d in (dt.date(2026, 10, 19) + dt.timedelta(days=i) for i in range(14))
                 for seq in range(6) if cfg.plan(seq, d)[1] == "ntr"]
     assert len(ntr_days) == 2 and all(d.weekday() == 6 for d in ntr_days)
+
+
+def test_card_summary_must_be_in_the_card_language():
+    from channels.trending.sources import mostly_native
+    assert not mostly_native('TDP MLA Bonda Uma accuses YSRCP chief YS Jagan of spreading "fake propaganda" over alleged violence', "te")
+    assert not mostly_native("బోండా ఉమ TDP MLA accuses YSRCP chief Jagan of spreading fake propaganda over alleged violence during elections", "te")
+    assert mostly_native("టీడీపీ ఎమ్మెల్యే బోండా ఉమ వైసీపీ అధినేత జగన్ ఫేక్ ప్రచారం చేస్తున్నారని మండిపడ్డారు", "te")

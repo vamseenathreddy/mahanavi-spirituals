@@ -239,6 +239,16 @@ def matches_language(text: str, lang: str) -> bool:
     return sum(lo <= ord(c) <= hi for c in letters) / len(letters) >= 0.33
 
 
+def mostly_native(text: str, lang: str) -> bool:
+    """Stricter than matches_language, for the card's body text: a Telugu card must not carry an English paragraph
+    (some outlets put the English version of the story in their meta description). A few English words are fine
+    (TDP, CM, MLA), but never more than 15% of the letters."""
+    if lang == "en" or not matches_language(text, lang):
+        return matches_language(text, lang)
+    letters = [c for c in text if c.isalpha()]
+    return sum(c.isascii() for c in letters) / len(letters) <= 0.15
+
+
 def fresh_enough(s: Story, now: datetime, hours: int) -> bool:
     return s.published is None or now - s.published <= timedelta(hours=hours)
 
@@ -341,7 +351,7 @@ def article_summary(link: str, lang: str, headline: str, timeout: int = 15) -> s
             return ""
         page = _get(url, timeout)[:400_000]
         text = _meta_description(page)
-        if not text or not matches_language(text, lang) or text.casefold().startswith(headline.casefold()[:40]):
+        if not text or not mostly_native(text, lang) or text.casefold().startswith(headline.casefold()[:40]):
             print(f"::notice::no summary (page meta unusable: {text[:60]!r})")
             return ""
         return complete(text, 400, soft=False)
