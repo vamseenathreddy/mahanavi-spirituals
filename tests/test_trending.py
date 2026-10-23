@@ -365,6 +365,9 @@ def test_has_substance_gate():
     assert has_substance(Story("చంద్రబాబు సమీక్ష", "Eenadu", "x", summary="ముఖ్యమంత్రి చంద్రబాబు అమరావతి పనులపై సమీక్ష నిర్వహించి అధికారులకు ఆదేశాలు ఇచ్చారు."))
 
 
-def test_ntr_is_off_by_default():
+def test_ntr_is_once_a_week():
+    import datetime as dt
     assert cfg.NTR_ENABLED is False
-    assert all(cfg.plan(i, __import__("datetime").date(2026, 10, 22))[1] != "ntr" for i in range(12))
+    ntr_days = [d for d in (dt.date(2026, 10, 19) + dt.timedelta(days=i) for i in range(14))
+                for seq in range(6) if cfg.plan(seq, d)[1] == "ntr"]
+    assert len(ntr_days) == 2 and all(d.weekday() == 6 for d in ntr_days)

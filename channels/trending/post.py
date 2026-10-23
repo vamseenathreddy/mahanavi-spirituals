@@ -76,7 +76,7 @@ def main(argv=None) -> int:
         niche, story = niche, SAMPLE
     else:
         from channels.trending import ntr_bank
-        first = next((x for x in ntr_bank.priority_stories() if x.key not in used), None) if cfg.NTR_ENABLED else None   # owner-requested NTR posts go first
+        first = next((x for x in ntr_bank.priority_stories() if x.key not in used), None) if niche == "ntr" else None   # owner-requested NTR posts go first
         if first is not None:
             niche, story = "ntr", first
         else:
