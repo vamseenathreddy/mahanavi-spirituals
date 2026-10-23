@@ -114,7 +114,7 @@ ITEMS = [
 # Never-ending supply: after every item has been posted once, each comes back reframed. The title opener, the closing line
 # and the card bullets are different each round, so neither a title nor the text is ever repeated exactly. 12 rounds
 # of 20 items last far longer than a year at one post every other day.
-OPENERS = ["", "తమ్ముళ్లూ, మీకు తెలుసా? ", "గుర్తుందా? ", "పసుపు సైనికులారా, ", "చరిత్ర పుటల్లో: ", "జై టీడీపీ! ",
+OPENERS = ["", "తమ్ముళ్లూ, మీకు తెలుసా? ", "గుర్తుందా? ", "తమ్ముళ్లూ, ", "చరిత్ర పుటల్లో: ", "జై టీడీపీ! ",
            "అభిమానుల మాట: ", "తెలుగుదేశం అంటే: ", "కార్యకర్తలారా, ", "తెలుగు జాతి గర్వం: ", "మళ్లీ గుర్తు చేసుకుందాం: ", "నేటి తరానికి తెలియాల్సిన నిజం: "]
 CLOSERS = ["", " జై టీడీపీ!", " జై ఎన్టీఆర్!", " ఈ వీడియోను మిత్రులకు షేర్ చేయండి.", " మీ అభిప్రాయాన్ని కామెంట్‌లో రాయండి.",
            " తమ్ముళ్లందరికీ ఇది చేరాలి.", " పసుపు జెండా ఎప్పటికీ ఎగురుతుంది!", " మన చరిత్ర, మన గర్వం.", " లైక్ చేసి షేర్ చేయండి.",

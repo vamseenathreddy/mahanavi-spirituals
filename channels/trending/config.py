@@ -97,10 +97,10 @@ def render_cfg(lang: str, niche: str) -> ChannelConfig:
     main, native = _fonts(lang)
     label_font = FONTS / "Hind-Bold.ttf" if lang == "hi" else main
     accent = ACCENT[niche]
-    layouts = [dict(anchor=a, primary=p, secondary=BROWN, accent=accent, ornament=o)
+    layouts = [dict(anchor=a, primary=p, secondary=BROWN, ink=(0, 0, 0), accent=accent, ornament=o)
                for a, p, o in ((0.44, INK, True), (0.42, (90, 0, 10), False), (0.46, INK, True))]
     if niche == "janasena":
-        layouts = [dict(anchor=a, primary=WHITE, secondary=(255, 232, 232), accent=accent, ornament=o)
+        layouts = [dict(anchor=a, primary=WHITE, secondary=(255, 232, 232), ink=WHITE, accent=accent, ornament=o)
                    for a, o in ((0.44, True), (0.42, False), (0.46, True))]
     return ChannelConfig(
         channel_name=BRAND,
@@ -108,7 +108,7 @@ def render_cfg(lang: str, niche: str) -> ChannelConfig:
         # 2026-10-17: no "TRENDING #n" label on the Short (rank and niche live in the description); bigger text,
         # more reading matter (summary + up to four related headlines) filling the space the label and big logo used.
         blocks=[TextBlock(field="text_primary", font=main, size=96, color_key="primary", bold=True),
-                TextBlock(field="text_summary", font=main, size=78, color_key="secondary", bold=False),
+                TextBlock(field="text_summary", font=main, size=80, color_key="ink", bold=True),
                 TextBlock(field="text_related", font=main, size=74, color_key="secondary", bold=False)],
         corner_field="text_secondary",
         bg_overlay=portraits.make_overlay(str(main)),
