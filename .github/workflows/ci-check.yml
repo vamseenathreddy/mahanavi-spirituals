@@ -1,6 +1,6 @@
-name: Tools | CI Check (ffmpeg install)
+name: Tools | CI Check (apt mirror speed)
 
-# Quick health check: can the runner install the packages every posting workflow needs? Prints errors as annotations.
+# Diagnostic: how fast can the runner download the ffmpeg packages from the default Ubuntu mirror vs the main archive?
 on:
   workflow_dispatch:
 
@@ -10,14 +10,23 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Diagnose apt
+      - name: Time the downloads
         continue-on-error: true
         run: |
-          lsb_release -d | sed 's/^/::notice::/'
-          cat /etc/apt/sources.list.d/*.list /etc/apt/sources.list 2>/dev/null | grep -v '^#' | head -5 | sed 's/^/::notice::src /'
-          (timeout 90 sudo apt-get update -o Acquire::Retries=1 -o Acquire::http::Timeout=15 2>&1 | tail -6 | sed 's/^/::notice::update /') || true
-          (timeout 120 sudo apt-get install -y --no-install-recommends ffmpeg libraqm0 libfribidi0 libharfbuzz0b 2>&1 | tail -8 | sed 's/^/::notice::install /') || true
-          ffmpeg -version 2>&1 | head -1 | sed 's/^/::notice::ffmpeg /'
+          pkgs="ffmpeg libraqm0 libfribidi0 libharfbuzz0b"
+          ls /etc/apt/sources.list.d/ | sed 's/^/::notice::srcfile /'
+          sudo timeout 120 apt-get update -o Acquire::Retries=1 >/dev/null 2>&1 || true
+          s=$(date +%s)
+          timeout 150 sudo apt-get install -y --no-install-recommends --download-only $pkgs >/tmp/a.log 2>&1
+          echo "::notice::default mirror: exit $? in $(( $(date +%s) - s )) s, $(ls /var/cache/apt/archives/*.deb 2>/dev/null | wc -l) debs"
+          tail -2 /tmp/a.log | sed 's/^/::notice::tail /'
+          sudo rm -f /var/cache/apt/archives/*.deb
+          sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null || true
+          sudo timeout 120 apt-get update -o Acquire::Retries=1 >/dev/null 2>&1 || true
+          s=$(date +%s)
+          timeout 150 sudo apt-get install -y --no-install-recommends --download-only $pkgs >/tmp/b.log 2>&1
+          echo "::notice::archive.ubuntu.com: exit $? in $(( $(date +%s) - s )) s, $(ls /var/cache/apt/archives/*.deb 2>/dev/null | wc -l) debs"
+          tail -2 /tmp/b.log | sed 's/^/::notice::tail /'
