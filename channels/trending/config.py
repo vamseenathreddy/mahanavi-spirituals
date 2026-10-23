@@ -26,7 +26,7 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
 NTR_ENABLED = False   # NTR as a fallback for quiet news days and the every-other-day slot: off (NTR Shorts got 13/31/99 views vs 1.5k+ for news)
 NTR_WEEKDAY = 6       # 2026-10-23: exactly one NTR Short a week (Sunday, 4th slot); every other post is latest news
-DAY_PATTERN = ["amaravati", "ysrcp", "go", "counter", "lokesh", "ysrcp"]   # 2026-10-23: positive news + defend (counter) + attack (ysrcp: "can YCP answer this?")
+DAY_PATTERN = ["amaravati", "ysrcp", "chandrababu", "ysrcp", "counter", "go", "lokesh", "ysrcp", "development", "ysrcp", "counter", "ysrcp"]   # 2026-10-23: 12 posts a day, 5 attack (ysrcp: questions to YCP), 2 defend, GO and positive news
 NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp", "go"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
@@ -55,12 +55,12 @@ TELEGRAM_URL = "https://t.me/PulseBoostingTDP"
 CTA = {
     "te": ("తమ్ముళ్లూ, ఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
            "ఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి"),
-    "en": ("6 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
+    "en": ("12 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
            "You may never see this channel again unless you subscribe right now"),
 }
 INTRO = {
-    "te": "తెలుగుదేశం, చంద్రబాబు, లోకేశ్ గారి పాలన, అభివృద్ధిపై వార్తలు. రోజుకు 6 షార్ట్స్.",
-    "en": "News on TDP, Chandrababu Naidu, Nara Lokesh and Andhra Pradesh development. 6 Shorts a day.",
+    "te": "తెలుగుదేశం, చంద్రబాబు, లోకేశ్ గారి పాలన, అభివృద్ధిపై వార్తలు. రోజుకు 12 షార్ట్స్.",
+    "en": "News on TDP, Chandrababu Naidu, Nara Lokesh and Andhra Pradesh development. 12 Shorts a day.",
 }
 
 # (window start hour IST, slot id): one post every 2 hours from midnight, at a random minute inside the first
@@ -68,7 +68,7 @@ INTRO = {
 SLOTS = [(2 * i, f"t{i + 1}") for i in range(12)]
 WINDOW_MINUTES = 40
 # Only these slots post (the other workflows still get pinged and skip at the gate). Raise back to all 12 to double the volume.
-ACTIVE_SLOTS = {"t1", "t4", "t5", "t7", "t10", "t11"}   # 00:00, 06:00, 08:00, 12:00, 18:00, 20:00 IST
+ACTIVE_SLOTS = {s for _, s in SLOTS}   # 2026-10-23: all 12 slots, a post every 2 hours around the clock
 
 WHITE, GOLD, SOFT = (255, 255, 255), (255, 210, 120), (225, 220, 225)
 INK, RED, BROWN = (28, 8, 0), (150, 10, 20), (70, 30, 0)   # dark text on the TDP-yellow cards
