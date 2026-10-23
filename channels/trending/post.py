@@ -32,7 +32,7 @@ def choose(lang: str, niche: str, used: set, yt, fetch=pick_story, recent=()):
     If the news is quiet everywhere, an NTR and TDP history post (reframed each round, see ntr_bank) fills the slot, so
     the channel never runs dry. Stories that look like a recent post (same story, another outlet) are skipped."""
     extra = {"recent": recent} if recent else {}
-    order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche] + (["ntr"] if niche != "ntr" else [])
+    order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche] + (["ntr"] if cfg.NTR_ENABLED and niche != "ntr" else [])
     for n in dict.fromkeys(order):
         story = fetch(n, lang, used, yt, **extra)
         if story:
@@ -76,7 +76,7 @@ def main(argv=None) -> int:
         niche, story = niche, SAMPLE
     else:
         from channels.trending import ntr_bank
-        first = next((x for x in ntr_bank.priority_stories() if x.key not in used), None)   # owner-requested NTR posts go first
+        first = next((x for x in ntr_bank.priority_stories() if x.key not in used), None) if cfg.NTR_ENABLED else None   # owner-requested NTR posts go first
         if first is not None:
             niche, story = "ntr", first
         else:
@@ -97,7 +97,7 @@ def main(argv=None) -> int:
             tries += 1
             niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
             story = enrich(story, lang) if story is not None else None
-        if story is not None and not has_substance(story):
+        if story is not None and not has_substance(story) and cfg.NTR_ENABLED:
             niche, story = "ntr", pick_story("ntr", lang, used, yt, recent=st.get("recent", []))
             if story is not None:
                 story = enrich(story, lang)

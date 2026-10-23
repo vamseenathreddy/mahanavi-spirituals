@@ -24,6 +24,7 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # negative propaganda with a fact. The evergreen bank niches (innovations, join, voice) are not in the rotation.
 # 2026-10-18 (focus): Amaravati, Lokesh helping people and rising, positive Nuzvid and Chatrai news.
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
+NTR_ENABLED = False   # 2026-10-23: NTR Shorts got 13/31/99 views vs 1.5k+ for news cards, so they are off (flip to True to bring them back)
 DAY_PATTERN = ["amaravati", "lokesh", "chandrababu", "development", "counter", "lokesh"]   # 2026-10-22: ysrcp paused, reach test
 NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development"]   # "local" only posts monthly   # the only niches that may post
 
@@ -139,7 +140,7 @@ def plan(seq: int, day=None, state: dict | None = None) -> tuple[str, str]:
     """(language, niche) for the seq-th post: Telugu always; niches follow DAY_PATTERN. On the 1st of a month, the
     third post of the day is the monthly Nuzvid and Chatrai post, once (state['local_month'] remembers it)."""
     niche = DAY_PATTERN[seq % len(DAY_PATTERN)]
-    if day is not None and seq % len(DAY_PATTERN) == 3 and day.toordinal() % 2 == 0:
+    if NTR_ENABLED and day is not None and seq % len(DAY_PATTERN) == 3 and day.toordinal() % 2 == 0:
         niche = "ntr"   # every other day the fourth post is NTR and Telugu Desam history instead of a news post
     if day is not None and day.day == 1 and seq % len(DAY_PATTERN) == 2 and (state or {}).get("local_month") != day.strftime("%Y-%m"):
         niche = "local"

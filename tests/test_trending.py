@@ -261,7 +261,8 @@ def test_local_niche_posts_once_a_month_on_the_first():
     assert "local" not in cfg.DAY_PATTERN and "local" not in cfg.NEWS_NICHES
 
 
-def test_ntr_history_posts_every_other_day_and_are_complete():
+def test_ntr_history_posts_every_other_day_and_are_complete(monkeypatch):
+    monkeypatch.setattr(cfg, "NTR_ENABLED", True)
     import datetime as dt
     from channels.trending import ntr_bank
     d1, d2 = dt.date(2026, 10, 21), dt.date(2026, 10, 22)
@@ -304,7 +305,8 @@ def test_ntr_bank_never_repeats_a_title_or_text_and_never_ends():
     assert len({p.summary for p in posts}) > len(posts) * 0.9
 
 
-def test_choose_falls_back_to_ntr_history_when_news_is_quiet():
+def test_choose_falls_back_to_ntr_history_when_news_is_quiet(monkeypatch):
+    monkeypatch.setattr(cfg, "NTR_ENABLED", True)
     from channels.trending import post
 
     calls = []
@@ -361,3 +363,8 @@ def test_has_substance_gate():
     full = Story("అమరావతి సంగమం ప్రత్యేకతలివే!", "Oneindia", "x", summary="రూ.597 కోట్లతో నిర్మించే సంగమంలో వంతెన, పార్కులు, వాటర్ ఫ్రంట్, పర్యాటక కేంద్రాలు ఉంటాయి. పనులు వచ్చే ఏడాది ప్రారంభమవుతాయి.")
     assert has_substance(full)
     assert has_substance(Story("చంద్రబాబు సమీక్ష", "Eenadu", "x", summary="ముఖ్యమంత్రి చంద్రబాబు అమరావతి పనులపై సమీక్ష నిర్వహించి అధికారులకు ఆదేశాలు ఇచ్చారు."))
+
+
+def test_ntr_is_off_by_default():
+    assert cfg.NTR_ENABLED is False
+    assert all(cfg.plan(i, __import__("datetime").date(2026, 10, 22))[1] != "ntr" for i in range(12))
