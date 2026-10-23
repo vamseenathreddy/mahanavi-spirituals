@@ -105,10 +105,11 @@ def is_go_ok(headline: str) -> bool:
     something the government is giving, building or allowing (so a GO that merely bans or fines something is skipped)."""
     if any(x.casefold() in headline.casefold() for x in EXCLUDE) or any(b in headline for b in GO_BAD):
         return False
-    return True
+    return any(x in headline for x in POSITIVE + GO_BENEFIT)
 
 
-GO_BAD = ("నిషేధం", "జరిమానా", "సస్పెండ్", "బదిలీ", "బదిలీలు", "రద్దు")
+GO_BAD = ("నిషేధం", "జరిమానా", "సస్పెండ్", "బదిలీ", "బదిలీలు", "రద్దు", "పదవీ", "ఇన్‌చార్జ్", "నియామకం", "సీఎస్", "కార్యదర్శి")
+GO_BENEFIT = ("విడుదల", "అనుమతి", "ఆమోదం", "కేటాయింపు", "ఉచిత", "రాయితీ", "సబ్సిడీ", "ప్రోత్సాహ", "పింఛన్", "ఆరోగ్య", "గ్రీన్ సిగ్నల్")
 
 
 def political_stories(niche: str, lang: str = "te", days: int | None = None, queries=None) -> list[Story]:
