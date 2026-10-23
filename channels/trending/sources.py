@@ -105,7 +105,16 @@ def is_go_ok(headline: str) -> bool:
     something the government is giving, building or allowing (so a GO that merely bans or fines something is skipped)."""
     if any(x.casefold() in headline.casefold() for x in EXCLUDE) or any(b in headline for b in GO_BAD):
         return False
-    return any(x in headline for x in POSITIVE + GO_BENEFIT)
+    if any(t in headline for t in TELANGANA):
+        return False
+    from channels.trending.regions import mentioned
+
+    ap = any(a in headline for a in AP_WORDS) or bool(mentioned(headline))
+    return ap and any(x in headline for x in POSITIVE + GO_BENEFIT)
+
+
+AP_WORDS = ("ఏపీ", "ఆంధ్ర", "అమరావతి", "కూటమి", "చంద్రబాబు", "లోకేశ్", "పవన్", "రాష్ట్ర ప్రభుత్వం", "సీఎం")
+TELANGANA = ("తెలంగాణ", "హైదరాబాద్", "రేవంత్", "కేసీఆర్", "కోదాడ", "హుజూర్", "టీజీ", "జీహెచ్ఎంసీ", "వరంగల్", "కరీంనగర్")
 
 
 GO_BAD = ("నిషేధం", "జరిమానా", "సస్పెండ్", "బదిలీ", "బదిలీలు", "రద్దు", "పదవీ", "ఇన్‌చార్జ్", "నియామకం", "సీఎస్", "కార్యదర్శి")
