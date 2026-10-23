@@ -132,7 +132,7 @@ def political_stories(niche: str, lang: str = "te", days: int | None = None, que
     queries = [queries] if isinstance(queries, str) else queries
     found, seen = [], set()
     for text in queries:  # several searches per niche = a wider pool of the latest stories
-        q = urllib.parse.quote(f"{text} when:{days or (30 if niche == 'local' else 2)}d")   # the monthly local post may use a month-old story
+        q = urllib.parse.quote(f"{text} when:{days or (30 if niche == 'local' else 3 if niche in ('ysrcp', 'counter') else 2)}d")   # the monthly local post may use a month-old story
         url = f"https://news.google.com/rss/search?q={q}&hl=te&gl=IN&ceid=IN:te"
         try:
             batch = parse_rss(_get(url))
@@ -392,7 +392,7 @@ def pick_story(niche: str, lang: str, used: set[str], yt=None, now: datetime | N
                 pools.append(fetch_yt(yt, niche, lang))
         except Exception as exc:  # noqa: BLE001 - one failing source must not stop the slot
             print(f"::warning::{src} source failed for {niche}/{lang}: {type(exc).__name__}: {exc}")
-    for hours in ((8, 30) if niche != "local" else (720,)):
+    for hours in ((720,) if niche == "local" else (8, 30, 72) if niche in ("ysrcp", "counter") else (8, 30)):
         for pool in pools:
             # Only the source's top 10. Widest coverage first (most outlets carrying the story = most reach), then
             # shorter headlines (they read better on a 5 second card), then the source's own order.

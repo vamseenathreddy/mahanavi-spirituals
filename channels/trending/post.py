@@ -32,7 +32,10 @@ def choose(lang: str, niche: str, used: set, yt, fetch=pick_story, recent=()):
     If the news is quiet everywhere, an NTR and TDP history post (reframed each round, see ntr_bank) fills the slot, so
     the channel never runs dry. Stories that look like a recent post (same story, another outlet) are skipped."""
     extra = {"recent": recent} if recent else {}
-    order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche] + (["ntr"] if cfg.NTR_ENABLED and niche != "ntr" else [])
+    if niche == "ysrcp":   # attack slots stay on YCP: its own stories, then TDP's replies to YCP, and never positive news
+        order = ["ysrcp", "counter"]
+    else:
+        order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche] + (["ntr"] if cfg.NTR_ENABLED and niche != "ntr" else [])
     for n in dict.fromkeys(order):
         story = fetch(n, lang, used, yt, **extra)
         if story:

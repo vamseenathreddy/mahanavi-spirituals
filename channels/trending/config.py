@@ -26,7 +26,7 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
 NTR_ENABLED = False   # NTR as a fallback for quiet news days and the every-other-day slot: off (NTR Shorts got 13/31/99 views vs 1.5k+ for news)
 NTR_WEEKDAY = 6       # 2026-10-23: exactly one NTR Short a week (Sunday, 4th slot); every other post is latest news
-DAY_PATTERN = ["amaravati", "ysrcp", "chandrababu", "ysrcp", "counter", "go", "lokesh", "ysrcp", "development", "ysrcp", "counter", "ysrcp"]   # 2026-10-23: 12 posts a day, 5 attack (ysrcp: questions to YCP), 2 defend, GO and positive news
+DAY_PATTERN = ["ysrcp", "lokesh", "ysrcp", "ysrcp", "chandrababu", "ysrcp", "ysrcp", "lokesh", "ysrcp", "ysrcp", "ysrcp", "ysrcp"]   # 2026-10-23 owner: 1 Chandrababu, 2 Lokesh, the other 9 attack YCP only
 NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp", "go"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
