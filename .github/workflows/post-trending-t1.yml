@@ -12,6 +12,10 @@ on:
         required: false
         type: boolean
         default: true
+      niche:
+        description: "Force a topic for this post, e.g. ysrcp (blank = the day's planned topic)."
+        required: false
+        default: ''
       bypass_gate:
         description: "Post immediately, ignoring the window and this slot's already-posted marker (testing only)."
         required: false
@@ -76,6 +80,9 @@ jobs:
           ARGS=""
           if [ "${{ inputs.public }}" != "false" ]; then
             ARGS="$ARGS --public"
+          fi
+          if [ -n "${{ inputs.niche }}" ]; then
+            ARGS="$ARGS --niche ${{ inputs.niche }}"
           fi
           python3 -m channels.trending.post $ARGS
 
