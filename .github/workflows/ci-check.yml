@@ -1,6 +1,6 @@
 name: Tools | CI Check (ffmpeg install)
 
-# Quick health check: can the runner install the packages every posting workflow needs?
+# Quick health check: can the runner install the packages every posting workflow needs? Prints errors as annotations.
 on:
   workflow_dispatch:
 
@@ -13,9 +13,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Install ffmpeg + text shaping libs
-        run: bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
-      - name: Show versions
+      - name: Diagnose apt
+        continue-on-error: true
         run: |
-          ffmpeg -version | head -1
-          lsb_release -d
+          lsb_release -d | sed 's/^/::notice::/'
+          cat /etc/apt/sources.list.d/*.list /etc/apt/sources.list 2>/dev/null | grep -v '^#' | head -5 | sed 's/^/::notice::src /'
+          (timeout 90 sudo apt-get update -o Acquire::Retries=1 -o Acquire::http::Timeout=15 2>&1 | tail -6 | sed 's/^/::notice::update /') || true
+          (timeout 120 sudo apt-get install -y --no-install-recommends ffmpeg libraqm0 libfribidi0 libharfbuzz0b 2>&1 | tail -8 | sed 's/^/::notice::install /') || true
+          ffmpeg -version 2>&1 | head -1 | sed 's/^/::notice::ffmpeg /'
