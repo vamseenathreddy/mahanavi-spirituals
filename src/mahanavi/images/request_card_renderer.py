@@ -270,13 +270,15 @@ class RequestCardRenderer:
                 self._line(layer, boxes, spec.header, self._font(40), 262, SOFT)
             self._line(layer, boxes, slide.label, self._font(72), 360, GOLD)
             points = slide.text.split("\n")
-            budget = 1290 - 520
-            per = budget // len(points) - 70
+            big = len(points) > 10            # a full-month list: tighter gaps and a taller block (still above the Shorts UI)
+            gap = 30 if big else 70
+            budget = (1480 if big else 1290) - 520
+            per = budget // len(points) - gap
             blocks = []
             size_cap = 62
             while True:
                 blocks = [self._fit(pt, size_cap, 30, max(per, 80)) for pt in points]
-                total = sum(len(b[0]) * b[2] for b in blocks) + 70 * (len(points) - 1)
+                total = sum(len(b[0]) * b[2] for b in blocks) + gap * (len(points) - 1)
                 if total <= budget or size_cap <= 34:
                     break
                 size_cap -= 4
@@ -284,8 +286,8 @@ class RequestCardRenderer:
             for i, (lines, font, lh) in enumerate(blocks):
                 y = self._block(layer, boxes, lines, font, lh, y, CREAM if i % 2 == 0 else SOFT)
                 if i < len(blocks) - 1:
-                    self._ornament(layer, y + 35)
-                    y += 70
+                    self._ornament(layer, y + gap // 2)
+                    y += gap
         else:  # outro
             self._line(layer, boxes, slide.label, self._font(72), 460, GOLD)
             y = 610

@@ -224,10 +224,10 @@ def build_tomorrow(channel: str, day: dt.date, keys: list[str]) -> RequestShort:
 
 
 def _list_post(channel: str, year: int, month: int, kinds: tuple[str, ...], category: str, heading: str, cover: str,
-               title_tail: str, en: str) -> RequestShort:
+               title_tail: str, en: str, override: list[str] | None = None) -> RequestShort:
     items = month_items(year, month, kinds)
     mname = MONTH_NAME[month - 1][1]
-    lines = [f"{d.day} {mname} ({_wd(d)}) · {OBS[k].hi}" for d, k in items]
+    lines = list(override) if override else [f"{d.day} {mname} ({_wd(d)}) · {OBS[k].hi}" for d, k in items]
     slides = (Slide("points", 14.0, f"{mname} {year} {heading}", "\n".join(lines) if lines else "इस महीने कोई विशेष तिथि नहीं"),)  # one card
     title = f"{mname} {year} {title_tail} | {en}"
     title_en = f"{en} - {dt.date(year, month, 1).strftime('%B %Y')} Hindi Calendar"
@@ -240,11 +240,31 @@ def _list_post(channel: str, year: int, month: int, kinds: tuple[str, ...], cate
                    f"{mname} {year}", category, dt.date(year, month, 1))
 
 
+# Whole month on one card: festivals and the main vratas (owner request 2026-10-23). Curated per month; a month without
+# an entry falls back to the computed festival list. Devuthani Ekadashi follows the Smarta day (Nov 20), Tulsi Vivah Nov 21.
+FULL_MONTH: dict[tuple[int, int], list[str]] = {
+    (2026, 11): [
+        "5 नवंबर · रमा एकादशी",
+        "6 नवंबर · धनतेरस",
+        "7 नवंबर · मासिक शिवरात्रि",
+        "8 नवंबर · नरक चतुर्दशी, दिवाली",
+        "9 नवंबर · अमावस्या, गोवर्धन पूजा",
+        "11 नवंबर · भाई दूज",
+        "15 नवंबर · छठ पूजा (संध्या अर्घ्य)",
+        "20 नवंबर · देवउठनी एकादशी",
+        "21 नवंबर · तुलसी विवाह",
+        "24 नवंबर · कार्तिक पूर्णिमा, देव दिवाली",
+        "27 नवंबर · संकष्टी चतुर्थी",
+    ],
+}
+
+
 def build_festivals(channel: str, year: int, month: int) -> RequestShort:
     items = month_items(year, month, FESTIVAL_KEYS)
     cover = items[0][1] if items else "diwali"
     return _list_post(channel, year, month, FESTIVAL_KEYS, "festivals", "के त्योहार", cover,
-                      "के त्योहार: धनतेरस, दिवाली, भाई दूज, देवउठनी एकादशी", "Festival Calendar")
+                      "के त्योहार: धनतेरस, दिवाली, भाई दूज, देवउठनी एकादशी", "Festival Calendar",
+                      FULL_MONTH.get((year, month)))
 
 
 def build_vratas(channel: str, year: int, month: int) -> RequestShort:

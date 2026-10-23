@@ -260,13 +260,16 @@ def _chunks(items: list[str], size: int = 5) -> list[list[str]]:
     return [items[i:i + per] for i in range(0, len(items), per)]
 
 
-def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, heading: str, cover: str, en: str) -> RequestShort:
+def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, heading: str, cover: str, en: str,
+               override: list[str] | None = None) -> RequestShort:
     items = month_items(year, month, kinds)
     mname = MONTH_NAME[month - 1][0]
     lines = []
     for d, k in items:
         wd = WEEKDAY_NAME[d.weekday()][0].removesuffix("వారం")
         lines.append(f"{d.day} {mname} ({wd}) · {OBS[k].te}")
+    if override:
+        lines = list(override)
     # one card for the whole list (2026-10-22: no 1/2, 2/2 split, no separate outro card)
     slides = (Slide("points", 14.0, f"{mname} {year} {heading}", "\n".join(lines) if lines else "ఈ నెలలో ప్రత్యేక తేదీలు లేవు"),)
     title = f"{mname} {year} {heading} | {en}"
@@ -280,11 +283,35 @@ def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, hea
                    f"{mname} {year}", category, dt.date(year, month, 1))
 
 
+# The whole month on one card: festivals and the main vratas (owner request 2026-10-23). Curated per month because
+# several days (Naraka Chaturdashi, Bhagini Hastha Bhojanam, Nagula Chavithi, Prabodhini Ekadashi, Kshirabdhi Dwadashi)
+# are not computed vratas. A month without an entry falls back to the computed festival list. Prabodhini Ekadashi
+# follows the Smarta day (Nov 20), Kshirabdhi Dwadashi / Tulasi Vivaham Nov 21.
+FULL_MONTH: dict[tuple[int, int], list[str]] = {
+    (2026, 11): [
+        "5 నవంబర్ · రమా ఏకాదశి",
+        "6 నవంబర్ · ధనత్రయోదశి",
+        "7 నవంబర్ · మాస శివరాత్రి",
+        "8 నవంబర్ · నరక చతుర్దశి, దీపావళి",
+        "9 నవంబర్ · అమావాస్య",
+        "10 నవంబర్ · కార్తీక మాసం ప్రారంభం",
+        "11 నవంబర్ · భగినీ హస్త భోజనం",
+        "13 నవంబర్ · నాగుల చవితి",
+        "15 నవంబర్ · స్కంద షష్ఠి",
+        "16, 23, 30 నవంబర్ · కార్తీక సోమవారం",
+        "20 నవంబర్ · ప్రబోధిని ఏకాదశి",
+        "21 నవంబర్ · క్షీరాబ్ధి ద్వాదశి (తులసి వివాహం)",
+        "24 నవంబర్ · కార్తీక పౌర్ణమి (జ్వాలా తోరణం)",
+        "27 నవంబర్ · సంకటహర చతుర్థి",
+    ],
+}
+
+
 def build_festivals(year: int, month: int) -> RequestShort:
     kinds = ("diwali", "karthika", "karthika_somavaram", "karthika_pournami")
     items = month_items(year, month, kinds)
     cover = items[0][1] if items else "karthika"
-    return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Festivals List")
+    return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Festivals List", FULL_MONTH.get((year, month)))
 
 
 def build_vratas(year: int, month: int) -> RequestShort:
