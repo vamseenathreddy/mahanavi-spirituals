@@ -17,7 +17,7 @@ FONTS = REPO_ROOT / "channels/engine/assets/fonts"
 BRAND = "Pulse TDP Fans"
 HANDLE = "@PulseTDPFans"
 LANGS = ["te"]          # 2026-10-17: Telugu only (TDP-supportive channel)
-NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter", "amaravati", "local", "ntr", "ysrcp"]   # Janasena is switched off: TDP-only channel
+NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "join", "voice", "counter", "amaravati", "local", "ntr", "ysrcp", "go"]   # Janasena is switched off: TDP-only channel
 # 2026-10-18: 6 posts a day for now (was 12). One day = these 6 posts in order, repeating daily:
 # 2026-10-18 (later): CURRENT NEWS ONLY, no old achievements. Every post is a fresh headline raised in the voice of a
 # hardcore fan (Babu's stage style: "తమ్ముళ్లూ", "తెలుగుదేశం అభిమానులారా"), and one post a day answers
@@ -25,21 +25,22 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # 2026-10-18 (focus): Amaravati, Lokesh helping people and rising, positive Nuzvid and Chatrai news.
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
 NTR_ENABLED = False   # 2026-10-23: NTR Shorts got 13/31/99 views vs 1.5k+ for news cards, so they are off (flip to True to bring them back)
-DAY_PATTERN = ["amaravati", "ysrcp", "chandrababu", "counter", "lokesh", "ysrcp"]   # 2026-10-23: positive news + defend (counter) + attack (ysrcp: "can YCP answer this?")
-NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp"]   # "local" only posts monthly   # the only niches that may post
+DAY_PATTERN = ["amaravati", "ysrcp", "go", "counter", "lokesh", "ysrcp"]   # 2026-10-23: positive news + defend (counter) + attack (ysrcp: "can YCP answer this?")
+NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp", "go"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
 LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "English", "ta": "தமிழ்", "kn": "ಕನ್ನಡ", "ml": "മലയാളം"}
 NICHE_EN = {"chandrababu": "Chandrababu Naidu", "lokesh": "Nara Lokesh", "tdp": "Telugu Desam Party",
             "nda": "NDA Alliance", "development": "AP Development", "innovations": "CM Innovations",
             "join": "Join TDP", "voice": "Your Constituency", "counter": "Facts and Answers",
-            "amaravati": "Amaravati", "local": "Nuzvid and Chatrai", "ntr": "NTR and TDP History", "ysrcp": "YSRCP Misrule Exposed"}
+            "amaravati": "Amaravati", "local": "Nuzvid and Chatrai", "ntr": "NTR and TDP History", "ysrcp": "YSRCP Misrule Exposed",
+            "go": "AP Government Orders"}
 NICHE_TAG = {"chandrababu": "ChandrababuNaidu", "lokesh": "NaraLokesh", "tdp": "TDP", "nda": "NDAAlliance",
              "development": "APDevelopment", "innovations": "Innovations",
              "join": "JoinTDP", "voice": "MyConstituency", "counter": "TDPFacts",
-             "amaravati": "Amaravati", "local": "Nuzvid", "ntr": "NTR", "ysrcp": "YSRCPFailures"}
+             "amaravati": "Amaravati", "local": "Nuzvid", "ntr": "NTR", "ysrcp": "YSRCPFailures", "go": "APGovtOrders"}
 NICHE_NATIVE = {
-    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం", "నిజం చెబుదాం", "అమరావతి", "నూజివీడు, చాట్రాయి", "ఎన్టీఆర్, తెలుగుదేశం చరిత్ర", "వైసీపీ బండారం"],
+    "te": ["చంద్రబాబు", "నారా లోకేశ్", "తెలుగుదేశం", "కూటమి", "అభివృద్ధి", "ఆవిష్కరణలు", "టీడీపీలో చేరండి", "మీ నియోజకవర్గం", "నిజం చెబుదాం", "అమరావతి", "నూజివీడు, చాట్రాయి", "ఎన్టీఆర్, తెలుగుదేశం చరిత్ర", "వైసీపీ బండారం", "ప్రభుత్వ ఉత్తర్వులు (జీవోలు)"],
     "en": list(NICHE_EN.values()),
 }
 LANG_TAG = {"te": "TeluguNews", "en": "IndiaNews"}

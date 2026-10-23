@@ -56,6 +56,9 @@ POLITICAL_QUERY = {
     "counter": ["వైసీపీ ఆరోపణలకు కూటమి కౌంటర్", "జగన్ ఆరోపణలపై మంత్రి స్పందన", "వైసీపీ విమర్శలకు టీడీపీ సమాధానం", "వైసీపీపై మంత్రి ఫైర్", "జగన్‌పై మంత్రి ధ్వజం", "వైసీపీ నేతలకు కౌంటర్"],
     "ysrcp": ["జగన్ హయాంలో కుంభకోణం", "వైసీపీ హయాంలో అవినీతి", "వైసీపీ హయాంలో అక్రమాలు", "జగన్ అక్రమాస్తుల కేసు విచారణ",
               "లిక్కర్ స్కామ్ వైసీపీ", "వైసీపీ నేతలపై కేసు", "వైసీపీ తప్పుడు ప్రచారం బయటపడింది", "వైసీపీ హయాంలో నిధుల దుర్వినియోగం"],
+    # Government Orders (GOs) the AP government has issued, as reported by the news outlets. Outlets only, no influencers.
+    "go": ["ప్రభుత్వం జీవో జారీ", "ఏపీ ప్రభుత్వం ఉత్తర్వులు జారీ", "జీవో విడుదల ఏపీ ప్రభుత్వం", "ప్రభుత్వ ఉత్తర్వులు జారీ ఆంధ్రప్రదేశ్",
+           "కూటమి ప్రభుత్వం జీవో", "నిధులు మంజూరు జీవో"],
     "development": "ఆంధ్రప్రదేశ్ అభివృద్ధి పెట్టుబడులు", "innovations": "ఆంధ్రప్రదేశ్ ప్రభుత్వం కొత్త పథకం సాంకేతికత",
 }
 # Headlines that are about the opposition or about trouble are skipped: the channel only carries positive stories.
@@ -67,6 +70,7 @@ SUBJECT = {  # the headline must actually be about the niche's subject
     "nda": ("కూటమి", "ఎన్డీఏ", "జనసేన", "బీజేపీ"), "janasena": ("జనసేన", "పవన్"),
     "development": ("ఆంధ్రప్రదేశ్", "ఏపీ", "అమరావతి", "రాష్ట్ర", "విశాఖ"),
     "counter": ("వైసీపీ", "వైఎస్ఆర్సీపీ", "జగన్"), "ysrcp": ("వైసీపీ", "వైఎస్ఆర్సీపీ", "జగన్"),
+    "go": ("జీవో", "జీఓ", "ఉత్తర్వు", "ఉత్తర్వులు"),
     "amaravati": ("అమరావతి",), "local": ("నూజివీడు", "చాట్రాయి"),
 }
 # The 'counter' niche: a headline where the government or TDP answers the opposition. Tragedy and crime headlines stay out;
@@ -96,6 +100,17 @@ def is_positive(headline: str, summary: str = "") -> bool:
     return any(x in text for x in POSITIVE)
 
 
+def is_go_ok(headline: str) -> bool:
+    """A Government Order headline: no opposition names, tragedy or film words (EXCLUDE), and the order must be about
+    something the government is giving, building or allowing (so a GO that merely bans or fines something is skipped)."""
+    if any(x.casefold() in headline.casefold() for x in EXCLUDE) or any(b in headline for b in GO_BAD):
+        return False
+    return True
+
+
+GO_BAD = ("నిషేధం", "జరిమానా", "సస్పెండ్", "బదిలీ", "బదిలీలు", "రద్దు")
+
+
 def political_stories(niche: str, lang: str = "te", days: int | None = None, queries=None) -> list[Story]:
     """Telugu Google News search for the niche's subject: positive, non-opposition headlines, preferred outlets first."""
     import urllib.parse
@@ -117,7 +132,7 @@ def political_stories(niche: str, lang: str = "te", days: int | None = None, que
                 found.append(x)
     out = [s for s in found if is_informative(s) and matches_language(s.headline, "te")
            and not any(b in s.publisher for b in BLOCKED_PUBLISHERS)
-           and (is_positive(s.headline) if niche not in ("counter", "ysrcp") else
+           and (is_go_ok(s.headline) if niche == "go" else is_positive(s.headline) if niche not in ("counter", "ysrcp") else
                 (any(w in s.headline for w in COUNTER_REPLY) and not any(b in s.headline for b in COUNTER_BAD)) if niche == "counter" else
                 (any(w in s.headline for w in YSRCP_REPORT) and not any(b in s.headline for b in YSRCP_BAD)))
            and (niche not in SUBJECT or any(w in s.headline for w in SUBJECT[niche]))]
