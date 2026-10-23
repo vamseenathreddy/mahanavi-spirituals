@@ -112,7 +112,8 @@ def _pick(lines: list, key: str, lo: int, shift: int = 0) -> str:
 
 
 def note(niche: str, key: str = "") -> str:
-    return _pick(_pool(NOTES, fan_lines.NOTES_MORE, niche), key, 2, 3) if key else ""
+    text = _pick(_pool(NOTES, fan_lines.NOTES_MORE, niche), key, 2, 3) if key else ""
+    return f"{ASK_YCP} {text}".strip() if niche == "ysrcp" and text else text
 
 
 ANGLE = {k: v[0] for k, v in ANGLES.items()}   # first line of each, for tests and fallbacks
@@ -121,11 +122,14 @@ SLOGAN = {"janasena": "జై జనసేన!"}
 
 HOOKS = ["తమ్ముళ్లూ!", "తెలుగుదేశం అభిమానులారా!", "పసుపు సైనికులారా!", "తమ్ముళ్లూ, చూశారా!", "జై తెలుగుదేశం!"]
 HOOKS_COUNTER = ["తమ్ముళ్లూ, ఇదీ అసలు నిజం!", "తప్పుడు ప్రచారానికి తిరుగులేని జవాబు!", "తెలుగుదేశం అభిమానులారా, నిజం ఇదే!", "పనితోనే సమాధానం!"]
+HOOKS_ATTACK = ["ఈ ప్రశ్నకు వైసీపీ సమాధానం చెప్పగలదా?", "జగన్ గారూ, దీనికి జవాబు ఉందా?", "వైసీపీ నేతలారా, ఇది నిజమా కాదా?", "ప్రజలు అడుగుతున్నారు, వైసీపీ చెబుతుందా?"]
+ASK_YCP = "ఈ ప్రశ్నకు వైసీపీ, జగన్ గారు సమాధానం చెప్పగలరా? మీ అభిప్రాయం కామెంట్ చేయండి."
 HOOKS_JSP = ["జై జనసేన!", "జనసేన శ్రేణులకు శుభవార్త!", "జై పవన్ కళ్యాణ్!"]
 
 
 def hook(niche: str, key: str) -> str:
-    hooks = HOOKS_JSP if niche == "janasena" else HOOKS_COUNTER if niche in ("counter", "ysrcp") else HOOKS
+    hooks = (HOOKS_JSP if niche == "janasena" else HOOKS_ATTACK if niche == "ysrcp"
+             else HOOKS_COUNTER if niche == "counter" else HOOKS)
     return _pick(hooks, key, 6, 1)
 
 

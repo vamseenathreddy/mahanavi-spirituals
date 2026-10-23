@@ -25,8 +25,8 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # 2026-10-18 (focus): Amaravati, Lokesh helping people and rising, positive Nuzvid and Chatrai news.
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
 NTR_ENABLED = False   # 2026-10-23: NTR Shorts got 13/31/99 views vs 1.5k+ for news cards, so they are off (flip to True to bring them back)
-DAY_PATTERN = ["amaravati", "lokesh", "chandrababu", "development", "counter", "lokesh"]   # 2026-10-22: ysrcp paused, reach test
-NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development"]   # "local" only posts monthly   # the only niches that may post
+DAY_PATTERN = ["amaravati", "ysrcp", "chandrababu", "counter", "lokesh", "ysrcp"]   # 2026-10-23: positive news + defend (counter) + attack (ysrcp: "can YCP answer this?")
+NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
 LANG_NATIVE = {"te": "తెలుగు", "hi": "हिन्दी", "en": "English", "ta": "தமிழ்", "kn": "ಕನ್ನಡ", "ml": "മലയാളം"}
