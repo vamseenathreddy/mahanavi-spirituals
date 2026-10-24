@@ -59,8 +59,8 @@ CTA = {
            "You may never see this channel again unless you subscribe right now"),
 }
 INTRO = {
-    "te": "తెలుగుదేశం, చంద్రబాబు, లోకేశ్ గారి పాలన, అభివృద్ధిపై వార్తలు. రోజుకు 12 షార్ట్స్.",
-    "en": "News on TDP, Chandrababu Naidu, Nara Lokesh and Andhra Pradesh development. 12 Shorts a day.",
+    "te": "తెలుగుదేశం, చంద్రబాబు, లోకేశ్ గారి పాలన, అభివృద్ధిపై వార్తలు.",
+    "en": "News on TDP, Chandrababu Naidu, Nara Lokesh and Andhra Pradesh development.",
 }
 
 # (window start hour IST, slot id): one post every 2 hours from midnight, at a random minute inside the first
