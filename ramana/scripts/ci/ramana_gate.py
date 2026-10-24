@@ -27,9 +27,9 @@ LATEST = dt.time(8, 0)           # a late backup run may still post until this t
 SLOTS = {
     # Windows from 2026-10-09: 12-1 AM, 10-11 AM and 5-6 PM IST. "latest" is 30 minutes past the window so a
     # delayed GitHub schedule ping can still post.
-    "quote": (dt.time(0, 0), 50, dt.time(1, 30), "ramana-gate-"),
-    "qa": (dt.time(10, 0), 50, dt.time(11, 30), "ramana-qa-gate-"),
-    "life": (dt.time(17, 0), 50, dt.time(18, 30), "ramana-life-gate-"),
+    "quote": (dt.time(0, 0), 110, dt.time(2, 30), "ramana-gate-"),
+    "qa": (dt.time(10, 0), 110, dt.time(12, 30), "ramana-qa-gate-"),
+    "life": (dt.time(17, 0), 110, dt.time(19, 30), "ramana-life-gate-"),
 }
 
 

@@ -194,6 +194,7 @@ STATE_FILES = [
     "ramana_state.json",          # Channel D's "posted"/"used_ids" state (ramana/src/state.py)
     "ramana_qa_state.json",       # Ramana 2nd daily Short (Q&A slot)
     "ramana_life_state.json",     # Ramana 3rd daily Short (life slot)
+    "ramana_arunachala_state.json",  # Ramana "upcoming at Arunachala" Short, 20 days before each event; pre-created in Drive containing {}
     # --- The 7-channel expansion (channels/ at the repo root, added 2026-10) --- same pattern
     # as the Ramana pair above, one token + one state file per channel. *** EACH OF THESE 14
     # FILES MUST BE PRE-CREATED BY HAND IN THE SAME DRIVE FOLDER BEFORE THAT CHANNEL'S FIRST

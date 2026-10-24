@@ -39,7 +39,7 @@ WINDOW_START_HOUR = 15  # 3:00 PM IST
 # The cron-job.org watchdog ticks every 5 minutes from 3:00 to 3:55 PM, so the random target must land
 # no later than the last tick (3:50 leaves one spare tick). It was 59 until 2026-10-06, when that day's
 # target came out as 3:58 PM, after the final tick, and NO Gita Short was posted.
-WINDOW_SPAN_MINUTES = 50  # target lands somewhere in 3:00-3:50 PM
+WINDOW_SPAN_MINUTES = 110  # target lands somewhere in 3:00-4:50 PM
 
 
 def _already_posted_today(today: str) -> bool:
@@ -70,7 +70,7 @@ def _decide(now: datetime, bypass_gate: bool) -> tuple[str, dt_time]:
     if now.time() < target:
         return "none", target
 
-    if now.time() >= dt_time(16, 0):
+    if now.time() >= dt_time(17, 0):
         return "none", target
 
     return "post", target

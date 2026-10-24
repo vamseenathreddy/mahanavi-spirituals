@@ -9,8 +9,8 @@ import sys
 from channels.engine import gate
 
 WINDOW_START = dt.time(0, 0)
-WINDOW_MINUTES = 40
-LATEST = dt.time(2, 0)
+WINDOW_MINUTES = 110
+LATEST = dt.time(2, 30)
 
 if __name__ == "__main__":
     sys.exit(gate.run("jesus", WINDOW_START, WINDOW_MINUTES, LATEST))

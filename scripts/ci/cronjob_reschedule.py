@@ -125,17 +125,17 @@ SERIES = {
     "gita_sloka": {
         "url_fragment": "post-gita-sloka.yml",
         "start_hour": 15,
-        "span": 50,
+        "span": 110,
         "seed_fn": lambda o: o * 3 + 2,
-        "safety_hour": 15,
+        "safety_hour": 16,
         "safety_minute": 55,
     },
     "purana_story": {
         "url_fragment": "post-purana-short.yml",
         "start_hour": 17,
-        "span": 50,
+        "span": 110,
         "seed_fn": lambda o: o,
-        "safety_hour": 17,
+        "safety_hour": 18,
         "safety_minute": 55,
     },
     # Copied verbatim from ramana/scripts/ci/ramana_gate.py's target_time():

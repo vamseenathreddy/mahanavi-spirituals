@@ -11,7 +11,7 @@ from channels.engine import gate
 
 WINDOW_START = dt.time(10, 0)
 WINDOW_MINUTES = 30
-LATEST = dt.time(11, 0)  # still posts if the ping is late, never after this
+LATEST = dt.time(11, 0)  # still posts if the ping is late, never after this  # still posts if the ping is late, never after this
 
 if __name__ == "__main__":
     now = dt.datetime.now(gate.IST)

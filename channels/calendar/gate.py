@@ -16,10 +16,10 @@ from channels.engine import gate
 from mahanavi.content import calendar_days
 
 IST = gate.IST
-WINDOWS = {"tips": (dt.time(20, 30), 40, dt.time(22, 30)),
-           "tomorrow": (dt.time(19, 30), 40, dt.time(22, 0)),
-           "festivals": (dt.time(19, 0), 40, dt.time(22, 0)),
-           "vratas": (dt.time(19, 0), 40, dt.time(22, 0))}
+WINDOWS = {"tips": (dt.time(20, 30), 90, dt.time(22, 30)),
+           "tomorrow": (dt.time(19, 30), 110, dt.time(22, 0)),
+           "festivals": (dt.time(19, 0), 110, dt.time(22, 0)),
+           "vratas": (dt.time(19, 0), 110, dt.time(22, 0))}
 
 
 def next_month(d: dt.date) -> tuple[int, int]:

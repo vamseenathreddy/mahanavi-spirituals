@@ -15,7 +15,7 @@ SLOTS = {  # same windows as Channel A (IST); the day's target minute falls insi
     "shubh": ("mantra_shubh", dt.time(1, 5), 25, dt.time(2, 0)),
     "durm": ("mantra_durm", dt.time(2, 5), 25, dt.time(3, 0)),
     "rashi": ("mantra_rashi", dt.time(8, 0), 50, dt.time(9, 0)),
-    "purana": ("mantra_purana", dt.time(17, 0), 50, dt.time(18, 0)),
+    "purana": ("mantra_purana", dt.time(17, 0), 110, dt.time(19, 0)),
 }
 
 # Daily Rashi is retired (2026-10-09): the Hindi version becomes a WEEKLY Sunday table like Channel A's.

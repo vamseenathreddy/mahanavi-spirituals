@@ -37,17 +37,17 @@ def _every_10(start_h, start_m, count):
 # (workflow file, job title, hours, minutes)
 TARGETS = [
     ("daily-shorts.yml", "Mahanavi - Timing Shorts Rahu/Shubh/Durm (12-3 AM)", *_every_10(0, 0, 18)),
-    ("post-ramana-short.yml", "Ramana Maharshi TV - quote Short (12-1 AM)", *_every_10(0, 0, 10)),
-    ("post-ramana-qa.yml", "Ramana Maharshi TV - Q&A Short (10-11 AM)", *_every_10(10, 0, 10)),
-    ("post-ramana-life.yml", "Ramana Maharshi TV - Life Short (5-6 PM)", *_every_10(17, 0, 10)),
+    ("post-ramana-short.yml", "Ramana Maharshi TV - quote Short (12-2 AM)", *_every_10(0, 0, 15)),
+    ("post-ramana-qa.yml", "Ramana Maharshi TV - Q&A Short (10 AM-12)", *_every_10(10, 0, 15)),
+    ("post-ramana-life.yml", "Ramana Maharshi TV - Life Short (5-7 PM)", *_every_10(17, 0, 15)),
     # Channel B (from Sat 10 Oct 2026) and Channel C (2026-10-09): static 10-minute pings.
     ("post-mantra-sangam-rahu.yml", "Mantra Sangam - Rahu Kaal Short (12 AM)", *_every_10(0, 5, 6)),
     ("post-mantra-sangam-shubh.yml", "Mantra Sangam - Shubh Muhurat Short (1 AM)", *_every_10(1, 5, 6)),
     ("post-mantra-sangam-durm.yml", "Mantra Sangam - Durmuhurat Short (2 AM)", *_every_10(2, 5, 6)),
-    ("post-mantra-sangam-purana.yml", "Mantra Sangam - Purana Story Short (5 PM)", *_every_10(17, 0, 6)),
+    ("post-mantra-sangam-purana.yml", "Mantra Sangam - Purana Story Short (5-7 PM)", *_every_10(17, 0, 13)),
     # Jesus posts ONE public Short a day (owner request 2026-10-14: no quiz, no second quote): a static
     # 10-minute ping through the 12-1 AM window; the gate picks the day's random minute inside it.
-    ("post-jesus-worship-waves.yml", "Jesus - Bible Quote Short (12-1 AM)", *_every_10(0, 0, 6)),
+    ("post-jesus-worship-waves.yml", "Jesus - Bible Quote Short (12-2:30 AM)", *_every_10(0, 0, 14)),
     # PAUSED 2026-10-14 (one Jesus Short a day): ("post-jesus-bible-quiz.yml", "Jesus - Bible Quiz Short (9-10 AM)", *_every_10(9, 0, 6)),
     # PAUSED 2026-10-14 (one Jesus Short a day): ("post-jesus-bible-quote-pm.yml", "Jesus - Bible Quote Short 2 (5-6 PM)", *_every_10(17, 0, 6)),
     # PAUSED by the owner 2026-10-13: ("post-motivation-mahanavi.yml", "Mahanavi - Purana Motivation Word Short (9 PM)", *_every_10(21, 0, 6)),
@@ -69,20 +69,21 @@ TARGETS = [
     # Friday AP development video (Pulse Boosting): the gate only acts on Fridays, 19:00-19:40 IST.
     ("post-jesus-long.yml", "Jesus - Daily Bible Verses long video (5:30 PM IST)", *_every_10(17, 30, 12)),
     ("post-weekly-dev.yml", "Trending - Friday AP Development Video (19:00)", *_every_10(19, 0, 12)),
-    ("post-beej-mahanavi.yml", "Mahanavi - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),
-    ("post-beej-mantra-sangam.yml", "Mantra Sangam - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),
-    ("post-beej-trance-beats.yml", "Trance Beats - Beej Mantra Short (6 AM)", *_every_10(6, 0, 6)),
-    ("post-calendar-tomorrow.yml", "Mahanavi - Tomorrow Special Short (7:30 PM)", *_every_10(19, 30, 5)),
-    ("post-calendar-tips.yml", "Mahanavi - Pooja Rules Short (8:30 PM)", *_every_10(20, 30, 5)),
-    ("post-calendar-festivals.yml", "Mahanavi - Monthly Festival List (7 PM)", *_every_10(19, 0, 6)),
-    ("post-calendar-vratas.yml", "Mahanavi - Monthly Vrata Calendar (7 PM)", *_every_10(19, 0, 6)),
-    ("post-calendar-trance-tomorrow.yml", "Trance Beats - Hindi Tomorrow Special (7:30 PM)", *_every_10(19, 30, 5)),
-    ("post-calendar-trance-festivals.yml", "Trance Beats - Hindi Festival List (7 PM)", *_every_10(19, 0, 6)),
-    ("post-calendar-mantra-festivals.yml", "Mantra Sangam - Hindi Festival List (7 PM)", *_every_10(19, 0, 6)),
-    ("post-calendar-trance-vratas.yml", "Trance Beats - Hindi Vrat Calendar (7 PM)", *_every_10(19, 0, 6)),
-    ("post-trance-bhagavatam.yml", "Trance Beats - Bhagavatam Short (7 AM)", *_every_10(7, 0, 12)),
-    ("post-trance-mantra.yml", "Trance Beats - Mantra Short (1 PM)", *_every_10(13, 0, 12)),
-    ("post-devotional-trance-beats.yml", "Trance Beats - Gita Short (7 PM)", *_every_10(19, 0, 12)),
+    ("post-beej-mahanavi.yml", "Mahanavi - Beej Mantra Short (6-8 AM)", *_every_10(6, 0, 13)),
+    ("post-beej-mantra-sangam.yml", "Mantra Sangam - Beej Mantra Short (6-8 AM)", *_every_10(6, 0, 13)),
+    ("post-beej-trance-beats.yml", "Trance Beats - Beej Mantra Short (6-8 AM)", *_every_10(6, 0, 13)),
+    ("post-calendar-tomorrow.yml", "Mahanavi - Tomorrow Special Short (7:30-9:30 PM)", *_every_10(19, 30, 13)),
+    ("post-calendar-tips.yml", "Mahanavi - Pooja Rules Short (8:30-10:10 PM)", *_every_10(20, 30, 11)),
+    ("post-calendar-festivals.yml", "Mahanavi - Monthly Festival List (7-9 PM)", *_every_10(19, 0, 13)),
+    ("post-calendar-vratas.yml", "Mahanavi - Monthly Vrata Calendar (7-9 PM)", *_every_10(19, 0, 13)),
+    ("post-calendar-trance-tomorrow.yml", "Trance Beats - Hindi Tomorrow Special (7:30-9:30 PM)", *_every_10(19, 30, 13)),
+    ("post-calendar-trance-festivals.yml", "Trance Beats - Hindi Festival List (7-9 PM)", *_every_10(19, 0, 13)),
+    ("post-calendar-mantra-festivals.yml", "Mantra Sangam - Hindi Festival List (7-9 PM)", *_every_10(19, 0, 13)),
+    ("post-ramana-arunachala.yml", "Ramana Maharshi TV - Arunachala Upcoming Events (8-10 PM)", *_every_10(20, 0, 13)),
+    ("post-calendar-trance-vratas.yml", "Trance Beats - Hindi Vrat Calendar (7-9 PM)", *_every_10(19, 0, 13)),
+    ("post-trance-bhagavatam.yml", "Trance Beats - Bhagavatam Short (7-9 AM)", *_every_10(7, 0, 13)),
+    ("post-trance-mantra.yml", "Trance Beats - Mantra Short (1-3 PM)", *_every_10(13, 0, 13)),
+    ("post-devotional-trance-beats.yml", "Trance Beats - Gita Short (7-9 PM)", *_every_10(19, 0, 13)),
 ]
 
 

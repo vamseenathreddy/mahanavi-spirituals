@@ -9,8 +9,8 @@ import sys
 from channels.engine import gate
 
 WINDOW_START = dt.time(21, 0)
-WINDOW_MINUTES = 40
-LATEST = dt.time(23, 0)
+WINDOW_MINUTES = 110
+LATEST = dt.time(23, 30)
 
 if __name__ == "__main__":
     sys.exit(gate.run("motivation_mahanavi", WINDOW_START, WINDOW_MINUTES, LATEST))

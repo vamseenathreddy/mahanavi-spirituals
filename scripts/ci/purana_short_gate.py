@@ -59,7 +59,7 @@ WINDOW_START_HOUR = 17  # 5:00 PM IST
 # private repo. The random target must land no later than the second-to-last tick (5:50 leaves
 # the 5:55 tick as a guaranteed catch before the 6:00 PM cutoff) -- same fix already applied to
 # gita_sloka_gate.py after its 2026-10-06 missed post.
-WINDOW_SPAN_MINUTES = 50  # target lands somewhere in 5:00-5:50 PM, posting completes before 6 PM
+WINDOW_SPAN_MINUTES = 110  # target lands somewhere in 5:00-6:50 PM, posting completes before 7 PM
 
 
 def _already_posted_today(today: str) -> bool:
@@ -90,7 +90,7 @@ def _decide(now: datetime, bypass_gate: bool) -> tuple[str, dt_time]:
     # skip rather than post very late -- same "a very late post reads
     # worse than a missed one" principle already applied to the alert
     # Shorts' 3 AM window close.
-    if now.time() >= dt_time(18, 0):
+    if now.time() >= dt_time(19, 0):
         return "none", target
 
     return "post", target

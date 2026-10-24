@@ -8,8 +8,8 @@ import sys
 from channels.engine import gate
 
 WINDOW_START = dt.time(7, 0)
-WINDOW_MINUTES = 40
-LATEST = dt.time(9, 0)
+WINDOW_MINUTES = 110
+LATEST = dt.time(9, 30)
 
 if __name__ == "__main__":
     sys.exit(gate.run("trance_bhagavatam", WINDOW_START, WINDOW_MINUTES, LATEST))

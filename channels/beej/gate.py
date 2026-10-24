@@ -11,8 +11,8 @@ import sys
 from channels.engine import gate
 
 WINDOW_START = dt.time(6, 0)
-WINDOW_MINUTES = 40
-LATEST = dt.time(8, 0)
+WINDOW_MINUTES = 110
+LATEST = dt.time(8, 30)
 
 if __name__ == "__main__":
     sys.exit(gate.run(f"beej_{os.environ['BEEJ_CHANNEL']}", WINDOW_START, WINDOW_MINUTES, LATEST))
