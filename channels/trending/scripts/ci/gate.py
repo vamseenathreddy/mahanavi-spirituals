@@ -8,8 +8,9 @@ from channels.trending import config as cfg
 
 if __name__ == "__main__":
     slot = os.environ["POST_SLOT"]
-    if slot not in cfg.ACTIVE_SLOTS:
-        print(f"DECISION: skip, {slot} is not an active slot (6 posts a day)")
+    today = dt.datetime.now(gate.IST).date()
+    if os.environ.get("FORCE_POST") != "true" and slot not in cfg.slots_for(today):
+        print(f"DECISION: skip, {slot} is not one of today's slots ({sorted(cfg.slots_for(today))}; Fri-Sun 6 posts, Mon-Thu 3)")
         if os.environ.get("GITHUB_OUTPUT"):
             with open(os.environ["GITHUB_OUTPUT"], "a") as f:
                 f.write("post=false\ndate=\n")

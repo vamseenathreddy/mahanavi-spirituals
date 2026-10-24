@@ -378,3 +378,11 @@ def test_card_summary_must_be_in_the_card_language():
     assert not mostly_native('TDP MLA Bonda Uma accuses YSRCP chief YS Jagan of spreading "fake propaganda" over alleged violence', "te")
     assert not mostly_native("బోండా ఉమ TDP MLA accuses YSRCP chief Jagan of spreading fake propaganda over alleged violence during elections", "te")
     assert mostly_native("టీడీపీ ఎమ్మెల్యే బోండా ఉమ వైసీపీ అధినేత జగన్ ఫేక్ ప్రచారం చేస్తున్నారని మండిపడ్డారు", "te")
+
+
+def test_weekend_six_slots_weekday_three():
+    import datetime as dt
+    for d in range(19, 26):   # 19 Oct 2026 is a Monday
+        day = dt.date(2026, 10, d)
+        assert len(cfg.slots_for(day)) == (6 if day.weekday() >= 4 else 3), day
+        assert cfg.slots_for(day) <= cfg.ACTIVE_SLOTS

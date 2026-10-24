@@ -70,6 +70,22 @@ WINDOW_MINUTES = 40
 # Only these slots post (the other workflows still get pinged and skip at the gate). Raise back to all 12 to double the volume.
 ACTIVE_SLOTS = {s for _, s in SLOTS}   # 2026-10-23: all 12 slots, a post every 2 hours around the clock
 
+# 2026-10-24: not the same count every day. Fri/Sat/Sun post 6 Shorts, Mon-Thu only 3. Which slot posts is a day-seeded pick from
+# a pool of 2-hour slots (so the times move around from day to day but always cover morning, afternoon and evening).
+_WEEKDAY_POOLS = [("t5", "t6"), ("t8", "t9"), ("t11", "t12")]
+_WEEKEND_POOLS = [("t4", "t5"), ("t6", "t7"), ("t8", "t9"), ("t10",), ("t11",), ("t12",)]
+
+
+def slots_for(day) -> set[str]:
+    import hashlib
+
+    pools = _WEEKEND_POOLS if day.weekday() >= 4 else _WEEKDAY_POOLS
+    out = set()
+    for i, pool in enumerate(pools):
+        h = int(hashlib.sha256(f"tdp-slot-{day.isoformat()}-{i}".encode()).hexdigest(), 16)
+        out.add(pool[h % len(pool)])
+    return out
+
 WHITE, GOLD, SOFT = (255, 255, 255), (255, 210, 120), (225, 220, 225)
 INK, RED, BROWN = (28, 8, 0), (150, 10, 20), (70, 30, 0)   # dark text on the TDP-yellow cards
 _YELLOW = ((255, 222, 20), (250, 190, 0))
