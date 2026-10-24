@@ -79,6 +79,7 @@ TARGETS = [
     ("post-calendar-trance-tomorrow.yml", "Trance Beats - Hindi Tomorrow Special (7:30-9:30 PM)", *_every_10(19, 30, 13)),
     ("post-calendar-trance-festivals.yml", "Trance Beats - Hindi Festival List (7-9 PM)", *_every_10(19, 0, 13)),
     ("post-calendar-mantra-festivals.yml", "Mantra Sangam - Hindi Festival List (7-9 PM)", *_every_10(19, 0, 13)),
+    ("post-temple-secrets.yml", "Mahanavi - Temple Secrets weekly Short (Sat 10-12 PM)", *_every_10(22, 0, 12)),
     ("post-ramana-arunachala.yml", "Ramana Maharshi TV - Arunachala Upcoming Events (8-10 PM)", *_every_10(20, 0, 13)),
     ("post-calendar-trance-vratas.yml", "Trance Beats - Hindi Vrat Calendar (7-9 PM)", *_every_10(19, 0, 13)),
     ("post-trance-bhagavatam.yml", "Trance Beats - Bhagavatam Short (7-9 AM)", *_every_10(7, 0, 13)),
