@@ -22,6 +22,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   post-navaratri-day2-song:
@@ -92,4 +93,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/ci/notify_failure.py "Channel A | Navaratri Day 2 Song (one-time)"

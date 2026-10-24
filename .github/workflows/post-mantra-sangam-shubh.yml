@@ -35,6 +35,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   post-mantra-sangam-shubh:
@@ -122,4 +123,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/ci/notify_failure.py "Channel B | Shubh Muhurat Short (1 AM IST)"

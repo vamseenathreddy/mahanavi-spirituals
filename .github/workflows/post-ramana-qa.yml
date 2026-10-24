@@ -81,6 +81,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   post-ramana-qa:
@@ -174,4 +175,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/ci/notify_failure.py "Channel D | Q&A Short (10 AM IST)"

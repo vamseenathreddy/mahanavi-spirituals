@@ -40,6 +40,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   reschedule:
@@ -83,4 +84,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/ci/notify_failure.py "System | Reschedule cron-job.org pings (daily)"

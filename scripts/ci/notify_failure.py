@@ -37,6 +37,28 @@ import urllib.error
 import urllib.request
 
 
+def _is_lone_failure() -> bool:
+    """True when the previous run of this same workflow succeeded: the next ping retries the slot by itself, so a single
+    failure is not worth an alert (owner request 2026-10-24: false FAILED slots). Two failures in a row still alert.
+    Any problem reaching the API means 'not sure', so the alert is sent as before."""
+    token, repo, run_id = (os.environ.get(k, "").strip() for k in ("GITHUB_TOKEN", "GITHUB_REPOSITORY", "GITHUB_RUN_ID"))
+    if not (token and repo and run_id):
+        return False
+    try:
+        def get(path: str) -> dict:
+            req = urllib.request.Request(f"https://api.github.com/repos/{repo}/actions/{path}", headers={
+                "Authorization": f"Bearer {token}", "Accept": "application/vnd.github+json"})
+            with urllib.request.urlopen(req, timeout=15) as r:
+                return json.loads(r.read())
+        wf = get(f"runs/{run_id}")["workflow_id"]
+        runs = [r for r in get(f"workflows/{wf}/runs?per_page=5&status=completed")["workflow_runs"] if str(r["id"]) != run_id
+                and r["id"] < int(run_id)]
+        return bool(runs) and runs[0]["conclusion"] == "success"
+    except Exception as exc:  # noqa: BLE001
+        print(f"notify_failure: could not check earlier runs ({exc}); alerting.")
+        return False
+
+
 def main() -> int:
     workflow_name = sys.argv[1] if len(sys.argv) > 1 else "A Mahanavi Spirituals workflow"
 
@@ -44,6 +66,10 @@ def main() -> int:
     chat_id = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
     if not bot_token or not chat_id:
         print("notify_failure: TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID not set -- skipping alert.")
+        return 0
+
+    if _is_lone_failure():
+        print("notify_failure: the previous run succeeded, so the next ping will retry; no alert for a single failure.")
         return 0
 
     repo = os.environ.get("GITHUB_REPOSITORY", "")

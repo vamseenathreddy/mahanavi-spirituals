@@ -58,6 +58,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   post-rashi-mantra:
@@ -152,4 +153,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/ci/notify_failure.py "Channel A | Weekly Rashi Mantra Table (Sunday 8 AM IST)"
