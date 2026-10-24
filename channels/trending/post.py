@@ -75,38 +75,43 @@ def main(argv=None) -> int:
         from channels.engine import upload
         yt = upload.service(token)
     used = set(st["used_ids"])
-    if args.sample:
-        niche, story = niche, SAMPLE
-    else:
-        from channels.trending import ntr_bank
-        first = next((x for x in ntr_bank.priority_stories() if x.key not in used), None) if niche == "ntr" else None   # owner-requested NTR posts go first
-        if first is not None:
-            niche, story = "ntr", first
+    try:
+        if args.sample:
+            niche, story = niche, SAMPLE
         else:
-            niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
-        if niche == "local" and story is not None:
-            st["local_month"] = date.strftime("%Y-%m")
-    if story is None:
-        print("No fresh unused story found in any niche for this language; skipping this slot.")
-        return 0
-
-    if not args.sample:
-        story = enrich(story, lang)
-        # 2026-10-22: no empty promises. A news card needs the publisher's own summary (facts); otherwise take the next story.
-        tries = 0
-        while story is not None and not has_substance(story) and tries < 8:
-            print(f"::notice::skipping a thin story (no usable summary): {story.headline[:70]}")
-            used.add(story.key)
-            tries += 1
-            niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
-            story = enrich(story, lang) if story is not None else None
-        if story is not None and not has_substance(story) and cfg.NTR_ENABLED:
-            niche, story = "ntr", pick_story("ntr", lang, used, yt, recent=st.get("recent", []))
-            if story is not None:
-                story = enrich(story, lang)
+            from channels.trending import ntr_bank
+            first = next((x for x in ntr_bank.priority_stories() if x.key not in used), None) if niche == "ntr" else None   # owner-requested NTR posts go first
+            if first is not None:
+                niche, story = "ntr", first
+            else:
+                niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
+            if niche == "local" and story is not None:
+                st["local_month"] = date.strftime("%Y-%m")
         if story is None:
-            print("No story with real substance found; skipping this slot.")
+            print("No fresh unused story found in any niche for this language; skipping this slot.")
             return 0
+
+        if not args.sample:
+            story = enrich(story, lang)
+            # 2026-10-22: no empty promises. A news card needs the publisher's own summary (facts); otherwise take the next story.
+            tries = 0
+            while story is not None and not has_substance(story) and tries < 8:
+                print(f"::notice::skipping a thin story (no usable summary): {story.headline[:70]}")
+                used.add(story.key)
+                tries += 1
+                niche, story = choose(lang, niche, used, yt, recent=st.get("recent", []))
+                story = enrich(story, lang) if story is not None else None
+            if story is not None and not has_substance(story) and cfg.NTR_ENABLED:
+                niche, story = "ntr", pick_story("ntr", lang, used, yt, recent=st.get("recent", []))
+                if story is not None:
+                    story = enrich(story, lang)
+            if story is None:
+                print("No story with real substance found; skipping this slot.")
+                return 0
+    except Exception as exc:  # noqa: BLE001
+        # no real story to post (feed or page problem): skip this slot quietly instead of raising a FAILED alert
+        print(f"::notice::no real story available, skipping this slot: {type(exc).__name__}: {str(exc)[:200]}")
+        return 0
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     metadata.VARIANT = st.setdefault("fan", {}).get(niche, 0)  # walks the fan lines in order, no repeats until the pool is used
