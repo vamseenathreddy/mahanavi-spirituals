@@ -271,19 +271,25 @@ def _pick_subscribe_text(pool: list[str], for_date: date) -> str:
 
 # Day-wise god photo behind every alert card (owner request 2026-10-19, same idea as the Beej mantra card).
 # Thursday is Dattatreya (never Sai Baba); the owner supplied the Dattatreya photos on 2026-10-20.
-_DAY_BG = {0: ("shiva_g1.jpg", "shiva_g2.jpg"), 1: ("hanuman_g1.jpg", "hanuman_g2.jpg"),
-           2: ("ganesha_g1.jpg", "ganesha_g2.jpg"),
-           3: ("dattatreya_g1.jpg", "dattatreya_g3.jpg", "dattatreya_g5.jpg"), 4: ("lakshmi_g1.jpg", "lakshmi_g2.jpg"),
-           5: ("venkateswara_g1.jpg",), 6: ("surya_g2.jpg",)}
+# 2026-10-25 owner: Monday Shiva, Tuesday Anjaneya, Friday Lakshmi are fixed; Wed, Thu, Sat and Sun rotate through
+# this pool of gods (a different god on each of those days, photo rotating too).
+_FIXED_GOD = {0: "shiva", 1: "hanuman", 4: "lakshmi"}
+_ROTATING_SLOT = {2: 0, 3: 1, 5: 2, 6: 3}
+_GOD_POOL = ("ganesha", "venkateswara", "vishnu", "krishna", "rama", "durga", "dattatreya", "saraswati", "narasimha",
+             "murugan", "shani", "surya", "parvati")
+
+
+def day_god(for_date: date) -> str:
+    wd = for_date.weekday()
+    if wd in _FIXED_GOD:
+        return _FIXED_GOD[wd]
+    week = (for_date.toordinal() - wd) // 7
+    return _GOD_POOL[(week * 4 + _ROTATING_SLOT[wd]) % len(_GOD_POOL)]
 
 
 def _day_background(for_date: date) -> Path | None:
-    from mahanavi.config import PROJECT_ROOT
-    names = _DAY_BG.get(for_date.weekday())
-    if not names:
-        return None
-    path = PROJECT_ROOT / "assets" / "images" / "deities" / names[for_date.toordinal() % len(names)]
-    return path if path.exists() else None
+    from mahanavi.images import deity_bg
+    return deity_bg.pick(day_god(for_date), for_date)
 
 
 def _pick_comment_prompt(pool: list[str], for_date: date, offset: int) -> str:
