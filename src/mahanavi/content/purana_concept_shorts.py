@@ -415,6 +415,68 @@ _QUIZ_MAHABALI = PuranaConceptShort(
     purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
 )
 
+# --- Tirumala facts series (2026-10-24): well-known, checkable traditions only; no invented 'secrets' ---
+
+_TIRUMALA_1 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="తిరుమల ఏడు కొండలు", title_en="Tirumala Seven Hills",
+    invocation_te="ఓం నమో వేంకటేశాయ",
+    body_te=(
+        "శ్రీవారి క్షేత్రం ఏడు కొండలపై ఉంది: శేషాద్రి, నీలాద్రి, గరుడాద్రి, అంజనాద్రి, వృషభాద్రి, నారాయణాద్రి, వేంకటాద్రి. అందుకే స్వామిని ఏడుకొండలవాడు అని పిలుస్తారు. వేంకటాద్రి మీదే ఆలయం ఉంది."
+    ),
+    purana_name_te="తిరుమల సంప్రదాయం", purana_name_en="Tirumala Tradition",
+)
+
+_TIRUMALA_2 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="తిరుమల తలనీలాలు మొక్కు", title_en="Tirumala Hair Offering",
+    invocation_te="ఓం నమో వేంకటేశాయ",
+    body_te=(
+        "తిరుమలలో భక్తులు మొక్కుగా తలనీలాలు సమర్పించడం ఎంతో ప్రసిద్ధి. అహంకారాన్ని వదిలి స్వామికి శరణాగతి చెందడానికి ఇది ప్రతీక అని భక్తుల నమ్మకం. తిరుమల తిరుపతి దేవస్థానం కళ్యాణకట్టల్లో ఈ సేవ అందుబాటులో ఉంటుంది."
+    ),
+    purana_name_te="తిరుమల సంప్రదాయం", purana_name_en="Tirumala Tradition",
+)
+
+_TIRUMALA_3 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="తిరుమల శ్రీవారి లడ్డు", title_en="Tirumala Srivari Laddu",
+    invocation_te="ఓం నమో వేంకటేశాయ",
+    body_te=(
+        "తిరుమల లడ్డు ప్రసాదం వందల ఏళ్ల సంప్రదాయం. దీనికి 2009లో భౌగోళిక గుర్తింపు (GI ట్యాగ్) లభించింది. దీన్ని ఆలయం లోపల పోటులో తయారు చేస్తారు. శ్రీవారి దర్శనం తర్వాత భక్తులు దీన్ని ప్రసాదంగా తీసుకుంటారు."
+    ),
+    purana_name_te="తిరుమల సంప్రదాయం", purana_name_en="Tirumala Tradition",
+)
+
+_TIRUMALA_4 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="తిరుమల సుప్రభాత సేవ", title_en="Tirumala Suprabhatam Seva",
+    invocation_te="ఓం నమో వేంకటేశాయ",
+    body_te=(
+        "తిరుమలలో రోజు ప్రారంభం సుప్రభాత సేవతో అవుతుంది. తెల్లవారుజామున శ్రీవారిని మేల్కొలిపే ఈ సేవలో వేంకటేశ్వర సుప్రభాతం పఠిస్తారు. రాత్రి ఏకాంత సేవతో స్వామివారికి విశ్రాంతి ఇస్తారు."
+    ),
+    purana_name_te="తిరుమల సంప్రదాయం", purana_name_en="Tirumala Tradition",
+)
+
+_TIRUMALA_5 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="శ్రీవారి బ్రహ్మోత్సవాలు, గరుడ సేవ", title_en="Tirumala Brahmotsavam Garuda Seva",
+    invocation_te="ఓం నమో వేంకటేశాయ",
+    body_te=(
+        "తిరుమలలో ఏటా తొమ్మిది రోజులు బ్రహ్మోత్సవాలు జరుగుతాయి. ఇందులో గరుడ సేవ ఎంతో ప్రధానమైనది: శ్రీవారు గరుడ వాహనంపై మాడ వీధుల్లో ఊరేగుతారు. లక్షలాది మంది భక్తులు ఈ వేడుక చూడటానికి వస్తారు."
+    ),
+    purana_name_te="తిరుమల సంప్రదాయం", purana_name_en="Tirumala Tradition",
+)
+
+_TIRUMALA_6 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="తిరుమల అలిపిరి మెట్ల మార్గం", title_en="Tirumala Alipiri Footpath",
+    invocation_te="ఓం నమో వేంకటేశాయ",
+    body_te=(
+        "కొండపైకి నడిచి వెళ్ళే భక్తుల కోసం అలిపిరి మెట్ల మార్గం ఉంది. ఇందులో సుమారు మూడున్నర వేల మెట్లు ఉంటాయి. నడిచి వచ్చి స్వామిని దర్శించుకోవడం గొప్ప మొక్కుగా భక్తులు భావిస్తారు."
+    ),
+    purana_name_te="తిరుమల సంప్రదాయం", purana_name_en="Tirumala Tradition",
+)
+
 # Interleaved one-of-each-type-per-turn (see module docstring) so posting
 # in list order cycles through all 6 concepts before any repeat.
 PURANA_CONCEPT_SHORTS: list[PuranaConceptShort] = [
@@ -424,4 +486,6 @@ PURANA_CONCEPT_SHORTS: list[PuranaConceptShort] = [
     # 2026-10-24: temples (Kashi's 871 views was the best of this series) and the Chiranjeevi quizzes, interleaved with the rest
     _PLACE_TIRUMALA, _QUIZ_PARASHURAMA, _PLACE_SRISAILAM, _QUIZ_VIBHISHANA, _PLACE_ARUNACHALAM, _TRIVIA_CHIRANJEEVI,
     _PLACE_RAMESWARAM, _QUIZ_ASHWATTHAMA, _PLACE_PURI, _QUIZ_MAHABALI,
+    # Tirumala facts, one a day in a row
+    _TIRUMALA_1, _TIRUMALA_2, _TIRUMALA_3, _TIRUMALA_4, _TIRUMALA_5, _TIRUMALA_6,
 ]
