@@ -38,8 +38,8 @@ def main(argv: list[str] | None = None) -> int:
         st = state_mod.load()
         temple = next((t for t in ts.TEMPLES if t.slug == args.temple), None) if args.temple else ts.used_and_next(st["used_ids"])
         if temple is None:
-            print("::error::Temple Secrets list is used up: add more temples to content/temple_secrets.py")
-            return 1
+            print("::notice::Temple Secrets list is used up, skipping this week: add more temples to content/temple_secrets.py")
+            return 0
         if ts.left(st["used_ids"]) <= ts.LOW_STOCK:
             print(f"::warning::only {ts.left(st['used_ids'])} temple(s) left in the Temple Secrets list, add more")
         spec = ts.build(temple, today)
