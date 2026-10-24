@@ -312,10 +312,116 @@ _QUIZ_GARUDA = PuranaConceptShort(
     purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
 )
 
+# --- 2026-10-24 additions: temple kshetras and the seven Chiranjeevis (YouTube Studio idea evaluation) ---
+
+_PLACE_TIRUMALA = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="తిరుమల శ్రీవారి క్షేత్ర మహాత్మ్యం", title_en="Tirumala Srivari Kshetra Mahatyam",
+    invocation_te="ఓం నమో వేంకటేశాయ",
+    body_te=(
+        "శేషాచలం కొండలపై వెలసిన శ్రీ వేంకటేశ్వరుని క్షేత్రమే తిరుమల. కలియుగంలో భక్తులను కాపాడడానికి శ్రీమహావిష్ణువు ఇక్కడ వెలిశాడని పురాణాలు చెబుతాయి. స్వామివారికి తలనీలాలు సమర్పించడం, వైకుంఠ ఏకాదశి దర్శనం భక్తులకు ఎంతో పవిత్రం."
+    ),
+    purana_name_te="వరాహ పురాణం", purana_name_en="Varaha Purana",
+)
+
+_PLACE_SRISAILAM = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="శ్రీశైల క్షేత్ర మహాత్మ్యం", title_en="Srisailam Kshetra Mahatyam",
+    invocation_te="ఓం నమః శివాయ",
+    body_te=(
+        "నల్లమల కొండలపై, కృష్ణా నది ఒడ్డున ఉన్న శ్రీశైలంలో మల్లికార్జున స్వామి జ్యోతిర్లింగంగా, భ్రమరాంబా దేవి శక్తిపీఠంగా కొలువై ఉన్నారు. పన్నెండు జ్యోతిర్లింగాల్లో, పద్దెనిమిది మహాశక్తి పీఠాల్లో ఈ క్షేత్రం ఒకటి కావడమే దీని ప్రత్యేకత."
+    ),
+    purana_name_te="స్కంద పురాణం (శ్రీశైల ఖండం)", purana_name_en="Skanda Purana",
+)
+
+_PLACE_ARUNACHALAM = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="అరుణాచల క్షేత్ర మహాత్మ్యం", title_en="Arunachalam Kshetra Mahatyam",
+    invocation_te="ఓం నమః శివాయ",
+    body_te=(
+        "తిరువణ్ణామలై అరుణాచలం పంచభూత క్షేత్రాల్లో అగ్ని క్షేత్రం. ఆ కొండే శివలింగ స్వరూపమని భక్తుల నమ్మకం. పౌర్ణమి రోజున గిరి ప్రదక్షిణ, కార్తిక దీపోత్సవం ఇక్కడ ఎంతో ప్రసిద్ధి."
+    ),
+    purana_name_te="స్కంద పురాణం (అరుణాచల మాహాత్మ్యం)", purana_name_en="Skanda Purana",
+)
+
+_PLACE_RAMESWARAM = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="రామేశ్వర క్షేత్ర మహాత్మ్యం", title_en="Rameswaram Kshetra Mahatyam",
+    invocation_te="ఓం నమః శివాయ",
+    body_te=(
+        "లంకకు వెళ్ళే ముందు శ్రీరాముడు సముద్ర తీరంలో శివలింగాన్ని ప్రతిష్ఠించిన క్షేత్రమే రామేశ్వరం అని పురాణ కథనం. ఇది పన్నెండు జ్యోతిర్లింగాల్లో ఒకటి, చార్‌ధామ్ క్షేత్రాల్లో కూడా ఒకటి."
+    ),
+    purana_name_te="స్కంద పురాణం", purana_name_en="Skanda Purana",
+)
+
+_PLACE_PURI = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="పూరీ జగన్నాథ క్షేత్ర మహాత్మ్యం", title_en="Puri Jagannath Kshetra Mahatyam",
+    invocation_te="ఓం నమో నారాయణాయ",
+    body_te=(
+        "పూరీ జగన్నాథ క్షేత్రం చార్‌ధామ్ క్షేత్రాల్లో ఒకటి. ప్రతి సంవత్సరం జరిగే రథయాత్రలో జగన్నాథుడు, బలభద్రుడు, సుభద్రాదేవి భారీ రథాలపై ఊరేగుతారు. ఆ రథాన్ని లాగడం పుణ్యమని భక్తులు నమ్ముతారు."
+    ),
+    purana_name_te="స్కంద పురాణం (పురుషోత్తమ క్షేత్రం)", purana_name_en="Skanda Purana",
+)
+
+_TRIVIA_CHIRANJEEVI = PuranaConceptShort(
+    concept_type=ConceptType.TRIVIA_LIST,
+    title_te="ఏడుగురు చిరంజీవులు", title_en="The Seven Chiranjeevis",
+    invocation_te="ఓం నమో నారాయణాయ",
+    body_te=(
+        "పురాణాలు చెప్పే ఏడుగురు చిరంజీవులు: అశ్వత్థామ, మహాబలి, వ్యాసుడు, హనుమంతుడు, విభీషణుడు, "
+        "కృపాచార్యుడు, పరశురాముడు. వీరు ఈ కలియుగంలో కూడా జీవించి ఉన్నారని సంప్రదాయ విశ్వాసం."
+    ),
+    purana_name_te="పురాణ సంప్రదాయం", purana_name_en="Puranic Tradition",
+)
+
+_QUIZ_PARASHURAMA = PuranaConceptShort(
+    concept_type=ConceptType.CHARACTER_QUIZ,
+    title_te="ఈ చిరంజీవి ఎవరు?", title_en="Guess The Chiranjeevi",
+    invocation_te="ఓం నమో నారాయణాయ",
+    body_te=(
+        "క్లూ: ఈయన జమదగ్ని మహర్షి కుమారుడు. చేతిలో గండ్రగొడ్డలి ధరించిన విష్ణువు ఆరవ అవతారం. చిరంజీవులలో ఒకరు.\n\nజవాబు: ఈయనే పరశురాముడు!"
+    ),
+    purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
+)
+
+_QUIZ_VIBHISHANA = PuranaConceptShort(
+    concept_type=ConceptType.CHARACTER_QUIZ,
+    title_te="ఈ చిరంజీవి ఎవరు?", title_en="Guess The Chiranjeevi",
+    invocation_te="ఓం శ్రీరామాయ నమః",
+    body_te=(
+        "క్లూ: ఈయన రావణుని తమ్ముడు అయినా ధర్మం వైపు నిలిచి శ్రీరాముని శరణు కోరాడు. యుద్ధం తర్వాత లంకకు రాజయ్యాడు. చిరంజీవులలో ఒకరు.\n\nజవాబు: ఈయనే విభీషణుడు!"
+    ),
+    purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
+)
+
+_QUIZ_ASHWATTHAMA = PuranaConceptShort(
+    concept_type=ConceptType.CHARACTER_QUIZ,
+    title_te="ఈ చిరంజీవి ఎవరు?", title_en="Guess The Chiranjeevi",
+    invocation_te="ఓం నమో నారాయణాయ",
+    body_te=(
+        "క్లూ: ఈయన ద్రోణాచార్యుని కుమారుడు. నుదుటిపై పుట్టుకతోనే మణి ఉంది. కురుక్షేత్ర యుద్ధం తర్వాత శాపం పొందిన చిరంజీవి.\n\nజవాబు: ఈయనే అశ్వత్థామ!"
+    ),
+    purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
+)
+
+_QUIZ_MAHABALI = PuranaConceptShort(
+    concept_type=ConceptType.CHARACTER_QUIZ,
+    title_te="ఈ చిరంజీవి ఎవరు?", title_en="Guess The Chiranjeevi",
+    invocation_te="ఓం నమో నారాయణాయ",
+    body_te=(
+        "క్లూ: ఈయన ప్రహ్లాదుని మనుమడు, గొప్ప దానశీలి. వామనుడు మూడడుగుల నేల అడిగితే ఇచ్చిన చక్రవర్తి. చిరంజీవులలో ఒకరు.\n\nజవాబు: ఈయనే మహాబలి చక్రవర్తి!"
+    ),
+    purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
+)
+
 # Interleaved one-of-each-type-per-turn (see module docstring) so posting
 # in list order cycles through all 6 concepts before any repeat.
 PURANA_CONCEPT_SHORTS: list[PuranaConceptShort] = [
     _SLOKA_1, _PLACE_KASHI, _VRATHA_EKADASHI, _QA_DHARMA, _TRIVIA_DASHAVATARA, _QUIZ_HANUMAN,
     _SLOKA_2, _PLACE_GAYA, _VRATHA_SATYANARAYANA, _QA_DANAM, _TRIVIA_SAPTARISHI, _QUIZ_NARADA,
     _SLOKA_3, _PLACE_PRAYAGA, _VRATHA_VARALAKSHMI, _QA_KOPAM, _TRIVIA_NAVAGRAHA, _QUIZ_GARUDA,
+    # 2026-10-24: temples (Kashi's 871 views was the best of this series) and the Chiranjeevi quizzes, interleaved with the rest
+    _PLACE_TIRUMALA, _QUIZ_PARASHURAMA, _PLACE_SRISAILAM, _QUIZ_VIBHISHANA, _PLACE_ARUNACHALAM, _TRIVIA_CHIRANJEEVI,
+    _PLACE_RAMESWARAM, _QUIZ_ASHWATTHAMA, _PLACE_PURI, _QUIZ_MAHABALI,
 ]
