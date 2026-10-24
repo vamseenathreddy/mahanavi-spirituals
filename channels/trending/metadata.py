@@ -241,8 +241,33 @@ def mention_line() -> str:
     return " ".join(ms[:8])   # a few well-chosen handles; long lists look like spam to YouTube
 
 
+_NOT_PLACE = {"ఈ", "ఆ", "ప్రతి", "రాష్ట్ర", "ఏ", "ఒక", "మా", "మీ", "అన్ని", "ఆ", "ఈ"}
+
+
+def where(story: Story) -> str:
+    """Where a candidate or local leader is standing: the constituency / division / ward and the town the story names
+    (owner request 2026-10-24). Only what the story itself says; empty when it names no place."""
+    import re
+    text = f"{story.headline} {story.summary}"
+    parts: list[str] = []
+    m = re.search(r"(\d{1,3})\s*(?:వ|వ\.)?\s*(డివిజన్|వార్డు)", text)
+    if m:
+        parts.append(f"{m.group(1)}వ {m.group(2)}")
+    for m in re.finditer(r"([\u0C00-\u0C7F]+)\s+నియోజకవర్గ", text):
+        if m.group(1) not in _NOT_PLACE and f"{m.group(1)} నియోజకవర్గం" not in parts:
+            parts.append(f"{m.group(1)} నియోజకవర్గం")
+            break
+    town = regions.mentioned(text)[:1]
+    if town and parts:
+        parts.append(town[0][0])
+    elif town and re.search(r"అభ్యర్థి|పోటీ|కార్పొరేటర్|ఎమ్మెల్యే|ఎంపీ", text):
+        parts.append(town[0][0])
+    return ", ".join(parts)
+
+
 def description(story: Story, lang: str, niche: str) -> str:
-    more = [angle(niche, story.key), ""]
+    spot = where(story)
+    more = ([f"నియోజకవర్గం / ప్రాంతం: {spot}", ""] if spot else []) + [angle(niche, story.key), ""]
     more += [story.summary, ""] if story.summary else []
     if note(niche, story.key):
         more += [note(niche, story.key), ""]
@@ -286,8 +311,12 @@ def row_for(story: Story, lang: str, niche: str) -> dict:
     extra = note(niche, story.key)
     # The fan note (2 or 3 lines) takes the place of the other outlets' headlines on the card; those stay in the description.
     related = f"{angle(niche, story.key)}\n{extra}" if extra else bullets
+    summary = complete(story.summary, 400, soft=False)
+    spot = where(story)
+    if spot:   # which constituency / division the person is contesting from
+        summary = f"పోటీ చేస్తున్న ప్రాంతం: {spot}\n{summary}" if summary else f"పోటీ చేస్తున్న ప్రాంతం: {spot}"
     return {"id": story.key, "category": niche, "special": "",
-            "text_primary": head, "text_summary": complete(story.summary, 400, soft=False),
+            "text_primary": head, "text_summary": summary,
             "text_related": related, "_bullets": bullets,
             "text_secondary": story.publisher if story.kind == "ntr" else f"{kind}: {story.publisher}"}
 

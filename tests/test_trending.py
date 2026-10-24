@@ -386,3 +386,13 @@ def test_weekend_six_slots_weekday_three():
         day = dt.date(2026, 10, d)
         assert len(cfg.slots_for(day)) == (6 if day.weekday() >= 4 else 3), day
         assert cfg.slots_for(day) <= cfg.ACTIVE_SLOTS
+
+
+def test_where_names_the_division_or_constituency():
+    from channels.trending import metadata as md
+    from channels.trending.sources import Story
+    s = Story("అవకాశం ఇవ్వండి 31 వ డివిజన్ జనసేన కార్పొరేటర్ అభ్యర్థి విశాఖపట్నం", "x", "l", summary="")
+    assert md.where(s) == "31వ డివిజన్, విశాఖపట్నం"
+    s2 = Story("కుప్పం నియోజకవర్గ అభివృద్ధి", "x", "l")
+    assert md.where(s2) == "కుప్పం నియోజకవర్గం"
+    assert md.where(Story("రాష్ట్ర అభివృద్ధి", "x", "l")) == ""
