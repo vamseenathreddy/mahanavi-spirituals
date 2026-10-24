@@ -3,21 +3,21 @@ the morning Bible Quote and the evening Bible Quiz. English leads, Telugu follow
 import os
 
 CHANNEL = "Jesus Worship Waves"
-COMMON_TAGS = ["#Jesus", "#JesusChrist", "#ChristianShorts", "#Faith", "#తెలుగుక్రైస్తవ", "#యేసుప్రభు"]
-CORE_TAGS = ["#JesusWorshipWaves", "#Shorts", "#Christian"]
+COMMON_TAGS = ["#తెలుగుబైబిల్", "#నేటివాక్యం", "#యేసుక్రీస్తు", "#Jesus", "#TeluguChristian", "#యేసుప్రభు"]
+CORE_TAGS = ["#Shorts", "#బైబిల్వచనం", "#JesusWorshipWaves"]
 CAT_TAGS = {
     "quote": ["#BibleVerse", "#Scripture", "#WordOfGod", "#DailyVerse"],
     "quiz": ["#BibleQuiz", "#BibleTrivia", "#QuizTime", "#TeluguBibleQuiz"],
 }
-KEYWORDS = ["Jesus", "Jesus Christ", "Bible verse", "Christian shorts", "Gospel", "Christian faith Telugu",
-            "యేసుక్రీస్తు", "బైబిల్ వచనం", "దేవుని వాక్యము"]
+KEYWORDS = ["నేటి బైబిల్ వచనం", "తెలుగు బైబిల్", "యేసుక్రీస్తు", "బైబిల్ వచనం", "దేవుని వాక్యము", "తెలుగు క్రైస్తవ",
+            "Telugu Bible verse", "Telugu Christian shorts", "Jesus", "Bible verse of the day Telugu", "Gospel"]
 EXTRA_KEYWORDS = {
-    "quote": ["bible verse of the day", "daily bible verse", "scripture reading", "verse of the day Telugu",
-              "how Bible verses apply to life"],
+    "quote": ["నేటి వాక్యం", "ఈ రోజు బైబిల్ వాక్యం", "తెలుగు బైబిల్ వాక్యాలు", "bible verse of the day", "daily bible verse Telugu",
+              "telugu bible verses"],
     "quiz": ["bible quiz", "bible trivia", "bible quiz Telugu", "guess the bible verse", "బైబిల్ క్విజ్"],
 }
 COMMENTS = {
-    "quote": "You may never see this channel again unless you subscribe right now. 🙏\nఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. 🙏",
+    "quote": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. 🙏\nYou may never see this channel again unless you subscribe right now. 🙏",
 }
 DISCLOSURE = ("Visuals are digitally created worship artwork. Background music is an original "
               "composition. Scripture English text is public-domain (KJV/WEB).")
@@ -31,9 +31,10 @@ def _short(text, n):
 
 def title(row, special=None):
     if row["category"] == "quote":
-        for cand in (f"{row['ref_en']} | {_short(row['verse_en'], 9)} | Bible Verse of the Day",
-                     f"{row['ref_en']} | Bible Verse of the Day | {row['ref_te']}",
-                     f"{row['ref_en']} | Bible Verse of the Day"):
+        te_words = " ".join(row["verse_te"].split()[:6])
+        for cand in (f"{row['ref_te']} | {te_words}… | నేటి బైబిల్ వచనం | {row['ref_en']}",
+                     f"{row['ref_te']} | నేటి బైబిల్ వచనం | Bible Verse of the Day",
+                     f"{row['ref_te']} | నేటి బైబిల్ వచనం"):
             if len(cand) <= 100:
                 return cand
     for cand in (f"Bible Quiz: {row['question_en']} | బైబిల్ క్విజ్",
@@ -59,13 +60,14 @@ def description(row, special=None, playlist_url=None, contact=None):
     contact = contact if contact is not None else os.environ.get("CONTACT_EMAIL", "")
     out = []
     if row["category"] == "quote":
-        out += [row["text_primary"], row["text_secondary"], "", row["apply_en"], row["apply_te"], ""]
-        out += [f"Source: {row['ref_en']} ({row['ref_te']})", ""]
+        out += [row["text_primary"], row["text_secondary"], "", row["apply_te"], row["apply_en"], ""]
+        out += [f"వచనం: {row['ref_te']} ({row['ref_en']})", ""]
     else:
         out += [row["question_en"], row["question_te"], "", "Pick A, B, C or D, then check the pinned comment.", ""]
         out += [row["opt_a"], row["opt_b"], row["opt_c"], row["opt_d"], "",
                 f"Answer: {row['correct_letter']}) {row['answer']} ({row['ref_en']}) - see the pinned comment.", ""]
-    out += [DISCLOSURE, "", f"Like, share and subscribe to {CHANNEL}: a new Bible verse every day."]
+    out += [DISCLOSURE, "", f"ప్రతి రోజు కొత్త బైబిల్ వచనం కోసం {CHANNEL} ను సబ్‌స్క్రైబ్ చేయండి.",
+            f"Subscribe to {CHANNEL} for a new Bible verse every day."]
     if playlist_url:
         out += [f"Playlist: {playlist_url}"]
     out += ["", f"© {CHANNEL}."]

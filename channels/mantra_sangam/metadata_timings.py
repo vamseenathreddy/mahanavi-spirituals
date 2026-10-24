@@ -13,11 +13,14 @@ NAMES = {  # (hindi, english)
 # {d} "17 अक्टूबर", {wd} weekday, {t} tithi (may be empty). Special tithis (Ekadashi, Purnima, Amavasya...) lead.
 TITLE_FMT = {
     "rahu": ["{d} {wd}{t} - राहु काल | Avoid This Time", "राहु काल {d}{t} - Check Before You Start",
-             "{wd} {d}{t} - Rahu Kaal Today | आज राहु काल"],
+             "{wd} {d}{t} - Rahu Kaal Today | आज राहु काल",
+             "आज का राहु काल {d} {wd}{t} | Rahu Kaal Time"],
     "shubh": ["{d} {wd}{t} - शुभ मुहूर्त | Good Time Today", "शुभ मुहूर्त {d}{t} - Abhijit Muhurat Today",
-              "{wd} {d}{t} - Shubh Muhurat | अभिजीत मुहूर्त"],
+              "{wd} {d}{t} - Shubh Muhurat | अभिजीत मुहूर्त",
+              "आज का शुभ मुहूर्त {d} {wd}{t} | Abhijit Muhurat Time"],
     "durm": ["{d} {wd}{t} - दुर्मुहूर्त | Avoid This Time", "दुर्मुहूर्त {d}{t} - Check Before You Start",
-             "{wd} {d}{t} - Durmuhurat Today | दुर्मुहूर्त"],
+             "{wd} {d}{t} - Durmuhurat Today | दुर्मुहूर्त",
+             "आज का दुर्मुहूर्त {d} {wd}{t} | Durmuhurat Time"],
 }
 SPECIAL_FMT = {
     "rahu": "{tt} {d} {wd} - राहु काल | Avoid This Time",

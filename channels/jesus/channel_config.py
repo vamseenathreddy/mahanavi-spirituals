@@ -64,10 +64,9 @@ _COMMON = dict(
 QUOTE_CFG = ChannelConfig(
     channel_name="Jesus Worship Waves",
     blocks=[
-        TextBlock(field="text_primary", font=FONT_EN_BOLD, size=VERSE_SIZE, color_key="primary", bold=True),
-        TextBlock(field="text_secondary", font=FONT_TE, size=VERSE_SIZE, color_key="secondary", bold=False,
+        TextBlock(field="text_primary", font=FONT_TE, size=VERSE_SIZE, color_key="primary", bold=False,
                   strip_chars=QUOTES),
-        TextBlock(field="sub_en", font=FONT_EN_BOLD, size=70, color_key="accent", bold=True),
+        TextBlock(field="text_secondary", font=FONT_EN_BOLD, size=VERSE_SIZE - 14, color_key="secondary", bold=True),
         TextBlock(field="sub_te", font=FONT_TE, size=74, color_key="accent", bold=False),
     ],
     music_offset=0,

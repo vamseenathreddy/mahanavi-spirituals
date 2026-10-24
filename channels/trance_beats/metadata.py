@@ -4,11 +4,12 @@ import os
 import re
 
 CHANNEL = "Devotional Trance Beats"
-CAT_WORD = {"bhajan": "Krishna Bhajan Hindi", "kirtan": "Krishna Kirtan", "quote": "Krishna Teachings", "gita": "Bhagavad Gita",
+CAT_WORD = {"aarti": "Aarti and Chalisa Hindi", "bhajan": "Krishna Bhajan Hindi", "kirtan": "Krishna Kirtan", "quote": "Krishna Teachings", "gita": "Bhagavad Gita",
             "bhagavatam": "Shrimad Bhagavatam", "mantra": "Krishna Mantra Jaap"}
 # 2026-10-22: searchable Hindi words in the title, ahead of the lyric line's tail (the bare lyric line was never searched for)
-HI_SEARCH = {"bhajan": "कृष्ण भजन", "kirtan": "कृष्ण कीर्तन", "quote": "कृष्ण वचन", "mantra": "कृष्ण मंत्र जाप"}
+HI_SEARCH = {"aarti": "आरती और चालीसा", "bhajan": "कृष्ण भजन", "kirtan": "कृष्ण कीर्तन", "quote": "कृष्ण वचन", "mantra": "कृष्ण मंत्र जाप"}
 CAT_TAGS = {
+    "aarti": ["#Aarti", "#HanumanChalisa", "#आरती"],
     "bhajan": ["#Bhajan", "#KrishnaBhajan", "#RadheRadhe"],
     "kirtan": ["#Kirtan", "#HareKrishna", "#Sankirtan"],
     "quote": ["#SpiritualQuotes", "#BhagavadGita", "#KrishnaTeachings"],
@@ -22,6 +23,7 @@ KEYWORDS = ["Krishna bhajan", "Radha Krishna bhajan", "Hindi kirtan shorts", "Ha
             "devotional trance", "bhakti shorts Hindi", "Krishna shorts", "Radhe Radhe",
             "कृष्ण भजन", "राधे राधे", "कीर्तन", "हिंदी भक्ति शॉर्ट्स"]
 EXTRA_KEYWORDS = {
+    "aarti": ["Hanuman Chalisa", "Om Jai Jagdish Hare aarti", "Lakshmi aarti", "Ganesh aarti", "आरती लिरिक्स"],
     "bhajan": ["popular Krishna bhajan", "bhajan lyrics Hindi"],
     "kirtan": ["Hare Krishna kirtan", "sankirtan chanting"],
     "quote": ["Bhagavad Gita Krishna quotes", "Krishna teachings Hindi"],
@@ -30,6 +32,7 @@ EXTRA_KEYWORDS = {
     "mantra": ["Krishna mantra", "Hare Krishna maha mantra", "daily mantra Hindi"],
 }
 COMMENTS = {
+    "aarti": "जय श्री राम! \U0001F64F अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे।",
     "bhajan": "राधे राधे! \U0001F33A अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे।",
     "kirtan": "हरे कृष्ण! \U0001F64F साथ में कीर्तन गाओ।",
     "quote": "अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे। \U0001F64F",
@@ -46,7 +49,7 @@ def plain(row):
     return row["text_primary"].translate(strip).strip()
 
 
-TITLE_PREFIX = {"gita": "गीता श्लोक: ", "bhagavatam": "भागवत कथा: ", "mantra": "", "bhajan": "", "kirtan": "", "quote": ""}
+TITLE_PREFIX = {"aarti": "", "gita": "गीता श्लोक: ", "bhagavatam": "भागवत कथा: ", "mantra": "", "bhajan": "", "kirtan": "", "quote": ""}
 
 
 def title(row, special):
@@ -85,6 +88,7 @@ INTRO_HI = {
     "bhagavatam": "श्रीमद्भागवत महापुराण की आज की कथा, सरल हिंदी में।",
     "mantra": "आज का कृष्ण मंत्र और भक्ति, शांत मन से सुनें और जपें।",
     "bhajan": "आज का कृष्ण भजन, भक्ति और शांति के लिए।",
+    "aarti": "आज की आरती और चालीसा, शब्दों के साथ गाएँ।",
     "kirtan": "आज का हरे कृष्ण कीर्तन, साथ मिलकर गाएँ।",
     "quote": "आज का कृष्ण वचन, जीवन के लिए एक सीख।",
 }
@@ -93,6 +97,7 @@ INTRO_EN = {
     "bhagavatam": "Today's Shrimad Bhagavatam story, told simply in Hindi.",
     "mantra": "Today's Krishna mantra for calm and devotion. Listen and chant along.",
     "bhajan": "Today's Krishna bhajan for devotion and peace.",
+    "aarti": "Today's aarti or chalisa. Sing along.",
     "kirtan": "Today's Hare Krishna kirtan. Sing along.",
     "quote": "Today's teaching of Krishna, a lesson for life.",
 }
@@ -141,6 +146,7 @@ def fit_tags(tags, limit=TAG_LIMIT):
 
 
 HI_KEYWORDS = {
+    "aarti": ["हनुमान चालीसा", "ओम जय जगदीश हरे आरती", "लक्ष्मी आरती", "गणेश आरती"],
     "gita": ["भगवद गीता श्लोक", "गीता सार", "श्रीमद्भगवद्गीता", "गीता के श्लोक अर्थ सहित"],
     "bhagavatam": ["श्रीमद्भागवत कथा", "भागवत पुराण", "भागवत कथा हिंदी", "कृष्ण लीला"],
     "mantra": ["कृष्ण मंत्र", "हरे कृष्ण महामंत्र", "मंत्र जाप", "आज का मंत्र"],

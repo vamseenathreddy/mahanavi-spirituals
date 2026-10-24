@@ -58,7 +58,7 @@ ROTATION = {0: "bhajan", 1: "kirtan", 2: "quote", 3: "bhajan", 4: "kirtan", 5: "
 # the Mantra/Bhajan of the day series mixes categories through the week.
 ROTATION_GITA = {d: "gita" for d in range(7)}
 ROTATION_BHAGAVATAM = {d: "bhagavatam" for d in range(7)}
-ROTATION_MANTRA = {0: "mantra", 1: "bhajan", 2: "mantra", 3: "kirtan", 4: "mantra", 5: "bhajan", 6: "quote"}
+ROTATION_MANTRA = {0: "mantra", 1: "aarti", 2: "mantra", 3: "kirtan", 4: "mantra", 5: "aarti", 6: "quote"}
 
 # Careful Hindi subscribe line per series (shown under the text block).
 CTA = {

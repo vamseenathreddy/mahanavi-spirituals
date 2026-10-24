@@ -33,8 +33,9 @@ SUBSCRIBE_TE = "రోజూ బైబిల్ వచనం కోసం సబ
 def quote_row(v: dict) -> dict:
     return {
         "id": v["id"], "category": "quote", "special": "", "source": v["ref_en"],
-        "text_primary": f"{v['text_en']} - {v['ref_en']}",
-        "text_secondary": f"{v['text_te']} - {v['ref_te']}",
+        # 2026-10-24: the channel is Telugu first (Telugu verse on top and primary), English follows
+        "text_primary": f"{v['text_te']} - {v['ref_te']}",
+        "text_secondary": f"{v['text_en']} - {v['ref_en']}",
         "apply_en": v["apply_en"], "apply_te": v["apply_te"],
         "ref_en": v["ref_en"], "ref_te": v["ref_te"], "verse_en": v["text_en"], "verse_te": v["text_te"],
         "theme": v.get("theme", ""),
