@@ -384,6 +384,19 @@ def enrich(story: Story, lang: str) -> Story:
     return story
 
 
+# 2026-10-25: what the channel's own views say. 20-22 Oct posts on these got 1,000-2,700 views each; 24 Oct posts on
+# single-town local-body items (Nellore, Kurnool, one corporator's appeal) got 3-27. Rank hot stories first.
+HOT = ("అమరావతి", "లోకేశ్", "లోకేష్", "క్వాంటమ్", "టవర్", "జగన్", "అవినాష్", "పులివెందుల", "బోండా", "పల్లా", "డీఎస్పీ", "ఫేక్",
+       "కౌంటర్", "నామినేషన్", "పెట్టుబడి", "ఉద్యోగ", "ఎన్టీఆర్", "పవన్", "మంత్రి లోకేశ్", "సంగమం", "కార్నివాల్", "ట్విన్")
+COLD = ("కార్పొరేటర్", "గెలుపునకు కృషి", "పిలుపు", "కర్నూలు", "నెల్లూరు", "Nellore", "డివిజన్", "వార్డు", "సస్పెండ్", "కాకినాడ", "ఒంగోలు")
+
+
+def heat(s: Story) -> int:
+    """Positive = historically high-view subject, negative = single-town or routine party item."""
+    t = s.headline
+    return sum(2 for x in HOT if x in t) - sum(3 for x in COLD if x in t)
+
+
 def pick_story(niche: str, lang: str, used: set[str], yt=None, now: datetime | None = None,
                fetch_news=news_stories, fetch_yt=youtube_stories, fetch_bank=None, recent=()) -> Story | None:
     """First unused, informative, recent story for this niche and language. Tries the niche's sources in order, then
@@ -407,7 +420,7 @@ def pick_story(niche: str, lang: str, used: set[str], yt=None, now: datetime | N
             # Only the source's top 10. Widest coverage first (most outlets carrying the story = most reach), then
             # shorter headlines (they read better on a 5 second card), then the source's own order.
             top = [x for x in pool if 0 < x.rank <= TOP_N or x.rank == 0]
-            ordered = top if niche == "ntr" else sorted(top, key=lambda x: (-len(x.related), len(x.headline) > 85, x.rank))
+            ordered = top if niche == "ntr" else sorted(top, key=lambda x: (-heat(x), -len(x.related), len(x.headline) > 85, x.rank))
             for s in ordered:
                 if s.key in used or not fresh_enough(s, now, hours):
                     continue
