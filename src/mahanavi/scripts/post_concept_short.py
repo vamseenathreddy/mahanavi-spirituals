@@ -38,6 +38,7 @@ from __future__ import annotations
 import argparse
 import sys
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -73,11 +74,18 @@ def _icon_paths(settings: Settings) -> list[Path]:
     return paths
 
 
+FIRST_NEW_ENTRY = 18          # entries added 2026-10-24 (temples, Tirumala): never posted yet
+FRESH_FIRST_UNTIL = "2026-10-26"   # 2026-10-25: the old 18 had already wrapped (Dharma posted twice); post the new ones next
+
+
 def _read_rotation_index() -> int:
     if not STATE_FILE.exists():
         return 0
     try:
-        return int(STATE_FILE.read_text().strip()) % len(PURANA_CONCEPT_SHORTS)
+        idx = int(STATE_FILE.read_text().strip()) % len(PURANA_CONCEPT_SHORTS)
+        if idx < FIRST_NEW_ENTRY < len(PURANA_CONCEPT_SHORTS) and datetime.now(ZoneInfo("Asia/Kolkata")).date().isoformat() <= FRESH_FIRST_UNTIL:
+            return FIRST_NEW_ENTRY
+        return idx
     except ValueError:
         print(f"Note: {STATE_FILE} had unreadable content, starting rotation at concept 0.")
         return 0
