@@ -422,7 +422,7 @@ def pick_story(niche: str, lang: str, used: set[str], yt=None, now: datetime | N
             top = [x for x in pool if 0 < x.rank <= TOP_N or x.rank == 0]
             ordered = top if niche == "ntr" else sorted(top, key=lambda x: (-heat(x), -len(x.related), len(x.headline) > 85, x.rank))
             for s in ordered:
-                if s.key in used or not fresh_enough(s, now, hours):
+                if s.key in used or not fresh_enough(s, now, hours) or (niche != "ntr" and s.kind in ("news", "yt") and heat(s) < 0):
                     continue
                 if recent and s.kind in ("news", "yt") and dedupe.is_duplicate(s.headline, s.link, recent):
                     continue  # the same story worded by another outlet

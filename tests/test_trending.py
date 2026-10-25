@@ -384,8 +384,14 @@ def test_weekend_six_slots_weekday_three():
     import datetime as dt
     for d in range(19, 26):   # 19 Oct 2026 is a Monday
         day = dt.date(2026, 10, d)
-        assert len(cfg.slots_for(day)) == (6 if day.weekday() >= 4 else 3), day
+        assert len(cfg.slots_for(day)) == 3, day   # cooldown until 2 Nov
         assert cfg.slots_for(day) <= cfg.ACTIVE_SLOTS
+
+
+def test_weekend_six_after_cooldown():
+    import datetime as dt
+    assert len(cfg.slots_for(dt.date(2026, 11, 6))) == 6
+    assert len(cfg.slots_for(dt.date(2026, 11, 3))) == 3
 
 
 def test_where_names_the_division_or_constituency():

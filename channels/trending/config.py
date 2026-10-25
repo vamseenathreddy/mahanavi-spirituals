@@ -76,10 +76,15 @@ _WEEKDAY_POOLS = [("t5", "t6"), ("t8", "t9"), ("t11", "t12")]
 _WEEKEND_POOLS = [("t4", "t5"), ("t6", "t7"), ("t8", "t9"), ("t10",), ("t11",), ("t12",)]
 
 
+# 2026-10-25: reach collapsed (every post since the evening of 23 Oct got under 60 views, even Amaravati and Delhi-visit
+# stories; 20-22 Oct posts got 1,000-2,700). Until this date only 3 posts a day, only high-interest stories, to let the channel recover.
+COOLDOWN_UNTIL = "2026-11-02"
+
+
 def slots_for(day) -> set[str]:
     import hashlib
 
-    pools = _WEEKEND_POOLS if day.weekday() >= 4 else _WEEKDAY_POOLS
+    pools = _WEEKEND_POOLS if day.weekday() >= 4 and day.isoformat() > COOLDOWN_UNTIL else _WEEKDAY_POOLS
     out = set()
     for i, pool in enumerate(pools):
         h = int(hashlib.sha256(f"tdp-slot-{day.isoformat()}-{i}".encode()).hexdigest(), 16)
