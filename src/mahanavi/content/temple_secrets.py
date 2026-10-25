@@ -67,7 +67,7 @@ def build(t: Temple, today: dt.date) -> RequestShort:
     title_en = f"{t.en} Secrets: {len(lines)} Facts Every Devotee Should Know"
     desc_te = f"🙏 {t.te}\n\n" + "\n".join(f"• {x}" for x in lines) + f"\n\n{DISCLAIMER_TE}"
     desc_en = f"{t.en}: {len(lines)} lesser-known facts, history and traditions, in Telugu.\n{DISCLAIMER_EN}"
-    tags = [*t.tags, "temple secrets telugu", "telugu devotional", "temple history telugu", "తెలుగు భక్తి", "shorts"]
+    tags = [x for x in t.tags if x.isascii()] + ["temple secrets telugu", "telugu devotional", "temple history telugu"]   # ASCII only: YouTube rejected the Telugu-script tags ("invalidTags")
     hashtags = ["#Shorts", "#TempleSecrets", f"#{t.slug.title()}", "#Telugu", "#Devotional"]
     spec = cal._common(f"secrets_{t.slug}", t.god, slides, title, title_en, desc_te, desc_en, tags, hashtags,
                        t.en, "secrets", today)
