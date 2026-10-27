@@ -153,12 +153,8 @@ def angle(niche: str, key: str = "") -> str:
 
 
 def join_lines() -> list[str]:
-    out = []
-    if cfg.WHATSAPP_URL:
-        out.append(f"జై తెలుగుదేశం! మా WhatsApp గ్రూప్‌లో చేరండి: {cfg.WHATSAPP_URL}")
-    if cfg.TELEGRAM_URL:
-        out.append(f"మా Telegram గ్రూప్‌లో కూడా చేరండి: {cfg.TELEGRAM_URL}")
-    return out
+    """2026-10-27 owner: no links in descriptions (reach collapsed; links may be a factor). The channel About page keeps them."""
+    return []
 
 
 def hashtags(lang: str, niche: str, story: Story | None = None) -> list[str]:
