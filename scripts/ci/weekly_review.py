@@ -48,9 +48,11 @@ def settled_posts(token_file: Path, today: dt.date) -> dict:
     pub = [p for p in posts if p["privacy"] == "public"]
     last7 = [p for p in pub if p["age"] <= 7]
     settled = [p for p in pub if 2 <= p["age"] <= 9]
+    recent = [p for p in pub if 1 <= p["age"] <= 4]
     last_age = min((p["age"] for p in pub), default=None)
     return {"uploads_7d": len(last7), "settled_n": len(settled),
             "median_settled": statistics.median(p["views"] for p in settled) if settled else None,
+            "recent_n": len(recent), "median_recent": statistics.median(p["views"] for p in recent) if recent else None,
             "best_settled": sorted(settled, key=lambda p: -p["views"])[:3], "worst_settled": sorted(settled, key=lambda p: p["views"])[:3],
             "days_since_upload": last_age}
 
@@ -62,6 +64,8 @@ def flags_for(label: str, d: dict, s: dict, hist: list[dict]) -> list[str]:
     net = sum(r["gained"] - r["lost"] for r in cur)
     if s["median_settled"] is not None and s["settled_n"] >= 5 and s["median_settled"] < 20:
         out.append(f"REACH COLLAPSE: median views of {s['settled_n']} settled posts is {s['median_settled']:.0f}")
+    if s["median_recent"] is not None and s["recent_n"] >= 5 and s["median_recent"] < 15 and not (s["median_settled"] is not None and s["median_settled"] < 20):
+        out.append(f"RECENT REACH COLLAPSE: posts from the last 4 days have a median of {s['median_recent']:.0f} views, while older posts did far better")
     if prev >= 100 and views <= 0.6 * prev:
         out.append(f"VIEWS DOWN {100 - round(100 * views / prev)}%: {views} vs {prev} the week before")
     last = hist[-1] if hist else None
