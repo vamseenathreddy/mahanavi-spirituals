@@ -1,0 +1,74 @@
+{
+ "mahanavi": [
+  {
+   "date": "2026-10-27",
+   "subs": 3710,
+   "views": 83127,
+   "prev_views": 41598,
+   "net": 103,
+   "likes": 558,
+   "uploads_7d": 46,
+   "median_settled": 1292
+  }
+ ],
+ "mantra_sangam": [
+  {
+   "date": "2026-10-27",
+   "subs": 40,
+   "views": 6329,
+   "prev_views": 5559,
+   "net": 14,
+   "likes": 25,
+   "uploads_7d": 36,
+   "median_settled": 106
+  }
+ ],
+ "trance": [
+  {
+   "date": "2026-10-27",
+   "subs": 41,
+   "views": 3883,
+   "prev_views": 2974,
+   "net": 5,
+   "likes": 27,
+   "uploads_7d": 31,
+   "median_settled": 56.5
+  }
+ ],
+ "jesus": [
+  {
+   "date": "2026-10-27",
+   "subs": 6,
+   "views": 35,
+   "prev_views": 23,
+   "net": 0,
+   "likes": 8,
+   "uploads_7d": 12,
+   "median_settled": 2.0
+  }
+ ],
+ "ramana": [
+  {
+   "date": "2026-10-27",
+   "subs": 30,
+   "views": 2044,
+   "prev_views": 2286,
+   "net": 9,
+   "likes": 56,
+   "uploads_7d": 24,
+   "median_settled": 65.0
+  }
+ ],
+ "pulse": [
+  {
+   "date": "2026-10-27",
+   "subs": 60,
+   "views": 40907,
+   "prev_views": 1150,
+   "net": 59,
+   "likes": 207,
+   "uploads_7d": 50,
+   "median_settled": 344
+  }
+ ]
+}
