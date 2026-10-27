@@ -1,0 +1,62 @@
+name: System | Weekly channel review
+
+# Every Monday 9:30 AM IST. Collects every channel's numbers, raises plain-language flags, and COMMITS the result to
+# reports/ (history.json, weekly/<date>.md, LATEST.md) so the weekly review can read it and make changes.
+on:
+  schedule:
+    - cron: '0 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Comma separated channel keys (mahanavi, mantra_sangam, trance, jesus, ramana, pulse). Empty = all."
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: weekly-review
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps
+        run: pip install google-auth google-api-python-client requests
+
+      - name: Restore tokens from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Build the weekly review
+        run: python scripts/ci/weekly_review.py --only "${{ inputs.only }}"
+
+      - name: Commit the review
+        run: |
+          git config user.name "weekly-review"
+          git config user.email "noreply@github.com"
+          git add reports
+          git diff --cached --quiet || git commit -m "weekly review $(date -u +%F)"
+          git pull --rebase -q origin main || true
+          git push -q origin HEAD:main
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/ci/notify_failure.py "System | Weekly channel review"
