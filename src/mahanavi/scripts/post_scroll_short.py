@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageOps
+from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFont, ImageOps
 
 from mahanavi.config import get_settings
 from mahanavi.content.scroll_shorts import SCROLL, ScrollShort
@@ -25,9 +25,33 @@ FONT_SIZE, LINE_H, GAP_H, STROKE = 44, 75, 47, 4
 START_Y, END_Y = 667, 427   # where the text block starts on screen, and how far up the last line travels
 
 
+def news_background(person: str, out: Path) -> Path:
+    """Dark TDP-yellow gradient with the leader's cut-out, large and dimmed, behind the scrolling text."""
+    root = Path(__file__).resolve().parents[3] / "channels/trending/assets/people"
+    top, bot = (70, 52, 0), (8, 6, 0)
+    img = Image.new("RGB", (W, H))
+    d = ImageDraw.Draw(img)
+    for y in range(H):
+        t = y / H
+        d.line((0, y, W, y), fill=tuple(int(top[i] + (bot[i] - top[i]) * t) for i in range(3)))
+    p = Image.open(root / f"{person}.png").convert("RGBA")
+    p = p.resize((int(p.width * 1000 / p.height), 1000), Image.LANCZOS)
+    fade = Image.new("L", p.size, 255)   # the cut-out ends at the shoulders: fade the bottom so there is no hard edge
+    fd = ImageDraw.Draw(fade)
+    for i in range(380):
+        fd.line((0, p.height - 1 - i, p.width, p.height - 1 - i), fill=int(255 * i / 380))
+    a = ImageChops.multiply(p.getchannel("A"), fade).point(lambda v: int(v * 0.35))
+    p.putalpha(a)
+    img.paste(p, ((W - p.width) // 2, 40), p)
+    img.save(out, quality=95)
+    return out
+
+
 def background(spec: ScrollShort, out: Path) -> Path:
     from mahanavi.images.deity_bg import DEITIES
 
+    if spec.bg.startswith("news:"):
+        return news_background(spec.bg.split(":", 1)[1], out)
     img = Image.open(DEITIES / spec.photo).convert("RGB")
     img = ImageOps.fit(img, (W, H), method=Image.LANCZOS, centering=(0.5, 0.4))
     img = ImageEnhance.Brightness(img).enhance(1 - spec.dim)
@@ -52,7 +76,7 @@ def text_layer(spec: ScrollShort, settings, out: Path) -> tuple[Path, int]:
         words = ln.split(" ")
         best = min(range(1, len(words)), key=lambda i: abs(probe.textlength(" ".join(words[:i]), font=font)
                                                            - probe.textlength(" ".join(words[i:]), font=font)))
-        return [" ".join(words[:best]), " ".join(words[best:])]
+        return fit(" ".join(words[:best])) + fit(" ".join(words[best:]))
 
     lines = [piece for ln in spec.lines for piece in fit(ln)]
     widest = max(probe.textlength(ln, font=font) for ln in lines)
@@ -85,7 +109,7 @@ def build(spec: ScrollShort, settings, out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     bg = background(spec, out_dir / "bg.png")
     txt, th = text_layer(spec, settings, out_dir / "text.png")
-    music = settings.alert_short_music_path
+    music = (Path(__file__).resolve().parents[3] / spec.music) if spec.music else settings.alert_short_music_path
     if music is None or not music.exists():
         raise MahanaviError(f"Music file missing: {music}")
     speed = (START_Y - END_Y + th) / spec.seconds

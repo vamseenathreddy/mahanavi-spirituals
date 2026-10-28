@@ -25,6 +25,8 @@ class ScrollShort:
     gold_lines: int = 0         # the first N non-blank blocks are drawn gold (invocation / dohas)
     dim: float = 0.45           # darkness of the photo behind the text (0-1)
     heading: tuple[str, ...] = field(default_factory=tuple)
+    bg: str = ""                # "news:<person>" = gradient + faded portrait instead of a deity photo
+    music: str = ""             # optional music file relative to the repo root
 
 
 def _v(*couplets: str) -> tuple[str, ...]:
@@ -177,4 +179,49 @@ HANUMAN_CHALISA_HI_TB = _hi(
     "मंगलवार विशेष: श्री हनुमान चालीसा के पूरे बोल। संकट मोचन हनुमान जी का स्मरण करें।",
     _TAGS_HI + ["devotional trance beats", "sankat mochan"], "Devotional Trance Beats: हिंदी भक्ति मंत्र, भजन और कीर्तन। चैनल को सब्सक्राइब करें।")
 
-SCROLL: dict[str, ScrollShort] = {s.slug: s for s in (HANUMAN_CHALISA, HANUMAN_CHALISA_HI, HANUMAN_CHALISA_HI_TB)}
+
+# ---- news explainer (owner supplies the points; posted manually on Pulse TDP Fans) ----
+ARNAB_RELIEF = ScrollShort(
+    slug="arnab_tufan_relief", photo="", bg="news:cbn", music="channels/trending/assets/music/approved/002.mp3", seconds=125.0,
+    lang="te", token_file="youtube_token_pulse_boosting.json", expected_channel="Pulse", gold_lines=2, dim=0.0,
+    title="ఆర్నబ్ తుఫాన్ బాధితులకు సీఎం చంద్రబాబు భారీ ఊరట | పరిహారం వివరాలు",
+    title_en="Cyclone Arnab Relief: CM Chandrababu Announces Compensation (Full List)",
+    description=("ఆర్నబ్ తుఫాన్ బాధితులకు సీఎం చంద్రబాబు నాయుడు ప్రకటించిన పరిహారం వివరాలు. మత్స్యకారులు, రైతులు, పశుపోషకులకు ఇచ్చే సాయం పూర్తి జాబితా.\n\n"
+                 "అందరికీ తెలియాలంటే షేర్ చేయండి. ఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి."),
+    description_en="Compensation announced by Andhra Pradesh CM N. Chandrababu Naidu for Cyclone Arnab victims: fishermen, farmers and livestock owners.",
+    hashtags=["#Shorts", "#ChandrababuNaidu", "#TDP", "#AndhraPradesh", "#ArnabTufan", "#PulseTDPFans"],
+    tags=["chandrababu naidu", "arnab tufan", "cyclone relief andhra pradesh", "tufan pariharam", "ap cm announcement", "tdp", "shorts"],
+    lines=(
+        "తుఫాన్ బాధితులకు సీఎం ప్రకటించిన పరిహారం", "",
+        "మత్స్యకారులకు, చేపల చెరువులకు సాయం", "",
+        "దెబ్బతిన్న వల మరమ్మతులకు రూ.5 వేల సాయం", "",
+        "కొత్త వలల కొనుగోలుకు రూ.10 వేల పరిహారం", "",
+        "వలలతో సహా పూర్తిగా దెబ్బతిన్న మోటారు లేని పడవలకు రూ.27 వేల సాయం", "",
+        "వలలతో సహా పూర్తిగా దెబ్బతిన్న ఫిషింగ్ బోట్లకు రూ.25 వేల పరిహారం", "",
+        "చేపల చెరువుల పునరుద్ధరణకు రూ.17 వేల సాయం", "",
+        "దెబ్బతిన్న షెడ్లకు రూ.25 వేల పరిహారం", "",
+        "పశుసంపద, కోళ్ల పెంపకానికి పరిహారం", "",
+        "ఆవు మృతిచెందితే రూ.50 వేల పరిహారం", "",
+        "గేదె మృతికి రూ.40 వేల సాయం", "",
+        "దూడ మృతికి రూ.25 వేల పరిహారం", "",
+        "గొర్రె, మేక మృతికి రూ.7,500 సాయం", "",
+        "కోళ్లు మృతిచెందితే ఒక్కోదానికి రూ.100 చొప్పున పరిహారం", "",
+        "కోళ్లకు సంబంధించి ఒక్కో లబ్ధిదారుకు గరిష్ఠంగా రూ.10 వేల సాయం", "",
+        "దెబ్బతిన్న క్యాటరింగ్ షెడ్లకు రూ.5 వేల పరిహారం", "",
+        "బ్యాటరీ షెడ్ల నష్టానికి రూ.500 సాయం", "",
+        "పంటలకు హెక్టారుకు పరిహారం", "",
+        "పలు పంటలకు నష్టం ఆధారంగా హెక్టారుకు రూ.15 వేల నుంచి రూ.25 వేల వరకు పరిహారం", "",
+        "అరటి, పసుపు, యామ్ వంటి పంటలకు హెక్టారుకు రూ.35 వేల సాయం", "",
+        "తమలపాకుల తోటలకు హెక్టారుకు రూ.75 వేల పరిహారం", "",
+        "మిరప, బొప్పాయి, టమాటా, ఉల్లి పంటలకు హెక్టారుకు రూ.25 వేల నుంచి రూ.35 వేల వరకు సాయం", "",
+        "మామిడి, నిమ్మ, దానిమ్మ, సపోటా, జీడిమామిడి తోటలకు హెక్టారుకు రూ.35 వేల సాయం", "",
+        "కాఫీ, డ్రాగన్ ఫ్రూట్ తోటలకు హెక్టారుకు రూ.35 వేల సాయం", "",
+        "కూరగాయలు, పుచ్చకాయలు, నర్సరీలకు హెక్టారుకు రూ.25 వేల పరిహారం", "",
+        "టపియోకా పంటకు హెక్టారుకు రూ.10 వేల సాయం", "",
+        "ఆయిల్ పామ్, కొబ్బరి చెట్ల నష్టానికి ఒక్కో చెట్టుకు రూ.15 వేల పరిహారం", "",
+        "పంటలు, వృత్తులు, ఆస్తుల నష్టాలకు పరిహారం అందించేలా ప్రభుత్వం నిర్ణయం", "",
+        "పరిహారం పంపిణీలో అధికారులు పారదర్శకత పాటించాలని సీఎం చంద్రబాబు స్పష్టం చేశారు", "",
+    ),
+)
+
+SCROLL: dict[str, ScrollShort] = {s.slug: s for s in (HANUMAN_CHALISA, HANUMAN_CHALISA_HI, HANUMAN_CHALISA_HI_TB, ARNAB_RELIEF)}
