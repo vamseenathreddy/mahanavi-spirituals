@@ -1,0 +1,82 @@
+name: Tools | Scrolling Lyrics Short
+
+# Builds a scrolling-lyrics Short (src/mahanavi/content/scroll_shorts.py, e.g. Hanuman Chalisa) and uploads it.
+on:
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: "Scroll spec name (hanuman_chalisa_scroll, hanuman_chalisa_scroll_hi, hanuman_chalisa_scroll_hi_tb)"
+        required: true
+        default: "hanuman_chalisa_scroll"
+      privacy:
+        description: "private, unlisted or public"
+        required: false
+        default: "public"
+      token_file:
+        description: "Saved token of the channel to post on"
+        required: false
+        default: "youtube_token.json"
+
+concurrency:
+  group: post-scroll-short-${{ inputs.spec }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  post-scroll-short:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Install ffmpeg
+        run: bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
+
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Build and upload the scrolling Short
+        env:
+          MAHANAVI_IMAGES_ROOT: ./Images
+          MAHANAVI_ASSETS_DIR: ./assets
+          MAHANAVI_OUTPUT_DIR: ./data/generated
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ inputs.token_file }}
+        run: |
+          set -o pipefail
+          python3 -m mahanavi.scripts.post_scroll_short --spec ${{ inputs.spec }} --privacy ${{ inputs.privacy }} 2>&1 | tee data/recent_uploads_log.txt
+
+      - name: Push state to Drive
+        if: always()
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
+
+      - name: Push output log to Drive
+        if: always()
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/push_drive_asset.py data/recent_uploads_log.txt recent_uploads_log.txt
