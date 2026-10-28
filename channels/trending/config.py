@@ -79,6 +79,9 @@ _WEEKEND_POOLS = [("t4", "t5"), ("t6", "t7"), ("t8", "t9"), ("t10",), ("t11",), 
 # 2026-10-25: reach collapsed (every post since the evening of 23 Oct got under 60 views, even Amaravati and Delhi-visit
 # stories; 20-22 Oct posts got 1,000-2,700). Until this date only 3 posts a day, only high-interest stories, to let the channel recover.
 COOLDOWN_UNTIL = "2026-11-02"
+# 2026-10-28 owner: stop all automatic Pulse TDP posting. Posts only when the owner gives the content (manual runs with
+# bypass_gate=true still work). Set back to True to resume the automatic schedule.
+AUTO_POSTING = False
 
 
 def slots_for(day) -> set[str]:

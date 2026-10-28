@@ -11,6 +11,13 @@ IST = ZoneInfo("Asia/Kolkata")
 
 if __name__ == "__main__":
     forced = "--force" in sys.argv or os.environ.get("FORCE_POST") == "true"
+    from channels.trending import config as _cfg
+    if not forced and not _cfg.AUTO_POSTING:   # owner 2026-10-28: no automatic Pulse TDP posts
+        print("DECISION: skip, automatic Pulse TDP posting is switched off")
+        if os.environ.get("GITHUB_OUTPUT"):
+            with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                f.write("post=false\ndate=\n")
+        sys.exit(0)
     if dt.datetime.now(IST).weekday() != 4 and not forced:
         print("DECISION: skip, the weekly development video posts on Fridays only")
         if os.environ.get("GITHUB_OUTPUT"):
