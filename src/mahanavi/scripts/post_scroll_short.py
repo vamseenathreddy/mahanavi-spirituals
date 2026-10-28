@@ -43,15 +43,29 @@ def text_layer(spec: ScrollShort, settings, out: Path) -> tuple[Path, int]:
     else:
         font = FontManager(settings.telugu_font_path).get_font(size=FONT_SIZE, weight="Bold")
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
+    max_w = W - 90
+
+    def fit(ln: str) -> list[str]:
+        """A line wider than the screen is split at the space that balances the two halves."""
+        if not ln or probe.textlength(ln, font=font) <= max_w:
+            return [ln]
+        words = ln.split(" ")
+        best = min(range(1, len(words)), key=lambda i: abs(probe.textlength(" ".join(words[:i]), font=font)
+                                                           - probe.textlength(" ".join(words[i:]), font=font)))
+        return [" ".join(words[:best]), " ".join(words[best:])]
+
+    lines = [piece for ln in spec.lines for piece in fit(ln)]
+    widest = max(probe.textlength(ln, font=font) for ln in lines)
+    assert widest <= W - 40, f"a line is still wider than the screen ({widest:.0f}px)"
     heights, y = [], 0
-    for ln in spec.lines:
+    for ln in lines:
         heights.append(LINE_H if ln else GAP_H)
     total = sum(heights) + 80
     layer = Image.new("RGBA", (W, total), (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
     blocks_seen, in_block = 0, False
     y = 40
-    for ln, h in zip(spec.lines, heights):
+    for ln, h in zip(lines, heights):
         if not ln:
             in_block = False
             y += h
