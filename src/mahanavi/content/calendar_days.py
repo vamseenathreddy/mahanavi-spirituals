@@ -85,6 +85,38 @@ OBS: dict[str, Obs] = {o.key: o for o in (
         ("అక్క లేదా చెల్లెలి ఇంట భోజనం చేయండి", "సోదరికి కానుక ఇవ్వండి", "ఇంటి పెద్దలకు నమస్కరించండి"),
         ("సోదరీమణులను నొప్పించకండి", "కోపతాపాలు వద్దు", "ఆహారాన్ని వృథా చేయకండి"),
         ("bhagini hastha bhojanam", "bhai dooj telugu", "yama dwitiya")),
+    Obs("nagula_chavithi", "నాగుల చవితి", "Nagula Chavithi", "subrahmanya", "murugan", "నాగదేవతలను, సుబ్రహ్మణ్య స్వామిని పూజించే కార్తీక శుద్ధ చవితి",
+        ("పుట్ట వద్ద పాలు పోసి నాగదేవతను పూజించండి", "చిమ్మిలి, చలిమిడి నైవేద్యం పెట్టండి", "సుబ్రహ్మణ్య స్వామిని స్మరించండి"),
+        ("పుట్టను పాడు చేయకండి", "పాములను హింసించకండి", "ఉపవాస నియమం ఉంటే భంగం చేయకండి"),
+        ("nagula chavithi", "nagula chavithi 2026", "naga devatha puja")),
+    Obs("prabodhini", "ప్రబోధిని ఏకాదశి", "Prabodhini Ekadashi", "vishnu", "vishnu", "చాతుర్మాస్య వ్రతం ముగిసి శ్రీ మహావిష్ణువు మేల్కొనే రోజు",
+        ("ఉపవాసం ఉండి విష్ణు సహస్రనామం పఠించండి", "సాయంత్రం తులసి వద్ద దీపం వెలిగించండి", "విష్ణు ఆలయ దర్శనం చేయండి"),
+        ("అన్నం, ధాన్యాలు తినకండి", "పగటి నిద్ర వద్దు", "ఉల్లి, వెల్లుల్లి, మాంసాహారం వద్దు"),
+        ("prabodhini ekadashi", "prabodhini ekadashi 2026", "vishnu sahasranamam telugu")),
+    Obs("tulasi_vivaham", "క్షీరాబ్ధి ద్వాదశి (తులసి వివాహం)", "Kshirabdhi Dwadashi / Tulasi Vivaham", "vishnu", "vishnu", "తులసి దేవికి శ్రీ మహావిష్ణువుతో వివాహం జరిపించే పవిత్రమైన రోజు",
+        ("తులసి కోటను ముగ్గులతో, పూలతో అలంకరించండి", "ఉసిరి కొమ్మను పెట్టి దీపాలు వెలిగించండి", "తులసి కల్యాణం చేసి నైవేద్యం పెట్టండి"),
+        ("తులసి ఆకులు అనవసరంగా తెంపకండి", "మాంసాహారం వద్దు", "పూజలో తొందర వద్దు"),
+        ("tulasi vivaham", "tulasi kalyanam", "kshirabdhi dwadashi")),
+    Obs("margasira", "మార్గశిర మాసం ప్రారంభం", "Margashira Masam begins", "vishnu", "vishnu", "శ్రీ మహావిష్ణువుకు, లక్ష్మీదేవికి ప్రీతికరమైన మార్గశిర మాసం",
+        ("ఉదయాన్నే స్నానం చేసి దీపం వెలిగించండి", "విష్ణు సహస్రనామం పఠించండి", "గురువారాల్లో లక్ష్మీ పూజ చేయండి"),
+        ("మాంసాహారం, మద్యం వద్దు", "పగటి నిద్ర వద్దు", "ఇంట్లో అశుభ్రత వద్దు"),
+        ("margasira masam", "margasira masam 2026", "lakshmi vratam")),
+    Obs("margasira_lakshmivaram", "మార్గశిర లక్ష్మీవారం", "Margashira Lakshmivaram", "lakshmi", "lakshmi", "మార్గశిర మాసంలో లక్ష్మీదేవిని పూజించే గురువారం",
+        ("ఇల్లు శుభ్రం చేసి ముగ్గు వేయండి", "లక్ష్మీ అష్టోత్తరం పఠించండి", "పసుపు కుంకుమలతో పూజ చేసి నైవేద్యం పెట్టండి"),
+        ("సాయంత్రం ఇంట్లో చీకటి ఉంచకండి", "మాంసాహారం వద్దు", "గొడవలు, కోపం వద్దు"),
+        ("margasira lakshmivaram", "margasira guruvaram", "lakshmi devi songs")),
+    Obs("dhanurmasam", "ధనుర్మాసం ప్రారంభం", "Dhanurmasam begins", "vishnu", "vishnu", "తిరుప్పావై పఠనంతో శ్రీ మహావిష్ణువును ఆరాధించే ధనుర్మాసం",
+        ("తెల్లవారుజామునే లేచి ఇంటి ముందు ముగ్గు వేయండి", "తిరుప్పావై పాశురాలు పఠించండి", "విష్ణు ఆలయ దర్శనం చేయండి"),
+        ("పగటి నిద్ర వద్దు", "మాంసాహారం, మద్యం వద్దు", "ఆలస్యంగా నిద్ర లేవకండి"),
+        ("dhanurmasam", "dhanurmasam 2026", "tiruppavai telugu")),
+    Obs("mukkoti", "ముక్కోటి ఏకాదశి · గీతా జయంతి", "Mukkoti Ekadashi / Gita Jayanti", "vishnu", "vishnu", "వైకుంఠ ద్వార దర్శనం, భగవద్గీత పుట్టిన రోజు",
+        ("ఉపవాసం ఉండి విష్ణు ఆలయ ఉత్తర ద్వార దర్శనం చేయండి", "భగవద్గీత శ్లోకాలు పఠించండి", "రాత్రి జాగరణ చేసి విష్ణు నామ స్మరణ చేయండి"),
+        ("అన్నం, ధాన్యాలు తినకండి", "పగటి నిద్ర వద్దు", "ఉల్లి, వెల్లుల్లి, మాంసాహారం వద్దు"),
+        ("mukkoti ekadashi", "vaikuntha ekadashi", "gita jayanti")),
+    Obs("datta_jayanti", "దత్త జయంతి", "Datta Jayanti", "dattatreya", "dattatreya", "శ్రీ దత్తాత్రేయ స్వామి అవతరించిన మార్గశిర పౌర్ణమి",
+        ("దత్తాత్రేయ స్వామిని పూజించి దత్త స్తోత్రం పఠించండి", "గురుచరిత్ర పారాయణ చేయండి", "అన్నదానం చేయండి"),
+        ("మాంసాహారం, మద్యం వద్దు", "గురువులను, పెద్దలను అవమానించకండి", "పూజలో తొందర వద్దు"),
+        ("datta jayanti", "datta jayanti 2026", "dattatreya swamy")),
     Obs("karthika", "కార్తీక మాసం ప్రారంభం", "Karthika Masam begins", "shiva", "shiva", "శివారాధనకు అత్యంత పవిత్రమైన కార్తీక మాసం",
         ("తెల్లవారుజామున స్నానం చేసి దీపం వెలిగించండి", "ఉసిరి చెట్టు కింద దీపారాధన చేయండి", "శివాలయంలో దీపదానం చేయండి"),
         ("మాంసాహారం, మద్యం వద్దు", "ఉల్లి, వెల్లుల్లి వద్దు", "దీపారాధన మానకండి"),
@@ -104,6 +136,17 @@ FESTIVALS: dict[dt.date, str] = {
     dt.date(2026, 10, 29): "karwa_chauth",
     dt.date(2026, 11, 8): "diwali",
     dt.date(2026, 11, 11): "bhagini_hastha",
+    dt.date(2026, 11, 13): "nagula_chavithi",
+    dt.date(2026, 11, 20): "prabodhini",
+    dt.date(2026, 11, 21): "tulasi_vivaham",
+    dt.date(2026, 12, 9): "margasira",
+    dt.date(2026, 12, 10): "margasira_lakshmivaram",
+    dt.date(2026, 12, 16): "dhanurmasam",
+    dt.date(2026, 12, 17): "margasira_lakshmivaram",
+    dt.date(2026, 12, 20): "mukkoti",
+    dt.date(2026, 12, 23): "datta_jayanti",
+    dt.date(2026, 12, 24): "margasira_lakshmivaram",
+    dt.date(2026, 12, 31): "margasira_lakshmivaram",
     dt.date(2026, 11, 10): "karthika",
     dt.date(2026, 11, 16): "karthika_somavaram",
     dt.date(2026, 11, 23): "karthika_somavaram",
@@ -112,7 +155,8 @@ FESTIVALS: dict[dt.date, str] = {
     dt.date(2026, 12, 7): "karthika_somavaram",
 }
 FESTIVALS_END = max(FESTIVALS)
-PRIORITY = ["karwa_chauth", "bhagini_hastha", "diwali", "karthika", "karthika_somavaram", "karthika_pournami", "ekadashi", "pradosham", "sankashti",
+PRIORITY = ["karwa_chauth", "bhagini_hastha", "nagula_chavithi", "prabodhini", "tulasi_vivaham", "margasira", "dhanurmasam",
+            "mukkoti", "datta_jayanti", "margasira_lakshmivaram", "diwali", "karthika", "karthika_somavaram", "karthika_pournami", "ekadashi", "pradosham", "sankashti",
             "shivaratri", "purnima", "amavasya", "bhairava", "shashthi", "vinayaka"]
 VRATAS = ("ekadashi", "pradosham", "sankashti", "shivaratri", "purnima", "amavasya")
 
@@ -162,11 +206,19 @@ def _dedupe_spans(d: dt.date, keys: list[str]) -> list[str]:
     return [k for k in keys if k not in prev]
 
 
+# A curated festival replaces the computed vrata it coincides with; some computed vratas are dropped on the day the
+# curated (Smarta / pradosha-based) date differs from the sunrise tithi (Prabodhini Ekadashi 20 Nov, Datta Jayanti 23 Dec).
+_REPLACES = {"nagula_chavithi": ("vinayaka",), "prabodhini": ("ekadashi",), "mukkoti": ("ekadashi",),
+             "datta_jayanti": ("purnima",), "tulasi_vivaham": ("ekadashi",)}
+_SUPPRESS: dict[dt.date, tuple[str, ...]] = {dt.date(2026, 11, 21): ("ekadashi",), dt.date(2026, 12, 24): ("purnima",)}
+
+
 def observances(d: dt.date) -> list[str]:
     keys = [FESTIVALS[d]] if d in FESTIVALS else []
     keys += _dedupe_spans(d, [k for k in computed(d)])
     if d in FESTIVALS:  # a curated day replaces the generic one it coincides with (Diwali amavasya, Karthika purnima)
-        keys = [k for k in keys if k not in ("amavasya", "purnima")]
+        keys = [k for k in keys if k not in ("amavasya", "purnima") + _REPLACES.get(FESTIVALS[d], ())]
+    keys = [k for k in keys if k not in _SUPPRESS.get(d, ())]
     return sorted(dict.fromkeys(keys), key=PRIORITY.index)
 
 
@@ -333,11 +385,25 @@ FULL_MONTH: dict[tuple[int, int], list[str]] = {
         "24 నవంబర్ · కార్తీక పౌర్ణమి (జ్వాలా తోరణం)",
         "27 నవంబర్ · సంకటహర చతుర్థి",
     ],
+    (2026, 12): [
+        "1 డిసెంబర్ · కాలభైరవ అష్టమి",
+        "4 డిసెంబర్ · ఉత్పన్న ఏకాదశి",
+        "7 డిసెంబర్ · కార్తీక సోమవారం, మాస శివరాత్రి",
+        "8 డిసెంబర్ · కార్తీక అమావాస్య (కార్తీక మాసం ముగింపు)",
+        "9 డిసెంబర్ · మార్గశిర మాసం ప్రారంభం",
+        "10, 17, 24, 31 డిసెంబర్ · మార్గశిర లక్ష్మీవారం",
+        "15 డిసెంబర్ · సుబ్రహ్మణ్య షష్ఠి",
+        "16 డిసెంబర్ · ధనుర్మాసం ప్రారంభం",
+        "20 డిసెంబర్ · ముక్కోటి ఏకాదశి, గీతా జయంతి",
+        "23 డిసెంబర్ · దత్త జయంతి",
+        "26 డిసెంబర్ · సంకటహర చతుర్థి",
+    ],
 }
 
 
 def build_festivals(year: int, month: int) -> RequestShort:
-    kinds = ("diwali", "karthika", "karthika_somavaram", "karthika_pournami")
+    kinds = ("diwali", "karthika", "karthika_somavaram", "karthika_pournami", "nagula_chavithi", "prabodhini", "tulasi_vivaham",
+             "margasira", "dhanurmasam", "mukkoti", "datta_jayanti", "margasira_lakshmivaram")
     items = month_items(year, month, kinds)
     cover = items[0][1] if items else "karthika"
     return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Festivals List", FULL_MONTH.get((year, month)))

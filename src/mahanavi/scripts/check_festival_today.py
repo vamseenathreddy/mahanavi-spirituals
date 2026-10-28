@@ -42,6 +42,13 @@ FESTIVALS_2026: dict[date, str] = {
     date(2026, 11, 30): "3వ కార్తీక సోమవారం (3rd Karthika Somavaram -- Shiva pooja)",
     date(2026, 12, 7): "4వ కార్తీక సోమవారం (4th Karthika Somavaram -- Shiva pooja)",
     date(2026, 12, 8): "కార్తీక మాసం ముగింపు (Karthika Masam ends)",
+    date(2026, 11, 13): "నాగుల చవితి (Nagula Chavithi)",
+    date(2026, 11, 20): "ప్రబోధిని ఏకాదశి (Prabodhini Ekadashi)",
+    date(2026, 11, 21): "క్షీరాబ్ధి ద్వాదశి, తులసి వివాహం (Tulasi Vivaham)",
+    date(2026, 12, 9): "మార్గశిర మాసం ప్రారంభం (Margashira Masam begins)",
+    date(2026, 12, 16): "ధనుర్మాసం ప్రారంభం (Dhanurmasam begins)",
+    date(2026, 12, 20): "ముక్కోటి ఏకాదశి, గీతా జయంతి (Mukkoti Ekadashi, Gita Jayanti)",
+    date(2026, 12, 23): "దత్త జయంతి (Datta Jayanti)",
 }
 
 # Tithi names that make ANY day worth a Shorts post, regardless of

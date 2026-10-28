@@ -80,6 +80,30 @@ OBS: dict[str, ObsHi] = {o.key: o for o in (
           ("सूर्योदय से पहले सरगी खाएँ", "शाम को करवा माता और गौरी की पूजा कर कथा सुनें", "चंद्रमा को अर्घ्य देकर छलनी से पति को देखें और व्रत खोलें"),
           ("परंपरा अनुसार चंद्र दर्शन से पहले अन्न-जल न लें", "व्रत में किसी से विवाद न करें", "पूजा में जल्दबाज़ी न करें"),
           ("karwa chauth", "karwa chauth 2026", "करवा चौथ", "karwa chauth vrat katha")),
+    ObsHi("tulsi_vivah", "तुलसी विवाह", "Tulsi Vivah", "vishnu", "vishnu", "तुलसी माता और शालिग्राम (भगवान विष्णु) के विवाह का दिन",
+          ("तुलसी के पौधे को सजाएँ और दीपक जलाएँ", "तुलसी-शालिग्राम का विवाह कराएँ", "गन्ना, आंवला और फल का भोग लगाएँ"),
+          ("तुलसी के पत्ते बिना ज़रूरत न तोड़ें", "मांसाहार से दूर रहें", "पूजा में जल्दबाज़ी न करें"),
+          ("tulsi vivah", "tulsi vivah 2026", "तुलसी विवाह", "tulsi vivah vidhi")),
+    ObsHi("kalabhairav", "काल भैरव जयंती", "Kalabhairav Jayanti", "shiva", "shiva", "भगवान शिव के रौद्र रूप काल भैरव के प्राकट्य का दिन",
+          ("काल भैरव अष्टक का पाठ करें", "सरसों के तेल का दीपक जलाएँ", "काले कुत्ते को भोजन कराएँ"),
+          ("मांस और मदिरा से दूर रहें", "झूठ और अहंकार से बचें", "कमज़ोर को न सताएँ"),
+          ("kalabhairav jayanti", "kaal bhairav", "काल भैरव जयंती", "bhairav ashtak")),
+    ObsHi("vivah_panchami", "विवाह पंचमी", "Vivah Panchami", "rama", "rama", "भगवान राम और माता सीता के विवाह की पावन तिथि",
+          ("राम-सीता की पूजा करें", "रामचरितमानस के विवाह प्रसंग का पाठ करें", "घर में दीपक जलाएँ"),
+          ("मांसाहार से दूर रहें", "क्रोध और कटु वचन से बचें", "पूजा में आलस न करें"),
+          ("vivah panchami", "vivah panchami 2026", "विवाह पंचमी", "ram sita vivah")),
+    ObsHi("kharmas", "धनु संक्रांति (खरमास शुरू)", "Dhanu Sankranti (Kharmas begins)", "surya", "surya", "सूर्य के धनु राशि में प्रवेश से खरमास की शुरुआत",
+          ("सुबह सूर्य को अर्घ्य दें", "विष्णु और सूर्य मंत्र का जाप करें", "ज़रूरतमंदों को दान दें"),
+          ("विवाह जैसे मांगलिक कार्य टालें", "मांसाहार से दूर रहें", "देर तक न सोएँ"),
+          ("dhanu sankranti", "kharmas 2026", "खरमास", "dhanu sankranti 2026")),
+    ObsHi("gita_jayanti", "गीता जयंती और मोक्षदा एकादशी", "Gita Jayanti & Mokshada Ekadashi", "krishna", "krishna", "कुरुक्षेत्र में भगवान कृष्ण द्वारा गीता के उपदेश का दिन",
+          ("गीता के श्लोकों का पाठ करें", "एकादशी का व्रत रखें", "श्रीकृष्ण की पूजा करें"),
+          ("चावल और अनाज न खाएँ", "दिन में न सोएँ", "लहसुन, प्याज और मांसाहार न खाएँ"),
+          ("gita jayanti", "mokshada ekadashi", "गीता जयंती", "mokshada ekadashi 2026")),
+    ObsHi("datta_jayanti", "दत्तात्रेय जयंती", "Datta Jayanti", "dattatreya", "dattatreya", "भगवान दत्तात्रेय के प्राकट्य की मार्गशीर्ष पूर्णिमा",
+          ("दत्तात्रेय भगवान की पूजा करें", "गुरु चरित्र या दत्त स्तोत्र का पाठ करें", "अन्नदान करें"),
+          ("मांस और मदिरा से दूर रहें", "गुरु और बड़ों का अपमान न करें", "पूजा में जल्दबाज़ी न करें"),
+          ("datta jayanti", "datta jayanti 2026", "दत्तात्रेय जयंती", "dattatreya")),
     ObsHi("devuthani", "देवउठनी एकादशी", "Dev Uthani Ekadashi", "vishnu", "vishnu", "भगवान विष्णु के जागने का दिन (20 या 21 नवंबर, अपना पंचांग देखें)",
           ("भगवान विष्णु को जगाने के मंत्र पढ़ें", "तुलसी विवाह करें", "व्रत रखकर दीपदान करें"),
           ("चावल न खाएँ", "दिन में न सोएँ", "लहसुन, प्याज और मांसाहार न खाएँ"),
@@ -99,14 +123,23 @@ FESTIVALS: dict[dt.date, str] = {
     dt.date(2026, 11, 11): "bhaidooj",
     dt.date(2026, 11, 15): "chhath",
     dt.date(2026, 11, 20): "devuthani",
+    dt.date(2026, 11, 21): "tulsi_vivah",
     dt.date(2026, 11, 24): "kartik_purnima",
+    dt.date(2026, 12, 1): "kalabhairav",
+    dt.date(2026, 12, 14): "vivah_panchami",
+    dt.date(2026, 12, 16): "kharmas",
+    dt.date(2026, 12, 20): "gita_jayanti",
+    dt.date(2026, 12, 23): "datta_jayanti",
 }
 FESTIVALS_END = max(FESTIVALS)
-PRIORITY = ["karwa_chauth", "dhanteras", "diwali", "govardhan", "bhaidooj", "chhath", "devuthani", "kartik_purnima", "ekadashi", "pradosham",
+PRIORITY = ["karwa_chauth", "tulsi_vivah", "kalabhairav", "vivah_panchami", "kharmas", "gita_jayanti", "datta_jayanti", "dhanteras", "diwali", "govardhan", "bhaidooj", "chhath", "devuthani", "kartik_purnima", "ekadashi", "pradosham",
             "sankashti", "shivaratri", "purnima", "amavasya"]
 VRATAS = ("ekadashi", "pradosham", "sankashti", "shivaratri", "purnima", "amavasya")
 FESTIVAL_KEYS = tuple(FESTIVALS.values())
-_REPLACES = {"diwali": ("amavasya",), "kartik_purnima": ("purnima",), "devuthani": ("ekadashi",)}
+_REPLACES = {"diwali": ("amavasya",), "kartik_purnima": ("purnima",), "devuthani": ("ekadashi",),
+             "gita_jayanti": ("ekadashi",), "datta_jayanti": ("purnima",), "tulsi_vivah": ("ekadashi",)}
+# Dev Uthani is kept on 20 Nov (Smarta), so the sunrise Ekadashi of 21 Nov is dropped; Purnima ends at sunrise on 24 Dec.
+_SUPPRESS: dict[dt.date, tuple[str, ...]] = {dt.date(2026, 11, 21): ("ekadashi",), dt.date(2026, 12, 24): ("purnima",)}
 
 
 def observances(d: dt.date) -> list[str]:
@@ -114,6 +147,7 @@ def observances(d: dt.date) -> list[str]:
     keys += _dedupe_spans(d, [k for k in computed(d) if k in OBS])
     for f in list(keys):
         keys = [k for k in keys if k not in _REPLACES.get(f, ())]
+    keys = [k for k in keys if k not in _SUPPRESS.get(d, ())]
     return sorted(dict.fromkeys(keys), key=PRIORITY.index)
 
 
@@ -279,14 +313,31 @@ FULL_MONTH: dict[tuple[int, int], list[str]] = {
         "24 नवंबर · कार्तिक पूर्णिमा, देव दिवाली",
         "27 नवंबर · संकष्टी चतुर्थी",
     ],
+    (2026, 12): [
+        "1 दिसंबर · काल भैरव जयंती",
+        "4 दिसंबर · उत्पन्ना एकादशी",
+        "6 दिसंबर · प्रदोष व्रत",
+        "7 दिसंबर · मासिक शिवरात्रि",
+        "8 दिसंबर · अमावस्या",
+        "14 दिसंबर · विवाह पंचमी",
+        "16 दिसंबर · धनु संक्रांति (खरमास शुरू)",
+        "20 दिसंबर · मोक्षदा एकादशी, गीता जयंती",
+        "21 दिसंबर · प्रदोष व्रत",
+        "23 दिसंबर · दत्तात्रेय जयंती, मार्गशीर्ष पूर्णिमा",
+        "26 दिसंबर · संकष्टी चतुर्थी",
+    ],
 }
+
+
+_FEST_TAIL = {(2026, 11): "के त्योहार: धनतेरस, दिवाली, भाई दूज, देवउठनी एकादशी",
+              (2026, 12): "के त्योहार: गीता जयंती, विवाह पंचमी, दत्तात्रेय जयंती"}
 
 
 def build_festivals(channel: str, year: int, month: int) -> RequestShort:
     items = month_items(year, month, FESTIVAL_KEYS)
     cover = items[0][1] if items else "diwali"
     return _list_post(channel, year, month, FESTIVAL_KEYS, "festivals", "के त्योहार", cover,
-                      "के त्योहार: धनतेरस, दिवाली, भाई दूज, देवउठनी एकादशी", "Festival Calendar",
+                      _FEST_TAIL.get((year, month), "के त्योहार: व्रत और पर्व की पूरी सूची"), "Festival Calendar",
                       FULL_MONTH.get((year, month)))
 
 
