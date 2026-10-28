@@ -49,6 +49,7 @@ content it hasn't been explicitly told exists.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from datetime import date
 
 from mahanavi.content.branding import brand_tagline
@@ -237,11 +238,56 @@ def telugu_tithi(tithi: str) -> tuple[str, bool]:
     return (f"{paksha} {te}".strip(), name in _SPECIAL_TITHIS)
 
 
-def dated_title(kind: str, d: date, tithi: str, ordinal: int) -> str:
-    """Date + weekday + tithi title for a muhurta Short; stays well under 100 chars."""
+# Fresh Telugu-led title formats (2026-10-28): the exact time sits in the
+# title, English filler is gone, and six shapes rotate so the same three
+# phrases do not come back every day. Used when the time string is known.
+_TIMED_FORMATS = {
+    "rahu_kalam": [
+        "{wd} రాహు కాలం {tm} | {d}{t}",
+        "{d} రాహు కాలం ఎప్పుడు? {tm}",
+        "ఈరోజు రాహు కాలం {tm} - కొత్త పని వద్దు",
+        "{wd} {d} - రాహు కాలం {tm}",
+        "రాహు కాలం {tm} | {wd}{t}",
+        "{d}{t} - రాహు కాలం ఈ వేళల్లోనే: {tm}",
+    ],
+    "shubha_ghadiyalu": [
+        "{wd} శుభ సమయం {tm} | {d}{t}",
+        "{d} శుభ ఘడియలు ఎప్పుడు? {tm}",
+        "ఈరోజు మంచి సమయం {tm} - శుభ కార్యాలకు",
+        "{wd} {d} - శుభ ముహూర్తం {tm}",
+        "శుభ ఘడియలు {tm} | {wd}{t}",
+        "{d}{t} - పూజకు, కొత్త పనికి మంచి వేళ: {tm}",
+    ],
+    "durmuhurtham": [
+        "{wd} దుర్ముహూర్తం {tm} | {d}{t}",
+        "{d} దుర్ముహూర్తం ఎప్పుడు? {tm}",
+        "ఈరోజు దుర్ముహూర్తం {tm} - జాగ్రత్త",
+        "{wd} {d} - దుర్ముహూర్తం {tm}",
+        "దుర్ముహూర్తం {tm} | {wd}{t}",
+        "{d}{t} - ఈ వేళల్లో శుభకార్యాలు వద్దు: {tm}",
+    ],
+}
+
+
+def _short_time(tm: str) -> str:
+    """Compact the provider's time range for a title (drop seconds, tidy dashes)."""
+    return re.sub(r"\s*[-–—]+\s*", "-", (tm or "").strip())
+
+
+def dated_title(kind: str, d: date, tithi: str, ordinal: int, tm: str = "") -> str:
+    """Date + weekday + tithi title for a muhurta Short; stays well under 100 chars.
+    With `tm` (the time range) the title leads with the actual time in Telugu."""
     te_tithi, special = telugu_tithi(tithi)
     date_s = f"{d.day} {_TELUGU_MONTHS[d.month]}"
     wd = _TELUGU_WEEKDAYS[d.weekday()]
+    tm = _short_time(tm)
+    if tm:
+        pool = _TIMED_FORMATS[kind]
+        if te_tithi and special:
+            title = f"{te_tithi} {pool[ordinal % len(pool)].format(d=date_s, wd=wd, t='', tm=tm)}"
+        else:
+            title = pool[ordinal % len(pool)].format(d=date_s, wd=wd, t=f", {te_tithi}" if te_tithi else "", tm=tm)
+        return title[:100]
     if te_tithi and special:
         title = _SPECIAL_LEAD[kind].format(tt=te_tithi, d=date_s, wd=wd)
     else:
@@ -429,7 +475,7 @@ def build_rahu_kalam_seo(
     rahu_kalam_range: str, for_date_ordinal: int, comment_prompt_te: str, festival: str | None = None, tithi: str = "",
 ) -> ShortSeoContent:
     d = date.fromordinal(for_date_ordinal)
-    title = dated_title("rahu_kalam", d, tithi, for_date_ordinal)
+    title = dated_title("rahu_kalam", d, tithi, for_date_ordinal, rahu_kalam_range)
     weekday_te, weekday_en = _TELUGU_WEEKDAYS[d.weekday()], _ENGLISH_WEEKDAYS[d.weekday()]
     cta_te, cta_en = _pick_rotating_pair(_RAHU_KALAM_CTAS, _RAHU_KALAM_CTAS_EN, for_date_ordinal, offset=1)
     hook_te, hook_en = _pick_rotating_pair(_RAHU_KALAM_HOOKS_TE, _RAHU_KALAM_HOOKS_EN, for_date_ordinal, offset=2)
@@ -464,7 +510,7 @@ def build_shubha_ghadiyalu_seo(
     tithi: str = "",
 ) -> ShortSeoContent:
     d = date.fromordinal(for_date_ordinal)
-    title = dated_title("shubha_ghadiyalu", d, tithi, for_date_ordinal)
+    title = dated_title("shubha_ghadiyalu", d, tithi, for_date_ordinal, good_muhurtams[0][1] if good_muhurtams else "")
     weekday_te, weekday_en = _TELUGU_WEEKDAYS[d.weekday()], _ENGLISH_WEEKDAYS[d.weekday()]
     lines = ", ".join(f"{label} {value}" for label, value in good_muhurtams)
     cta_te, cta_en = _pick_rotating_pair(_SHUBHA_GHADIYALU_CTAS, _SHUBHA_GHADIYALU_CTAS_EN, for_date_ordinal, offset=1)
@@ -503,7 +549,7 @@ def build_durmuhurtham_seo(
     shown Durmuhurtham as small secondary text on the Rahu Kalam card,
     never as its own titled Short."""
     d = date.fromordinal(for_date_ordinal)
-    title = dated_title("durmuhurtham", d, tithi, for_date_ordinal)
+    title = dated_title("durmuhurtham", d, tithi, for_date_ordinal, durmuhurtham_range)
     weekday_te, weekday_en = _TELUGU_WEEKDAYS[d.weekday()], _ENGLISH_WEEKDAYS[d.weekday()]
     cta_te, cta_en = _pick_rotating_pair(_DURMUHURTHAM_CTAS, _DURMUHURTHAM_CTAS_EN, for_date_ordinal, offset=1)
     hook_te, hook_en = _pick_rotating_pair(_DURMUHURTHAM_HOOKS_TE, _DURMUHURTHAM_HOOKS_EN, for_date_ordinal, offset=2)

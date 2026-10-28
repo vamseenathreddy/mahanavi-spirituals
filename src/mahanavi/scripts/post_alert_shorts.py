@@ -328,7 +328,7 @@ def _mantra_lines(for_date: date, offset: int) -> list[tuple[str, str]]:
     today_content = DEITY_CONTENT[today_deity]
     beeja = pick_beeja_mantram(today_content, for_date)
     namalu = [n for n in today_content.mantra_namalu if n != beeja] or list(today_content.mantra_namalu)
-    mantra = namalu[for_date.toordinal() % len(namalu)]   # never the same line twice on one card
+    mantra = namalu[(for_date.toordinal() + offset * max(1, len(namalu) // 3)) % len(namalu)]   # a different line on each of the day's 3 Shorts
     return [
         ("మంత్రం", mantra),
         ("బీజ మంత్రం (శుభఫలితాల కోసం 11 సార్లు పఠించండి)", beeja),
