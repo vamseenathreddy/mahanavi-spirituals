@@ -19,6 +19,7 @@ from mahanavi.panchang.local_provider import HYDERABAD, LocalPanchangProvider
 
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 CATEGORIES = ("tomorrow", "festivals", "vratas", "tips")
+SPECIAL_KINDS = CATEGORIES + ("today",)   # "today": the same-day morning post (5-6 AM), reuses the tomorrow playlist
 
 
 @dataclass(frozen=True)
@@ -76,6 +77,14 @@ OBS: dict[str, Obs] = {o.key: o for o in (
         ("సాయంత్రం లక్ష్మీ పూజ చేసి దీపాలు వెలిగించండి", "ఇల్లు శుభ్రం చేసి ముగ్గు వేయండి", "పెద్దలకు నమస్కరించి స్వీట్లు పంచండి"),
         ("సాయంత్రం ఇంట్లో చీకటి ఉంచకండి", "టపాసులు జాగ్రత్తగా కాల్చండి", "అప్పులు ఇచ్చి పుచ్చుకోవడం వద్దు (సంప్రదాయం)"),
         ("diwali lakshmi puja", "lakshmi devi songs", "deepavali telugu")),
+    Obs("karwa_chauth", "కర్వా చౌత్", "Karwa Chauth", "shiva", "parvati", "భర్త దీర్ఘాయుష్షు కోసం సుమంగళులు చంద్రోదయం వరకు చేసే ఉత్తర భారత వ్రతం",
+        ("సూర్యోదయానికి ముందు సర్గి భోజనం చేయండి", "సాయంత్రం గౌరీ పూజ చేసి కర్వా చౌత్ కథ వినండి", "చంద్రుడికి అర్ఘ్యం ఇచ్చి, జల్లెడలో నుంచి భర్తను చూసి ఉపవాసం విడవండి"),
+        ("సంప్రదాయం ప్రకారం చంద్రోదయం వరకు అన్నం, నీరు తీసుకోకండి", "ఉపవాస సమయంలో వాదనలు వద్దు", "పూజలో తొందర వద్దు"),
+        ("karwa chauth", "karwa chauth 2026", "karwa chauth telugu")),
+    Obs("bhagini_hastha", "భగినీ హస్త భోజనం", "Bhagini Hastha Bhojanam", "shiva", "shiva", "అన్నదమ్ములు అక్క చెల్లెళ్ల ఇంట భోజనం చేసే కార్తీక శుక్ల విదియ",
+        ("అక్క లేదా చెల్లెలి ఇంట భోజనం చేయండి", "సోదరికి కానుక ఇవ్వండి", "ఇంటి పెద్దలకు నమస్కరించండి"),
+        ("సోదరీమణులను నొప్పించకండి", "కోపతాపాలు వద్దు", "ఆహారాన్ని వృథా చేయకండి"),
+        ("bhagini hastha bhojanam", "bhai dooj telugu", "yama dwitiya")),
     Obs("karthika", "కార్తీక మాసం ప్రారంభం", "Karthika Masam begins", "shiva", "shiva", "శివారాధనకు అత్యంత పవిత్రమైన కార్తీక మాసం",
         ("తెల్లవారుజామున స్నానం చేసి దీపం వెలిగించండి", "ఉసిరి చెట్టు కింద దీపారాధన చేయండి", "శివాలయంలో దీపదానం చేయండి"),
         ("మాంసాహారం, మద్యం వద్దు", "ఉల్లి, వెల్లుల్లి వద్దు", "దీపారాధన మానకండి"),
@@ -92,7 +101,9 @@ OBS: dict[str, Obs] = {o.key: o for o in (
 
 # curated 2026 festival dates -> Obs key (extend each year; a warning is printed when this list runs out)
 FESTIVALS: dict[dt.date, str] = {
+    dt.date(2026, 10, 29): "karwa_chauth",
     dt.date(2026, 11, 8): "diwali",
+    dt.date(2026, 11, 11): "bhagini_hastha",
     dt.date(2026, 11, 10): "karthika",
     dt.date(2026, 11, 16): "karthika_somavaram",
     dt.date(2026, 11, 23): "karthika_somavaram",
@@ -101,7 +112,7 @@ FESTIVALS: dict[dt.date, str] = {
     dt.date(2026, 12, 7): "karthika_somavaram",
 }
 FESTIVALS_END = max(FESTIVALS)
-PRIORITY = ["diwali", "karthika", "karthika_somavaram", "karthika_pournami", "ekadashi", "pradosham", "sankashti",
+PRIORITY = ["karwa_chauth", "bhagini_hastha", "diwali", "karthika", "karthika_somavaram", "karthika_pournami", "ekadashi", "pradosham", "sankashti",
             "shivaratri", "purnima", "amavasya", "bhairava", "shashthi", "vinayaka"]
 VRATAS = ("ekadashi", "pradosham", "sankashti", "shivaratri", "purnima", "amavasya")
 
@@ -233,6 +244,24 @@ def _common(slug: str, obs_key, slides: tuple[Slide, ...], title: str, title_en:
         description_te=desc_te, description_en=desc_en, hashtags=hashtags, tags=tags,
         bg_image=f"deities/{path.name}" if path else "", header=header, tag_footer=CTA[0], cta_lines=CTA,
         playlist_line=PLAYLIST_LINES[category], footer_main=_CHANNEL_FOOTER_TE, footer_en=_CHANNEL_FOOTER_EN)
+
+
+def build_today(day: dt.date, keys: list[str]) -> RequestShort:
+    """Same-day morning version of build_tomorrow ("ఈరోజు ..."), posted 5-6 AM IST."""
+    import dataclasses
+
+    spec = build_tomorrow(day, keys)
+    o = OBS[keys[0]]
+    others = [OBS[k].te for k in keys[1:]]
+    name = o.te + (f" + {', '.join(others)}" if others else "")
+    en = o.en + (f" + {', '.join(OBS[k].en for k in keys[1:])}" if others else "")
+    slides = tuple(dataclasses.replace(sl, label=sl.label.replace("రేపు విశేషం", "ఈరోజు విశేషం")) for sl in spec.slides)
+    return dataclasses.replace(
+        spec, slug=f"cal_today_{day.isoformat()}", slides=slides,
+        title=f"ఈరోజు {name} | {_short_date(day)}: చేయవలసినవి, చేయకూడనివి"[:99],
+        title_en=f"Today {en} ({day.day} {day.strftime('%b')}): Do's and Don'ts"[:100],
+        description_te=spec.description_te.replace("🙏 రేపు (", "🙏 ఈరోజు (", 1),
+        description_en=spec.description_en.replace("Tomorrow, ", "Today, ", 1))
 
 
 def build_tomorrow(day: dt.date, keys: list[str]) -> RequestShort:

@@ -33,6 +33,9 @@ def build(kind: str, today: dt.date, channel: str = "mahanavi"):
 
         if hi.stale(today):
             print(f"::warning::calendar_days_hi.FESTIVALS ends {hi.FESTIVALS_END}; add the next dates", file=sys.stderr)
+        if kind == "today":
+            keys = hi.observances(today)
+            return hi.build_today(channel, today, keys) if keys else None
         if kind == "tomorrow":
             nxt = hi.next_special(today)
             return hi.build_tomorrow(channel, *nxt) if nxt else None
@@ -42,6 +45,9 @@ def build(kind: str, today: dt.date, channel: str = "mahanavi"):
         print(f"::warning::calendar_days.FESTIVALS ends {cal.FESTIVALS_END}; add next year's festival dates", file=sys.stderr)
     if kind == "tips":
         return cal.build_tip(today)
+    if kind == "today":
+        keys = cal.observances(today)
+        return cal.build_today(today, keys) if keys else None
     if kind == "tomorrow":
         nxt = cal.next_special(today)
         if nxt is None:
@@ -53,7 +59,7 @@ def build(kind: str, today: dt.date, channel: str = "mahanavi"):
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--kind", required=True, choices=cal.CATEGORIES)
+    ap.add_argument("--kind", required=True, choices=cal.SPECIAL_KINDS)
     ap.add_argument("--channel", default="mahanavi", choices=["mahanavi", "mantra_sangam", "trance_beats"])
     ap.add_argument("--public", action="store_true")
     ap.add_argument("--private", action="store_true")
@@ -62,12 +68,13 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
     settings = get_settings()
     today = dt.date.fromisoformat(args.date) if args.date else dt.datetime.now(IST).date()
+    pl_kind = "tomorrow" if args.kind == "today" else args.kind   # the same-day post goes in the "tomorrow special" playlist
     try:
         if args.channel != "mahanavi" and args.kind == "tips":
             raise MahanaviError("pooja-rule tips exist only for the Telugu channel")
         spec = build(args.kind, today, args.channel)
         if spec is None:
-            print("nothing special tomorrow: no post")
+            print("nothing special: no post")
             return 0
         print(f"{today} -> {spec.slug}: {spec.title}")
         out_dir = settings.output_dir / "calendar" / spec.slug
@@ -89,11 +96,11 @@ def main(argv: list[str] | None = None) -> int:
         if spec.expected_channel.lower() not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected '{spec.expected_channel}'.")
         if args.channel == "mahanavi":
-            top = cal.playlist_block(youtube, args.kind)
+            top = cal.playlist_block(youtube, pl_kind)
         else:
             from mahanavi.content import calendar_days_hi as hi
 
-            top = hi.playlist_block(youtube, args.kind)
+            top = hi.playlist_block(youtube, pl_kind)
         if top:
             spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
         privacy = "private" if args.private else "public"   # 2026-10-22: never unlisted
@@ -105,11 +112,11 @@ def main(argv: list[str] | None = None) -> int:
         state_mod.save(state)
         try:
             if args.channel == "mahanavi":
-                pid = cal.playlist_ids(youtube)[args.kind]
+                pid = cal.playlist_ids(youtube)[pl_kind]
             else:
                 from mahanavi.content import calendar_days_hi as hi
 
-                pid = hi.playlist_ids(youtube)[args.kind]
+                pid = hi.playlist_ids(youtube)[pl_kind]
             eng_upload.add_to_playlist(youtube, video_id, pid)
             print("Playlist: added")
         except Exception as exc:  # noqa: BLE001

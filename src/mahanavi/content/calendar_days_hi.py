@@ -76,6 +76,10 @@ OBS: dict[str, ObsHi] = {o.key: o for o in (
           ("संध्या अर्घ्य के समय जल में खड़े होकर सूर्य को अर्घ्य दें", "शुद्धता और सात्विक भोजन का पालन करें", "ठेकुआ और फल का प्रसाद चढ़ाएँ"),
           ("पूजा सामग्री को जूठा न करें", "लहसुन, प्याज और मांसाहार से दूर रहें", "अर्घ्य के समय देर न करें"),
           ("chhath puja", "chhath puja vidhi", "छठ पूजा", "chhath geet")),
+    ObsHi("karwa_chauth", "करवा चौथ", "Karwa Chauth", "shiva", "shiva", "सुहागिनों का पति की लंबी आयु के लिए चंद्रोदय तक रखा जाने वाला व्रत",
+          ("सूर्योदय से पहले सरगी खाएँ", "शाम को करवा माता और गौरी की पूजा कर कथा सुनें", "चंद्रमा को अर्घ्य देकर छलनी से पति को देखें और व्रत खोलें"),
+          ("परंपरा अनुसार चंद्र दर्शन से पहले अन्न-जल न लें", "व्रत में किसी से विवाद न करें", "पूजा में जल्दबाज़ी न करें"),
+          ("karwa chauth", "karwa chauth 2026", "करवा चौथ", "karwa chauth vrat katha")),
     ObsHi("devuthani", "देवउठनी एकादशी", "Dev Uthani Ekadashi", "vishnu", "vishnu", "भगवान विष्णु के जागने का दिन (20 या 21 नवंबर, अपना पंचांग देखें)",
           ("भगवान विष्णु को जगाने के मंत्र पढ़ें", "तुलसी विवाह करें", "व्रत रखकर दीपदान करें"),
           ("चावल न खाएँ", "दिन में न सोएँ", "लहसुन, प्याज और मांसाहार न खाएँ"),
@@ -88,6 +92,7 @@ OBS: dict[str, ObsHi] = {o.key: o for o in (
 
 # curated 2026 festival dates -> key (extend each year; a warning is printed when this list runs out)
 FESTIVALS: dict[dt.date, str] = {
+    dt.date(2026, 10, 29): "karwa_chauth",
     dt.date(2026, 11, 6): "dhanteras",
     dt.date(2026, 11, 8): "diwali",
     dt.date(2026, 11, 9): "govardhan",
@@ -97,7 +102,7 @@ FESTIVALS: dict[dt.date, str] = {
     dt.date(2026, 11, 24): "kartik_purnima",
 }
 FESTIVALS_END = max(FESTIVALS)
-PRIORITY = ["dhanteras", "diwali", "govardhan", "bhaidooj", "chhath", "devuthani", "kartik_purnima", "ekadashi", "pradosham",
+PRIORITY = ["karwa_chauth", "dhanteras", "diwali", "govardhan", "bhaidooj", "chhath", "devuthani", "kartik_purnima", "ekadashi", "pradosham",
             "sankashti", "shivaratri", "purnima", "amavasya"]
 VRATAS = ("ekadashi", "pradosham", "sankashti", "shivaratri", "purnima", "amavasya")
 FESTIVAL_KEYS = tuple(FESTIVALS.values())
@@ -203,6 +208,24 @@ def _common(channel: str, slug: str, obs: ObsHi, slides, title: str, title_en: s
         bg_image=_photo_for(dei.key, photo_day), lang="hi", token_file=cfg["token_file"], expected_channel=cfg["expected"],
         watermark=cfg["watermark"], header=header, tag_footer=CTA[0], cta_lines=CTA,
         playlist_line=PLAYLIST_LINES[category], footer_main=footer, footer_en=footer_en)
+
+
+def build_today(channel: str, day: dt.date, keys: list[str]) -> RequestShort:
+    """Same-day morning version of build_tomorrow ("आज ..."), posted 5-6 AM IST."""
+    import dataclasses
+
+    spec = build_tomorrow(channel, day, keys)
+    o = OBS[keys[0]]
+    others = [OBS[k].hi for k in keys[1:]]
+    name = o.hi + (f" + {', '.join(others)}" if others else "")
+    en = o.en + (f" + {', '.join(OBS[k].en for k in keys[1:])}" if others else "")
+    slides = tuple(dataclasses.replace(sl, label=sl.label.replace("कल का विशेष", "आज का विशेष")) for sl in spec.slides)
+    return dataclasses.replace(
+        spec, slug=f"cal_today_{day.isoformat()}", slides=slides,
+        title=f"आज {name} {_short_date(day)}: क्या करें, क्या न करें | {en} Niyam"[:99],
+        title_en=f"Today {en} ({day.day} {day.strftime('%b')}): Do's and Don'ts in Hindi"[:100],
+        description_te=spec.description_te.replace("🙏 कल (", "🙏 आज (", 1),
+        description_en=spec.description_en.replace("Tomorrow, ", "Today, ", 1))
 
 
 def build_tomorrow(channel: str, day: dt.date, keys: list[str]) -> RequestShort:
