@@ -248,4 +248,92 @@ Shani beeja mantra: Om Pram Preem Proum Sah Shanaye Namah - chant 108 times (at 
     footer_en="Divine Mantra Sangam is a Hindi devotional channel: daily Rahu Kaal, Shubh Muhurat, mantras and Purana stories.",
 )
 
-SPECS: dict[str, RequestShort] = {s.slug: s for s in (NARASIMHA, SHANI_TE, SHANI_HI)}
+
+# ---- Atla Tadde, Wednesday 28 Oct 2026 (Ashwayuja Bahula Tadiya = Krishna Tritiya; Tritiya until about 10:37 PM, moonrise about 5:30 PM) ----
+_ATLA_BG: dict[str, Any] = dict(bg_top=(70, 10, 34), bg_mid=(146, 32, 58), bg_bottom=(58, 8, 26), glow=(255, 196, 96))
+
+ATLA_TE = RequestShort(
+    slug="atla_tadde_te", handle="", comment_id="", deity_te="గౌరీ దేవి", **_ATLA_BG,
+    slides=(
+        Slide("intro", 3.5, "బుధవారం · 28 అక్టోబర్ 2026", "అట్ల తద్ది", "ఆశ్వయుజ బహుళ తదియ", "గౌరీ దేవి అనుగ్రహం కోసం"),
+        Slide("points", 7.0, "అట్ల తద్ది అంటే?", "ఆశ్వయుజ పౌర్ణమి తర్వాత వచ్చే బహుళ తదియ నాడు ఆంధ్ర, తెలంగాణలో స్త్రీలు జరుపుకునే పండుగ\nగౌరీ దేవిని పూజించి, కన్యలు మంచి వరుడిని, వివాహితులు భర్త క్షేమాన్ని కోరుకుంటారని సంప్రదాయం"),
+        Slide("points", 8.5, "ఎలా జరుపుకుంటారు?", "తెల్లవారుజామునే లేచి భోజనం చేస్తారు\nపగలంతా ఉపవాసం, గౌరీ పూజ\nసాయంత్రం చంద్రుడిని చూసి అట్లు నైవేద్యం పెట్టి ఉపవాసం విడుస్తారు\nఉయ్యాలలు ఊగుతూ, గోరింటాకు పెట్టుకుని, పాటలు పాడతారు"),
+        Slide("points", 5.5, "ఈరోజు ప్రత్యేకత", "అట్లు అంటే దోసెలు, ఈ పండుగ పేరు కూడా అట్లతోనే వచ్చింది\nతదియ ఈరోజు రాత్రి వరకు ఉంటుంది, సాయంత్రం చంద్రోదయానికి పూజ చేసుకోండి"),
+        Slide("outro", 4.0, "అట్ల తద్ది శుభాకాంక్షలు", "ఈ పండుగ మీ ఇంట్లో ఎలా జరుపుకుంటారు?\nకామెంట్‌లో చెప్పండి"),
+    ),
+    title="అట్ల తద్ది 28 అక్టోబర్: విశేషం, ఎలా జరుపుకుంటారు | Atla Tadde",
+    title_en="Atla Tadde 28 Oct 2026: Meaning, Rituals and Why Women Fast",
+    description_te="""🙏 అట్ల తద్ది శుభాకాంక్షలు! ఈరోజు ఆశ్వయుజ బహుళ తదియ, బుధవారం 28 అక్టోబర్ 2026.
+
+అట్ల తద్ది అంటే ఏమిటి: ఆశ్వయుజ పౌర్ణమి తర్వాత వచ్చే బహుళ తదియ నాడు ఆంధ్ర, తెలంగాణలో స్త్రీలు గౌరీ దేవిని పూజిస్తూ జరుపుకునే పండుగ. కన్యలు మంచి వరుడిని, వివాహితులు భర్త క్షేమాన్ని కోరుకుంటారని సంప్రదాయం.
+
+ఎలా జరుపుకుంటారు:
+• తెల్లవారుజామునే లేచి భోజనం చేస్తారు
+• పగలంతా ఉపవాసం ఉండి గౌరీ దేవిని పూజిస్తారు
+• సాయంత్రం చంద్రుడిని చూసి అట్లు (దోసెలు) నైవేద్యం పెట్టి ఉపవాసం విడుస్తారు
+• ఉయ్యాలలు ఊగుతూ, గోరింటాకు పెట్టుకుని, పాటలు పాడతారు
+
+తదియ తిథి ఈరోజు రాత్రి వరకు ఉంటుంది. చంద్రోదయ సమయం ఊరిని బట్టి మారుతుంది, మీ స్థానిక పంచాంగం చూసుకోండి.
+
+ఈ పండుగను మీ ఇంట్లో ఎలా జరుపుకుంటారు? కామెంట్‌లో చెప్పండి.""",
+    description_en="""Atla Tadde, Wednesday 28 October 2026 (Ashwayuja Bahula Tadiya).
+
+A festival of Andhra and Telangana women, on the third day after the Ashwayuja full moon. Women worship Goddess Gauri; unmarried girls pray for a good husband and married women for their husband's well-being.
+How it is observed: wake before dawn and eat, fast through the day, worship Gauri, offer atlu (dosas) after seeing the moon, then break the fast. Swings, henna and folk songs are part of the day.
+Tritiya lasts until the night of the 28th; moonrise time varies by city, so check your local panchang.""",
+    hashtags=["#Shorts", "#అట్లతద్ది", "#AtlaTadde", "#గౌరీదేవి", "#Devotional"],
+    tags=["atla tadde", "atla tadde 2026", "atla tadde telugu", "atla taddi", "అట్ల తద్ది", "అట్లతద్ది 2026",
+          "ashwayuja bahula tadiya", "gauri puja", "telugu festival", "telugu devotional", "mahanavi spirituals", "shorts"],
+    header="అట్ల తద్ది",
+    cta_lines=("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "మరిన్ని పండుగ విశేషాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
+)
+
+
+def _atla_hi(slug: str, token_file: str, expected: str, watermark: str, tag_channel: str, footer: str, footer_en: str) -> RequestShort:
+    return RequestShort(
+        slug=slug, handle="", comment_id="", deity_te="गौरी माता", **_ATLA_BG,
+        slides=(
+            Slide("intro", 3.5, "बुधवार · 28 अक्टूबर 2026", "अट्ला तद्दे", "आज आंध्र और तेलंगाना का खास व्रत", "गौरी माता की कृपा के लिए"),
+            Slide("points", 7.0, "अट्ला तद्दे क्या है?", "आश्विन पूर्णिमा के बाद कृष्ण पक्ष की तृतीया पर आंध्र-तेलंगाना की महिलाएं यह व्रत रखती हैं\nगौरी माता की पूजा होती है। परंपरा है कि कन्याएं अच्छे वर की और सुहागिनें पति की सलामती की कामना करती हैं"),
+            Slide("points", 8.5, "कैसे मनाते हैं?", "सूर्योदय से पहले उठकर भोजन करते हैं\nदिन भर व्रत और गौरी पूजा\nशाम को चंद्र दर्शन कर अट्लु (डोसे) का भोग लगाकर व्रत खोलते हैं\nझूला झूलना, मेहंदी और लोकगीत इस दिन की पहचान हैं"),
+            Slide("points", 5.5, "करवा चौथ से कनेक्शन", "उत्तर भारत में कल, 29 अक्टूबर को करवा चौथ है\nयह दोनों व्रत चंद्र दर्शन से खुलते हैं और सुहाग की मंगलकामना से जुड़े हैं"),
+            Slide("outro", 4.0, "अट्ला तद्दे की शुभकामनाएं", "आपके यहां कौन सा व्रत मनाया जाता है?\nकमेंट में बताएं"),
+        ),
+        title="अट्ला तद्दे 28 अक्टूबर: क्या है, कैसे मनाते हैं | Atla Tadde",
+        title_en="Atla Tadde 28 Oct 2026: What It Is and How It Is Observed (Karwa Chauth is tomorrow)",
+        description_te=f"""🙏 अट्ला तद्दे की शुभकामनाएं! आज आश्विन कृष्ण तृतीया, बुधवार 28 अक्टूबर 2026।
+
+अट्ला तद्दे क्या है: आश्विन पूर्णिमा के बाद कृष्ण पक्ष की तृतीया पर आंध्र प्रदेश और तेलंगाना की महिलाएं गौरी माता की पूजा करके यह व्रत रखती हैं। परंपरा है कि कन्याएं अच्छे वर की और सुहागिनें पति की सलामती की कामना करती हैं।
+
+कैसे मनाते हैं:
+• सूर्योदय से पहले उठकर भोजन करते हैं
+• दिन भर व्रत रखकर गौरी माता की पूजा करते हैं
+• शाम को चंद्र दर्शन कर अट्लु (डोसे) का भोग लगाकर व्रत खोलते हैं
+• झूला झूलना, मेहंदी लगाना और लोकगीत गाना इस दिन की पहचान है
+
+करवा चौथ से संबंध: उत्तर भारत में करवा चौथ कल, 29 अक्टूबर को है। दोनों व्रत चंद्र दर्शन के बाद खुलते हैं।
+
+आपके यहां कौन सा व्रत मनाया जाता है? कमेंट में बताएं।
+
+अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे 🙏""",
+        description_en="""Atla Tadde, Wednesday 28 October 2026 (Ashwin Krishna Tritiya).
+
+A fast kept by women of Andhra Pradesh and Telangana on the third day after the Ashwin full moon, with worship of Goddess Gauri. Wake before sunrise and eat, fast through the day, break the fast after moon sighting with an offering of atlu (dosas). Karwa Chauth falls tomorrow, 29 October, in North India.""",
+        hashtags=["#Shorts", "#अट्लातद्दे", "#AtlaTadde", "#करवाचौथ", "#Devotional"],
+        tags=["atla tadde", "atla tadde 2026", "atla tadde hindi", "अट्ला तद्दे", "अट्ला तद्दे 2026", "karwa chauth 2026",
+              "gauri puja", "hindi devotional", tag_channel, "shorts"],
+        lang="hi", token_file=token_file, expected_channel=expected, watermark=watermark, header="अट्ला तद्दे",
+        cta_lines=("अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे", "ऐसे और व्रत-त्योहार जानने के लिए सब्सक्राइब करें"),
+        footer_main=footer, footer_en=footer_en,
+    )
+
+
+ATLA_HI = _atla_hi("atla_tadde_hi", "youtube_token_mantra_sangam.json", "Mantra Sangam", "@DivineMantraSangam",
+                   "divine mantra sangam", _HI_FOOTER,
+                   "Divine Mantra Sangam is a Hindi devotional channel: daily Rahu Kaal, Shubh Muhurat, mantras and Purana stories.")
+ATLA_HI_TB = _atla_hi("atla_tadde_hi_tb", "youtube_token_trance_beats.json", "Trance Beats", "@DevotionalTranceBeats",
+                      "devotional trance beats",
+                      "हिंदी भक्ति चैनल: रोज़ मंत्र, भजन और पौराणिक कथाएं। Devotional Trance Beats को सब्सक्राइब करें।",
+                      "Devotional Trance Beats is a Hindi devotional channel: daily mantras, bhajans and Purana stories.")
+
+SPECS: dict[str, RequestShort] = {s.slug: s for s in (NARASIMHA, SHANI_TE, SHANI_HI, ATLA_TE, ATLA_HI, ATLA_HI_TB)}
