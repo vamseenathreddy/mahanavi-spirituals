@@ -169,3 +169,18 @@ class LocalPanchangProvider(PanchangProvider):
     def brahma_muhurta(self, for_date: date) -> str:
         sunrise = self._rise_set(for_date, swe.CALC_RISE)
         return _rng(sunrise - timedelta(minutes=96), sunrise - timedelta(minutes=48))
+
+    # Chaughadiya order and each weekday's first daytime segment (Sun..Sat), the standard table.
+    _CHOG = ["Udveg", "Chal", "Labh", "Amrit", "Kaal", "Shubh", "Rog"]
+    _CHOG_START = {6: 0, 0: 3, 1: 6, 2: 2, 3: 5, 4: 1, 5: 4}
+
+    def amrit_chaughadiya(self, for_date: date) -> str:
+        """Daytime Amrit chaughadiya (one eighth of the daylight), a good time on days without Abhijit."""
+        sunrise = self._rise_set(for_date, swe.CALC_RISE)
+        sunset = self._rise_set(for_date, swe.CALC_SET)
+        seg = (sunset - sunrise) / 8
+        start = self._CHOG_START[for_date.weekday()]
+        for i in range(8):
+            if self._CHOG[(start + i) % 7] == "Amrit":
+                return _rng(sunrise + seg * i, sunrise + seg * (i + 1))
+        return ""

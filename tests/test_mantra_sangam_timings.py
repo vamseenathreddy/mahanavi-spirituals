@@ -20,6 +20,7 @@ def test_rows_and_metadata(kind):
         assert len([h for h in metadata_timings.hashtags(row)]) <= 15
 
 
-def test_wednesday_shubh_uses_brahma_muhurat():
+def test_wednesday_shubh_uses_amrit_chaughadiya():
     row = timings.timing_row("shubh", date(2026, 10, 14))
-    assert row["t_label"] == "ब्रह्म मुहूर्त"
+    assert row["t_label"] == "अमृत चौघड़िया"
+    assert row["t_comment"] != row["t_opinion"]
