@@ -86,6 +86,7 @@ class ChannelConfig:
     text_anchor: float = 0.0         # >0: keep the text block centred here even over a photo (default: photo pushes it low)
     cta_text: str = ""               # optional call-to-action (e.g. subscribe line) drawn under the text block
     cta_size: int = 46
+    playlist_font: Path | None = None  # font for playlist_cta when it is not the Latin label font (e.g. Telugu text)
     playlist_cta: str = ""           # short gold lines ("\n"-separated) just above the CTA: points viewers to the description's playlists
     cta_max_w: int = 0               # 0 = same as text_max_w; narrower keeps the CTA clear of the Shorts like/comment column
     photo_shade_from: int = 900      # y where the dark scrim under the text starts fading in
@@ -237,7 +238,7 @@ def _cta_height(draw, cfg: ChannelConfig):
 def _playlist_lines(draw, cfg: ChannelConfig):
     if not cfg.playlist_cta:
         return [], None
-    font = _font(cfg.font_channel_label, cfg.cta_size)
+    font = _font(cfg.playlist_font or cfg.font_channel_label, cfg.cta_size)
     lines = []
     for para in cfg.playlist_cta.split("\n"):
         lines += _wrap(draw, para, font, 0, cfg.cta_max_w or cfg.text_max_w or MAX_TEXT_W)

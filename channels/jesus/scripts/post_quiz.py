@@ -38,7 +38,7 @@ def main(argv=None):
     pipeline = ChannelPipeline(
         channel_key="jesus_quiz",
         fetch_row=fetch_row,
-        render_cfg=dataclasses.replace(channel_config.QUIZ_CFG, playlist_cta=playlist_links.EN_LINE),
+        render_cfg=dataclasses.replace(channel_config.QUIZ_CFG, playlist_font=channel_config.FONT_TE, playlist_cta=playlist_links.EN_LINE),
         playlist_items=playlist_links.jesus_items(settings), playlist_current="Bible Quiz",
         metadata_bundle=metadata.bundle,
         metadata_captions=metadata.captions,

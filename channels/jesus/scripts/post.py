@@ -45,7 +45,7 @@ def main(argv=None):
     pipeline = ChannelPipeline(
         channel_key="jesus",
         fetch_row=fetch_row,
-        render_cfg=dataclasses.replace(channel_config.QUOTE_CFG, playlist_cta="ఇలాంటి బైబిల్ వచనాలన్నీ ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి"),
+        render_cfg=dataclasses.replace(channel_config.QUOTE_CFG, playlist_font=channel_config.FONT_TE, playlist_cta="ఇలాంటి బైబిల్ వచనాలన్నీ ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్\nఇచ్చాం, దయచేసి చదవండి"),
         playlist_items=playlist_links.jesus_items(settings), playlist_current="Bible Quotes",
         metadata_bundle=metadata.bundle,
         metadata_captions=metadata.captions,
