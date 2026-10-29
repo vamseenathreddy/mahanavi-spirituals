@@ -57,7 +57,7 @@ jobs:
       - name: Decide whether this call should post today
         id: gate
         env:
-          STATE_FILE: data/beej_state_mantra_sangam.json
+          STATE_FILE: data/beej_state_sangam.json
           CAL_KIND: festivals
           CAL_CHANNEL: mantra_sangam
           POST_SLOT: cal_festivals
@@ -71,7 +71,7 @@ jobs:
       - name: Build and upload the calendar Short
         if: steps.gate.outputs.post == 'true'
         env:
-          STATE_FILE: data/beej_state_mantra_sangam.json
+          STATE_FILE: data/beej_state_sangam.json
           POST_SLOT: cal_festivals
           MAHANAVI_IMAGES_ROOT: ./Images
           MAHANAVI_ASSETS_DIR: ./assets
