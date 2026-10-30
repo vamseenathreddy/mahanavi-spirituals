@@ -78,7 +78,13 @@ def text_layer(spec: ScrollShort, settings, out: Path) -> tuple[Path, int]:
                                                            - probe.textlength(" ".join(words[i:]), font=font)))
         return fit(" ".join(words[:best])) + fit(" ".join(words[best:]))
 
-    lines = [piece for ln in spec.lines for piece in fit(ln)]
+    heads: list[bool] = []   # a source line starting with "§" is a gold heading (all its wrapped pieces are gold)
+    lines: list[str] = []
+    for src in spec.lines:
+        head = src.startswith("§")
+        for piece in fit(src[1:] if head else src):
+            lines.append(piece)
+            heads.append(head)
     widest = max(probe.textlength(ln, font=font) for ln in lines)
     assert widest <= W - 40, f"a line is still wider than the screen ({widest:.0f}px)"
     heights, y = [], 0
@@ -89,7 +95,7 @@ def text_layer(spec: ScrollShort, settings, out: Path) -> tuple[Path, int]:
     d = ImageDraw.Draw(layer)
     blocks_seen, in_block = 0, False
     y = 40
-    for ln, h in zip(lines, heights):
+    for ln, h, head in zip(lines, heights, heads):
         if not ln:
             in_block = False
             y += h
@@ -97,7 +103,7 @@ def text_layer(spec: ScrollShort, settings, out: Path) -> tuple[Path, int]:
         if not in_block:
             blocks_seen += 1
             in_block = True
-        colour = GOLD if blocks_seen <= spec.gold_lines else WHITE
+        colour = GOLD if (head or blocks_seen <= spec.gold_lines) else WHITE
         x = (W - probe.textlength(ln, font=font)) / 2
         d.text((x, y), ln, font=font, fill=colour, stroke_width=STROKE, stroke_fill=INK)
         y += h

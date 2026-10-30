@@ -227,6 +227,80 @@ ARNAB_RELIEF = ScrollShort(
 SCROLL: dict[str, ScrollShort] = {s.slug: s for s in (HANUMAN_CHALISA, HANUMAN_CHALISA_HI, HANUMAN_CHALISA_HI_TB, ARNAB_RELIEF)}
 
 
+# ---- Friday (Lakshmi vara) things not to do: traditional beliefs plus a modern, practical reason for each (2026-10-30) ----
+_FRI_TE = [
+    ("ఇంటిని మురికిగా ఉంచకూడదు", "శుభ్రత ఉన్నచోటే లక్ష్మీదేవి నివసిస్తుందని నమ్మకం.", "శుభ్రమైన ఇల్లు ఆరోగ్యాన్ని, మనశ్శాంతిని కూడా ఇస్తుంది."),
+    ("అప్పు ఇవ్వడం, తీసుకోవడం చేయకూడదు", "శుక్రవారం డబ్బు లావాదేవీలు లక్ష్మీదేవికి ఇష్టం ఉండవని విశ్వాసం.", "తొందరపాటు ఆర్థిక నిర్ణయాలు ఎప్పుడూ మంచివి కావు."),
+    ("గొడవలు, కోపం వద్దు", "కలహాలున్న ఇంట్లో సిరిసంపదలు నిలవవని పెద్దల మాట.", "ప్రశాంత మనసుతోనే మంచి నిర్ణయాలు వస్తాయి."),
+    ("స్త్రీలను అవమానించకూడదు", "స్త్రీ లక్ష్మీ స్వరూపమని శాస్త్రాలు చెబుతాయి.", "తల్లి, భార్య, కోడలు, కూతురిని గౌరవించడమే గొప్ప పూజ."),
+    ("పెద్దలను, గురువులను, పేదలను నొప్పించకూడదు", "వారిని అవమానిస్తే లక్ష్మీదేవి కోపిస్తుందని నమ్మకం.", "గౌరవం ఇస్తే ఆశీస్సులు దక్కుతాయి."),
+    ("మాంసం, మద్యం మానండి", "శుక్రవారం సాత్విక జీవనానికి మంచి రోజు.", "తేలికైన ఆహారం ఆరోగ్యానికీ మేలు చేస్తుంది."),
+    ("మురికి బట్టలు ధరించకూడదు", "స్నానం చేసి శుభ్రమైన బట్టలు వేసుకోవడం శుభమని సంప్రదాయం.", "శుచి, శుభ్రత మనలో ఉత్సాహాన్ని పెంచుతాయి."),
+    ("సోమరితనం వద్దు", "శ్రమించేవారిపైనే లక్ష్మీ కటాక్షం ఉంటుందని చెబుతారు.", "ఉదయాన్నే లేవడం రోజంతా చురుకుగా ఉంచుతుంది."),
+    ("పూజా సామగ్రిని నేల మీద పెట్టకూడదు", "పళ్లెంలో ఉంచి భక్తితో సమర్పించాలి.", "పూజలో క్రమశిక్షణ, గౌరవం ముఖ్యం."),
+    ("ద్వేషం, చెడు ఆలోచనలు వద్దు", "మనసును కూడా శరీరంలా శుభ్రంగా ఉంచుకోవాలి.", "సానుకూల ఆలోచనే నిజమైన సంపదకు మొదటి అడుగు."),
+]
+_FRI_HI = [
+    ("घर को गंदा न रखें", "मान्यता है कि माँ लक्ष्मी स्वच्छ घर में ही वास करती हैं।", "साफ़ घर सेहत और मन की शांति भी देता है।"),
+    ("उधार का लेन-देन न करें", "शुक्रवार को पैसों का लेन-देन लक्ष्मी जी को अप्रसन्न करता है, ऐसा माना जाता है।", "जल्दबाज़ी में पैसों के फ़ैसले वैसे भी ठीक नहीं होते।"),
+    ("झगड़ा और क्रोध न करें", "कलह वाले घर में सुख-समृद्धि नहीं टिकती, ऐसा बड़े कहते हैं।", "शांत मन से ही सही फ़ैसले होते हैं।"),
+    ("स्त्रियों का अपमान न करें", "शास्त्रों में स्त्री को लक्ष्मी का रूप माना गया है।", "माँ, पत्नी, बहू और बेटी का सम्मान सबसे बड़ा पूजन है।"),
+    ("बड़ों, गुरु और ग़रीब को न सताएँ", "इनका अपमान करने से लक्ष्मी जी नाराज़ होती हैं, ऐसी मान्यता है।", "सम्मान देने से आशीर्वाद मिलता है।"),
+    ("मांस और शराब से दूर रहें", "शुक्रवार सात्विक जीवन का दिन माना जाता है।", "हल्का भोजन सेहत के लिए भी अच्छा है।"),
+    ("गंदे कपड़े न पहनें", "स्नान करके साफ़ कपड़े पहनना शुभ माना गया है।", "स्वच्छता हमारे भीतर उत्साह बढ़ाती है।"),
+    ("आलस्य न करें", "परिश्रम करने वालों पर ही लक्ष्मी की कृपा रहती है।", "सुबह जल्दी उठना पूरे दिन को सक्रिय रखता है।"),
+    ("पूजा की सामग्री ज़मीन पर न रखें", "थाली में रखकर श्रद्धा से अर्पित करें।", "पूजा में अनुशासन और सम्मान ज़रूरी है।"),
+    ("द्वेष और बुरे विचार न रखें", "मन को भी तन की तरह शुद्ध रखना चाहिए।", "सकारात्मक सोच ही असली समृद्धि की पहली सीढ़ी है।"),
+]
+
+
+def _friday_lines(title: str, rows, foot: str) -> tuple[str, ...]:
+    out: list[str] = ["§" + title, ""]
+    for i, (head, why, modern) in enumerate(rows, 1):
+        out += [f"§{i}. {head}", why, modern, ""]
+    out += [foot, ""]
+    return tuple(out)
+
+
+def _friday(slug, token_file, expected, lang, rows, title, title_en, head, foot, desc, desc_en, tags, extra_footer="") -> ScrollShort:
+    return ScrollShort(
+        slug=slug, photo="lakshmi_g1.jpg", lines=_friday_lines(head, rows, foot), seconds=0.0, gold_lines=0, lang=lang,
+        token_file=token_file, expected_channel=expected, title=title, title_en=title_en,
+        description=desc + extra_footer, description_en=desc_en,
+        hashtags=["#Shorts", "#Friday", "#Lakshmi", "#Devotional"] + (["#శుక్రవారం", "#లక్ష్మీదేవి"] if lang == "te" else ["#शुक्रवार", "#लक्ष्मी"]),
+        tags=tags)
+
+
+_FRI_NOTE_EN = ("These are traditional beliefs about Fridays, the day of Goddess Lakshmi, compiled from popular Dharma Shastra based "
+                "sources, each with a practical modern reason. They are shared for devotion and general well-being.")
+FRIDAY_TE = _friday(
+    "friday_donts_te", "youtube_token.json", "Mahanavi", "te", _FRI_TE,
+    "శుక్రవారం చేయకూడని 10 పనులు | లక్ష్మీదేవి కృప కోసం | Friday Do's and Don'ts",
+    "10 Things Not to Do on Friday: Lakshmi Devi Traditions and Modern Reasons",
+    "శుక్రవారం చేయకూడని 10 పనులు", "ఇవి సంప్రదాయ నమ్మకాలు. శుక్రవారం లక్ష్మీదేవిని భక్తితో స్మరించండి",
+    "శుక్రవారం లక్ష్మీదేవికి ప్రీతికరమైన రోజు. ఈ రోజు సంప్రదాయం ప్రకారం చేయకూడని 10 పనులు, వాటి వెనుక ఆధునిక కారణాలతో.\n\n"
+    "ఇవి ధర్మశాస్త్ర ఆధారిత ప్రజాదరణ పొందిన నమ్మకాలు. భక్తి, శ్రేయస్సు కోసం పంచుకుంటున్నాం.",
+    _FRI_NOTE_EN,
+    ["friday dos and donts", "friday lakshmi puja", "శుక్రవారం చేయకూడని పనులు", "లక్ష్మీదేవి", "friday lakshmi devi", "telugu devotional", "shorts"])
+_FRI_HI_TAGS = ["शुक्रवार को क्या न करें", "friday lakshmi puja niyam", "shukrawar upay", "माँ लक्ष्मी", "friday dos and donts",
+                "hindi devotional", "shorts"]
+_FRI_HI_NOTE = "ये शुक्रवार से जुड़ी पारंपरिक मान्यताएँ हैं, भक्ति और सामान्य भलाई के लिए साझा की गई हैं।"
+FRIDAY_HI = _friday(
+    "friday_donts_hi", "youtube_token_mantra_sangam.json", "Mantra Sangam", "hi", _FRI_HI,
+    "शुक्रवार को न करें ये 10 काम | माँ लक्ष्मी की कृपा के लिए | Friday Niyam",
+    "10 Things Not to Do on Friday: Maa Lakshmi Traditions", "शुक्रवार को न करें ये 10 काम",
+    "ये परंपरागत मान्यताएँ हैं। शुक्रवार को माँ लक्ष्मी का ध्यान करें",
+    "शुक्रवार माँ लक्ष्मी का दिन है। जानिए परंपरा के अनुसार इस दिन न करने योग्य 10 काम, और हर बात के पीछे आज का व्यावहारिक कारण।\n\n" + _FRI_HI_NOTE,
+    _FRI_NOTE_EN, _FRI_HI_TAGS + ["divine mantra sangam"])
+FRIDAY_HI_TB = _friday(
+    "friday_donts_hi_tb", "youtube_token_trance_beats.json", "Trance Beats", "hi", _FRI_HI,
+    "शुक्रवार को भूलकर भी न करें ये 10 काम | Shukrawar Lakshmi Niyam",
+    "10 Friday Rules for Maa Lakshmi's Blessings", "शुक्रवार के 10 नियम: लक्ष्मी कृपा के लिए",
+    "ये परंपरागत मान्यताएँ हैं। शुक्रवार को माँ लक्ष्मी का ध्यान करें",
+    "शुक्रवार के 10 नियम: माँ लक्ष्मी की कृपा के लिए क्या न करें, और उसका आज का व्यावहारिक कारण।\n\n" + _FRI_HI_NOTE,
+    _FRI_NOTE_EN, _FRI_HI_TAGS + ["devotional trance beats"])
+
+
 def news_spec(payload: dict) -> ScrollShort:
     """A one-off news scroll Short built from a JSON payload (the scheduled news task writes it each morning and evening).
     payload: title, title_en, lines (list of str, blank string = gap), person (cbn|lokesh|pawan, default cbn), sources (str),
@@ -251,3 +325,6 @@ def news_spec(payload: dict) -> ScrollShort:
         description_en=payload.get("description_en", payload.get("title_en", "")),
         hashtags=["#Shorts", "#ChandrababuNaidu", "#TDP", "#AndhraPradesh", "#PulseTDPFans"],
         tags=list(payload.get("tags", [])) + ["chandrababu naidu", "andhra pradesh news", "tdp", "shorts"])
+
+
+SCROLL.update({x.slug: x for x in (FRIDAY_TE, FRIDAY_HI, FRIDAY_HI_TB)})
