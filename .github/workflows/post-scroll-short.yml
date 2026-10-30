@@ -8,6 +8,10 @@ on:
         description: "Scroll spec name (hanuman_chalisa_scroll, hanuman_chalisa_scroll_hi, hanuman_chalisa_scroll_hi_tb)"
         required: true
         default: "hanuman_chalisa_scroll"
+      payload:
+        description: "JSON for spec=news_custom: {title, title_en, lines[], person, sources} (written by the scheduled news task)"
+        required: false
+        default: ""
       privacy:
         description: "private, unlisted or public"
         required: false
@@ -63,9 +67,11 @@ jobs:
           MAHANAVI_LOG_DIR: ./data/logs
           MAHANAVI_TIMEZONE: Asia/Kolkata
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ inputs.token_file }}
+          NEWS_PAYLOAD: ${{ inputs.payload }}
         run: |
           set -o pipefail
-          python3 -m mahanavi.scripts.post_scroll_short --spec ${{ inputs.spec }} --privacy ${{ inputs.privacy }} 2>&1 | tee data/recent_uploads_log.txt
+          if [ -n "$NEWS_PAYLOAD" ]; then printf '%s' "$NEWS_PAYLOAD" > data/news_payload.json; EXTRA="--payload data/news_payload.json"; else EXTRA=""; fi
+          python3 -m mahanavi.scripts.post_scroll_short --spec ${{ inputs.spec }} --privacy ${{ inputs.privacy }} $EXTRA 2>&1 | tee data/recent_uploads_log.txt
 
       - name: Push state to Drive
         if: always()

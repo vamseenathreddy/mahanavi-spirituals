@@ -225,3 +225,29 @@ ARNAB_RELIEF = ScrollShort(
 )
 
 SCROLL: dict[str, ScrollShort] = {s.slug: s for s in (HANUMAN_CHALISA, HANUMAN_CHALISA_HI, HANUMAN_CHALISA_HI_TB, ARNAB_RELIEF)}
+
+
+def news_spec(payload: dict) -> ScrollShort:
+    """A one-off news scroll Short built from a JSON payload (the scheduled news task writes it each morning and evening).
+    payload: title, title_en, lines (list of str, blank string = gap), person (cbn|lokesh|pawan, default cbn), sources (str),
+    description (optional), tags (optional list). seconds is computed from the amount of text."""
+    import datetime as dt
+    import glob
+
+    lines = [str(x).strip() for x in payload["lines"]]
+    out: list[str] = []
+    for ln in lines:
+        if ln:
+            out += [ln, ""]
+    music = sorted(glob.glob("channels/trending/assets/music/approved/*.mp3"))
+    pick = music[dt.date.today().toordinal() % len(music)] if music else ""
+    src = payload.get("sources", "Andhra Jyothy, Eenadu")
+    desc = payload.get("description") or payload["title"]
+    return ScrollShort(
+        slug="news_custom", photo="", bg=f"news:{payload.get('person', 'cbn')}", music=pick, seconds=0.0, lang="te",
+        token_file="youtube_token_pulse_boosting.json", expected_channel="Pulse", gold_lines=1, dim=0.0,
+        title=payload["title"][:98], title_en=payload.get("title_en", payload["title"])[:98], lines=tuple(out),
+        description=f"{desc}\n\nవార్తా మూలాలు / Sources: {src}\n\nఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి.",
+        description_en=payload.get("description_en", payload.get("title_en", "")),
+        hashtags=["#Shorts", "#ChandrababuNaidu", "#TDP", "#AndhraPradesh", "#PulseTDPFans"],
+        tags=list(payload.get("tags", [])) + ["chandrababu naidu", "andhra pradesh news", "tdp", "shorts"])

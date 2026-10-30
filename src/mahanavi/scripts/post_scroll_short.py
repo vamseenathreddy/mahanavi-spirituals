@@ -112,6 +112,10 @@ def build(spec: ScrollShort, settings, out_dir: Path) -> Path:
     music = (Path(__file__).resolve().parents[3] / spec.music) if spec.music else settings.alert_short_music_path
     if music is None or not music.exists():
         raise MahanaviError(f"Music file missing: {music}")
+    if spec.seconds <= 0:   # news payloads: reading time from the amount of text (about 50 px/s, 25-150 s)
+        import dataclasses
+
+        spec = dataclasses.replace(spec, seconds=min(150.0, max(25.0, (START_Y - END_Y + th) / 50.0)))
     speed = (START_Y - END_Y + th) / spec.seconds
     video = out_dir / f"{spec.slug}.mp4"
     fc = (f"[0:v]scale={W}:{H},setsar=1,fps={FPS}[b];"
@@ -153,11 +157,20 @@ def upload(youtube, spec: ScrollShort, video: Path, privacy: str) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--spec", default="hanuman_chalisa_scroll", choices=sorted(SCROLL))
+    ap.add_argument("--spec", default="hanuman_chalisa_scroll", choices=sorted(SCROLL) + ["news_custom"])
+    ap.add_argument("--payload", help="JSON file for --spec news_custom (title, title_en, lines, person, sources)")
     ap.add_argument("--privacy", default="private", choices=["private", "unlisted", "public"])
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args(argv)
-    spec, settings = SCROLL[args.spec], get_settings()
+    if args.spec == "news_custom":
+        import json
+
+        from mahanavi.content.scroll_shorts import news_spec
+
+        spec = news_spec(json.loads(Path(args.payload).read_text(encoding="utf-8")))
+    else:
+        spec = SCROLL[args.spec]
+    settings = get_settings()
     try:
         video = build(spec, settings, settings.output_dir / "scroll_shorts" / spec.slug)
         print(f"Assembled: {video} ({spec.seconds:.0f}s)")
