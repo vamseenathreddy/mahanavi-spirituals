@@ -256,15 +256,21 @@ _FRI_HI = [
 
 def _friday_lines(title: str, rows, foot: str) -> tuple[str, ...]:
     out: list[str] = ["§" + title, ""]
-    for i, (head, why, modern) in enumerate(rows, 1):
-        out += [f"§{i}. {head}", why, modern, ""]
+    n = 0
+    for head, why, modern in rows:
+        if why is None:   # a group heading such as "do" / "don't"
+            out += ["§" + head, ""]
+            continue
+        n += 1
+        out += [f"§{n}. {head}", why, modern, ""]
     out += [foot, ""]
     return tuple(out)
 
 
-def _friday(slug, token_file, expected, lang, rows, title, title_en, head, foot, desc, desc_en, tags, extra_footer="") -> ScrollShort:
+def _friday(slug, token_file, expected, lang, rows, title, title_en, head, foot, desc, desc_en, tags, extra_footer="",
+            photo="lakshmi_g1.jpg") -> ScrollShort:
     return ScrollShort(
-        slug=slug, photo="lakshmi_g1.jpg", lines=_friday_lines(head, rows, foot), seconds=0.0, gold_lines=0, lang=lang,
+        slug=slug, photo=photo, lines=_friday_lines(head, rows, foot), seconds=0.0, gold_lines=0, lang=lang,
         token_file=token_file, expected_channel=expected, title=title, title_en=title_en,
         description=desc + extra_footer, description_en=desc_en,
         hashtags=["#Shorts", "#Friday", "#Lakshmi", "#Devotional"] + (["#శుక్రవారం", "#లక్ష్మీదేవి"] if lang == "te" else ["#शुक्रवार", "#लक्ष्मी"]),
@@ -301,6 +307,33 @@ FRIDAY_HI_TB = _friday(
     _FRI_NOTE_EN, _FRI_HI_TAGS + ["devotional trance beats"])
 
 
+# ---- Saturday: Venkateswara Swamy do's and don'ts (owner request 2026-10-31; posted private first for review) ----
+_SAT_TE = [
+    ("ఇవి చేయండి", None, None),
+    ("తెల్లవారుజామున స్నానం చేయండి", "శుచిగా స్వామిని స్మరించడం శనివారం శుభప్రదమని నమ్మకం.", "సుప్రభాతం వింటే రోజు ప్రశాంతంగా మొదలవుతుంది."),
+    ("దీపం వెలిగించండి", "నెయ్యి లేదా నూనె దీపం స్వామికి ప్రీతికరమని సంప్రదాయం.", "దీపం ముందు కూర్చుంటే మనసు ఏకాగ్రమవుతుంది."),
+    ("తులసి దళాలు సమర్పించండి", "తులసి స్వామికి అత్యంత ప్రియమైనదని చెబుతారు.", "తులసి మొక్క ఇంటికి మంచి వాతావరణాన్ని ఇస్తుంది."),
+    ("గోవింద నామాలు జపించండి", "ఓం నమో వేంకటేశాయ అని భక్తితో స్మరించండి.", "నామస్మరణ ఒత్తిడిని తగ్గించి మనసును తేలిక చేస్తుంది."),
+    ("సాత్విక ఆహారం తీసుకోండి", "ఉపవాసం ఉండేవారు పండ్లు, పాలు తీసుకుంటారు.", "శక్తి ఉన్నంత వరకే చేయండి, ఆరోగ్యం ముఖ్యం."),
+    ("అన్నదానం చేయండి", "ఆకలితో ఉన్నవారికి భోజనం పెట్టడం గొప్ప సేవ.", "ఇచ్చే సంతోషం మనసుకు నిజమైన తృప్తిని ఇస్తుంది."),
+    ("ఇవి వద్దు", None, None),
+    ("మాంసం, మద్యం, ఉల్లి వెల్లుల్లి వద్దు", "శనివారం స్వామి సేవకు సాత్విక ఆహారం మంచిదని పెద్దల మాట.", "తేలికైన ఆహారం శరీరానికీ మేలు."),
+    ("కోపం, గొడవలు వద్దు", "భక్తి నిలవాలంటే మనసు ప్రశాంతంగా ఉండాలి.", "కోపం తగ్గిస్తే మంచి నిర్ణయాలు వస్తాయి."),
+    ("వాడిన పూలు, ఎంగిలి నైవేద్యం వద్దు", "స్వామికి తాజా పూలు, శుద్ధమైన నైవేద్యమే సమర్పించాలి.", "శుభ్రత పూజలో ముఖ్యమైన భాగం."),
+    ("ఆహారాన్ని వృథా చేయకండి", "అన్నం పరబ్రహ్మ స్వరూపమని పెద్దలు చెబుతారు.", "అవసరమైనంతే వండితే ఖర్చు కూడా తగ్గుతుంది."),
+]
+SATURDAY_TE = _friday(
+    "saturday_venkateswara_te", "youtube_token.json", "Mahanavi", "te", _SAT_TE,
+    "శనివారం వేంకటేశ్వర స్వామికి చేయాల్సినవి, చేయకూడనివి | Saturday Do's and Don'ts | Venkateswara",
+    "Saturday Do's and Don'ts for Lord Venkateswara: Traditions and Modern Reasons",
+    "శనివారం వేంకటేశ్వర స్వామికి చేయాల్సినవి, చేయకూడనివి", "ఇవి సంప్రదాయ నమ్మకాలు. ఓం నమో వేంకటేశాయ",
+    "శనివారం వేంకటేశ్వర స్వామికి ప్రీతికరమైన రోజు. ఈ రోజు చేయవలసిన, చేయకూడని పనులు, వాటి వెనుక ఆధునిక కారణాలతో.\n\n"
+    "ఇవి సంప్రదాయ నమ్మకాలు. భక్తి, శ్రేయస్సు కోసం పంచుకుంటున్నాం.",
+    "Traditional Saturday observances for Lord Venkateswara (Balaji), each with a practical modern reason, shared for devotion and general well-being.",
+    ["saturday venkateswara", "venkateswara swamy saturday", "శనివారం వేంకటేశ్వర స్వామి", "govinda namalu", "saturday dos and donts",
+     "telugu devotional", "shorts"], photo="venkateswara_n1.jpg")
+
+
 def news_spec(payload: dict) -> ScrollShort:
     """A one-off news scroll Short built from a JSON payload (the scheduled news task writes it each morning and evening).
     payload: title, title_en, lines (list of str, blank string = gap), person (cbn|lokesh|pawan, default cbn), sources (str),
@@ -327,4 +360,7 @@ def news_spec(payload: dict) -> ScrollShort:
         tags=list(payload.get("tags", [])) + ["chandrababu naidu", "andhra pradesh news", "tdp", "shorts"])
 
 
-SCROLL.update({x.slug: x for x in (FRIDAY_TE, FRIDAY_HI, FRIDAY_HI_TB)})
+import dataclasses as _dc
+
+SATURDAY_TE = _dc.replace(SATURDAY_TE, dim=0.58)   # the sharp temple photo is busy: darker so the text stays readable
+SCROLL.update({x.slug: x for x in (FRIDAY_TE, FRIDAY_HI, FRIDAY_HI_TB, SATURDAY_TE)})
