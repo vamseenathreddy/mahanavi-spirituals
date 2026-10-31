@@ -324,9 +324,9 @@ _SAT_TE = [
 ]
 SATURDAY_TE = _friday(
     "saturday_venkateswara_te", "youtube_token.json", "Mahanavi", "te", _SAT_TE,
-    "శనివారం వేంకటేశ్వర స్వామికి చేయాల్సినవి, చేయకూడనివి | Saturday Do's and Don'ts | Venkateswara",
+    "శనివారం వేంకటేశ్వర స్వామికి చేయకూడనివి, చేయాల్సినవి | Saturday Don'ts and Do's and Don'ts | Venkateswara",
     "Saturday Do's and Don'ts for Lord Venkateswara: Traditions and Modern Reasons",
-    "శనివారం వేంకటేశ్వర స్వామికి చేయాల్సినవి, చేయకూడనివి", "ఇవి సంప్రదాయ నమ్మకాలు. ఓం నమో వేంకటేశాయ",
+    "శనివారం వేంకటేశ్వర స్వామికి చేయకూడనివి, చేయాల్సినవి", "ఇవి సంప్రదాయ నమ్మకాలు. ఓం నమో వేంకటేశాయ",
     "శనివారం వేంకటేశ్వర స్వామికి ప్రీతికరమైన రోజు. ఈ రోజు చేయవలసిన, చేయకూడని పనులు, వాటి వెనుక ఆధునిక కారణాలతో.\n\n"
     "ఇవి సంప్రదాయ నమ్మకాలు. భక్తి, శ్రేయస్సు కోసం పంచుకుంటున్నాం.",
     "Traditional Saturday observances for Lord Venkateswara (Balaji), each with a practical modern reason, shared for devotion and general well-being.",
