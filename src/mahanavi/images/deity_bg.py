@@ -24,7 +24,7 @@ PHOTOS = {
     "shani": ["shani_g1", "shani_g3", "shani_g5"], "surya": ["surya_g2"], "durga": ["durga_g1", "durga_g2", "durga_n1", "durga_n2", "durga_n3", "durga_n4", "durga_n5", "durga_n6", "durga_n7", "durga_n8", "durga_n9", "durga_n10"],
     "krishna": ["krishna_g1", "krishna_n1", "krishna_n2", "krishna_n3", "krishna_n4", "krishna_n5", "krishna_n6", "krishna_n7", "krishna_n8", "krishna_n9", "krishna_n10"], "rama": ["rama_g1", "rama_g2", "rama_n1", "rama_n2", "rama_n3", "rama_n4", "rama_n5", "rama_n6", "rama_n7", "rama_n8", "rama_n9", "rama_n10"], "narasimha": ["narasimha_g1", "narasimha_g2", "narasimha_n1", "narasimha_n2", "narasimha_n3"],
     "saraswati": ["saraswati_g2", "saraswati_n1", "saraswati_n2", "saraswati_n3", "saraswati_n4", "saraswati_n5", "saraswati_n6", "saraswati_n7", "saraswati_n8", "saraswati_n9", "saraswati_n10"], "murugan": ["murugan_g1", "murugan_g2"], "parvati": ["parvati_g2"],
-    "dattatreya": ["dattatreya_g1", "dattatreya_g3", "dattatreya_g5"], "venkateswara": ["venkateswara_g1"],
+    "dattatreya": ["dattatreya_g1", "dattatreya_g3", "dattatreya_g5"], "venkateswara": ["venkateswara_g1", "venkateswara_g2"],
 }
 # Mesha, Vrishabha, Mithuna, Karka, Simha, Kanya, Tula, Vrischika, Dhanus, Makara, Kumbha, Meena
 RASHI_GOD = ["g_mangala", "g_shukra", "g_budha", "g_chandra", "g_surya", "g_budha", "g_shukra", "g_mangala", "g_guru",

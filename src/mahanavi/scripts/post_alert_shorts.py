@@ -273,7 +273,7 @@ def _pick_subscribe_text(pool: list[str], for_date: date) -> str:
 # Thursday is Dattatreya (never Sai Baba); the owner supplied the Dattatreya photos on 2026-10-20.
 # 2026-10-25 owner: Monday Shiva, Tuesday Anjaneya, Friday Lakshmi are fixed; Wed, Thu, Sat and Sun rotate through
 # this pool of gods (a different god on each of those days, photo rotating too).
-_FIXED_GOD = {0: "shiva", 1: "hanuman", 4: "lakshmi"}
+_FIXED_GOD = {0: "shiva", 1: "hanuman", 4: "lakshmi", 5: "venkateswara"}   # Saturday fixed 2026-10-31 (owner)
 _ROTATING_SLOT = {2: 0, 3: 1, 5: 2, 6: 3}
 _GOD_POOL = ("ganesha", "venkateswara", "vishnu", "krishna", "rama", "durga", "dattatreya", "saraswati", "narasimha",
              "murugan", "shani", "surya", "parvati")
@@ -535,7 +535,7 @@ def main() -> int:
         )
         durmuhurtham_card = AlertCard(
             title="ఈరోజు దుర్ముహూర్తం",
-            lines=[(PANCHANG_LABELS["durmuhurtham"], panchang.durmuhurtham), *_mantra_lines(for_date, offset=2)],
+            lines=[("సమయం", panchang.durmuhurtham), *_mantra_lines(for_date, offset=2)],
             top_color=COLOR_DURMUHURTHAM_TOP, bottom_color=COLOR_DURMUHURTHAM_BOTTOM,
             filename_suffix="durmuhurtham", icon_paths=icon_paths,
             date_text=date_text,
