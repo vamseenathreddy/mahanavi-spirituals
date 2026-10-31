@@ -161,6 +161,24 @@ def upload(youtube, spec: ScrollShort, video: Path, privacy: str) -> str:
     return str(youtube.videos().insert(part="snippet,status,localizations", body=body, media_body=media).execute()["id"])
 
 
+def _report_processing(youtube, vid: str) -> None:
+    """Wait up to ~90 s for YouTube to finish processing and say so, so a 'not playing' report can be told apart from 'still processing'."""
+    import time
+
+    state = "unknown"
+    for _ in range(9):
+        try:
+            item = youtube.videos().list(part="processingDetails,status", id=vid).execute()["items"][0]
+            state = item.get("processingDetails", {}).get("processingStatus", "unknown")
+            if state in ("succeeded", "failed", "terminated"):
+                break
+        except Exception as exc:  # noqa: BLE001
+            state = f"check failed: {type(exc).__name__}"
+            break
+        time.sleep(10)
+    print(f"::notice::YouTube processing status: {state}")
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--spec", default="hanuman_chalisa_scroll", choices=sorted(SCROLL) + ["news_custom"])
@@ -188,6 +206,7 @@ def main(argv: list[str] | None = None) -> int:
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected '{spec.expected_channel}'.")
         vid = upload(youtube, spec, video, args.privacy)
         print(f"Channel: {got}\nUploaded ({args.privacy}): https://www.youtube.com/watch?v={vid}")
+        _report_processing(youtube, vid)
         print(f"::notice::scroll short uploaded ({args.privacy}): https://www.youtube.com/watch?v={vid}")
         return 0
     except (MahanaviError, YouTubeUploadError) as exc:
