@@ -97,6 +97,8 @@ class YouTubeShortsUploader:
         _title = brand_title(seo.title)
         _base = getattr(seo, "description", None)
         _desc = (f"{card_text.description(_base)}\n\n{' '.join(seo.hashtags)}" if _base else seo.full_caption())
+        from mahanavi.content.links import strip_links
+        _desc = strip_links(_desc)
         try:
             post_ledger.check(self._settings.youtube_token_file, _title, _desc)
         except post_ledger.DuplicatePost as dup:

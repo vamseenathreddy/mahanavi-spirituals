@@ -64,6 +64,9 @@ def upload_video(yt, path, title, description, tags, localizations=None, publish
     from mahanavi.content import card_text
     from mahanavi.publishers import post_ledger
     description = card_text.description(description)
+    from mahanavi.content.links import strip_links
+    description = strip_links(description)
+    localizations = {k: {**v, "description": strip_links(v.get("description", ""))} if isinstance(v, dict) and "description" in v else v for k, v in (localizations or {}).items()} or localizations
     yt._tags = list(tags or [])
     tf = getattr(yt, "_token_file", None)
     if tf:

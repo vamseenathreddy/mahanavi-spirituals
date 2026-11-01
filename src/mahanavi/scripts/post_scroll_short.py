@@ -150,12 +150,14 @@ def upload(youtube, spec: ScrollShort, video: Path, privacy: str) -> str:
                 f"{' '.join(spec.hashtags)}")
     else:
         desc = f"{spec.description}\n\n{' '.join(spec.hashtags)}"
+    from mahanavi.content.links import strip_links
+    desc = strip_links(desc)
     body = {
         "snippet": {"title": brand_title(spec.title) if mahanavi else spec.title, "description": desc,
                     "tags": brand_tags(spec.tags) if mahanavi else spec.tags, "categoryId": DEFAULT_CATEGORY_ID,
                     "defaultLanguage": spec.lang, "defaultAudioLanguage": spec.lang},
         "status": {"privacyStatus": privacy, "selfDeclaredMadeForKids": False},
-        "localizations": {"en": {"title": spec.title_en, "description": spec.description_en}},
+        "localizations": {"en": {"title": spec.title_en, "description": strip_links(spec.description_en)}},
     }
     media = MediaFileUpload(str(video), mimetype="video/mp4", chunksize=-1, resumable=True)
     return str(youtube.videos().insert(part="snippet,status,localizations", body=body, media_body=media).execute()["id"])
