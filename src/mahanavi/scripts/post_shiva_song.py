@@ -43,6 +43,13 @@ SHORT = {
 }
 
 
+WEEKLY_TITLES = {
+    "B": ("శివ ధ్యానం: కైలాసంలో శివుడు | Shiva Song #Shorts", "Shiva in deep meditation on Kailash.\n"),
+    "C": ("శివ అభిషేకం | నీలకంఠుడి కథ | Shiva Song #Shorts", "Shiva abhishekam and the story of Neelakantha.\n"),
+    "D": ("కార్తీక పౌర్ణమి ముందు శివ గీతం | Shiva Song #Shorts", "A Shiva song before Karthika Pournami (24 November).\n"),
+}
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--kind", choices=["long", "short"], default="short")
@@ -69,6 +76,9 @@ def main(argv: list[str] | None = None) -> int:
         title, desc = SONG_TITLE, LONG_DESC
     else:
         t, d = SHORT[a.variant]
+        extra = WEEKLY_TITLES.get(Path(a.file).stem)
+        if a.variant == "weekly" and extra:  # distinct title per week: the duplicate ledger rejects repeats
+            t, d = extra[0], d + extra[1] + "\n"
         title, desc = t, d + "\n" + HASHTAGS + " #Shorts"
     print(f"{a.kind}: '{title}' -> public at {when:%Y-%m-%d %H:%M} UTC ({a.file})")
     if a.dry_run:
