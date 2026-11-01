@@ -21,9 +21,17 @@ ENGINE_FONTS = Path(__file__).resolve().parents[3] / "channels" / "engine" / "as
 
 TEXTS = {
     "te": {"title": "ఈ వారం రాశి మంత్రాలు", "col1": "రాశి", "col2": "మంత్రం",
-           "chant": "ప్రతి మంత్రం 108 సార్లు చదువుకోండి", "cta": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"},
+           "count": "రోజూ ఉదయం 108 సార్లు", "chant": "స్నానం తర్వాత, ఉదయం చదవండి",
+           "donts_title": "చదివేటప్పుడు చేయకూడనివి",
+           "donts": ["ఫోన్ చూస్తూ, మాట్లాడుతూ చదవకండి", "స్నానం లేకుండా, మురికి బట్టలతో వద్దు",
+                     "మంత్రం మధ్యలో ఆపి లేవకండి", "తొందరగా, గబగబా చదవకండి"],
+           "cta": "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"},
     "hi": {"title": "इस सप्ताह के राशि मंत्र", "col1": "राशि", "col2": "मंत्र",
-           "chant": "हर मंत्र 108 बार जपें", "cta": "अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे"},
+           "count": "रोज सुबह 108 बार", "chant": "स्नान के बाद, सुबह जपें",
+           "donts_title": "जप करते समय न करें",
+           "donts": ["फोन देखते या बात करते हुए न जपें", "बिना स्नान, गंदे कपड़ों में न जपें",
+                     "बीच में रुककर न उठें", "जल्दबाजी में न जपें"],
+           "cta": "अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे"},
 }
 
 
@@ -56,7 +64,7 @@ class RashiWeeklyCardRenderer:
 
         L, R = 70, 930
         c1 = L + 310
-        y0, hh, rh = 300, 70, 80
+        y0, hh, rh = 290, 64, 66
         shade = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         sd = ImageDraw.Draw(shade)
         for i in range(len(card.rows)):
@@ -77,21 +85,29 @@ class RashiWeeklyCardRenderer:
         ctr(card.date_text, date_font, mid, 100, DARK)
         ctr(t["title"], self._font(lang, 54), mid, 222, GOLD)
         d.rectangle((L, y0, R, y0 + hh), fill=GOLD)
-        ctr(t["col1"], self._font(lang, 46), (L + c1) // 2, y0 + 6, DARK)
-        ctr(t["col2"], self._font(lang, 46), (c1 + R) // 2, y0 + 6, DARK)
+        ctr(t["col1"], self._font(lang, 42), (L + c1) // 2, y0 + 4, DARK)
+        ctr(t["col2"], self._font(lang, 42), (c1 + R) // 2, y0 + 4, DARK)
         y = y0 + hh
-        name_f, en_f, m_f = self._font(lang, 46), self._font("te", 26, bold=False), self._font(lang, 46)
+        name_f, en_f, m_f = self._font(lang, 40), self._font("te", 21, bold=False), self._font(lang, 38)
+        cnt_f = self._font(lang, 24, bold=False)
         for row in card.rows:
-            ctr(row["name"], name_f, (L + c1) // 2, y + 2, LIGHT)
-            ctr(row["name_en"], en_f, (L + c1) // 2, y + 52, GOLD)
+            ctr(row["name"], name_f, (L + c1) // 2, y, LIGHT)
+            ctr(row["name_en"], en_f, (L + c1) // 2, y + 42, GOLD)
             mf = m_f
             if d.textlength(row["mantra"], font=mf) > R - c1 - 20:
-                mf = self._font(lang, 40)
-            ctr(row["mantra"], mf, (c1 + R) // 2, y + 16, LIGHT)
+                mf = self._font(lang, 34)
+            ctr(row["mantra"], mf, (c1 + R) // 2, y + 2, LIGHT)
+            ctr(row.get("count") or t["count"], cnt_f, (c1 + R) // 2, y + 40, GOLD)
             y += rh
         d.line((c1, y0, c1, y), fill=GOLD, width=3)
         d.rectangle((L, y0, R, y), outline=GOLD, width=3)
-        ctr(t["chant"], self._font(lang, 50), mid, y + 28, GOLD)
+        ctr(t["chant"], self._font(lang, 46), mid, y + 16, GOLD)
+        dy = y + 84
+        ctr(t["donts_title"], self._font(lang, 38), mid, dy, (255, 150, 120))
+        dont_f = self._font(lang, 32, bold=False)
+        for i, line in enumerate(t["donts"]):
+            ctr("\u2022 " + line, dont_f, mid, dy + 52 + i * 46, LIGHT)
+        y = dy + 52 + 4 * 46 - 100
         cta_f, size = self._font(lang, 44), 44
         while d.textlength(t["cta"], font=cta_f) > W - 240 and size > 24:   # the subscribe line must fit the card width
             size -= 2

@@ -30,7 +30,7 @@ from mahanavi.video.assembler import (
     assemble_short,
 )
 
-WEEKLY_SECONDS = 4.9  # owner request 2026-10-11: the weekly Rashi table Short must be only 5 seconds
+WEEKLY_SECONDS = 12.0  # 2026-11-01: was 4.9; the card now also carries the daily count and the don'ts, which need time to read
 
 
 def build_seo(date_text: str, rows: list[dict]) -> ShortSeoContent:
@@ -41,11 +41,13 @@ def build_seo(date_text: str, rows: list[dict]) -> ShortSeoContent:
     description = (
         f"{brand_tagline('rashi_mantra')}\n\n"
         f"ఈ వారం ({date_text}) మీ రాశికి సూచించిన మంత్రం:\n\n" + "\n".join(lines_te) +
-        "\n\nప్రతి మంత్రం 108 సార్లు చదువుకోండి. గ్రహ స్థితిని బట్టి ప్రతి ఆదివారం కొత్త మంత్రాలు వస్తాయి."
+        "\n\nరోజూ ఉదయం స్నానం తర్వాత ప్రతి మంత్రం 108 సార్లు చదువుకోండి. గ్రహ స్థితిని బట్టి ప్రతి ఆదివారం కొత్త మంత్రాలు వస్తాయి."
+        "\n\nచదివేటప్పుడు చేయకూడనివి: ఫోన్ చూస్తూ లేదా మాట్లాడుతూ చదవకండి. స్నానం లేకుండా, మురికి బట్టలతో చదవకండి. "
+        "మంత్రం మధ్యలో ఆపి లేవకండి. తొందరగా, గబగబా చదవకండి."
         "\n\nఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు. ప్రతి ఆదివారం కోసం సబ్‌స్క్రైబ్ చేయండి."
         f"\n\n{_CHANNEL_FOOTER_TE}\n\n---\n\n"
         f"Weekly Rashi (zodiac) mantras for {date_text}, chosen from this week's planetary positions "
-        "(traditional Vedic gochara). Chant your rashi's mantra 108 times. New table every Sunday.\n\n"
+        "(traditional Vedic gochara). Chant your rashi's mantra 108 times every morning after a bath. Do not chant while using the phone or talking, without bathing, or in a hurry, and do not get up in the middle. New table every Sunday.\n\n"
         + "\n".join(f"{r['name_en']}: {r['mantra']} ({r['planet']})" for r in rows) + f"\n\n{_CHANNEL_FOOTER_EN}"
     )
     hashtags = ["#Shorts", "#రాశిఫలాలు", "#WeeklyRashi", "#RashiMantra", "#జాతకం", "#Devotional"]
