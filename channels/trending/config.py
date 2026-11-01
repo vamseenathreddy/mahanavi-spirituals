@@ -93,7 +93,12 @@ ELECTION_WEEK = ("2026-11-02", "2026-11-08")   # MPTC/ZPTC polling 5 Nov, counti
 def slots_for(day) -> set[str]:
     """2026-11-01: election week posts 5 Shorts a day (about 06, 10, 14, 18 and 20 IST); after it, 4 a day. Fewer, better posts
     than the 12-a-day run that preceded the 24 Oct reach collapse."""
-    if ELECTION_WEEK[0] <= day.isoformat() <= ELECTION_WEEK[1]:
+    d = day.isoformat()
+    if d == "2026-11-03":      # campaign silence starts 5 PM on 3 Nov: only the daytime slots (before 17:00 IST) post
+        return {"t4", "t6", "t8"}
+    if d in ("2026-11-04", "2026-11-05"):   # silence period and polling day: no party card posts (informational scroll Shorts only)
+        return set()
+    if ELECTION_WEEK[0] <= d <= ELECTION_WEEK[1]:
         return {"t4", "t6", "t8", "t10", "t11"}
     return {"t4", "t7", "t10", "t11"}
 

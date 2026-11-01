@@ -384,10 +384,12 @@ def test_card_summary_must_be_in_the_card_language():
 
 def test_election_week_five_slots_then_four():
     import datetime as dt
-    for d in range(2, 9):   # 2 to 8 Nov 2026: MPTC/ZPTC polling 5 Nov, counting 7 Nov
+    for d in (2, 6, 7, 8):   # MPTC/ZPTC polling 5 Nov, counting 7 Nov
         day = dt.date(2026, 11, d)
         assert len(cfg.slots_for(day)) == 5, day
         assert cfg.slots_for(day) <= cfg.ACTIVE_SLOTS
+    assert cfg.slots_for(dt.date(2026, 11, 3)) == {"t4", "t6", "t8"}   # silence from 5 PM
+    assert cfg.slots_for(dt.date(2026, 11, 4)) == set() and cfg.slots_for(dt.date(2026, 11, 5)) == set()
     for day in (dt.date(2026, 10, 30), dt.date(2026, 11, 9), dt.date(2026, 11, 14)):
         assert len(cfg.slots_for(day)) == 4, day
 
