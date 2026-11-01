@@ -1,0 +1,88 @@
+name: Channel A | Shiva Song upload (scheduled release)
+
+# Uploads the Karthika Masam Shiva song or one of its promo Shorts to Mahanavi Spirituals as a PRIVATE
+# video that YouTube itself makes public at publish_at. Media files live on the assets-only branch
+# "shiva-song-assets" (long/ and shorts/), not in main.
+on:
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: "long or short"
+        required: true
+        default: short
+      variant:
+        description: "Short only: glimpse (tomorrow teaser) or weekly (full song on the channel)"
+        required: false
+        default: weekly
+      file:
+        description: "Path inside shiva-song-assets, e.g. long/shiva_song_01.mp4 or shorts/A.mp4"
+        required: true
+      publish_at:
+        description: "ISO time with offset, e.g. 2026-11-02T05:30:00+05:30"
+        required: true
+      thumb:
+        description: "Long only: thumbnail path inside shiva-song-assets (optional)"
+        required: false
+        default: ''
+
+concurrency:
+  group: post-shiva-song
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: shiva-song-assets
+          path: shiva_assets
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Upload and schedule
+        env:
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          KIND: ${{ inputs.kind }}
+          VARIANT: ${{ inputs.variant }}
+          FILE: ${{ inputs.file }}
+          PUBLISH_AT: ${{ inputs.publish_at }}
+          THUMB: ${{ inputs.thumb }}
+        run: |
+          ARGS="--kind $KIND --variant $VARIANT --file shiva_assets/$FILE --publish-at $PUBLISH_AT"
+          if [ -n "$THUMB" ]; then ARGS="$ARGS --thumb shiva_assets/$THUMB"; fi
+          PYTHONPATH=src:. python3 -m mahanavi.scripts.post_shiva_song $ARGS
+      - name: Save state to Google Drive
+        if: always()
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/ci/notify_failure.py "Channel A | Shiva Song upload"
