@@ -45,14 +45,23 @@ SHORT = {
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--kind", choices=["long", "short"], required=True)
+    ap.add_argument("--kind", choices=["long", "short"], default="short")
+    ap.add_argument("--playlist-only", default="", metavar="VIDEO_ID", help="Only add this existing video to the Shiva Songs playlist.")
     ap.add_argument("--variant", choices=sorted(SHORT), default="weekly")
-    ap.add_argument("--file", required=True)
+    ap.add_argument("--file", default="")
     ap.add_argument("--thumb", default="")
-    ap.add_argument("--publish-at", required=True, help="ISO time with offset, e.g. 2026-11-02T05:30:00+05:30")
+    ap.add_argument("--publish-at", default="", help="ISO time with offset, e.g. 2026-11-02T05:30:00+05:30")
     ap.add_argument("--token", default="./data/youtube_token.json")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args(argv)
+    if a.playlist_only:
+        yt = upload.service(Path(a.token))
+        pl = upload.find_or_create_playlist(yt, PLAYLIST, "Karthika Masam Shiva songs by Mahanavi Spirituals", "te")
+        upload.add_to_playlist(yt, a.playlist_only, pl)
+        print(f"::notice::added {a.playlist_only} to the Shiva Songs playlist")
+        return 0
+    if not a.file or not a.publish_at:
+        raise SystemExit("::error::--file and --publish-at are required")
     when = dt.datetime.fromisoformat(a.publish_at).astimezone(dt.timezone.utc)
     if when <= dt.datetime.now(dt.timezone.utc) + dt.timedelta(minutes=5):
         raise SystemExit(f"::error::--publish-at {a.publish_at} is not at least 5 minutes in the future")
