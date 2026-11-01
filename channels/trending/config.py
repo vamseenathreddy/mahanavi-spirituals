@@ -26,7 +26,10 @@ NICHES = ["chandrababu", "lokesh", "tdp", "nda", "development", "innovations", "
 # Nuzvid and Chatrai ("local") are not in the daily pattern: one post a month, on the 1st (see plan()).
 NTR_ENABLED = False   # NTR as a fallback for quiet news days and the every-other-day slot: off (NTR Shorts got 13/31/99 views vs 1.5k+ for news)
 NTR_WEEKDAY = 6       # 2026-10-23: exactly one NTR Short a week (Sunday, 4th slot); every other post is latest news
-DAY_PATTERN = ["ysrcp", "lokesh", "ysrcp", "ysrcp", "chandrababu", "ysrcp", "ysrcp", "lokesh", "ysrcp", "ysrcp", "ysrcp", "ysrcp"]   # 2026-10-23 owner: 1 Chandrababu, 2 Lokesh, the other 9 attack YCP only
+# 2026-11-01 growth reset: reach collapsed on 24 Oct (8-11K views a day on 19-23 Oct, then under 300) after a 12-a-day run where
+# 9 of 12 posts were YCP attacks. Back to a mixed day of 5: 1 election/TDP news, 1 YCP exposure, 1 Lokesh, 1 YCP-claim reply
+# (counter), 1 Chandrababu. Only 2 of 5 (40%) are critical, and every critical post comes from a real, named news story.
+DAY_PATTERN = ["tdp", "ysrcp", "lokesh", "counter", "chandrababu"]
 NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp", "go"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
@@ -81,18 +84,19 @@ _WEEKEND_POOLS = [("t4", "t5"), ("t6", "t7"), ("t8", "t9"), ("t10",), ("t11",), 
 COOLDOWN_UNTIL = "2026-11-02"
 # 2026-10-28 owner: stop all automatic Pulse TDP posting. Posts only when the owner gives the content (manual runs with
 # bypass_gate=true still work). Set back to True to resume the automatic schedule.
-AUTO_POSTING = False
+AUTO_POSTING = True   # 2026-11-01 owner: full growth push (election week), resumed with a smaller, mixed schedule (see slots_for and DAY_PATTERN)
+
+
+ELECTION_WEEK = ("2026-11-02", "2026-11-08")   # MPTC/ZPTC polling 5 Nov, counting 7 Nov (AP SEC revised schedule)
 
 
 def slots_for(day) -> set[str]:
-    import hashlib
+    """2026-11-01: election week posts 5 Shorts a day (about 06, 10, 14, 18 and 20 IST); after it, 4 a day. Fewer, better posts
+    than the 12-a-day run that preceded the 24 Oct reach collapse."""
+    if ELECTION_WEEK[0] <= day.isoformat() <= ELECTION_WEEK[1]:
+        return {"t4", "t6", "t8", "t10", "t11"}
+    return {"t4", "t7", "t10", "t11"}
 
-    pools = _WEEKEND_POOLS if day.weekday() >= 4 and day.isoformat() > COOLDOWN_UNTIL else _WEEKDAY_POOLS
-    out = set()
-    for i, pool in enumerate(pools):
-        h = int(hashlib.sha256(f"tdp-slot-{day.isoformat()}-{i}".encode()).hexdigest(), 16)
-        out.add(pool[h % len(pool)])
-    return out
 
 WHITE, GOLD, SOFT = (255, 255, 255), (255, 210, 120), (225, 220, 225)
 INK, RED, BROWN = (28, 8, 0), (150, 10, 20), (70, 30, 0)   # dark text on the TDP-yellow cards

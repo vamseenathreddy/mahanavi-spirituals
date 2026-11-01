@@ -239,10 +239,12 @@ def test_seo_covers_regions_and_stays_within_limits():
 
 def test_day_pattern_mix_and_new_banks():
     from channels.trending.bank import bank_stories
-    day = [cfg.plan(i)[1] for i in range(12)]
-    assert len(cfg.DAY_PATTERN) == 12 and len(cfg.ACTIVE_SLOTS) == 12 and cfg.ACTIVE_SLOTS <= {s for _, s in cfg.SLOTS}
-    assert "innovations" not in day and day.count("ysrcp") == 9 and day.count("lokesh") == 2 and day.count("chandrababu") == 1 and "janasena" not in day and "janasena" not in cfg.NICHES
-    assert [cfg.plan(i)[1] for i in range(12, 24)] == day and set(day) <= set(cfg.NICHES)
+    n = len(cfg.DAY_PATTERN)
+    day = [cfg.plan(i)[1] for i in range(n)]
+    assert n == 5 and len(cfg.ACTIVE_SLOTS) == 12 and cfg.ACTIVE_SLOTS <= {s for _, s in cfg.SLOTS}
+    # 2026-11-01 mix: only 2 of 5 posts critical (one YCP exposure, one reply to a YCP claim)
+    assert "innovations" not in day and day.count("ysrcp") == 1 and day.count("counter") == 1 and day.count("lokesh") == 1 and day.count("chandrababu") == 1 and day.count("tdp") == 1 and "janasena" not in day and "janasena" not in cfg.NICHES
+    assert [cfg.plan(i)[1] for i in range(n, 2 * n)] == day and set(day) <= set(cfg.NICHES)
     for n in ("join", "voice"):
         b = bank_stories(n)
         assert b and len({s.key for s in b}) == len(b) and all(matches_language(s.headline, "te") for s in b)
@@ -380,18 +382,14 @@ def test_card_summary_must_be_in_the_card_language():
     assert mostly_native("టీడీపీ ఎమ్మెల్యే బోండా ఉమ వైసీపీ అధినేత జగన్ ఫేక్ ప్రచారం చేస్తున్నారని మండిపడ్డారు", "te")
 
 
-def test_weekend_six_slots_weekday_three():
+def test_election_week_five_slots_then_four():
     import datetime as dt
-    for d in range(19, 26):   # 19 Oct 2026 is a Monday
-        day = dt.date(2026, 10, d)
-        assert len(cfg.slots_for(day)) == 3, day   # cooldown until 2 Nov
+    for d in range(2, 9):   # 2 to 8 Nov 2026: MPTC/ZPTC polling 5 Nov, counting 7 Nov
+        day = dt.date(2026, 11, d)
+        assert len(cfg.slots_for(day)) == 5, day
         assert cfg.slots_for(day) <= cfg.ACTIVE_SLOTS
-
-
-def test_weekend_six_after_cooldown():
-    import datetime as dt
-    assert len(cfg.slots_for(dt.date(2026, 11, 6))) == 6
-    assert len(cfg.slots_for(dt.date(2026, 11, 3))) == 3
+    for day in (dt.date(2026, 10, 30), dt.date(2026, 11, 9), dt.date(2026, 11, 14)):
+        assert len(cfg.slots_for(day)) == 4, day
 
 
 def test_where_names_the_division_or_constituency():
