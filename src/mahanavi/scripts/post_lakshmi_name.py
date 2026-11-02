@@ -154,7 +154,7 @@ def main(argv: list[str] | None = None) -> int:
         post_ledger.check(settings.youtube_token_file, title, desc)
         time.sleep(jitter_seconds(args.kind, today, args.lang))     # day-seeded 0-59 s so the second is never the same either
         body = {
-            "snippet": {"title": title, "description": desc, "tags": brand_tags(tags), "categoryId": DEFAULT_CATEGORY_ID,
+            "snippet": {"title": title, "description": desc, "tags": [t for t in brand_tags(tags) if t.isascii()], "categoryId": DEFAULT_CATEGORY_ID,
                         "defaultLanguage": args.lang, "defaultAudioLanguage": args.lang},
             "status": {"privacyStatus": "public" if args.public else "unlisted", "selfDeclaredMadeForKids": False},
             "localizations": {"en": {"title": title_en[:100], "description": desc_en}},
