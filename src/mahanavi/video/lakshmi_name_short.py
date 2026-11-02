@@ -1,4 +1,4 @@
-"""One 15 s Short per Lakshmi name: Lakshmi images cross-fading behind, a still chakra in the middle, the name and
+"""One 15 s Short per Lakshmi name: Lakshmi images cross-fading behind, a steadily turning chakra in the middle, the name and
 its meaning fading in over it. Frames are drawn with numpy/cv2 and piped to ffmpeg (no per-image overlays to manage).
 
     python -m mahanavi.video.lakshmi_name_short --n 94 --out out/lakshmi_94.mp4
@@ -199,8 +199,10 @@ def render(n: int, out: Path, music: Path | None = None) -> Path:
         else:
             base = a
         frame = (base.astype(np.float32) * 0.52 * vig)
-        # chakra, completely still in the middle behind the text
-        rot = chk   # static: no turning, no pulsing (owner: it must stay still like the Purana story cards)
+        # chakra, turning at a constant size in the middle behind the text
+        # the wheel turns steadily at one size (owner: it must rotate, but never pulse in and out like breathing)
+        R = cv2.getRotationMatrix2D((cs / 2, cs / 2), -t * 12.0, 1.0)
+        rot = cv2.warpAffine(chk, R, (cs, cs), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
         ox, oy = (W - cs) // 2, int(H * 0.47) - cs // 2
         x0, y0, x1, y1 = max(ox, 0), max(oy, 0), min(ox + cs, W), min(oy + cs, H)
         sub = rot[y0 - oy:y1 - oy, x0 - ox:x1 - ox].astype(np.float32)
