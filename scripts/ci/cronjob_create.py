@@ -39,7 +39,7 @@ TARGETS = [
     ("daily-shorts.yml", "Mahanavi - Timing Shorts Rahu/Shubh/Durm (12-3 AM)", *_every_10(0, 0, 18)),
     ("post-ramana-short.yml", "Ramana Maharshi TV - quote Short (12-2 AM)", *_every_10(0, 0, 15)),
     ("post-ramana-qa.yml", "Ramana Maharshi TV - Q&A Short (10 AM-12)", *_every_10(10, 0, 15)),
-    ("post-ramana-life.yml", "Ramana Maharshi TV - Life Short (5-7 PM)", *_every_10(17, 0, 15)),
+    ("post-ramana-life.yml", "Ramana Maharshi TV - Life Short (2:30-4:30 AM)", *_every_10(2, 30, 15)),
     # Channel B (from Sat 10 Oct 2026) and Channel C (2026-10-09): static 10-minute pings.
     ("post-mantra-sangam-rahu.yml", "Mantra Sangam - Rahu Kaal Short (12 AM)", *_every_10(0, 5, 6)),
     ("post-mantra-sangam-shubh.yml", "Mantra Sangam - Shubh Muhurat Short (1 AM)", *_every_10(1, 5, 6)),
@@ -49,7 +49,7 @@ TARGETS = [
     # 10-minute ping through the 12-1 AM window; the gate picks the day's random minute inside it.
     ("post-jesus-worship-waves.yml", "Jesus - Bible Quote Short (12-2:30 AM)", *_every_10(0, 0, 14)),
     # PAUSED 2026-10-14 (one Jesus Short a day): ("post-jesus-bible-quiz.yml", "Jesus - Bible Quiz Short (9-10 AM)", *_every_10(9, 0, 6)),
-    # PAUSED 2026-10-14 (one Jesus Short a day): ("post-jesus-bible-quote-pm.yml", "Jesus - Bible Quote Short 2 (5-6 PM)", *_every_10(17, 0, 6)),
+    ("post-jesus-bible-quote-pm.yml", "Jesus - Bible Quote Short 2 (2:30-4:30 AM)", *_every_10(2, 30, 13)),  # back 2026-11-02: owner wants 2 midnight posts per channel
     # PAUSED by the owner 2026-10-13: ("post-motivation-mahanavi.yml", "Mahanavi - Purana Motivation Word Short (9 PM)", *_every_10(21, 0, 6)),
     # (job 8633677 is disabled on cron-job.org; move this line back into TARGETS and re-run to resume)
     # Trending news channel (one channel, six languages): a PUBLIC Short every 2 hours from midnight; the gate picks a
@@ -86,8 +86,8 @@ TARGETS = [
     ("post-ramana-arunachala.yml", "Ramana Maharshi TV - Arunachala Upcoming Events (8-10 PM)", *_every_10(20, 0, 13)),
     ("post-calendar-trance-vratas.yml", "Trance Beats - Hindi Vrat Calendar (7-9 PM)", *_every_10(19, 0, 13)),
     ("post-trance-bhagavatam.yml", "Trance Beats - Bhagavatam Short (7-9 AM)", *_every_10(7, 0, 13)),
-    ("post-trance-mantra.yml", "Trance Beats - Mantra Short (1-3 PM)", *_every_10(13, 0, 13)),
-    ("post-devotional-trance-beats.yml", "Trance Beats - Gita Short (7-9 PM)", *_every_10(19, 0, 13)),
+    ("post-trance-mantra.yml", "Trance Beats - Mantra Short (2:30-4:30 AM)", *_every_10(2, 30, 13)),
+    ("post-devotional-trance-beats.yml", "Trance Beats - Gita Short (12:30-2:30 AM)", *_every_10(0, 30, 13)),
     # Lakshmi Devi 108 names series (from Fri 6 Nov 2026): the gate only acts on series days, at a day-seeded random minute.
     ("post-lakshmi-name.yml", "Mahanavi - Lakshmi 108 Names Short (6-8 PM)", *_every_10(18, 0, 13)),
     ("post-lakshmi-recap.yml", "Mahanavi - Lakshmi 108 Friday Recap (9-11 AM)", *_every_10(9, 0, 13)),

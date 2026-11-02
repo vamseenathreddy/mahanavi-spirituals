@@ -29,7 +29,7 @@ SLOTS = {
     # delayed GitHub schedule ping can still post.
     "quote": (dt.time(0, 0), 110, dt.time(2, 30), "ramana-gate-"),
     "qa": (dt.time(10, 0), 110, dt.time(12, 30), "ramana-qa-gate-"),
-    "life": (dt.time(17, 0), 110, dt.time(19, 30), "ramana-life-gate-"),
+    "life": (dt.time(2, 30), 110, dt.time(5, 0), "ramana-life-gate-"),
 }
 
 

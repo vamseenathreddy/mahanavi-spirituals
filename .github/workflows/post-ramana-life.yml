@@ -1,4 +1,4 @@
-name: Channel D | Life Short (5 PM IST)
+name: Channel D | Life Short (2:30 AM IST)
 
 # Second YouTube channel in this repo (Channel D), added 2026-10.
 # Same pattern as post-rashi-mantra.yml / post-purana-short.yml / etc: a
@@ -62,16 +62,11 @@ on:
         required: false
         default: ''
   schedule:
-    - cron: "30 11 * * *"
-    - cron: "40 11 * * *"
-    - cron: "50 11 * * *"
-    - cron: "0 12 * * *"
-    - cron: "10 12 * * *"
-    - cron: "20 12 * * *"
-    - cron: "30 12 * * *"
-    - cron: "40 12 * * *"
-    - cron: "50 12 * * *"
-    - cron: "0 13 * * *"
+    - cron: "0 21 * * *"
+    - cron: "30 21 * * *"
+    - cron: "0 22 * * *"
+    - cron: "30 22 * * *"
+    - cron: "25 23 * * *"
     # several pings inside the window: the gate posts on the first one past the day's target minute,
     # so a delayed or dropped GitHub cron cannot make a day miss.
 
@@ -176,4 +171,4 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/ci/notify_failure.py "Channel D | Life Short (5 PM IST)"
+        run: python scripts/ci/notify_failure.py "Channel D | Life Short (2:30 AM IST)"

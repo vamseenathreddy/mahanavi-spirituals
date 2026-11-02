@@ -7,9 +7,9 @@ import sys
 
 from channels.engine import gate
 
-WINDOW_START = dt.time(13, 0)
+WINDOW_START = dt.time(2, 30)
 WINDOW_MINUTES = 110
-LATEST = dt.time(15, 30)
+LATEST = dt.time(5, 0)
 
 if __name__ == "__main__":
     sys.exit(gate.run("trance_mantra", WINDOW_START, WINDOW_MINUTES, LATEST))

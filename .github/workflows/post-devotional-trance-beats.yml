@@ -1,4 +1,4 @@
-name: Channel C | Gita Short (7 PM IST)
+name: Channel C | Gita Short (12:30 AM IST)
 
 # Part of the 7-channel expansion (channels/, added 2026-10) -- Pattern A (static content
 # bank, Hindi-only, Krishna/Radha bhajan-kirtan focus -- distinct from Channel B's
@@ -45,11 +45,11 @@ on:
         required: false
         default: ''
   schedule:
-    - cron: "30 13 * * *"
-    - cron: "0 14 * * *"
-    - cron: "30 14 * * *"
-    - cron: "0 15 * * *"
-    - cron: "25 15 * * *"
+    - cron: "0 19 * * *"
+    - cron: "30 19 * * *"
+    - cron: "0 20 * * *"
+    - cron: "30 20 * * *"
+    - cron: "25 21 * * *"
     # several pings inside the window: the gate posts on the first one past the day's target minute,
     # so a delayed or dropped GitHub cron cannot make a day miss.
 
@@ -145,4 +145,4 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/ci/notify_failure.py "Channel C | Gita Short (7 PM IST)"
+        run: python scripts/ci/notify_failure.py "Channel C | Gita Short (12:30 AM IST)"
