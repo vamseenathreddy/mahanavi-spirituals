@@ -158,6 +158,50 @@ def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
     return out, y
 
 
+def recap_layers(first: int, count: int = 7) -> list[tuple[float, np.ndarray]]:
+    k = 1.0
+    while True:
+        lay, end = _recap(first, count, k)
+        if end <= BOTTOM_LIMIT or k < 0.5:
+            return lay
+        k -= 0.03
+
+
+def _recap(first: int, count: int, k: float):
+    """Friday recap card: the week's names as a numbered list (Telugu name, English meaning), all visible from frame 0."""
+    tel = FontManager(get_settings().telugu_font_path)
+    f_head = tel.get_font(size=int(46 * k), weight="Bold")
+    f_sub = tel.get_font(size=int(30 * k), weight="Bold")
+    f_te = tel.get_font(size=int(38 * k), weight="Bold")
+    f_en = ImageFont.truetype(str(HIND_R), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
+    probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
+    img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    y = TOP_Y
+
+    def line(text, font, col, x=None, mult=1.42):
+        nonlocal y
+        for ln in _wrap(probe, text, font, TEXT_W):
+            xx = x if x is not None else (W - probe.textlength(ln, font=font)) / 2
+            d.text((xx, y), ln, font=font, fill=col, stroke_width=4, stroke_fill=INK)
+            bb = font.getbbox(ln)
+            y += int((bb[3] - bb[1]) * mult) + 4
+
+    last = min(first + count - 1, 108)
+    line("ఈ వారం నామాలు", f_head, GOLD)
+    line(f"This week: names {first} to {last}", f_sub, WHITE)
+    y += int(14 * k)
+    for n in range(first, last + 1):
+        te, tr, mean = NAMES[n - 1][:3]
+        line(f"{n}. {te}", f_te, GOLD, x=110, mult=1.05)
+        line(f"{tr}: {mean}", f_en, WHITE, x=110)
+        y += int(16 * k)
+    y += 12
+    line("ప్రతి నామం యొక్క పూర్తి కథ ప్లేలిస్ట్‌లో ఉంది", f_sub, (255, 236, 190))
+    line(SUBSCRIBE, f_sub, WHITE)
+    return [(0.0, np.asarray(img))], y
+
+
 def vignette() -> np.ndarray:
     """Edge vignette plus a darker band behind the text (from 22% of the height down) so the words stay easy to read."""
     yy, xx = np.mgrid[0:H, 0:W]
@@ -167,7 +211,7 @@ def vignette() -> np.ndarray:
     return (v * band).astype(np.float32)[..., None]
 
 
-def render(n: int, out: Path, music: Path | None = None) -> Path:
+def render(n: int, out: Path, music: Path | None = None, layers: list | None = None) -> Path:
     assert 1 <= n <= 108
     files = image_files()
     if not files:
@@ -176,7 +220,7 @@ def render(n: int, out: Path, music: Path | None = None) -> Path:
     start = (n - 1) % len(pics)     # a different picture first on different days
     seq = [cover(pics[(start + i) % len(pics)]) for i in range(len(pics))]
     chk = chakra()
-    layers = text_layers(n)
+    layers = layers if layers is not None else text_layers(n)
     vig = vignette()
     music = music or get_settings().alert_short_music_path
     total = int(SECONDS * FPS)
@@ -224,9 +268,10 @@ def render(n: int, out: Path, music: Path | None = None) -> Path:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--n", type=int, required=True)
+    ap.add_argument("--recap", action="store_true", help="Friday recap card for the 7 names starting at --n")
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args(argv)
-    print(render(a.n, a.out))
+    print(render(a.n, a.out, layers=recap_layers(a.n) if a.recap else None))
     return 0
 
 
