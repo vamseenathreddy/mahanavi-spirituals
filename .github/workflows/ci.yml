@@ -20,6 +20,9 @@ jobs:
           python-version: "3.13"
           cache: "pip"
 
+      - name: Install ffmpeg (needed by the lifestyle voice tests)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
