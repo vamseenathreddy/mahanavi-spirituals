@@ -97,16 +97,18 @@ def _wrap(draw: ImageDraw.ImageDraw, text: str, font, max_w: int) -> list[str]:
 
 SUBSCRIBE = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"
 TAGLINE = "ప్రతిరోజు ఒక నామం యొక్క అర్థాన్ని తెలుసుకోండి"
-BOTTOM_LIMIT = 1030     # lowest y the text may reach (the Shorts bottom bar sits below this)
+# Phone safe area, same as the other Shorts (RequestCardRenderer: SAFE_L/R 150..930 and SAFE_TOP/BOTTOM 230..1385 on 1080x1920):
+# on 720x1280 that is x 100..620 and y 153..923. The Shorts buttons sit on the right edge and the title bar at the bottom.
+TOP_Y, BOTTOM_LIMIT, TEXT_W = 150, 925, 520
 
 
 def text_layers(n: int) -> list[tuple[float, np.ndarray]]:
     """[(fade-in start second, RGBA layer)]: header, name, meaning, story lines, source, subscribe reminder.
     The blocks are stacked from the top; if the stack would pass BOTTOM_LIMIT every font is shrunk a little and it is laid out again."""
-    scale = 1.28     # start big; shrink in steps until the whole stack fits above BOTTOM_LIMIT
+    scale = 1.6      # start big; shrink in steps until the whole stack fits inside the safe area
     while True:
         layers, end = _layout(n, scale)
-        if end <= BOTTOM_LIMIT or scale < 0.8:
+        if end <= BOTTOM_LIMIT or scale < 0.62:
             return layers
         scale -= 0.03
 
@@ -115,16 +117,16 @@ def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
     te, tr, mean, l1, l_en, l2, src = NAMES[n - 1]
     s = get_settings()
     tel = FontManager(s.telugu_font_path)
-    f_head = tel.get_font(size=int(34 * k), weight="Bold")
+    f_head = tel.get_font(size=int(32 * k), weight="Bold")
     f_tag = tel.get_font(size=int(29 * k), weight="Bold")
     f_name = tel.get_font(size=int(58 * k), weight="Bold")
     f_te = tel.get_font(size=int(34 * k), weight="Bold")
     f_en = ImageFont.truetype(str(HIND_R), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
     f_cnt = ImageFont.truetype(str(HIND), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
     f_tr = ImageFont.truetype(str(HIND), int(38 * k), layout_engine=ImageFont.Layout.RAQM)
-    f_small = tel.get_font(size=int(26 * k), weight="Bold")
+    f_small = tel.get_font(size=int(25 * k), weight="Bold")
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
-    maxw = W - 90
+    maxw = TEXT_W
 
     def layer(items: list[tuple[str, object, tuple, int]], y: int) -> tuple[np.ndarray, int]:
         img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -139,20 +141,20 @@ def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
         return np.asarray(img), y
 
     out: list[tuple[float, np.ndarray]] = []
-    a, y = layer([("శ్రీ లక్ష్మీ దేవి 108 నామాలు", f_head, GOLD, 2), (TAGLINE, f_tag, WHITE, 2), (f"{n} / 108", f_cnt, GOLD, 0)], 70)
-    out.append((0.2, a))
-    a, y = layer([(f"ఓం {te} నమః", f_name, GOLD, 2), (tr, f_tr, WHITE, 0)], max(y + 36, 270))
-    out.append((0.7, a))
-    a, y = layer([(mean, f_en, (255, 236, 190), 0)], y + 4)
-    out.append((2.0, a))
-    a, y = layer([(l1, f_te, WHITE, 4), (l_en, f_en, (255, 248, 230), 4), (l2, f_te, WHITE, 0)], y + 22)
-    out.append((3.2, a))
+    a, y = layer([(f"శ్రీ లక్ష్మీ 108 నామాలు  |  {n}/108", f_head, GOLD, 2), (TAGLINE, f_tag, WHITE, 0)], TOP_Y)
+    out.append((0.0, a))
+    a, y = layer([(f"ఓం {te} నమః", f_name, GOLD, 2), (tr, f_tr, WHITE, 0)], y + 14)
+    out.append((0.0, a))
+    a, y = layer([(mean, f_en, (255, 236, 190), 0)], y + 2)
+    out.append((0.0, a))
+    a, y = layer([(l1, f_te, WHITE, 4), (l_en, f_en, (255, 248, 230), 4), (l2, f_te, WHITE, 0)], y + 12)
+    out.append((0.0, a))
     foot = [(f"{SOURCES[src]}", f_small, GOLD, 2)] if SOURCES[src] else []
-    foot.append((STOTRA_SOURCE, f_small, (230, 200, 130), 0))
-    a, y = layer(foot, y + 18)
-    out.append((6.0, a))
-    a, y = layer([(SUBSCRIBE, f_small, WHITE, 0)], y + 16)
-    out.append((8.0, a))
+    foot.append((STOTRA_SOURCE.split(" | ")[0], f_small, (230, 200, 130), 0))
+    a, y = layer(foot, y + 10)
+    out.append((0.0, a))
+    a, y = layer([(SUBSCRIBE, f_small, WHITE, 0)], y + 10)
+    out.append((0.0, a))
     return out, y
 
 
