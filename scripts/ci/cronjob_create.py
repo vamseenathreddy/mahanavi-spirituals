@@ -97,6 +97,11 @@ TARGETS = [
     ("post-lakshmi-recap-hindi.yml", "Trance Beats - Lakshmi 108 Friday Recap (10 AM-12)", *_every_10(10, 0, 13)),
 ]
 
+# ONLY_TARGETS="frag1,frag2" limits a run to matching workflows (cron-job.org caps API calls per day).
+_only = [x.strip() for x in os.environ.get("ONLY_TARGETS", "").split(",") if x.strip()]
+if _only:
+    TARGETS[:] = [t for t in TARGETS if any(o in t[0] for o in _only)]
+
 
 _raw_request = _api_request
 
