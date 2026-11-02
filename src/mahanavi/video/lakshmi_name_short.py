@@ -57,7 +57,7 @@ def cover(img: Image.Image, scale: float = 1.0) -> np.ndarray:
     return out
 
 
-def chakra(size: int = 760) -> np.ndarray:
+def chakra(size: int = 608) -> np.ndarray:
     """RGBA lotus mandala: rings, 16 outer and 8 inner petals, two interlocking triangles and a bindu (drawn once, then rotated)."""
     S = size * 2
     im = Image.new("RGBA", (S, S), (0, 0, 0, 0))
@@ -95,21 +95,38 @@ def _wrap(draw: ImageDraw.ImageDraw, text: str, font, max_w: int) -> list[str]:
     return lines + ([cur] if cur else [])
 
 
+SUBSCRIBE = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"
+TAGLINE = "ప్రతిరోజు ఒక నామం యొక్క అర్థాన్ని తెలుసుకోండి"
+BOTTOM_LIMIT = 1030     # lowest y the text may reach (the Shorts bottom bar sits below this)
+
+
 def text_layers(n: int) -> list[tuple[float, np.ndarray]]:
-    """[(fade-in start second, RGBA layer)]: header, name, meaning, story lines, footer."""
+    """[(fade-in start second, RGBA layer)]: header, name, meaning, story lines, source, subscribe reminder.
+    The blocks are stacked from the top; if the stack would pass BOTTOM_LIMIT every font is shrunk a little and it is laid out again."""
+    scale = 1.0
+    while True:
+        layers, end = _layout(n, scale)
+        if end <= BOTTOM_LIMIT or scale < 0.76:
+            return layers
+        scale -= 0.04
+
+
+def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
     te, tr, mean, l1, l_en, l2, src = NAMES[n - 1]
     s = get_settings()
     tel = FontManager(s.telugu_font_path)
-    f_head = tel.get_font(size=34, weight="Bold")
-    f_name = tel.get_font(size=58, weight="Bold")
-    f_te = tel.get_font(size=36, weight="Bold")
-    f_en = ImageFont.truetype(str(HIND_R), 31, layout_engine=ImageFont.Layout.RAQM)
-    f_tr = ImageFont.truetype(str(HIND), 38, layout_engine=ImageFont.Layout.RAQM)
-    f_small = tel.get_font(size=27, weight="Bold")
+    f_head = tel.get_font(size=int(34 * k), weight="Bold")
+    f_tag = tel.get_font(size=int(29 * k), weight="Bold")
+    f_name = tel.get_font(size=int(58 * k), weight="Bold")
+    f_te = tel.get_font(size=int(34 * k), weight="Bold")
+    f_en = ImageFont.truetype(str(HIND_R), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
+    f_cnt = ImageFont.truetype(str(HIND), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
+    f_tr = ImageFont.truetype(str(HIND), int(38 * k), layout_engine=ImageFont.Layout.RAQM)
+    f_small = tel.get_font(size=int(26 * k), weight="Bold")
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     maxw = W - 90
 
-    def layer(items: list[tuple[str, object, tuple, int]], y: int) -> np.ndarray:
+    def layer(items: list[tuple[str, object, tuple, int]], y: int) -> tuple[np.ndarray, int]:
         img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         d = ImageDraw.Draw(img)
         for text, font, col, gap in items:
@@ -117,18 +134,26 @@ def text_layers(n: int) -> list[tuple[float, np.ndarray]]:
                 x = (W - probe.textlength(ln, font=font)) / 2
                 d.text((x, y), ln, font=font, fill=col, stroke_width=4, stroke_fill=INK)
                 bb = font.getbbox(ln)
-                y += int((bb[3] - bb[1]) * 1.55) + 4
+                y += int((bb[3] - bb[1]) * 1.42) + 4
             y += gap
-        return np.asarray(img)
+        return np.asarray(img), y
 
     out: list[tuple[float, np.ndarray]] = []
-    out.append((0.2, layer([("శ్రీ లక్ష్మీ దేవి 108 నామాలు", f_head, GOLD, 0), (f"{n} / 108", f_en, WHITE, 0)], 86)))
-    out.append((0.7, layer([(f"ఓం {te} నమః", f_name, GOLD, 4), (f"{tr}", f_tr, WHITE, 0)], 330)))
-    out.append((2.0, layer([(mean, f_en, (255, 236, 190), 0)], 560)))
-    out.append((3.2, layer([(l1, f_te, WHITE, 6), (l_en, f_en, (255, 248, 230), 6), (l2, f_te, WHITE, 0)], 650)))
-    foot = [(STOTRA_SOURCE, f_small, GOLD, 4)] if not SOURCES[src] else [(f"{SOURCES[src]}", f_small, GOLD, 6), (STOTRA_SOURCE, f_small, (230, 200, 130), 0)]
-    out.append((6.0, layer(foot, 1175 if SOURCES[src] else 1200)))
-    return out
+    a, y = layer([("శ్రీ లక్ష్మీ దేవి 108 నామాలు", f_head, GOLD, 2), (TAGLINE, f_tag, WHITE, 2), (f"{n} / 108", f_cnt, GOLD, 0)], 70)
+    out.append((0.2, a))
+    a, y = layer([(f"ఓం {te} నమః", f_name, GOLD, 2), (tr, f_tr, WHITE, 0)], max(y + 36, 270))
+    out.append((0.7, a))
+    a, y = layer([(mean, f_en, (255, 236, 190), 0)], y + 4)
+    out.append((2.0, a))
+    a, y = layer([(l1, f_te, WHITE, 4), (l_en, f_en, (255, 248, 230), 4), (l2, f_te, WHITE, 0)], y + 22)
+    out.append((3.2, a))
+    foot = [(f"{SOURCES[src]}", f_small, GOLD, 2)] if SOURCES[src] else []
+    foot.append((STOTRA_SOURCE, f_small, (230, 200, 130), 0))
+    a, y = layer(foot, y + 18)
+    out.append((6.0, a))
+    a, y = layer([(SUBSCRIBE, f_small, WHITE, 0)], y + 16)
+    out.append((8.0, a))
+    return out, y
 
 
 def vignette() -> np.ndarray:
