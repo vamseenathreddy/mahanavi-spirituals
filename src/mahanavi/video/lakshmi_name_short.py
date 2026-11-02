@@ -40,7 +40,7 @@ def cover(img: Image.Image, scale: float = 1.0) -> np.ndarray:
     """Fill the 720x1280 frame: sharp crop when the picture is big enough, else a blurred copy behind a centred one."""
     iw, ih = img.size
     s = max(W / iw, H / ih) * scale
-    if iw * ih >= 900 * 1400 or scale != 1.0 and iw * ih >= 900 * 1400:
+    if iw * ih >= 700 * 1200:
         r = img.resize((int(iw * s) + 1, int(ih * s) + 1), Image.LANCZOS)
         x, y = (r.width - W) // 2, (r.height - H) // 2
         return np.asarray(r.crop((x, y, x + W, y + H)).convert("RGB"))
