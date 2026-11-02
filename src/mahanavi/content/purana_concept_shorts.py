@@ -489,3 +489,13 @@ PURANA_CONCEPT_SHORTS: list[PuranaConceptShort] = [
     # Tirumala facts, one a day in a row
     _TIRUMALA_1, _TIRUMALA_2, _TIRUMALA_3, _TIRUMALA_4, _TIRUMALA_5, _TIRUMALA_6,
 ]
+
+
+# Owner request 2026-11-02: no more Tirumala details in Shorts. The entries stay in the list (so the stored rotation index
+# still lines up); the poster skips any concept whose title mentions one of these words.
+PAUSED_TOPICS = ("tirumala", "తిరుమల")
+
+
+def is_paused(c: PuranaConceptShort) -> bool:
+    text = f"{c.title_en} {c.title_te}".lower()
+    return any(w in text for w in PAUSED_TOPICS)

@@ -51,12 +51,16 @@ TEMPLES: tuple[Temple, ...] = (
 )
 
 
+# Owner request 2026-11-02: no more Tirumala details in Shorts (the entry stays here, it is just never picked).
+PAUSED = {"tirumala"}
+
+
 def used_and_next(used: list[str]) -> Temple | None:
-    return next((t for t in TEMPLES if t.slug not in used), None)
+    return next((t for t in TEMPLES if t.slug not in used and t.slug not in PAUSED), None)
 
 
 def left(used: list[str]) -> int:
-    return sum(1 for t in TEMPLES if t.slug not in used)
+    return sum(1 for t in TEMPLES if t.slug not in used and t.slug not in PAUSED)
 
 
 def build(t: Temple, today: dt.date) -> RequestShort:

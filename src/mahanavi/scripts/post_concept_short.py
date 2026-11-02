@@ -142,6 +142,12 @@ def main() -> int:
         return 1
 
     if not forced:
+        from mahanavi.content.purana_concept_shorts import is_paused
+        for _ in range(len(PURANA_CONCEPT_SHORTS)):   # paused topics (Tirumala, owner request 2026-11-02) are skipped
+            if not is_paused(PURANA_CONCEPT_SHORTS[concept_index]):
+                break
+            print(f"Paused topic: '{PURANA_CONCEPT_SHORTS[concept_index].title_en}' -- skipping to the next concept.")
+            concept_index = (concept_index + 1) % len(PURANA_CONCEPT_SHORTS)
         # Duplicate guard: never post a concept whose title is already on the channel. "Guess This
         # Character" entries share a title by design, so only unique titles are guarded.
         from collections import Counter
