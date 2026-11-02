@@ -188,16 +188,26 @@ def _recap(first: int, count: int, k: float):
             y += int((bb[3] - bb[1]) * mult) + 4
 
     last = min(first + count - 1, 108)
-    line("ఈ వారం నామాలు", f_head, GOLD)
-    line(f"This week: names {first} to {last}", f_sub, WHITE)
-    y += int(14 * k)
+    line("ఈ వారం మీరు తెలుసుకున్న నామాలు", f_head, GOLD)
+    line(f"Names you learned this week: {first} to {last}", f_sub, WHITE)
+    # progress bar: how far through the 108 names the series is
+    y += int(8 * k)
+    bx0, bx1, bh = 110, 610, int(14 * k)
+    d.rounded_rectangle((bx0, y, bx1, y + bh), radius=bh // 2, fill=(40, 30, 20, 200), outline=GOLD, width=2)
+    d.rounded_rectangle((bx0, y, bx0 + max(bh, int((bx1 - bx0) * last / 108)), y + bh), radius=bh // 2, fill=GOLD)
+    y += bh + int(6 * k)
+    line(f"{last} / 108", f_en, (255, 236, 190))
+    y += int(10 * k)
     for n in range(first, last + 1):
         te, tr, mean = NAMES[n - 1][:3]
         line(f"{n}. {te}", f_te, GOLD, x=110, mult=1.05)
         line(f"{tr}: {mean}", f_en, WHITE, x=110)
-        y += int(16 * k)
-    y += 12
-    line("ప్రతి నామం యొక్క పూర్తి కథ ప్లేలిస్ట్‌లో ఉంది", f_sub, (255, 236, 190))
+        y += int(12 * k)
+    y += int(8 * k)
+    line("కొత్తగా వచ్చారా? 1వ నామం నుంచి చూడండి", f_sub, (255, 236, 190))
+    line("ప్లేలిస్ట్‌లో ప్రతి నామానికి అర్థం, కథ ఉన్నాయి", f_sub, WHITE)
+    line("Start from name 1 in the playlist", f_en, (255, 236, 190))
+    y += int(6 * k)
     line(SUBSCRIBE, f_sub, WHITE)
     return [(0.0, np.asarray(img))], y
 
