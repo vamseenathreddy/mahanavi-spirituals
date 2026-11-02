@@ -8,6 +8,7 @@ Festival dates are hardcoded for 2026 (same source as check_festival_today.FESTI
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from datetime import date
 from typing import Any
 
@@ -79,6 +80,15 @@ DEITIES: dict[str, Deity] = {d.key: d for d in (
           "Om Hreem Shreem Rajarajeshwaryai Namah", True, "ఐశ్వర్యం, విజయం మరియు రాజరాజేశ్వరి అనుగ్రహం కోసం", "ऐश्वर्य, विजय और राजराजेश्वरी की कृपा के लिए", _p((50, 6, 40), (130, 24, 100), (255, 215, 130))),
     Deity("shani", "శని దేవుడు", "शनिदेव", "ఓం ప్రాం ప్రీం ప్రౌం సః శనయే నమః", "ॐ प्रां प्रीं प्रौं सः शनये नमः",
           "Om Praam Preem Proum Sah Shanaye Namah", True, "శని దోష శాంతి మరియు క్రమశిక్షణ కోసం", "शनि दोष की शांति के लिए", _p((8, 8, 16), (26, 28, 58), (130, 150, 255))),
+    Deity("dakshinamurthy", "శ్రీ దక్షిణామూర్తి", "श्री दक्षिणामूर्ति", "ఓం శ్రీ దక్షిణామూర్తయే నమః", "ॐ श्री दक्षिणामूर्तये नमः",
+          "Om Shri Dakshinamurtaye Namah", False, "జ్ఞానం, విద్య మరియు గురు అనుగ్రహం కోసం", "ज्ञान, विद्या और गुरुकृपा के लिए",
+          _p((10, 20, 44), (30, 60, 110), (200, 225, 255))),
+    Deity("venkateswara", "శ్రీ వేంకటేశ్వర స్వామి", "श्री वेंकटेश्वर", "ఓం శ్రీ వేంకటేశాయ నమః", "ॐ श्री वेङ्कटेशाय नमः",
+          "Om Shri Venkateshaya Namah", False, "శాంతి, శుభం మరియు శ్రీనివాసుని అనుగ్రహం కోసం", "शांति, शुभ और श्रीनिवास की कृपा के लिए",
+          _p((8, 24, 52), (24, 70, 120), (255, 210, 130))),
+    Deity("ayyappa", "శ్రీ అయ్యప్ప స్వామి", "श्री अय्यप्पा", "ఓం శ్రీ హరిహరసుతాయ నమః", "ॐ श्री हरिहरसुताय नमः",
+          "Om Shri Harihara Sutaya Namah", False, "ధైర్యం, క్రమశిక్షణ మరియు అయ్యప్ప అనుగ్రహం కోసం", "साहस, अनुशासन और अय्यप्पा की कृपा के लिए",
+          _p((6, 12, 34), (20, 44, 90), (140, 200, 255))),
 )}
 
 # Weekday (Mon=0): the day's traditional deity.
@@ -201,6 +211,73 @@ def pick(d: date, tithi: str) -> tuple[Deity, str, str]:
     return DEITIES[WEEKDAY[wd]], WEEKDAY_NAME[wd][0], WEEKDAY_NAME[wd][1]
 
 
+
+# ---- variety: which deity and WHICH mantra of that deity a day gets (stateless, deterministic) ----
+# Rule 1: a mantra (deity, variant) is never shown again until all of that deity's mantras have been shown.
+# Rule 2: the same deity does not come back within DEITY_GAP days unless the day is a festival; the day then goes
+#         to the least recently used deity that still has an unseen mantra (a general rotation pool).
+# Everything before SCHEDULE_START already used each deity's ORIGINAL mantra (variant 0), so counting starts at 1.
+# The plan is recomputed from SCHEDULE_START on every run, so no state file has to be kept in sync.
+SCHEDULE_START = date(2026, 11, 3)
+DEITY_GAP = 5
+_KIND_TE = {"beej": "బీజ మంత్రం", "moola": "మూల మంత్రం", "gayatri": "గాయత్రీ మంత్రం", "shloka": "శ్లోకం"}
+_KIND_HI = {"beej": "बीज मंत्र", "moola": "मूल मंत्र", "gayatri": "गायत्री मंत्र", "shloka": "श्लोक"}
+_KIND_EN = {"beej": "Beej", "moola": "Moola", "gayatri": "Gayatri", "shloka": "Shloka"}
+POOL = ("saraswati", "annapurna", "dakshinamurthy", "venkateswara", "ayyappa", "gayatri", "ganesha", "hanuman", "rama",
+        "krishna", "vishnu", "shiva", "subrahmanya", "lakshmi", "durga", "surya", "narasimha", "dattatreya", "kali", "shani")
+
+
+def _variants(key: str) -> list[dict]:
+    """Variant 0 = the original mantra of the Deity record; then the extras from beej_variants."""
+    from mahanavi.content.beej_variants import VARIANTS
+
+    dei = DEITIES[key]
+    out = [dict(kind="beej" if dei.beej else "moola", te=dei.mantra_te, hi=dei.mantra_hi, translit=dei.translit,
+                mean_te="", mean_hi="")]
+    for m in VARIANTS.get(key, ()):
+        out.append(dict(kind=m.kind, te=m.te, hi=m.hi, translit=m.translit, mean_te=m.mean_te, mean_hi=m.mean_hi))
+    return out
+
+
+@lru_cache(maxsize=1024)
+def _local_tithi(day: date) -> str:
+    from mahanavi.panchang.local_provider import HYDERABAD, LocalPanchangProvider
+
+    return _provider(LocalPanchangProvider, HYDERABAD).fetch(day).tithi
+
+
+@lru_cache(maxsize=1)
+def _provider(cls, loc):
+    return cls(*loc)
+
+
+def schedule(d: date, tithi: str, tithi_for=None) -> tuple[Deity, int, str, str]:
+    """-> (deity, variant index, reason_te, reason_hi) for day d."""
+    base, why_te, why_hi = pick(d, tithi)
+    if d < SCHEDULE_START:
+        return base, 0, why_te, why_hi
+    tithi_for = tithi_for or _local_tithi
+    last: dict[str, date] = {}
+    nxt: dict[str, int] = {}
+    day = SCHEDULE_START
+    while True:
+        t = tithi if day == d else tithi_for(day)
+        dei, w_te, w_hi = pick(day, t)
+        festival = day in FESTIVAL_DEITY
+        key = dei.key
+        if not festival and key in last and (day - last[key]).days < DEITY_GAP:
+            ok = [k for k in POOL if (k not in last or (day - last[k]).days >= DEITY_GAP) and nxt.get(k, 1) < len(_variants(k))]
+            if ok:
+                key = min(ok, key=lambda k: (last.get(k, date.min), POOL.index(k)))
+                w_te, w_hi = WEEKDAY_NAME[day.weekday()]
+        idx = nxt.get(key, 1) % len(_variants(key))
+        nxt[key] = nxt.get(key, 1) + 1
+        last[key] = day
+        if day == d:
+            return DEITIES[key], idx, w_te, w_hi
+        day = date.fromordinal(day.toordinal() + 1)
+
+
 from channels.playlist_links import CARD_LINES as _CARD_LINES  # noqa: E402
 
 from channels.playlist_links import HI_LINE as _HI_LINE  # noqa: E402
@@ -208,18 +285,30 @@ from channels.playlist_links import HI_LINE as _HI_LINE  # noqa: E402
 _PLAYLIST_LINE = _CARD_LINES["beej"]
 
 
+def _fit_benefits(lines: tuple[str, ...], mantra: str, translit: str) -> tuple[str, ...]:
+    """A long verse needs more room on the card: show fewer audience lines under it (the card must stay in the safe zone)."""
+    n = max(len(mantra), len(translit) * 0.8)
+    return lines[:3] if n > 68 else lines[:4] if n > 48 else lines
+
+
 def build(channel: str, d: date, tithi: str) -> RequestShort:
     cfg = CHANNELS[channel]
     hi = cfg["lang"] == "hi"
-    dei, why_te, why_hi = pick(d, tithi)
+    import dataclasses
+
+    dei0, v_idx, why_te, why_hi = schedule(d, tithi)
+    var = _variants(dei0.key)[v_idx]
+    dei = dataclasses.replace(dei0, mantra_te=var["te"], mantra_hi=var["hi"], translit=var["translit"])
+    mkind = var["kind"]
     paksha, t = split_tithi(tithi)
     i = 1 if hi else 0
     name = dei.hi if hi else dei.te
     mantra = dei.mantra_hi if hi else dei.mantra_te
     why = why_hi if hi else why_te
     gain = dei.gain_hi if hi else dei.gain_te
-    kind = ("बीज मंत्र" if dei.beej else "मूल मंत्र") if hi else ("బీజ మంత్రం" if dei.beej else "మూల మంత్రం")
-    kind_en = "Beej" if dei.beej else "Moola"
+    kind = _KIND_HI[mkind] if hi else _KIND_TE[mkind]
+    kind_en = _KIND_EN[mkind]
+    meaning = var["mean_hi"] if hi else var["mean_te"]
     date_line = f"{WEEKDAY_NAME[d.weekday()][i]} · {d.day} {MONTH_NAME[d.month - 1][i]} {d.year}"
     tithi_line = (f"{PAKSHA[paksha][i]} {TITHI_NAME[t][i]}" if t else "")
     count = "108 बार जपें (कम से कम 11 बार)" if hi else "108 సార్లు జపించండి (కనీసం 11 సార్లు)"
@@ -234,11 +323,11 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
     if len(title) > 100:
         title = title[:99] + "…"
     desc_head = (f"🙏 {date_line}\n{why}" + (f" ({tithi_line})" if tithi_line and tithi_line not in why else "") +
-                 f"\n\n{name} {kind}: {mantra}\n{dei.translit}\n\n{gain}\n{count}"
+                 f"\n\n{name} {kind}: {mantra}\n{dei.translit}" + (f"\n\n{meaning}" if meaning else "") + f"\n\n{gain}\n{count}"
                  f"\n\n" + "\n".join(f"• {b}" for b in benefits_for(dei.key, hi)))
     desc_en = (f"{dei.key.title()} {kind_en} mantra for {d.day} {d.strftime('%B %Y')}: {dei.translit}\n"
                f"Chant 108 times (at least 11) with a calm mind. Chosen by today's festival / tithi / weekday.")
-    base_tags = [f"{dei.key} mantra", f"{dei.key} beej mantra", f"{dei.key} beeja mantra", "beej mantra", "beeja mantra",
+    base_tags = [f"{dei.key} mantra", f"{dei.key} {kind_en.lower()} mantra", f"{dei.key} {kind_en.lower()}", "beej mantra", "beeja mantra",
                  "daily mantra", "today mantra", dei.translit.lower(), name, f"{name} {kind}", "shorts"]
     if hi:
         base_tags += ["hindi mantra", "बीज मंत्र", "आज का मंत्र", "सनातन धर्म"]
@@ -253,17 +342,17 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
     tags = base_tags + [tags_ch]
     while len(", ".join(tags)) > 480:
         tags.pop(-2)
-    hashtags = ["#Shorts", "#BeejMantra" if dei.beej else "#Mantra", f"#{dei.key.title()}", "#DailyMantra", "#Devotional"]
+    hashtags = ["#Shorts", "#BeejMantra" if mkind == "beej" else "#Mantra", f"#{dei.key.title()}", "#DailyMantra", "#Devotional"]
     bg_top, bg_mid, bg_bottom, glow = dei.palette
     return RequestShort(
         slug=f"beej_{channel}_{d.isoformat()}", handle="", comment_id="", deity_te=name,
         bg_top=bg_top, bg_mid=bg_mid, bg_bottom=bg_bottom, glow=glow,
         slides=(  # ONE card, 12 s: date + tithi on top, then the mantra, transliteration and count
-            Slide("mantra", 4.9, f"{name} {kind}", mantra, dei.translit, count, benefits_for(dei.key, hi)),
+            Slide("mantra", 4.9, f"{name} {kind}", mantra, dei.translit, count, _fit_benefits(benefits_for(dei.key, hi), mantra, dei.translit)),
         ),
         title=title, title_en=f"{dei.key.title()} {kind_en} Mantra - {d.strftime('%d %b %Y')} | Chant 108 Times",
         description_te=desc_head, description_en=desc_en, hashtags=hashtags, tags=tags,
-        bg_image=_photo_for(dei.key, d),
+        bg_image=_photo_for(dei.key, d), mantra_kind=mkind,
         lang=cfg["lang"], token_file=cfg["token_file"], expected_channel=cfg["expected"], watermark=cfg["watermark"],
         header=f"{date_line} · {tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why}", tag_footer=footer_line, cta_lines=ctas, playlist_line=_PLAYLIST_LINE if channel == "mahanavi" else _HI_LINE.format(x="बीज मंत्र"), footer_main=footer, footer_en=footer_en,
     )

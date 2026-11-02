@@ -145,6 +145,11 @@ BENEFITS: dict[str, tuple[tuple[str, ...], tuple[str, ...]]] = {
 }
 
 
+# new deities reuse the closest existing audience lines (guru -> students and teachers, etc.)
+for _new, _like in {"dakshinamurthy": "saraswati", "venkateswara": "vishnu", "ayyappa": "subrahmanya"}.items():
+    BENEFITS[_new] = BENEFITS[_like]
+
+
 def benefits_for(deity_key: str, hindi: bool) -> tuple[str, ...]:
     te, hi = BENEFITS[deity_key]
     return hi if hindi else te

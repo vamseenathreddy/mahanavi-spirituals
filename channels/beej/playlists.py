@@ -43,7 +43,36 @@ SPECS: dict[str, dict[str, str]] = {
 }
 
 # A video is a beej-mantra Short when its title carries one of these (build() always writes one of them).
-TITLE_MARKERS = ("beej mantra", "beeja mantra", "బీజ మంత్రం", "మూల మంత్రం", "बीज मंत्र", "मूल मंत्र")
+TITLE_MARKERS = ("beej mantra", "beeja mantra", "బీజ మంత్రం", "మూల మంత్రం", "बीज मंत्र", "मूल मंत्र",
+                 "గాయత్రీ మంత్రం", "శ్లోకం", "गायत्री मंत्र", "श्लोक")
+
+# Gayatri mantras and shlokas get their OWN playlist per channel (beej and moola stay in the main one), so each
+# playlist is one kind of content. Created on first use by find_or_create_playlist (never duplicated).
+KIND_SPECS: dict[tuple[str, str], dict[str, str]] = {}
+for _ch, _lang in (("mahanavi", "te"), ("mantra_sangam", "hi"), ("trance_beats", "hi")):
+    _brand = {"mahanavi": "Mahanavi Spirituals", "mantra_sangam": "Divine Mantra Sangam", "trance_beats": "Devotional Trance Beats"}[_ch]
+    if _lang == "te":
+        KIND_SPECS[(_ch, "gayatri")] = {
+            "title": f"గాయత్రీ మంత్రాలు | Deity Gayatri Mantras in Telugu | {_brand}",
+            "description": "గణపతి, శివ, విష్ణు, లక్ష్మి, హనుమ వంటి దేవతల గాయత్రీ మంత్రాలు. ప్రతి రోజు ఒక కొత్త మంత్రం.\n\n"
+                           "Gayatri mantras of Hindu deities in Telugu. A new mantra every morning.\n\n#GayatriMantra #Telugu #Devotional",
+            "language": "te"}
+        KIND_SPECS[(_ch, "shloka")] = {
+            "title": f"శ్లోకాలు | Daily Sanskrit Shlokas with Meaning | {_brand}",
+            "description": "ప్రతి రోజు ఒక శ్లోకం, అర్థంతో. దేవతా స్తుతులు, ధ్యాన శ్లోకాలు.\n\n"
+                           "Daily Sanskrit shlokas with meaning in Telugu.\n\n#Shloka #Telugu #Devotional",
+            "language": "te"}
+    else:
+        KIND_SPECS[(_ch, "gayatri")] = {
+            "title": f"गायत्री मंत्र | Deity Gayatri Mantras in Hindi | {_brand}",
+            "description": "गणेश, शिव, विष्णु, लक्ष्मी, हनुमान आदि देवताओं के गायत्री मंत्र। रोज़ एक नया मंत्र।\n\n"
+                           "Gayatri mantras of Hindu deities in Hindi. A new mantra every morning.\n\n#GayatriMantra #Hindi #Sanatan",
+            "language": "hi"}
+        KIND_SPECS[(_ch, "shloka")] = {
+            "title": f"श्लोक | Daily Sanskrit Shlokas with Meaning | {_brand}",
+            "description": "रोज़ एक श्लोक, अर्थ सहित। देव स्तुतियाँ और ध्यान श्लोक।\n\n"
+                           "Daily Sanskrit shlokas with meaning in Hindi.\n\n#Shloka #Hindi #Sanatan",
+            "language": "hi"}
 DEAD_TITLES = {"deleted video", "private video"}
 
 
@@ -128,6 +157,11 @@ def clean_playlist(yt, playlist_id: str) -> tuple[int, int]:
     return dead, dup
 
 
-def add_new_video(yt, channel: str, video_id: str) -> bool:
-    """Called right after a daily upload: find-or-create the playlist and add the video once."""
-    return add_once(yt, video_id, ensure_playlist(yt, channel))
+def add_new_video(yt, channel: str, video_id: str, kind: str = "beej") -> bool:
+    """Called right after a daily upload: find-or-create the playlist for this kind and add the video once.
+    beej / moola -> the channel's main beej mantra playlist; gayatri / shloka -> their own playlist."""
+    spec = KIND_SPECS.get((channel, kind))
+    if spec is None:
+        return add_once(yt, video_id, ensure_playlist(yt, channel))
+    pid = upload.find_or_create_playlist(yt, spec["title"], spec["description"], spec["language"])
+    return add_once(yt, video_id, pid)

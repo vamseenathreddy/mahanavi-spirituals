@@ -100,3 +100,34 @@ def test_benefit_lines_big_inside_safe_zone_and_never_overlap(channel: str, tmp_
             assert b[1] >= a[3] - 6, (key, a, b)  # next line starts below the previous one (small glyph slack)
         # benefit lines are large: 6 of them fit with a line height of at least ~40px
         assert sum(1 for b in boxes if b[1] > 800) >= 6, key
+
+
+def test_variants_clean_and_complete():
+    import re
+    from mahanavi.content.beej_variants import VARIANTS
+    for key, ms in VARIANTS.items():
+        assert key in bm.DEITIES
+        for m in ms:
+            assert m.kind in ("beej", "moola", "gayatri", "shloka") and m.mean_te and m.mean_hi
+            assert not re.search(r"[ఀ-౿]", m.hi) and not re.search(r"[ऀ-ॿ]", m.te)
+            assert re.fullmatch(r"[A-Za-z ,.\-']+", m.translit), m.translit
+
+
+def test_schedule_before_start_keeps_original_and_after_never_repeats_early():
+    from datetime import timedelta
+    assert bm.schedule(date(2026, 11, 2), "Krishna Ashtami")[1] == 0
+    seen: dict = {}
+    d = bm.SCHEDULE_START
+    while d <= date(2026, 12, 20):   # about seven weeks: no deity+mantra pair may come back
+        dei, idx, _, _ = bm.schedule(d, bm._local_tithi(d))
+        assert (dei.key, idx) not in seen, (d, dei.key, idx, seen[(dei.key, idx)])
+        seen[(dei.key, idx)] = d
+        d += timedelta(days=1)
+
+
+def test_build_uses_the_variant_and_kind(tmp_path):
+    spec = bm.build("mahanavi", date(2026, 11, 3), "Shukla Chaturthi")
+    dei, idx, _, _ = bm.schedule(date(2026, 11, 3), "Shukla Chaturthi")
+    var = bm._variants(dei.key)[idx]
+    assert var["te"] in spec.slides[0].mantra if hasattr(spec.slides[0], "mantra") else True
+    assert spec.mantra_kind == var["kind"] and var["translit"] in spec.description_te

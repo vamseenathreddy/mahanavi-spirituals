@@ -58,6 +58,7 @@ class RequestShort:
     footer_main: str = _CHANNEL_FOOTER_TE
     footer_en: str = _CHANNEL_FOOTER_EN
     bg_image: str = ""                    # file under assets/images/ used as the (dimmed) background; "" = plain gradient
+    mantra_kind: str = "beej"             # daily mantra Shorts: beej | moola | gayatri | shloka (picks the playlist)
 
     @property
     def total_seconds(self) -> float:

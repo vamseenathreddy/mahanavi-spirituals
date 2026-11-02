@@ -92,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
         try:  # the channel's one beej mantra playlist; a failure here must never lose the upload
             from channels.beej import playlists as beej_playlists
 
-            added = beej_playlists.add_new_video(youtube, args.channel, video_id)
+            added = beej_playlists.add_new_video(youtube, args.channel, video_id, getattr(spec, 'mantra_kind', 'beej'))
             print(f"Playlist: {'added' if added else 'already listed'}")
         except Exception as exc:  # noqa: BLE001
             print(f"WARNING: could not add to the beej playlist: {type(exc).__name__}: {exc}", file=sys.stderr)
