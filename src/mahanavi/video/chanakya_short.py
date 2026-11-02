@@ -25,10 +25,10 @@ OWN_IMAGES = PROJECT_ROOT / "assets" / "images" / "chanakya"
 # Phone safe area on 720x1280 (same as the other Shorts): x 100..620, y about 150..925
 TOP_Y, BOTTOM_LIMIT, TEXT_W = 150, 925, 520
 UI = {
-    "te": dict(head="చాణక్య నీతి సూత్రాలు", sub="సూత్రం {d}/{n}", label="ఈ రోజుల్లో ఎలా వాడాలి?",
+    "te": dict(head="చాణక్య నీతి సూత్రాలు", sub="సూత్రం {d}/{n}",
                share="ఈ సందేశాన్ని మీకు ఇష్టమైనవారికి WhatsApp లో పంపండి, వారి కోసం మీరు ఎంత ఆలోచిస్తున్నారో వారికి అర్థమవుతుంది",
                subscribe="ఇప్పుడే సబ్‌స్క్రైబ్ చేయండి, లేకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"),
-    "hi": dict(head="चाणक्य नीति सूत्र", sub="सूत्र {d}/{n}", label="आज के जीवन में कैसे अपनाएँ?",
+    "hi": dict(head="चाणक्य नीति सूत्र", sub="सूत्र {d}/{n}",
                share="यह संदेश अपने प्रियजनों को WhatsApp पर भेजिए, उन्हें पता चलेगा कि आप उनके बारे में कितना सोचते हैं",
                subscribe="अभी सब्सक्राइब करें, वरना यह चैनल शायद दोबारा आपको न दिखे"),
 }
@@ -58,7 +58,7 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     """Returns (RGBA layer, y where the teaching block ends, y where the share + subscribe block starts)."""
     ui = UI[lang]
     f_head, f_sub, f_sutra = _font(lang, int(56 * k)), _font(lang, int(28 * k)), _font(lang, int(46 * k))
-    f_label, f_ex, f_subs, f_share = _font(lang, int(30 * k)), _font(lang, int(33 * k)), _font(lang, 40), _font(lang, int(27 * k))
+    f_label, f_ex, f_subs, f_share = _font(lang, int(30 * k)), _font(lang, int(36 * k)), _font(lang, 40), _font(lang, int(27 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
@@ -80,8 +80,7 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
 
     block(ui["head"], f_head, GOLD, gap=2)
     block(ui["sub"].format(d=day + 1, n=cn.days()), f_sub, WHITE, gap=int(26 * k))
-    block(cn.sutra(day, lang), f_sutra, (255, 248, 230), gap=int(30 * k))
-    block(ui["label"], f_label, GOLD, gap=int(6 * k))
+    block(cn.sutra(day, lang), f_sutra, (255, 248, 230), gap=int(34 * k))
     block(cn.example(day, lang), f_ex, WHITE)
     end = y
     sy = share_y
