@@ -103,12 +103,12 @@ BOTTOM_LIMIT = 1030     # lowest y the text may reach (the Shorts bottom bar sit
 def text_layers(n: int) -> list[tuple[float, np.ndarray]]:
     """[(fade-in start second, RGBA layer)]: header, name, meaning, story lines, source, subscribe reminder.
     The blocks are stacked from the top; if the stack would pass BOTTOM_LIMIT every font is shrunk a little and it is laid out again."""
-    scale = 1.0
+    scale = 1.28     # start big; shrink in steps until the whole stack fits above BOTTOM_LIMIT
     while True:
         layers, end = _layout(n, scale)
-        if end <= BOTTOM_LIMIT or scale < 0.76:
+        if end <= BOTTOM_LIMIT or scale < 0.8:
             return layers
-        scale -= 0.04
+        scale -= 0.03
 
 
 def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
@@ -207,9 +207,7 @@ def render(n: int, out: Path, music: Path | None = None) -> Path:
         al = sub[..., 3:4] / 255.0 * (0.50 * min(1.0, t / 1.5))
         frame[y0:y1, x0:x1] = frame[y0:y1, x0:x1] * (1 - al) + sub[..., :3] * al
         for start_s, lay in layers:
-            fade = np.clip((t - start_s) / 0.6, 0, 1)
-            if fade <= 0:
-                continue
+            fade = 1.0     # all text is on screen from the first frame, like the other Shorts (no line-by-line reveal)
             la = lay[..., 3:4].astype(np.float32) / 255.0 * fade
             frame = frame * (1 - la) + lay[..., :3].astype(np.float32) * la
         p.stdin.write(np.clip(frame, 0, 255).astype(np.uint8).tobytes())
