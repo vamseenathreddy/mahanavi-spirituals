@@ -88,6 +88,9 @@ TARGETS = [
     ("post-trance-bhagavatam.yml", "Trance Beats - Bhagavatam Short (7-9 AM)", *_every_10(7, 0, 13)),
     ("post-trance-mantra.yml", "Trance Beats - Mantra Short (1-3 PM)", *_every_10(13, 0, 13)),
     ("post-devotional-trance-beats.yml", "Trance Beats - Gita Short (7-9 PM)", *_every_10(19, 0, 13)),
+    # Lakshmi Devi 108 names series (from Fri 6 Nov 2026): the gate only acts on series days, at a day-seeded random minute.
+    ("post-lakshmi-name.yml", "Mahanavi - Lakshmi 108 Names Short (6-8 PM)", *_every_10(18, 0, 13)),
+    ("post-lakshmi-recap.yml", "Mahanavi - Lakshmi 108 Friday Recap (9-11 AM)", *_every_10(9, 0, 13)),
 ]
 
 

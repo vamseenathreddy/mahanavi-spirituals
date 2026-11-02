@@ -267,7 +267,7 @@ def build_tomorrow(channel: str, day: dt.date, keys: list[str]) -> RequestShort:
     others = [OBS[k].hi for k in keys[1:]]
     name = o.hi + (f" + {', '.join(others)}" if others else "")
     en = o.en + (f" + {', '.join(OBS[k].en for k in keys[1:])}" if others else "")
-    body = [name, o.why, *(f"करें: {x}" for x in o.dos), *(f"न करें: {x}" for x in o.donts)]
+    body = [name, o.why, "## क्या करें", *(f"• {x}" for x in o.dos), "## क्या न करें", *(f"• {x}" for x in o.donts)]   # two headed sides
     slides = (Slide("points", 16.0, f"कल का विशेष · {_short_date(day)}", "\n".join(body)),)   # one card
     title = f"कल {name} {_short_date(day)}: क्या करें, क्या न करें | {en} Niyam"
     title_en = f"Tomorrow {en} ({day.day} {day.strftime('%b')}): Do's and Don'ts in Hindi"

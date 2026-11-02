@@ -97,6 +97,35 @@ class RequestCardRenderer:
                 return lines, font, int(size * spacing)
             size -= 2
 
+    def _sectioned(self, layer, boxes, points: list[str]) -> None:
+        """Do / don't card: the first lines (before any "##") are the name and why; each "## heading" starts a side
+        (e.g. చేయవలసినవి / చేయకూడనివి) and the lines under it are its items. Everything sized to stay above the Shorts UI."""
+        head_i = next(i for i, pt in enumerate(points) if pt.startswith("##"))
+        intro, rest = points[:head_i], points[head_i:]
+        budget = 1290 - 520
+        cap = 56
+        while True:
+            fits = [("intro", self._fit(t, cap + 6, 30, 170)) for t in intro]
+            fits += [(("head", self._fit(t[2:].strip(), cap + 6, 34, 90)) if t.startswith("##")
+                      else ("item", self._fit(t, cap - 6, 30, 120))) for t in rest]
+            gap_item, gap_head = 22, 54
+            total = sum(len(f[0]) * f[2] for _, f in fits)
+            total += sum(gap_head if kind == "head" else gap_item for kind, _ in fits[:-1])
+            if total <= budget or cap <= 36:
+                break
+            cap -= 2
+        y = 520 + max(0, (budget - total) // 2)
+        for i, (kind, (lines, font, lh)) in enumerate(fits):
+            colour = GOLD if kind == "head" else CREAM
+            y = self._block(layer, boxes, lines, font, lh, y, colour)
+            if i < len(fits) - 1:
+                nxt = fits[i + 1][0]
+                if nxt == "head" or (kind == "intro" and nxt == "intro"):
+                    self._ornament(layer, y + gap_head // 2)
+                    y += gap_head
+                else:
+                    y += gap_item
+
     def _photo_background(self, spec: RequestShort) -> Image.Image | None:
         """Deity photo, cover-fit and dimmed (darker behind the text band) so the text stays readable.
         None if the file is missing/unreadable, so the plain gradient is used instead."""
@@ -270,19 +299,22 @@ class RequestCardRenderer:
                 self._line(layer, boxes, spec.header, self._font(40), 262, SOFT)
             self._line(layer, boxes, slide.label, self._font(72), 360, GOLD)
             points = slide.text.split("\n")
+            if any(pt.startswith("##") for pt in points):   # a do / don't card: two headed sides, items under each heading
+                self._sectioned(layer, boxes, points)
+                points = []
             big = len(points) > 10            # a full-month list: tighter gaps and a taller block (still above the Shorts UI)
             gap = 30 if big else 70
             budget = (1480 if big else 1290) - 520
-            per = budget // len(points) - gap
+            per = budget // max(len(points), 1) - gap
             blocks = []
             size_cap = 62
-            while True:
+            while points:
                 blocks = [self._fit(pt, size_cap, 30, max(per, 80)) for pt in points]
                 total = sum(len(b[0]) * b[2] for b in blocks) + gap * (len(points) - 1)
                 if total <= budget or size_cap <= 34:
                     break
                 size_cap -= 4
-            y = 520 + max(0, (budget - total) // 2)
+            y = 520 + (max(0, (budget - total) // 2) if points else 0)
             for i, (lines, font, lh) in enumerate(blocks):
                 y = self._block(layer, boxes, lines, font, lh, y, CREAM if i % 2 == 0 else SOFT)
                 if i < len(blocks) - 1:

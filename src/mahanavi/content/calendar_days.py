@@ -9,6 +9,7 @@ Shashthi / Chaturthi, evening for Pradosham / Sankashti / Masa Shivaratri). Buil
 from __future__ import annotations
 
 import datetime as dt
+import re
 from dataclasses import dataclass
 from functools import lru_cache
 
@@ -316,18 +317,23 @@ def build_today(day: dt.date, keys: list[str]) -> RequestShort:
         description_en=spec.description_en.replace("Tomorrow, ", "Today, ", 1))
 
 
+def _dont(x: str) -> str:
+    """Under the heading చేయకూడనివి the item itself needs no "వద్దు" ("మాంసాహారం వద్దు" -> "మాంసాహారం")."""
+    return re.sub(r"\s*వద్దు", "", x).strip()
+
+
 def build_tomorrow(day: dt.date, keys: list[str]) -> RequestShort:
     o = OBS[keys[0]]
     others = [OBS[k].te for k in keys[1:]]
     name = o.te + (f" + {', '.join(others)}" if others else "")
     en = o.en + (f" + {', '.join(OBS[k].en for k in keys[1:])}" if others else "")
     head = _long_date(day)
-    body = [name, o.why, *(f"చేయండి: {x}" for x in o.dos), *(f"వద్దు: {x}" for x in o.donts)]
+    body = [name, o.why, "## చేయవలసినవి", *(f"• {x}" for x in o.dos), "## చేయకూడనివి", *(f"• {_dont(x)}" for x in o.donts)]   # two headed sides
     slides = (Slide("points", 16.0, f"రేపు విశేషం · {_short_date(day)}", "\n".join(body)),)   # one card
     title = f"రేపు {name} | {_short_date(day)}: చేయవలసినవి, చేయకూడనివి"
     title_en = f"Tomorrow {en} ({day.day} {day.strftime('%b')}): Do's and Don'ts"
     desc_te = (f"🙏 రేపు ({head}): {name}\n{o.why}\n\n✅ చేయవలసినవి:\n" + "\n".join(f"• {x}" for x in o.dos)
-               + "\n\n❌ చేయకూడనివి:\n" + "\n".join(f"• {x}" for x in o.donts) + f"\n\n{DISCLAIMER_TE}")
+               + "\n\n❌ చేయకూడనివి:\n" + "\n".join(f"• {_dont(x)}" for x in o.donts) + f"\n\n{DISCLAIMER_TE}")
     desc_en = f"Tomorrow, {day.strftime('%A %d %B %Y')}: {en}. Simple do's and don'ts in Telugu.\n{DISCLAIMER_EN}"
     tags = [f"{o.en.lower()}", f"{o.en.lower()} {day.year}", f"{o.en.lower()} date", f"{o.en.lower()} telugu", *o.tags, o.te]
     hashtags = ["#Shorts", f"#{o.en.split()[0]}", "#TeluguPanchangam", "#Devotional", "#Telugu"]
