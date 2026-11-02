@@ -13,6 +13,10 @@ on:
         description: "Thumbnail path inside shiva-song-assets (optional)"
         required: false
         default: long/shiva_trance_01.jpg
+      playlist_video:
+        description: "Only add this existing video id to the Shiva Trance playlist"
+        required: false
+        default: ''
       privacy:
         description: "public or unlisted"
         required: false
@@ -61,7 +65,9 @@ jobs:
           FILE: ${{ inputs.file }}
           THUMB: ${{ inputs.thumb }}
           PRIVACY: ${{ inputs.privacy }}
+          PLAYLIST_VIDEO: ${{ inputs.playlist_video }}
         run: |
+          if [ -n "$PLAYLIST_VIDEO" ]; then PYTHONPATH=src:. python3 -m mahanavi.scripts.post_trance_song --file x --playlist-only "$PLAYLIST_VIDEO"; exit $?; fi
           ARGS="--file shiva_assets/$FILE --privacy $PRIVACY"
           if [ -n "$THUMB" ] && [ -f "shiva_assets/$THUMB" ]; then ARGS="$ARGS --thumb shiva_assets/$THUMB"; fi
           PYTHONPATH=src:. python3 -m mahanavi.scripts.post_trance_song $ARGS

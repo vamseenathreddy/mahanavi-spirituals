@@ -38,7 +38,14 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--privacy", choices=["public", "unlisted"], default="public")
     ap.add_argument("--token", default="./data/youtube_token_trance_beats.json")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--playlist-only", default="", metavar="VIDEO_ID", help="Only add this existing video to the playlist.")
     a = ap.parse_args(argv)
+    if a.playlist_only:
+        yt = upload.service(Path(a.token))
+        pl = upload.find_or_create_playlist(yt, PLAYLIST, "Shiva mantra trance by Devotional Trance Beats", "hi")
+        upload.add_to_playlist(yt, a.playlist_only, pl)
+        print(f"::notice::added {a.playlist_only} to the Shiva Trance playlist")
+        return 0
     print(f"'{TITLE}' ({len(TITLE)} chars) -> {a.privacy} ({a.file})")
     if a.dry_run:
         return 0
