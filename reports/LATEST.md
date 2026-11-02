@@ -1,59 +1,61 @@
-# Weekly channel review, week ending 2026-10-27
+# Weekly channel review, week ending 2026-11-02
 
 ## Flags
-- Jesus Worship Waves: REACH COLLAPSE: median views of 14 settled posts is 2
+- Pulse Boosting: REACH COLLAPSE: median views of 28 settled posts is 16
+- Pulse Boosting: VIEWS DOWN 98%: 696 vs 39105 the week before
 
 ## Mahanavi Spirituals
-- subscribers 3710 (+103 this week)
-- views 83127 (previous week 41598), 46 uploads, about 1807 views per upload
-- median views of settled posts: 1292
-- best: 5561 views, 22 అక్టోబర్ గురువారం, ద్వాదశి - శుభ ఘడియలు | Good Time Today | Mahanav
-- best: 4035 views, 22 అక్టోబర్ గురువారం, ద్వాదశి - రాహు కాలం | Avoid This Time | Mahanavi
-- weakest: 156 views, వామనావతారం (Vamana Avatara) Story - Watch Till End | Mahanavi Spiritua
-- weakest: 233 views, Purana Story | మత్స్యావతారం (Matsya Avatara) - ఈ నీతి మర్చిపోకండి | Ma
+- subscribers 3820 (+108 this week)
+- views 69158 (previous week 60289), 47 uploads, about 1471 views per upload
+- median views of settled posts: 700
+- best: 5070 views, 30 అక్టోబర్, బహుళ పంచమి - రాహు కాలం ఈ వేళల్లోనే: 10:34 AM-11:59 AM | M
+- best: 3799 views, శనివారం శుభ సమయం 11:36 AM-12:22 PM | 31 అక్టోబర్, బహుళ షష్ఠి | Mahanav
+- weakest: 13 views, మీ ఇంట్లో ఇవి సరిగ్గా చేస్తున్నారా? పురాణాలు చెప్పిన 30 నియమాలు | 30 P
+- weakest: 106 views, 28 అక్టోబర్ బుధవారం, చతుర్థి - దుర్ముహూర్తం | Avoid This Time | Mahana
 
 ## Divine Mantra Sangam
-- subscribers 40 (+14 this week)
-- views 6329 (previous week 5559), 36 uploads, about 176 views per upload
-- median views of settled posts: 106
-- best: 727 views, माँ दुर्गा बीज मंत्र | शारदीय नवरात्रि · दुर्गा देवी 18 अक्टूबर | Beej
-- best: 620 views, 19 अक्टूबर सोमवार, शुक्ल अष्टमी - राहु काल | Avoid This Time
-- weakest: 2 views, स्नान, नाखून, बाल: पुराणों के अनुसार नियम | Purana Life Rules in Hindi
-- weakest: 7 views, शुक्ल त्रयोदशी 24 अक्टूबर शनिवार - दुर्मुहूर्त | Avoid This Time
+- subscribers 44 (+5 this week)
+- views 4514 (previous week 4073), 41 uploads, about 110 views per upload
+- median views of settled posts: 58
+- best: 732 views, राहु काल 29 अक्टूबर, कृष्ण चतुर्थी - Check Before You Start
+- best: 388 views, हनुमान चालीसा हिंदी लिरिक्स | पूरा पाठ | Hanuman Chalisa
+- weakest: 4 views, नवंबर 2026 के त्योहार: धनतेरस, दिवाली, भाई दूज, देवउठनी एकादशी | Festi
+- weakest: 4 views, 28 अक्टूबर बुधवार, कृष्ण तृतीया - दुर्मुहूर्त | Avoid This Time
 
 ## Devotional Trance Beats
-- subscribers 41 (+5 this week)
-- views 3883 (previous week 2974), 31 uploads, about 125 views per upload
-- median views of settled posts: 56.5
-- best: 2288 views, माँ दुर्गा बीज मंत्र | शारदीय नवरात्रि · दुर्गा देवी 18 अक्टूबर | Beej
-- best: 223 views, श्री कृष्ण बीज मंत्र | शुक्ल द्वादशी 23 अक्टूबर | Beej Mantra
+- subscribers 43 (+5 this week)
+- views 1837 (previous week 2083), 35 uploads, about 52 views per upload
+- median views of settled posts: 34.0
+- best: 239 views, श्री हनुमान बीज मंत्र | मंगलवार 27 अक्टूबर | Beej Mantra
+- best: 230 views, नवंबर 2026 एकादशी, प्रदोष, संकष्टी, पूर्णिमा, अमावस्या तिथियाँ | Vrat 
 - weakest: 2 views, भक्ति में अहंकार नहीं, केवल समर्पण होता है। | कृष्ण वचन | Krishna Teac
-- weakest: 5 views, भागवत कथा: हर कष्ट के बाद भी प्रह्लाद की भक्ति अडिग रही। | Shrimad Bha
+- weakest: 4 views, शुक्रवार को भूलकर भी न करें ये 10 काम | Shukrawar Lakshmi Niyam
 
 ## Jesus Worship Waves
-- subscribers 6 (+0 this week)
-- views 35 (previous week 23), 12 uploads, about 3 views per upload
-- median views of settled posts: 2.0
-- best: 10 views, Psalm 37:5 | Commit thy way unto the LORD; trust also in… | Bible Vers
-- best: 9 views, John 8:12 | Then spake Jesus again unto them, saying, I am… | Bible Ve
-- weakest: 0 views, Read the Word: 15 Bible Verses for Sleep and Rest at Night | Quiet Pra
-- weakest: 0 views, Read the Word: 15 Bible Verses for Healing and Comfort | Quiet Prayer 
-- FLAG: REACH COLLAPSE: median views of 14 settled posts is 2
+- subscribers 7 (+1 this week)
+- views 380 (previous week 21), 5 uploads, about 76 views per upload
+- median views of settled posts: 127
+- best: 239 views, రోమీయులకు 8:31 | నేటి బైబిల్ వచనం | Bible Verse of the Day
+- best: 180 views, రోమీయులకు 8:28 | నేటి బైబిల్ వచనం | Bible Verse of the Day
+- weakest: 1 views, Read the Word: 15 Bible Verses for Sleep and Rest at Night | Quiet Pra
+- weakest: 12 views, Luke 1:37 | For with God nothing shall be impossible. | Bible Verse of
 
 ## Ramana Maharshi TV
-- subscribers 30 (+9 this week)
-- views 2044 (previous week 2286), 24 uploads, about 85 views per upload
-- median views of settled posts: 65.0
-- best: 252 views, He lived at Arunachala for almost 54 years. | Ramana Maharshi Life
-- best: 144 views, Sri Ramanasramam grew at the foot of the hill around his mother's sama
-- weakest: 0 views, Ramana Maharshi TV Live Stream
-- weakest: 13 views, Ramana Maharshi Meditation Technique | Self-Enquiry (Who Am I?) Step b
+- subscribers 42 (+14 this week)
+- views 2056 (previous week 1395), 22 uploads, about 93 views per upload
+- median views of settled posts: 65.5
+- best: 342 views, Ramana Maharshi Devotees Experiences: On the evening Lakshmi died, Ram
+- best: 251 views, How does focus come? Hold to one thought and the mind settles. | Raman
+- weakest: 33 views, When anger rises? Ask, To whom has this come? | Ramana Maharshi Questi
+- weakest: 35 views, Ramana Maharshi Devotees Experiences: The Tamil poet Muruganar helped 
 
 ## Pulse Boosting
-- subscribers 60 (+59 this week)
-- views 40907 (previous week 1150), 50 uploads, about 818 views per upload
-- median views of settled posts: 344
-- best: 2708 views, ఏపీలో పారిశ్రామిక అభివృద్ధికి అనుకూల వాతావరణం : మంత్రి లోకేశ్ | TDP | 
-- best: 2667 views, ఏపీలో వేగంగా పారిశ్రామిక అభివృద్ధి : మంత్రి లోకేశ్ | TDP | Pulse Boost
-- weakest: 0 views, AP Local Body Elections: ఏపీలో ఎంపీటీసీ, జెడ్పీటీసీ ఎన్నికలకు రికార్డు
-- weakest: 0 views, Pulse TDP Fans Live Stream
+- subscribers 60 (+0 this week)
+- views 696 (previous week 39105), 19 uploads, about 37 views per upload
+- median views of settled posts: 16.0
+- best: 975 views, AP MPTC ZPTC Elections: నామినేషన్లు వేయకుండా అడ్డుకున్నారని వైసీపీ ఆరో
+- best: 207 views, AP Local Body Elections: ఏపీలో ఎంపీటీసీ, జెడ్పీటీసీ ఎన్నికలకు రికార్డు
+- weakest: 1 views, రైతన్నలకు అన్నదాత సుఖీభవ రెండో విడత | రూ.3,125 కోట్లు జమ
+- weakest: 1 views, తుఫాన్ బాధితులకు అండగా సీఎం చంద్రబాబు | కేంద్ర బృందం నేడు రాక
+- FLAG: REACH COLLAPSE: median views of 28 settled posts is 16
+- FLAG: VIEWS DOWN 98%: 696 vs 39105 the week before

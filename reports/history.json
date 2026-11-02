@@ -9,6 +9,16 @@
    "likes": 558,
    "uploads_7d": 46,
    "median_settled": 1292
+  },
+  {
+   "date": "2026-11-02",
+   "subs": 3820,
+   "views": 69158,
+   "prev_views": 60289,
+   "net": 108,
+   "likes": 503,
+   "uploads_7d": 47,
+   "median_settled": 700
   }
  ],
  "mantra_sangam": [
@@ -21,6 +31,16 @@
    "likes": 25,
    "uploads_7d": 36,
    "median_settled": 106
+  },
+  {
+   "date": "2026-11-02",
+   "subs": 44,
+   "views": 4514,
+   "prev_views": 4073,
+   "net": 5,
+   "likes": 32,
+   "uploads_7d": 41,
+   "median_settled": 58
   }
  ],
  "trance": [
@@ -33,6 +53,16 @@
    "likes": 27,
    "uploads_7d": 31,
    "median_settled": 56.5
+  },
+  {
+   "date": "2026-11-02",
+   "subs": 43,
+   "views": 1837,
+   "prev_views": 2083,
+   "net": 5,
+   "likes": 52,
+   "uploads_7d": 35,
+   "median_settled": 34.0
   }
  ],
  "jesus": [
@@ -45,6 +75,16 @@
    "likes": 8,
    "uploads_7d": 12,
    "median_settled": 2.0
+  },
+  {
+   "date": "2026-11-02",
+   "subs": 7,
+   "views": 380,
+   "prev_views": 21,
+   "net": 1,
+   "likes": 31,
+   "uploads_7d": 5,
+   "median_settled": 127
   }
  ],
  "ramana": [
@@ -57,6 +97,16 @@
    "likes": 56,
    "uploads_7d": 24,
    "median_settled": 65.0
+  },
+  {
+   "date": "2026-11-02",
+   "subs": 42,
+   "views": 2056,
+   "prev_views": 1395,
+   "net": 14,
+   "likes": 68,
+   "uploads_7d": 22,
+   "median_settled": 65.5
   }
  ],
  "pulse": [
@@ -69,6 +119,16 @@
    "likes": 207,
    "uploads_7d": 50,
    "median_settled": 344
+  },
+  {
+   "date": "2026-11-02",
+   "subs": 60,
+   "views": 696,
+   "prev_views": 39105,
+   "net": 0,
+   "likes": 26,
+   "uploads_7d": 19,
+   "median_settled": 16.0
   }
  ]
 }
