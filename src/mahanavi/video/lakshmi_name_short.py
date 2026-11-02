@@ -204,9 +204,9 @@ def _recap(first: int, count: int, k: float):
         line(f"{tr}: {mean}", f_en, WHITE, x=110)
         y += int(12 * k)
     y += int(8 * k)
-    line("కొత్తగా వచ్చారా? 1వ నామం నుంచి చూడండి", f_sub, (255, 236, 190))
+    line("ఇప్పుడే మొదటిసారి చూస్తున్నట్లయితే, 1వ నామం నుంచి చూడండి", f_sub, (255, 236, 190))
     line("ప్లేలిస్ట్‌లో ప్రతి నామానికి అర్థం, కథ ఉన్నాయి", f_sub, WHITE)
-    line("Start from name 1 in the playlist", f_en, (255, 236, 190))
+    line("First time here? Start from name 1 in the playlist", f_en, (255, 236, 190))
     y += int(6 * k)
     line(SUBSCRIBE, f_sub, WHITE)
     return [(0.0, np.asarray(img))], y
