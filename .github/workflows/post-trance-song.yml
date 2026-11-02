@@ -1,0 +1,80 @@
+name: Channel C | Shiva Trance upload
+
+# Uploads the Shiva psychedelic trance video to Devotional Trance Beats. The media file lives on the
+# assets-only branch "shiva-song-assets" (long/). Public unless privacy is set to unlisted.
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "Path inside shiva-song-assets"
+        required: false
+        default: long/shiva_trance_01.mp4
+      thumb:
+        description: "Thumbnail path inside shiva-song-assets (optional)"
+        required: false
+        default: long/shiva_trance_01.jpg
+      privacy:
+        description: "public or unlisted"
+        required: false
+        default: public
+
+concurrency:
+  group: post-trance-song
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: shiva-song-assets
+          path: shiva_assets
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Upload
+        env:
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token_trance_beats.json
+          FILE: ${{ inputs.file }}
+          THUMB: ${{ inputs.thumb }}
+          PRIVACY: ${{ inputs.privacy }}
+        run: |
+          ARGS="--file shiva_assets/$FILE --privacy $PRIVACY"
+          if [ -n "$THUMB" ] && [ -f "shiva_assets/$THUMB" ]; then ARGS="$ARGS --thumb shiva_assets/$THUMB"; fi
+          PYTHONPATH=src:. python3 -m mahanavi.scripts.post_trance_song $ARGS
+      - name: Save state to Google Drive
+        if: always()
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/ci/notify_failure.py "Channel C | Shiva Trance upload"
