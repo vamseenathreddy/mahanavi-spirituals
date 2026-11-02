@@ -18,3 +18,11 @@ def test_story_names_carry_a_source():
     by = {n[1]: n[6] for n in NAMES}
     assert by["Samudratanaya"] == "VP" and by["Vishnu Vakshasthala Sthita"] == "VP" and by["Hiranmayi"] == "SS"
     assert by["Mahakali"] == "DM" and STOTRA_SOURCE
+
+
+def test_hindi_rows_complete_and_clean():
+    from mahanavi.content.lakshmi108_hi import HI
+    assert len(HI) == 108
+    for name, a, b in HI:
+        assert name and a and b
+        assert not any("ఀ" <= ch <= "౿" for ch in name + a + b)   # no Telugu left in the Hindi text

@@ -20,6 +20,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from mahanavi.config import PROJECT_ROOT, get_settings
 from mahanavi.content.lakshmi108 import NAMES, SOURCES, STOTRA_SOURCE
+from mahanavi.content.lakshmi108_hi import HI, SOURCES_HI, STOTRA_SOURCE_HI
 from mahanavi.images.fonts import FontManager
 
 W, H, FPS, SECONDS = 720, 1280, 24, 15.0
@@ -95,8 +96,50 @@ def _wrap(draw: ImageDraw.ImageDraw, text: str, font, max_w: int) -> list[str]:
     return lines + ([cur] if cur else [])
 
 
-SUBSCRIBE = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"
-TAGLINE = "ప్రతిరోజు ఒక నామం యొక్క అర్థాన్ని తెలుసుకోండి"
+# Per-language text. Telugu is the default (Mahanavi Spirituals); "hi" is for the Hindi channels (same layout, same English lines).
+UI = {
+    "te": dict(subscribe="ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు",
+               tagline="ప్రతిరోజు ఒక నామం యొక్క అర్థాన్ని తెలుసుకోండి", head="శ్రీ లక్ష్మీ 108 నామాలు", om="ఓం {} నమః",
+               stotra=STOTRA_SOURCE.split(" | ")[0], recap_head="ఈ వారం మీరు తెలుసుకున్న నామాలు",
+               first_time="ఇప్పుడే మొదటిసారి చూస్తున్నట్లయితే, 1వ నామం నుంచి చూడండి",
+               playlist="ప్లేలిస్ట్‌లో ప్రతి నామానికి అర్థం, కథ ఉన్నాయి"),
+    "hi": dict(subscribe="अभी सब्सक्राइब नहीं किया तो यह चैनल शायद दोबारा आपको न दिखे",
+               tagline="हर दिन एक नाम का अर्थ जानिए", head="श्री लक्ष्मी 108 नाम", om="ॐ {} नमः",
+               stotra=STOTRA_SOURCE_HI.split(" | ")[0], recap_head="इस हफ़्ते आपने जो नाम जाने",
+               first_time="अभी पहली बार देख रहे हैं तो नाम 1 से देखिए",
+               playlist="प्लेलिस्ट में हर नाम का अर्थ और कथा है"),
+}
+_LANG = "te"
+
+
+def use_lang(lang: str) -> None:
+    global _LANG
+    assert lang in UI
+    _LANG = lang
+
+
+def _row(n: int) -> tuple[str, str, str, str, str, str, str]:
+    """(name in dative, roman, English meaning, story line 1, English story line, story line 2, source code) in the active language."""
+    te, tr, mean, l1, l_en, l2, src = NAMES[n - 1]
+    if _LANG == "hi":
+        hi_name, h1, h2 = HI[n - 1]
+        return hi_name, tr, mean, h1, l_en.replace("a very common Telugu name", "a very common name"), h2, src
+    return te, tr, mean, l1, l_en, l2, src
+
+
+def _source(src: str) -> str:
+    return (SOURCES_HI if _LANG == "hi" else SOURCES)[src]
+
+
+def _tfont(size: int):
+    """Bold font for the Telugu / Hindi text."""
+    if _LANG == "hi":
+        return ImageFont.truetype(str(HIND), size, layout_engine=ImageFont.Layout.RAQM)
+    return FontManager(get_settings().telugu_font_path).get_font(size=size, weight="Bold")
+
+
+SUBSCRIBE = UI["te"]["subscribe"]
+TAGLINE = UI["te"]["tagline"]
 # Phone safe area, same as the other Shorts (RequestCardRenderer: SAFE_L/R 150..930 and SAFE_TOP/BOTTOM 230..1385 on 1080x1920):
 # on 720x1280 that is x 100..620 and y 153..923. The Shorts buttons sit on the right edge and the title bar at the bottom.
 TOP_Y, BOTTOM_LIMIT, TEXT_W = 150, 925, 520
@@ -114,17 +157,16 @@ def text_layers(n: int) -> list[tuple[float, np.ndarray]]:
 
 
 def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
-    te, tr, mean, l1, l_en, l2, src = NAMES[n - 1]
-    s = get_settings()
-    tel = FontManager(s.telugu_font_path)
-    f_head = tel.get_font(size=int(32 * k), weight="Bold")
-    f_tag = tel.get_font(size=int(29 * k), weight="Bold")
-    f_name = tel.get_font(size=int(58 * k), weight="Bold")
-    f_te = tel.get_font(size=int(34 * k), weight="Bold")
+    te, tr, mean, l1, l_en, l2, src = _row(n)
+    ui = UI[_LANG]
+    f_head = _tfont(int(32 * k))
+    f_tag = _tfont(int(29 * k))
+    f_name = _tfont(int(58 * k))
+    f_te = _tfont(int(34 * k))
     f_en = ImageFont.truetype(str(HIND_R), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
     f_cnt = ImageFont.truetype(str(HIND), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
     f_tr = ImageFont.truetype(str(HIND), int(38 * k), layout_engine=ImageFont.Layout.RAQM)
-    f_small = tel.get_font(size=int(25 * k), weight="Bold")
+    f_small = _tfont(int(25 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     maxw = TEXT_W
 
@@ -141,19 +183,19 @@ def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
         return np.asarray(img), y
 
     out: list[tuple[float, np.ndarray]] = []
-    a, y = layer([(f"శ్రీ లక్ష్మీ 108 నామాలు  |  {n}/108", f_head, GOLD, 2), (TAGLINE, f_tag, WHITE, 0)], TOP_Y)
+    a, y = layer([(f"{ui['head']}  |  {n}/108", f_head, GOLD, 2), (ui["tagline"], f_tag, WHITE, 0)], TOP_Y)
     out.append((0.0, a))
-    a, y = layer([(f"ఓం {te} నమః", f_name, GOLD, 2), (tr, f_tr, WHITE, 0)], y + 14)
+    a, y = layer([(ui["om"].format(te), f_name, GOLD, 2), (tr, f_tr, WHITE, 0)], y + 14)
     out.append((0.0, a))
     a, y = layer([(mean, f_en, (255, 236, 190), 0)], y + 2)
     out.append((0.0, a))
     a, y = layer([(l1, f_te, WHITE, 4), (l_en, f_en, (255, 248, 230), 4), (l2, f_te, WHITE, 0)], y + 12)
     out.append((0.0, a))
-    foot = [(f"{SOURCES[src]}", f_small, GOLD, 2)] if SOURCES[src] else []
-    foot.append((STOTRA_SOURCE.split(" | ")[0], f_small, (230, 200, 130), 0))
+    foot = [(_source(src), f_small, GOLD, 2)] if _source(src) else []
+    foot.append((ui["stotra"], f_small, (230, 200, 130), 0))
     a, y = layer(foot, y + 10)
     out.append((0.0, a))
-    a, y = layer([(SUBSCRIBE, f_small, WHITE, 0)], y + 10)
+    a, y = layer([(ui["subscribe"], f_small, WHITE, 0)], y + 10)
     out.append((0.0, a))
     return out, y
 
@@ -169,10 +211,10 @@ def recap_layers(first: int, count: int = 7) -> list[tuple[float, np.ndarray]]:
 
 def _recap(first: int, count: int, k: float):
     """Friday recap card: the week's names as a numbered list (Telugu name, English meaning), all visible from frame 0."""
-    tel = FontManager(get_settings().telugu_font_path)
-    f_head = tel.get_font(size=int(46 * k), weight="Bold")
-    f_sub = tel.get_font(size=int(30 * k), weight="Bold")
-    f_te = tel.get_font(size=int(38 * k), weight="Bold")
+    ui = UI[_LANG]
+    f_head = _tfont(int(46 * k))
+    f_sub = _tfont(int(30 * k))
+    f_te = _tfont(int(38 * k))
     f_en = ImageFont.truetype(str(HIND_R), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -188,7 +230,7 @@ def _recap(first: int, count: int, k: float):
             y += int((bb[3] - bb[1]) * mult) + 4
 
     last = min(first + count - 1, 108)
-    line("ఈ వారం మీరు తెలుసుకున్న నామాలు", f_head, GOLD)
+    line(ui["recap_head"], f_head, GOLD)
     line(f"Names you learned this week: {first} to {last}", f_sub, WHITE)
     # progress bar: how far through the 108 names the series is
     y += int(8 * k)
@@ -199,16 +241,16 @@ def _recap(first: int, count: int, k: float):
     line(f"{last} / 108", f_en, (255, 236, 190))
     y += int(10 * k)
     for n in range(first, last + 1):
-        te, tr, mean = NAMES[n - 1][:3]
+        te, tr, mean = _row(n)[:3]
         line(f"{n}. {te}", f_te, GOLD, x=110, mult=1.05)
         line(f"{tr}: {mean}", f_en, WHITE, x=110)
         y += int(12 * k)
     y += int(8 * k)
-    line("ఇప్పుడే మొదటిసారి చూస్తున్నట్లయితే, 1వ నామం నుంచి చూడండి", f_sub, (255, 236, 190))
-    line("ప్లేలిస్ట్‌లో ప్రతి నామానికి అర్థం, కథ ఉన్నాయి", f_sub, WHITE)
+    line(ui["first_time"], f_sub, (255, 236, 190))
+    line(ui["playlist"], f_sub, WHITE)
     line("First time here? Start from name 1 in the playlist", f_en, (255, 236, 190))
     y += int(6 * k)
-    line(SUBSCRIBE, f_sub, WHITE)
+    line(ui["subscribe"], f_sub, WHITE)
     return [(0.0, np.asarray(img))], y
 
 
@@ -278,9 +320,11 @@ def render(n: int, out: Path, music: Path | None = None, layers: list | None = N
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--n", type=int, required=True)
+    ap.add_argument("--lang", choices=sorted(UI), default="te")
     ap.add_argument("--recap", action="store_true", help="Friday recap card for the 7 names starting at --n")
     ap.add_argument("--out", type=Path, required=True)
     a = ap.parse_args(argv)
+    use_lang(a.lang)
     print(render(a.n, a.out, layers=recap_layers(a.n) if a.recap else None))
     return 0
 
