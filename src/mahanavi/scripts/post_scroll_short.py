@@ -160,6 +160,9 @@ def upload(youtube, spec: ScrollShort, video: Path, privacy: str) -> str:
         "localizations": {"en": {"title": spec.title_en, "description": strip_links(spec.description_en)}},
     }
     media = MediaFileUpload(str(video), mimetype="video/mp4", chunksize=-1, resumable=True)
+    from mahanavi.publishers import jitter
+
+    jitter.pause("scroll short")
     return str(youtube.videos().insert(part="snippet,status,localizations", body=body, media_body=media).execute()["id"])
 
 

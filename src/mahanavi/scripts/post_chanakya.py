@@ -1,5 +1,5 @@
 """
-post_chanakya.py: the daily Chanakya Neeti Short, ONE static card with 5 teachings (content/chanakya_neeti.py).
+post_chanakya.py: the daily Chanakya Neeti Sutra Short, ONE static card (one sutra + a modern-life example) (content/chanakya_neeti.py).
 Telugu -> Mahanavi Spirituals, Hindi -> Divine Mantra Sangam. Stateless plan (channels/chanakya_plan.py); the "already posted" marker
 is the channel's beej state file under POST_SLOT chanakya / chanakya_hi.
 
@@ -22,36 +22,37 @@ from mahanavi.content import chanakya_neeti as cn
 from mahanavi.content.branding import brand_tags, brand_title
 from mahanavi.content.links import strip_links
 from mahanavi.exceptions import MahanaviError, YouTubeUploadError
-from mahanavi.publishers import post_ledger
+from mahanavi.publishers import jitter, post_ledger
 
 IST = ZoneInfo("Asia/Kolkata")
 CHANNEL_WORD = {"te": "mahanavi", "hi": "mantra sangam"}
 PLAYLISTS = {
-    "te": ("చాణక్య నీతి | ప్రతిరోజు 5 సూత్రాలు | Chanakya Neeti in Telugu",
-           "ప్రతిరోజు చాణక్య నీతి నుంచి 5 సూత్రాలు, ఒకటి కూడా మళ్లీ రాదు.\nFive Chanakya Neeti teachings every day in Telugu, none repeated."),
-    "hi": ("चाणक्य नीति | रोज़ 5 सूत्र | Chanakya Neeti in Hindi",
-           "हर दिन चाणक्य नीति के 5 सूत्र, कोई दोबारा नहीं आता।\nFive Chanakya Neeti teachings every day in Hindi, none repeated."),
+    "te": ("చాణక్య నీతి సూత్రాలు | ప్రతిరోజు ఒక సూత్రం | Chanakya Neeti in Telugu",
+           "ప్రతిరోజు ఒక చాణక్య నీతి సూత్రం, ఈ రోజుల్లో ఎలా వాడాలో ఉదాహరణతో. ఒకటి కూడా మళ్లీ రాదు.\nOne Chanakya Neeti sutra every day in Telugu with a modern-life example, none repeated."),
+    "hi": ("चाणक्य नीति सूत्र | रोज़ एक सूत्र | Chanakya Neeti in Hindi",
+           "हर दिन चाणक्य नीति का एक सूत्र, आज के जीवन के उदाहरण के साथ। कोई दोबारा नहीं आता।\nOne Chanakya Neeti sutra every day in Hindi with a modern-life example, none repeated."),
 }
-DISCLAIMER = {"te": "ఇవి చాణక్య నీతి స్ఫూర్తితో సులభ భాషలో ఇచ్చిన బోధలు.", "hi": "ये चाणक्य नीति की सीख सरल भाषा में हैं।"}
+DISCLAIMER = {"te": "ఇవి చాణక్య నీతి స్ఫూర్తితో సులభ భాషలో ఇచ్చిన బోధలు.\nఈ సందేశాన్ని మీకు ఇష్టమైనవారికి WhatsApp లో పంపండి.",
+              "hi": "ये चाणक्य नीति की सीख सरल भाषा में हैं।\nयह संदेश अपने प्रियजनों को WhatsApp पर भेजिए।"}
 
 
 def metadata(lang: str, day: int) -> tuple[str, str, list[str], str, str]:
-    lines = cn.card(day, lang)
     n = cn.days()
+    sutra, ex = cn.sutra(day, lang), cn.example(day, lang)
     if lang == "te":
-        title = f"చాణక్య నీతి: నేటి 5 సూత్రాలు (రోజు {day + 1}/{n}) | Chanakya Neeti in Telugu"
-        head = f"🙏 చాణక్య నీతి, రోజు {day + 1}/{n}"
+        title = f"చాణక్య నీతి సూత్రాలు | {sutra}"[:98]
+        head, label = f"🙏 చాణక్య నీతి సూత్రాలు, సూత్రం {day + 1}/{n}", "ఈ రోజుల్లో ఎలా వాడాలి?"
         tags_x = ["chanakya neeti telugu", "chanakya niti in telugu", "telugu motivation"]
         hashtags = "#ChanakyaNeeti #చాణక్యనీతి #Telugu #Shorts"
     else:
-        title = f"चाणक्य नीति: आज के 5 सूत्र (दिन {day + 1}/{n}) | Chanakya Neeti in Hindi"
-        head = f"🙏 चाणक्य नीति, दिन {day + 1}/{n}"
+        title = f"चाणक्य नीति सूत्र | {sutra}"[:98]
+        head, label = f"🙏 चाणक्य नीति सूत्र, सूत्र {day + 1}/{n}", "आज के जीवन में कैसे अपनाएँ?"
         tags_x = ["chanakya neeti hindi", "chanakya niti in hindi", "hindi motivation"]
         hashtags = "#ChanakyaNeeti #चाणक्यनीति #Hindi #Shorts"
-    body = head + "\n\n" + "\n".join(f"{i}. {x}" for i, x in enumerate(lines, 1)) + f"\n\n{DISCLAIMER[lang]}\n\n{hashtags}"
+    body = f"{head}\n\n{sutra}\n\n{label}\n{ex}\n\n{DISCLAIMER[lang]}\n\n{hashtags}"
     tags = ["chanakya neeti", "chanakya quotes", "chanakya sutras", "chanakya niti", "life lessons", "motivation", "Shorts"] + tags_x
-    title_en = f"Chanakya Neeti: 5 teachings for today (day {day + 1} of {n})"
-    desc_en = f"Five Chanakya Neeti teachings every day, none repeated. Day {day + 1} of {n}.\n\n{hashtags}"
+    title_en = f"Chanakya Neeti Sutras: teaching {day + 1} of {n} with a modern-life example"
+    desc_en = f"One Chanakya Neeti teaching a day, with a short example of how to use it in modern life. Teaching {day + 1} of {n}.\n\n{hashtags}"
     return title, body, tags, title_en, desc_en
 
 
@@ -95,7 +96,7 @@ def main(argv: list[str] | None = None) -> int:
         if CHANNEL_WORD[args.lang] not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected the {CHANNEL_WORD[args.lang]} channel.")
         post_ledger.check(settings.youtube_token_file, title, desc)
-        time.sleep(jitter_seconds(args.lang, today))     # day-seeded 0-59 s on top of the random minute
+        jitter.pause("series short")    # random 0-59 s on top of the random minute
         body = {
             "snippet": {"title": title, "description": desc, "tags": [t for t in brand_tags(tags) if t.isascii()],   # ASCII only: YouTube rejects other scripts in tags
                         "categoryId": DEFAULT_CATEGORY_ID, "defaultLanguage": args.lang, "defaultAudioLanguage": args.lang},

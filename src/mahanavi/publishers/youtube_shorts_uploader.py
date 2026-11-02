@@ -125,6 +125,9 @@ class YouTubeShortsUploader:
                 },
             }
             media = MediaFileUpload(str(video_path), chunksize=-1, resumable=True)
+            from mahanavi.publishers import jitter
+
+            jitter.pause("shorts uploader")
             request = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
             response = request.execute()
 

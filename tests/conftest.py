@@ -26,3 +26,7 @@ def _isolated_post_ledger(tmp_path, monkeypatch):
     """Tests must never read or write the real duplicate ledger under data/."""
     from mahanavi.publishers import post_ledger
     monkeypatch.setattr(post_ledger, "DATA_DIR", tmp_path / "ledger")
+
+import os
+
+os.environ.setdefault("POST_JITTER", "off")   # no random pause before uploads in tests

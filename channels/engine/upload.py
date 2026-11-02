@@ -89,6 +89,9 @@ def upload_video(yt, path, title, description, tags, localizations=None, publish
         body["localizations"] = localizations
         part += ",localizations"
     media = MediaFileUpload(path, mimetype="video/mp4", chunksize=-1, resumable=True)
+    from mahanavi.publishers import jitter
+
+    jitter.pause("channel engine")
     req = yt.videos().insert(part=part, body=body, media_body=media)
     response = None
     while response is None:

@@ -70,6 +70,9 @@ def upload(youtube: Any, spec: RequestShort, video: Path, privacy: str, publish_
     if publish_at:  # scheduled release: uploaded private, YouTube makes it public at that moment
         body["status"] = {"privacyStatus": "private", "publishAt": publish_at, "selfDeclaredMadeForKids": False}
     media = MediaFileUpload(str(video), mimetype="video/mp4", chunksize=-1, resumable=True)
+    from mahanavi.publishers import jitter
+
+    jitter.pause("request/beej/calendar short")
     resp = youtube.videos().insert(part="snippet,status,localizations", body=body, media_body=media).execute()
     return str(resp["id"])
 

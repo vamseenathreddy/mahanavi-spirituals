@@ -81,6 +81,13 @@ def upload_video(yt, path, title, description, tags, localizations=None, publish
         body["localizations"] = localizations
         part += ",localizations"
     media = MediaFileUpload(path, mimetype="video/mp4", chunksize=-1, resumable=True)
+    import os
+    import random
+
+    if os.environ.get("POST_JITTER", "").lower() not in ("off", "0", "false", "no"):   # random posting second (all channels)
+        _s = random.SystemRandom().randint(0, 59)
+        print(f"Random posting second: waiting {_s}s before the upload.", flush=True)
+        time.sleep(_s)
     req = yt.videos().insert(part=part, body=body, media_body=media)
     response = None
     while response is None:

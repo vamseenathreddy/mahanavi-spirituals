@@ -30,7 +30,7 @@ from mahanavi.content.lakshmi108 import NAMES, SOURCES, STOTRA_SOURCE
 from mahanavi.content.lakshmi108_hi import HI, SOURCES_HI, STOTRA_SOURCE_HI
 from mahanavi.content.links import strip_links
 from mahanavi.exceptions import MahanaviError, YouTubeUploadError
-from mahanavi.publishers import post_ledger
+from mahanavi.publishers import jitter, post_ledger
 
 from channels.lakshmi108_plan import (FINAL_RECAP, FIRST_RECAP, IST, LAST_DAY, SERIES_START, SLOTS, WINDOWS,  # noqa: F401
                                       gate, jitter_seconds, plan)
@@ -152,7 +152,7 @@ def main(argv: list[str] | None = None) -> int:
         if want not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected the {want} channel.")
         post_ledger.check(settings.youtube_token_file, title, desc)
-        time.sleep(jitter_seconds(args.kind, today, args.lang))     # day-seeded 0-59 s so the second is never the same either
+        jitter.pause("series short")    # random 0-59 s on top of the random minute
         body = {
             "snippet": {"title": title, "description": desc, "tags": [t for t in brand_tags(tags) if t.isascii()], "categoryId": DEFAULT_CATEGORY_ID,
                         "defaultLanguage": args.lang, "defaultAudioLanguage": args.lang},

@@ -25,10 +25,12 @@ OWN_IMAGES = PROJECT_ROOT / "assets" / "images" / "chanakya"
 # Phone safe area on 720x1280 (same as the other Shorts): x 100..620, y about 150..925
 TOP_Y, BOTTOM_LIMIT, TEXT_W = 150, 925, 520
 UI = {
-    "te": dict(head="చాణక్య నీతి", sub="నేటి 5 నీతి సూత్రాలు", day="రోజు {d}/{n}",
-               subscribe="ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"),
-    "hi": dict(head="चाणक्य नीति", sub="आज के 5 नीति सूत्र", day="दिन {d}/{n}",
-               subscribe="अभी सब्सक्राइब नहीं किया तो यह चैनल शायद दोबारा आपको न दिखे"),
+    "te": dict(head="చాణక్య నీతి సూత్రాలు", sub="సూత్రం {d}/{n}", label="ఈ రోజుల్లో ఎలా వాడాలి?",
+               share="ఈ సందేశాన్ని మీకు ఇష్టమైనవారికి WhatsApp లో పంపండి, వారి కోసం మీరు ఎంత ఆలోచిస్తున్నారో వారికి అర్థమవుతుంది",
+               subscribe="ఇప్పుడే సబ్‌స్క్రైబ్ చేయండి, లేకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"),
+    "hi": dict(head="चाणक्य नीति सूत्र", sub="सूत्र {d}/{n}", label="आज के जीवन में कैसे अपनाएँ?",
+               share="यह संदेश अपने प्रियजनों को WhatsApp पर भेजिए, उन्हें पता चलेगा कि आप उनके बारे में कितना सोचते हैं",
+               subscribe="अभी सब्सक्राइब करें, वरना यह चैनल शायद दोबारा आपको न दिखे"),
 }
 
 
@@ -48,44 +50,60 @@ def gradient() -> np.ndarray:
     return np.broadcast_to(top * (1 - y) + bot * y, (H, W, 3)).astype(np.uint8).copy()
 
 
-def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int]:
+def _wrapped_height(probe, text, font, maxw, lead=1.3):
+    return sum(int((font.getbbox(ln)[3] - font.getbbox(ln)[1]) * lead) + 4 for ln in _wrap(probe, text, font, maxw))
+
+
+def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
+    """Returns (RGBA layer, y where the teaching block ends, y where the share + subscribe block starts)."""
     ui = UI[lang]
-    f_head, f_sub, f_item, f_small = _font(lang, int(58 * k)), _font(lang, int(30 * k)), _font(lang, int(36 * k)), _font(lang, int(25 * k))
+    f_head, f_sub, f_sutra = _font(lang, int(56 * k)), _font(lang, int(28 * k)), _font(lang, int(46 * k))
+    f_label, f_ex, f_subs, f_share = _font(lang, int(30 * k)), _font(lang, int(33 * k)), _font(lang, 40), _font(lang, int(27 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
+    # the subscribe line is BIG and sits at the bottom of the safe area
+    sub_h = _wrapped_height(probe, ui["subscribe"], f_subs, TEXT_W)
+    sub_y = BOTTOM_LIMIT - sub_h
+    share_h = _wrapped_height(probe, ui["share"], f_share, TEXT_W)
+    share_y = sub_y - share_h - 12          # "send this to your loved ones on WhatsApp", just above the subscribe line
     y = TOP_Y
 
-    def block(text, font, col, x=None, gap=0, maxw=TEXT_W):
+    def block(text, font, col, gap=0, ymax=None):
         nonlocal y
-        for ln in _wrap(probe, text, font, maxw):
-            xx = x if x is not None else (W - probe.textlength(ln, font=font)) / 2
-            d.text((xx, y), ln, font=font, fill=col, stroke_width=4, stroke_fill=INK)
+        for ln in _wrap(probe, text, font, TEXT_W):
+            x = (W - probe.textlength(ln, font=font)) / 2
+            d.text((x, y), ln, font=font, fill=col, stroke_width=4, stroke_fill=INK)
             bb = font.getbbox(ln)
-            y += int((bb[3] - bb[1]) * 1.4) + 4
+            y += int((bb[3] - bb[1]) * 1.3) + 4
         y += gap
 
     block(ui["head"], f_head, GOLD, gap=2)
-    block(f"{ui['sub']}  |  " + ui["day"].format(d=day + 1, n=cn.days()), f_sub, WHITE, gap=int(16 * k))
-    for i, line in enumerate(cn.card(day, lang), 1):
-        d.text((100, y), f"{i}.", font=f_item, fill=GOLD, stroke_width=4, stroke_fill=INK)
-        num_w = int(probe.textlength("5. ", font=f_item))
-        x0 = 100 + num_w
-        for ln in _wrap(probe, line, f_item, 620 - x0):
-            d.text((x0, y), ln, font=f_item, fill=(255, 248, 230), stroke_width=4, stroke_fill=INK)
-            bb = f_item.getbbox(ln)
-            y += int((bb[3] - bb[1]) * 1.3) + 4
-        y += int(30 * k)
-    y += int(6 * k)
-    block(ui["subscribe"], f_small, WHITE)
-    return np.asarray(img), y
+    block(ui["sub"].format(d=day + 1, n=cn.days()), f_sub, WHITE, gap=int(26 * k))
+    block(cn.sutra(day, lang), f_sutra, (255, 248, 230), gap=int(30 * k))
+    block(ui["label"], f_label, GOLD, gap=int(6 * k))
+    block(cn.example(day, lang), f_ex, WHITE)
+    end = y
+    sy = share_y
+    for ln in _wrap(probe, ui["share"], f_share, TEXT_W):
+        x = (W - probe.textlength(ln, font=f_share)) / 2
+        d.text((x, sy), ln, font=f_share, fill=(255, 236, 190), stroke_width=4, stroke_fill=INK)
+        bb = f_share.getbbox(ln)
+        sy += int((bb[3] - bb[1]) * 1.3) + 4
+    sy = sub_y
+    for ln in _wrap(probe, ui["subscribe"], f_subs, TEXT_W):
+        x = (W - probe.textlength(ln, font=f_subs)) / 2
+        d.text((x, sy), ln, font=f_subs, fill=GOLD, stroke_width=5, stroke_fill=INK)
+        bb = f_subs.getbbox(ln)
+        sy += int((bb[3] - bb[1]) * 1.3) + 4
+    return np.asarray(img), end, share_y
 
 
 def text_layer(lang: str, day: int) -> np.ndarray:
     k = 1.5
     while True:
-        lay, end = _layout(lang, day, k)
-        if end <= BOTTOM_LIMIT or k < 0.6:
+        lay, end, sub_y = _layout(lang, day, k)
+        if end <= sub_y - 24 or k < 0.6:
             return lay
         k -= 0.03
 
