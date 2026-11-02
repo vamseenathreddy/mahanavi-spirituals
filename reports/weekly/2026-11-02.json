@@ -9,7 +9,7 @@
    "net": 108,
    "likes": 503,
    "uploads_7d": 47,
-   "median_settled": 700
+   "median_settled": 760.0
   },
   "flags": [],
   "top": [
@@ -41,15 +41,15 @@
   "sources": [
    [
     "Shorts feed",
-    54203
+    54171
    ],
    [
     "YouTube search",
-    11758
+    11767
    ],
    [
     "Subscribers",
-    1300
+    1303
    ],
    [
     "Channel page",
@@ -57,11 +57,11 @@
    ],
    [
     "Notifications",
-    335
+    330
    ],
    [
     "Playlists",
-    269
+    268
    ],
    [
     "External links",
@@ -69,15 +69,15 @@
    ],
    [
     "Other YouTube",
-    208
+    207
    ],
    [
     "Suggested",
-    157
+    158
    ],
    [
     "Direct/other",
-    36
+    33
    ],
    [
     "Sound Page",
@@ -98,30 +98,30 @@
   ],
   "settled": {
    "uploads_7d": 47,
-   "settled_n": 31,
-   "median_settled": 700,
+   "settled_n": 30,
+   "median_settled": 760.0,
    "recent_n": 35,
-   "median_recent": 968,
+   "median_recent": 997,
    "best_settled": [
     {
      "id": "pgI9nllqW1s",
      "title": "30 అక్టోబర్, బహుళ పంచమి - రాహు కాలం ఈ వేళల్లోనే: 10:34 AM-11:59 AM | Mahanavi Spirituals",
      "age": 3,
-     "views": 5070,
+     "views": 5071,
      "privacy": "public"
     },
     {
      "id": "mM0BfkjWEc0",
      "title": "శనివారం శుభ సమయం 11:36 AM-12:22 PM | 31 అక్టోబర్, బహుళ షష్ఠి | Mahanavi Spirituals",
      "age": 2,
-     "views": 3799,
+     "views": 3804,
      "privacy": "public"
     },
     {
      "id": "MCakX_0KuM4",
      "title": "దుర్ముహూర్తం 10:05 AM-10:51 AM, 02:39 PM-03:25 PM | గురువారం, బహుళ చతుర్థి | Mahanavi Spirituals",
      "age": 4,
-     "views": 3593,
+     "views": 3597,
      "privacy": "public"
     }
    ],
@@ -134,17 +134,17 @@
      "privacy": "public"
     },
     {
-     "id": "LyJm54nmCKs",
-     "title": "28 అక్టోబర్ బుధవారం, చతుర్థి - దుర్ముహూర్తం | Avoid This Time | Mahanavi Spirituals",
-     "age": 5,
-     "views": 106,
-     "privacy": "public"
-    },
-    {
      "id": "wjBCjdVlWwg",
      "title": "పూరీ జగన్నాథ క్షేత్ర మహాత్మ్యం (Puri Jagannath Kshetra Mahatyam) - పురాణాల్లో… | Mahanavi Spirituals",
      "age": 2,
-     "views": 180,
+     "views": 186,
+     "privacy": "public"
+    },
+    {
+     "id": "4zGvCZ82myg",
+     "title": "Purana Story | భగీరథ ప్రయత్నం (Bhagiratha's Tapas: How Ganga Came Down) - ఈ క… | Mahanavi Spirituals",
+     "age": 3,
+     "views": 191,
      "privacy": "public"
     }
    ],
@@ -193,11 +193,11 @@
   "sources": [
    [
     "YouTube search",
-    4176
+    4180
    ],
    [
     "Shorts feed",
-    244
+    241
    ],
    [
     "Notifications",
@@ -296,7 +296,7 @@
    "prev_views": 2083,
    "net": 5,
    "likes": 52,
-   "uploads_7d": 35,
+   "uploads_7d": 36,
    "median_settled": 34.0
   },
   "flags": [],
@@ -373,7 +373,7 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 35,
+   "uploads_7d": 36,
    "settled_n": 36,
    "median_settled": 34.0,
    "recent_n": 19,
@@ -390,14 +390,14 @@
      "id": "kz3qK8UF2F0",
      "title": "नवंबर 2026 एकादशी, प्रदोष, संकष्टी, पूर्णिमा, अमावस्या तिथियाँ | Vrat Calendar",
      "age": 3,
-     "views": 230,
+     "views": 231,
      "privacy": "public"
     },
     {
      "id": "xkG6ZuSBtuk",
      "title": "गोविन्द दामोदर माधवेति | कृष्ण मंत्र जाप | Krishna Mantra Jaap",
      "age": 3,
-     "views": 223,
+     "views": 230,
      "privacy": "public"
     }
    ],
@@ -556,8 +556,8 @@
    "prev_views": 1395,
    "net": 14,
    "likes": 68,
-   "uploads_7d": 22,
-   "median_settled": 65.5
+   "uploads_7d": 23,
+   "median_settled": 66.0
   },
   "flags": [],
   "top": [
@@ -629,11 +629,11 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 22,
+   "uploads_7d": 23,
    "settled_n": 24,
-   "median_settled": 65.5,
+   "median_settled": 66.0,
    "recent_n": 12,
-   "median_recent": 117.5,
+   "median_recent": 118.0,
    "best_settled": [
     {
      "id": "G20IXVJBN6g",
@@ -692,12 +692,13 @@
    "prev_views": 39105,
    "net": 0,
    "likes": 26,
-   "uploads_7d": 19,
-   "median_settled": 16.0
+   "uploads_7d": 20,
+   "median_settled": 17.0
   },
   "flags": [
-   "REACH COLLAPSE: median views of 28 settled posts is 16",
-   "VIEWS DOWN 98%: 696 vs 39105 the week before"
+   "REACH COLLAPSE: median views of 28 settled posts is 17",
+   "VIEWS DOWN 98%: 696 vs 39105 the week before",
+   "NO SUBSCRIBER GROWTH for two weeks in a row"
   ],
   "top": [
    {
@@ -756,9 +757,9 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 19,
+   "uploads_7d": 20,
    "settled_n": 28,
-   "median_settled": 16.0,
+   "median_settled": 17.0,
    "recent_n": 9,
    "median_recent": 4,
    "best_settled": [

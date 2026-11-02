@@ -1,17 +1,18 @@
 # Weekly channel review, week ending 2026-11-02
 
 ## Flags
-- Pulse Boosting: REACH COLLAPSE: median views of 28 settled posts is 16
+- Pulse Boosting: REACH COLLAPSE: median views of 28 settled posts is 17
 - Pulse Boosting: VIEWS DOWN 98%: 696 vs 39105 the week before
+- Pulse Boosting: NO SUBSCRIBER GROWTH for two weeks in a row
 
 ## Mahanavi Spirituals
 - subscribers 3820 (+108 this week)
 - views 69158 (previous week 60289), 47 uploads, about 1471 views per upload
-- median views of settled posts: 700
-- best: 5070 views, 30 అక్టోబర్, బహుళ పంచమి - రాహు కాలం ఈ వేళల్లోనే: 10:34 AM-11:59 AM | M
-- best: 3799 views, శనివారం శుభ సమయం 11:36 AM-12:22 PM | 31 అక్టోబర్, బహుళ షష్ఠి | Mahanav
+- median views of settled posts: 760.0
+- best: 5071 views, 30 అక్టోబర్, బహుళ పంచమి - రాహు కాలం ఈ వేళల్లోనే: 10:34 AM-11:59 AM | M
+- best: 3804 views, శనివారం శుభ సమయం 11:36 AM-12:22 PM | 31 అక్టోబర్, బహుళ షష్ఠి | Mahanav
 - weakest: 13 views, మీ ఇంట్లో ఇవి సరిగ్గా చేస్తున్నారా? పురాణాలు చెప్పిన 30 నియమాలు | 30 P
-- weakest: 106 views, 28 అక్టోబర్ బుధవారం, చతుర్థి - దుర్ముహూర్తం | Avoid This Time | Mahana
+- weakest: 186 views, పూరీ జగన్నాథ క్షేత్ర మహాత్మ్యం (Puri Jagannath Kshetra Mahatyam) - పుర
 
 ## Divine Mantra Sangam
 - subscribers 44 (+5 this week)
@@ -24,10 +25,10 @@
 
 ## Devotional Trance Beats
 - subscribers 43 (+5 this week)
-- views 1837 (previous week 2083), 35 uploads, about 52 views per upload
+- views 1837 (previous week 2083), 36 uploads, about 51 views per upload
 - median views of settled posts: 34.0
 - best: 239 views, श्री हनुमान बीज मंत्र | मंगलवार 27 अक्टूबर | Beej Mantra
-- best: 230 views, नवंबर 2026 एकादशी, प्रदोष, संकष्टी, पूर्णिमा, अमावस्या तिथियाँ | Vrat 
+- best: 231 views, नवंबर 2026 एकादशी, प्रदोष, संकष्टी, पूर्णिमा, अमावस्या तिथियाँ | Vrat 
 - weakest: 2 views, भक्ति में अहंकार नहीं, केवल समर्पण होता है। | कृष्ण वचन | Krishna Teac
 - weakest: 4 views, शुक्रवार को भूलकर भी न करें ये 10 काम | Shukrawar Lakshmi Niyam
 
@@ -42,8 +43,8 @@
 
 ## Ramana Maharshi TV
 - subscribers 42 (+14 this week)
-- views 2056 (previous week 1395), 22 uploads, about 93 views per upload
-- median views of settled posts: 65.5
+- views 2056 (previous week 1395), 23 uploads, about 89 views per upload
+- median views of settled posts: 66.0
 - best: 342 views, Ramana Maharshi Devotees Experiences: On the evening Lakshmi died, Ram
 - best: 251 views, How does focus come? Hold to one thought and the mind settles. | Raman
 - weakest: 33 views, When anger rises? Ask, To whom has this come? | Ramana Maharshi Questi
@@ -51,11 +52,12 @@
 
 ## Pulse Boosting
 - subscribers 60 (+0 this week)
-- views 696 (previous week 39105), 19 uploads, about 37 views per upload
-- median views of settled posts: 16.0
+- views 696 (previous week 39105), 20 uploads, about 35 views per upload
+- median views of settled posts: 17.0
 - best: 975 views, AP MPTC ZPTC Elections: నామినేషన్లు వేయకుండా అడ్డుకున్నారని వైసీపీ ఆరో
 - best: 207 views, AP Local Body Elections: ఏపీలో ఎంపీటీసీ, జెడ్పీటీసీ ఎన్నికలకు రికార్డు
 - weakest: 1 views, రైతన్నలకు అన్నదాత సుఖీభవ రెండో విడత | రూ.3,125 కోట్లు జమ
 - weakest: 1 views, తుఫాన్ బాధితులకు అండగా సీఎం చంద్రబాబు | కేంద్ర బృందం నేడు రాక
-- FLAG: REACH COLLAPSE: median views of 28 settled posts is 16
+- FLAG: REACH COLLAPSE: median views of 28 settled posts is 17
 - FLAG: VIEWS DOWN 98%: 696 vs 39105 the week before
+- FLAG: NO SUBSCRIBER GROWTH for two weeks in a row
