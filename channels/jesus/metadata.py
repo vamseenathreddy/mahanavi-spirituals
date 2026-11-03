@@ -29,12 +29,24 @@ def _short(text, n):
     return " ".join(words[:n]) + ("…" if len(words) > n else "")
 
 
+# Owner request 2026-11-03: do not put the same phrase ("నేటి బైబిల్ వచనం") in every title. The Telugu verse itself leads, and the
+# closing words rotate through this pool by verse number so two neighbouring posts never share them.
+TITLE_ENDINGS = ["దేవుని వాక్యం", "ధైర్యం ఇచ్చే వచనం", "ఆదరణ ఇచ్చే వచనం", "విశ్వాసపు వచనం", "ఆశీర్వాద వచనం", "యేసు ప్రభువు మాట", "శాంతి ఇచ్చే వచనం", "బలం ఇచ్చే వచనం"]
+
+
+def _ending(row):
+    digits = "".join(ch for ch in str(row.get("id", "")) if ch.isdigit())
+    return TITLE_ENDINGS[int(digits or 0) % len(TITLE_ENDINGS)]
+
+
 def title(row, special=None):
     if row["category"] == "quote":
         te_words = " ".join(row["verse_te"].split()[:6])
-        for cand in (f"{row['ref_te']} | {te_words}… | నేటి బైబిల్ వచనం | {row['ref_en']}",
-                     f"{row['ref_te']} | నేటి బైబిల్ వచనం | Bible Verse of the Day",
-                     f"{row['ref_te']} | నేటి బైబిల్ వచనం"):
+        end = _ending(row)
+        for cand in (f"{row['ref_te']} | {te_words}… | {end} | {row['ref_en']}",
+                     f"{row['ref_te']} | {te_words}… | {row['ref_en']}",
+                     f"{row['ref_te']} | {end} | {row['ref_en']}",
+                     f"{row['ref_te']} | {end}"):
             if len(cand) <= 100:
                 return cand
     for cand in (f"Bible Quiz: {row['question_en']} | బైబిల్ క్విజ్",
@@ -98,7 +110,7 @@ def tags(row, special=None):
 
 def localizations(row, special=None):
     if row["category"] == "quote":
-        te_title = f"{row['ref_te']} | నేటి బైబిల్ వచనం | యేసు ఆరాధన"
+        te_title = f"{row['ref_te']} | {_ending(row)} | యేసు ఆరాధన"
         te_desc = "\n".join([row["text_secondary"], "", row["apply_te"], "", " ".join(hashtags(row))])
     else:
         te_title = f"బైబిల్ క్విజ్ | {row['question_te']} | యేసు ఆరాధన"
