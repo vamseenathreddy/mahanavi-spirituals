@@ -23,7 +23,7 @@ from mahanavi.video.lakshmi_name_short import FPS, GOLD, H, HIND, IMG_SECONDS, I
 
 OWN_IMAGES = PROJECT_ROOT / "assets" / "images" / "chanakya"
 # Phone safe area on 720x1280 (same as the other Shorts): x 100..620, y about 150..925
-TOP_Y, BOTTOM_LIMIT, TEXT_W = 150, 925, 520
+TOP_Y, BOTTOM_LIMIT, TEXT_W = 150, 965, 520
 UI = {
     "te": dict(head="చాణక్య నీతి సూత్రాలు", sub="సూత్రం {d}/{n}",
                share="ఈ సందేశాన్ని మీకు ఇష్టమైనవారికి WhatsApp లో పంపండి, వారి కోసం మీరు ఎంత ఆలోచిస్తున్నారో వారికి అర్థమవుతుంది",
@@ -58,7 +58,7 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     """Returns (RGBA layer, y where the teaching block ends, y where the share + subscribe block starts)."""
     ui = UI[lang]
     f_head, f_sub, f_sutra = _font(lang, int(56 * k)), _font(lang, int(28 * k)), _font(lang, int(46 * k))
-    f_label, f_ex, f_subs, f_share = _font(lang, int(30 * k)), _font(lang, int(36 * k)), _font(lang, 40), _font(lang, int(27 * k))
+    f_label, f_ex, f_subs, f_share = _font(lang, int(30 * k)), _font(lang, int(36 * k)), _font(lang, 40), _font(lang, int(36 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
@@ -66,7 +66,7 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     sub_h = _wrapped_height(probe, ui["subscribe"], f_subs, TEXT_W)
     sub_y = BOTTOM_LIMIT - sub_h
     share_h = _wrapped_height(probe, ui["share"], f_share, TEXT_W)
-    share_y = sub_y - share_h - 12          # "send this to your loved ones on WhatsApp", just above the subscribe line
+    share_y = sub_y - share_h - 18          # "send this to your loved ones on WhatsApp", just above the subscribe line
     y = TOP_Y
 
     def block(text, font, col, gap=0, ymax=None):
