@@ -72,7 +72,19 @@ def lakshmi() -> tuple[int, int]:
     return max(0, (p.LAST_DAY - today).days), 108
 
 
+def hindi(channel: str):
+    def fn() -> tuple[int, int]:
+        from channels.engine import used_registry
+        from mahanavi.content import purana_concept_hindi as ph
+        from mahanavi.scripts import post_purana_hindi as pp
+        used = used_registry.load(pp.used_file(channel))
+        live = [i for i in ph.HINDI]
+        return sum(1 for i in live if pp.cid(i) not in used) * 2, len(live)
+    return fn
+
+
 SERIES = [("Gita verse Shorts", gita), ("Purana Concept Shorts", concepts), ("Temple Secrets", temples),
+          ("Hindi Purana Concepts (Mantra Sangam)", hindi("sangam")), ("Hindi Purana Concepts (Trance Beats)", hindi("trance")),
           ("Chanakya Neeti", chanakya), ("Lakshmi 108 Names", lakshmi)]
 
 

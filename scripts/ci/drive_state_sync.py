@@ -187,6 +187,8 @@ STATE_FILES = [
     "purana_short_episode_count.txt",
     "last_purana_concept_index.txt",
     "last_run_date_purana_concept.txt",
+    "purana_concept_used_sangam.json",  # Hindi Purana Concept used ids (Mantra Sangam); pre-created in Drive 2026-11-03 containing []
+    "purana_concept_used_trance.json",  # same for Devotional Trance Beats
     "purana_concept_used.json",  # ids of concepts already published (never repeat); pre-created in Drive 2026-11-03
     "last_gita_sloka_index.txt",
     "last_run_date_gita_sloka.txt",

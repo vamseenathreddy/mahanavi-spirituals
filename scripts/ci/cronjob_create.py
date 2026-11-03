@@ -92,6 +92,8 @@ TARGETS = [
     ("post-lakshmi-name.yml", "Mahanavi - Lakshmi 108 Names Short (6-8 PM)", *_every_10(18, 0, 13)),
     ("post-lakshmi-recap.yml", "Mahanavi - Lakshmi 108 Friday Recap (9-11 AM)", *_every_10(9, 0, 13)),
     ("post-concept-short.yml", "Mahanavi - Purana Concept Short (12-2 AM, alternate days)", *_every_10(0, 0, 13)),
+    ("post-purana-hindi-sangam.yml", "Mantra Sangam - Purana Concept Short (12-2 AM, alternate days)", *_every_10(0, 20, 12)),
+    ("post-purana-hindi-trance.yml", "Trance Beats - Purana Concept Short (11 AM-1 PM, alternate days)", *_every_10(11, 0, 12)),
     ("post-chanakya-telugu.yml", "Mahanavi - Chanakya Neeti Short (12-2 AM)", *_every_10(0, 0, 13)),
     ("post-chanakya-hindi.yml", "Mantra Sangam - Chanakya Neeti Short (12-2 AM)", *_every_10(0, 0, 13)),
     ("post-lakshmi-name-hindi.yml", "Trance Beats - Lakshmi 108 Names Short (4:30-6:30 PM)", *_every_10(16, 30, 13)),

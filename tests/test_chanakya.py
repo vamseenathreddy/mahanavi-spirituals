@@ -50,3 +50,25 @@ def test_concept_pick_next_is_fresh_only(tmp_path, monkeypatch):
     posted = [live[5].title_te] if sum(c.title_te == live[5].title_te for c in C) == 1 else []
     if posted:
         assert pcs.pick_next(C, used, posted) == C.index(live[6])    # already on the channel: skipped
+
+
+def test_hindi_concepts_cover_every_live_entry_and_pick_fresh(tmp_path, monkeypatch):
+    import channels.engine.used_registry as ur
+    from mahanavi.content import purana_concept_hindi as ph
+    from mahanavi.content.purana_concept_shorts import PURANA_CONCEPT_SHORTS as C, is_paused
+    from mahanavi.scripts import post_purana_hindi as pp
+
+    monkeypatch.setattr(ur, "DATA_DIR", tmp_path)
+    live = [i for i, c in enumerate(C) if not is_paused(c)]
+    assert sorted(ph.HINDI) == live                       # every unpaused concept has a Hindi version, no extras
+    assert pp.pick_next(set(), [], "sangam") == live[0]
+    used = {pp.cid(i) for i in live[:3]}
+    assert pp.pick_next(used, [], "sangam") == live[3]
+    assert pp.pick_next({pp.cid(i) for i in live}, [], "sangam") == -1
+    t, body, tags, *_ = pp.metadata(live[0])
+    assert t and body and all(x.isascii() for x in tags if x == "Shorts")
+
+
+def test_hindi_plan_runs_on_chanakya_off_days():
+    from channels import purana_hindi_plan as p
+    assert not p.is_post_day(dt.date(2026, 11, 3)) and p.is_post_day(dt.date(2026, 11, 4)) and not p.is_post_day(dt.date(2026, 11, 5))
