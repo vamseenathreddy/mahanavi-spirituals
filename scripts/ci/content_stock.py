@@ -39,19 +39,13 @@ def gita() -> tuple[int, int]:
 
 
 def concepts() -> tuple[int, int]:
-    from collections import Counter
-
+    from channels.engine import used_registry
     from mahanavi.content.purana_concept_shorts import PURANA_CONCEPT_SHORTS as C, is_paused
-    titles: list[str] = []
-    for f in DATA.glob("posted_ledger_mahanavi*.json"):
-        try:
-            titles += [str(v.get("title", "")) for v in json.loads(f.read_text()).values() if isinstance(v, dict)]
-        except (OSError, ValueError):
-            pass
-    counts = Counter(c.title_te for c in C)
-    uniq = [c for c in C if counts[c.title_te] == 1 and not is_paused(c)]
-    left = sum(1 for c in uniq if not any(c.title_te in t for t in titles))
-    return left, len(uniq)
+    from mahanavi.scripts.post_concept_short import concept_id
+    used = used_registry.load("purana_concept_used.json")
+    live = [c for c in C if not is_paused(c)]
+    left = sum(1 for c in live if concept_id(c) not in used)
+    return left * 2, len(live)         # one concept every other day
 
 
 def temples() -> tuple[int, int]:

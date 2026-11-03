@@ -78,6 +78,35 @@ FIRST_NEW_ENTRY = 18          # entries added 2026-10-24 (temples, Tirumala): ne
 FRESH_FIRST_UNTIL = "2026-10-26"   # 2026-10-25: the old 18 had already wrapped (Dharma posted twice); post the new ones next
 
 
+USED_FILE = "purana_concept_used.json"
+
+
+def concept_id(c: PuranaConceptShort) -> str:
+    from channels.engine.used_registry import content_id
+    return content_id(c.title_en, c.body_te)
+
+
+def pick_next(concepts: list[PuranaConceptShort], used: set[str], titles: list[str]) -> int:
+    """Index of the first concept that is fresh, or -1. Fresh = not paused, not in the used registry, and (when its title is
+    unique) not already on the channel. A concept found on the channel is added to the registry so it is never re-checked."""
+    from collections import Counter
+
+    from channels.engine import used_registry
+    from mahanavi.content.purana_concept_shorts import is_paused
+    from mahanavi.publishers.recent_titles import is_posted
+
+    counts = Counter(c.title_te for c in concepts)
+    for i, c in enumerate(concepts):
+        if is_paused(c) or concept_id(c) in used:
+            continue
+        if counts[c.title_te] == 1 and is_posted(titles, c.title_te):
+            print(f"Duplicate guard: '{c.title_en}' is already on the channel -- not posting it again.")
+            used_registry.add(USED_FILE, concept_id(c))
+            continue
+        return i
+    return -1
+
+
 def _read_rotation_index() -> int:
     if not STATE_FILE.exists():
         return 0
@@ -136,40 +165,28 @@ def main() -> int:
 
     forced = args.concept is not None
     try:
-        concept_index = _resolve_forced_concept(args.concept) if forced else _read_rotation_index()
+        concept_index = _resolve_forced_concept(args.concept) if forced else 0
     except MahanaviError as exc:
         print(f"FAILED: {exc}", file=sys.stderr)
         return 1
 
     if not forced:
-        from mahanavi.content.purana_concept_shorts import is_paused
-        from channels.engine.exhausted import stop
-        for _ in range(len(PURANA_CONCEPT_SHORTS)):   # paused topics (Tirumala, owner request 2026-11-02) are skipped
-            if not is_paused(PURANA_CONCEPT_SHORTS[concept_index]):
-                break
-            print(f"Paused topic: '{PURANA_CONCEPT_SHORTS[concept_index].title_en}' -- skipping to the next concept.")
-            concept_index = (concept_index + 1) % len(PURANA_CONCEPT_SHORTS)
-        else:
-            return stop("Purana Concept Short", "every concept is paused")
-        # Duplicate guard: never post a concept whose title is already on the channel. "Guess This
-        # Character" entries share a title by design, so only unique titles are guarded.
+        # Fresh-only selection (owner rule 2026-11-03, no repeats): the first entry in list order that is (1) not paused,
+        # (2) not in the used registry (Drive-synced, written after every upload) and (3) with a unique title, not on the
+        # channel already (last 1500 uploads plus the all-time ledger). Nothing left: stop and alert.
         from collections import Counter
 
-        from mahanavi.publishers.recent_titles import is_posted, recent_titles
-        from mahanavi.publishers.recent_titles import ledger_titles
-        # the channel's last 1500 uploads PLUS the all-time ledger (the old guard read only 100 uploads, about 3 days on this
-        # channel, so an older concept such as "What Is Dharma?" slipped through and was posted twice)
+        from channels.engine import used_registry
+        from channels.engine.exhausted import stop
+        from mahanavi.content.purana_concept_shorts import is_paused
+        from mahanavi.publishers.recent_titles import is_posted, ledger_titles, recent_titles
+
+        used = used_registry.load(USED_FILE)
         titles = recent_titles(YouTubeShortsUploader(settings)._build_service()) + ledger_titles(settings.youtube_token_file)  # noqa: SLF001
         counts = Counter(c.title_te for c in PURANA_CONCEPT_SHORTS)
-        for _ in range(len(PURANA_CONCEPT_SHORTS)):
-            c = PURANA_CONCEPT_SHORTS[concept_index]
-            if counts[c.title_te] == 1 and is_posted(titles, c.title_te):
-                print(f"Duplicate guard: '{c.title_en}' is already on the channel -- skipping to the next concept.")
-                concept_index = (concept_index + 1) % len(PURANA_CONCEPT_SHORTS)
-            else:
-                break
-        else:
-            return stop("Purana Concept Short", "every concept is already on the channel")
+        concept_index = pick_next(PURANA_CONCEPT_SHORTS, used, titles)
+        if concept_index < 0:
+            return stop("Purana Concept Short", "every concept is already used")
 
     concept: PuranaConceptShort = PURANA_CONCEPT_SHORTS[concept_index]
     print(f"Posting concept {concept_index} ({concept.title_en}, {concept.concept_type.value}){' [FORCED]' if forced else ''}")
@@ -255,12 +272,12 @@ def main() -> int:
             else:
                 print("Note: could not post to Blogger (non-fatal).")
 
-        if not forced:
-            next_index = (concept_index + 1) % len(PURANA_CONCEPT_SHORTS)
-            _write_rotation_index(next_index)
-            print(f"Rotation advanced: next run will post concept {next_index} ({PURANA_CONCEPT_SHORTS[next_index].title_en})")
+        if not forced and result.video_id:
+            from channels.engine import used_registry
+            used_registry.add(USED_FILE, concept_id(concept))
+            print(f"Marked as used: {concept.title_en}")
         else:
-            print("Forced run -- rotation state left unchanged.")
+            print("Forced run -- used registry left unchanged.")
 
         return 0
 

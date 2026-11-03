@@ -477,6 +477,130 @@ _TIRUMALA_6 = PuranaConceptShort(
     purana_name_te="తిరుమల సంప్రదాయం", purana_name_en="Tirumala Tradition",
 )
 
+
+# --- Batch 2 (2026-11-03): fresh entries for the every-other-day midnight slot (the days Chanakya does not post). ------------
+# Well-known material in plain Telugu, cited to its tradition honestly (no invented verse numbers). Owner proofreads.
+_B2_SLOKA_1 = PuranaConceptShort(
+    concept_type=ConceptType.SLOKA,
+    title_te="సత్యం వద, ధర్మం చర", title_en="Speak Truth, Follow Dharma",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "సత్యం వద, ధర్మం చర. అంటే నిజమే మాట్లాడు, ధర్మంగా నడుచుకో. తైత్తిరీయ ఉపనిషత్తు శిష్యులకు చెప్పిన మొదటి ఉపదేశం ఇదే. "
+        "నిజాయితీ, ధర్మబద్ధమైన జీవితం ఉన్నచోట మనసుకు శాంతి, ఇంటికి శుభం కలుగుతాయని పెద్దల మాట."
+    ),
+    purana_name_te="ఉపనిషత్ బోధన", purana_name_en="Upanishad Teaching",
+)
+_B2_PLACE_1 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="భద్రాచల క్షేత్ర మహత్యం", title_en="Bhadrachalam Kshetra Mahatyam",
+    invocation_te="ఓం శ్రీ రామాయ నమః",
+    body_te=(
+        "గోదావరి ఒడ్డున ఉన్న భద్రాచలం, శ్రీ సీతారామచంద్ర స్వామి కొలువైన పవిత్ర క్షేత్రం. భక్త రామదాసుగా పేరుపొందిన కంచర్ల గోపన్న "
+        "ఈ ఆలయాన్ని నిర్మించారని చెబుతారు. ప్రతి శ్రీరామ నవమికి ఇక్కడ జరిగే సీతారాముల కళ్యాణం చూడటానికి లక్షలాది భక్తులు వస్తారు."
+    ),
+    purana_name_te="రామాయణ సంప్రదాయం", purana_name_en="Ramayana Tradition",
+)
+_B2_VRATHA_1 = PuranaConceptShort(
+    concept_type=ConceptType.VRATHA,
+    title_te="మహా శివరాత్రి వ్రత మహత్యం", title_en="Maha Shivaratri Vratha Mahatyam",
+    invocation_te="ఓం నమః శివాయ",
+    body_te=(
+        "మాఘ మాసంలో కృష్ణ పక్ష చతుర్దశి రాత్రిని మహా శివరాత్రిగా జరుపుకుంటారు. ఆ రోజు ఉపవాసం ఉండి, రాత్రంతా జాగరణ చేసి, "
+        "శివునికి అభిషేకం చేసి 'ఓం నమః శివాయ' అని జపిస్తే పాపాలు తొలగి మనశ్శాంతి కలుగుతుందని శివ పురాణం చెబుతుంది."
+    ),
+    purana_name_te="శివ పురాణం", purana_name_en="Shiva Purana",
+)
+_B2_QA_1 = PuranaConceptShort(
+    concept_type=ConceptType.DHARMA_QA,
+    title_te="దీపం ఎందుకు వెలిగిస్తాం?", title_en="Why Do We Light A Lamp?",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "సమాధానం: దీపం చీకటిని, అజ్ఞానాన్ని తొలగించే జ్ఞానానికి గుర్తు. దేవుని ముందు దీపం వెలిగించడం అంటే, మన మనసులోని చీకటి పోయి "
+        "వెలుగు రావాలని ప్రార్థించడమే అని పెద్దలు చెబుతారు. అందుకే ప్రతి శుభకార్యం దీపంతోనే మొదలవుతుంది."
+    ),
+    purana_name_te="పురాణ ధర్మ బోధన", purana_name_en="Puranic Dharma Teaching",
+)
+_B2_TRIVIA_1 = PuranaConceptShort(
+    concept_type=ConceptType.TRIVIA_LIST,
+    title_te="పంచ భూతాలు", title_en="The Five Elements",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "సృష్టి అంతా ఐదు భూతాలతో ఏర్పడిందని పురాణాలు చెబుతాయి: పృథ్వి (భూమి), ఆపస్ (నీరు), తేజస్ (అగ్ని), వాయువు (గాలి), ఆకాశం. "
+        "మన శరీరం కూడా ఈ ఐదింటి కలయికే అని పెద్దల మాట."
+    ),
+    purana_name_te="పురాణ సృష్టి తత్త్వం", purana_name_en="Puranic Creation Teaching",
+)
+_B2_QUIZ_1 = PuranaConceptShort(
+    concept_type=ConceptType.CHARACTER_QUIZ,
+    title_te="ఈ పాత్రను గుర్తించండి", title_en="Guess This Character",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "క్లూ: ఈయన గంగాదేవి కుమారుడు. తండ్రి కోసం జీవితాంతం బ్రహ్మచర్యం పాటిస్తానని ప్రతిజ్ఞ చేశాడు. కురుక్షేత్ర యుద్ధంలో బాణాల పడకపై "
+        "పడుకుని, తనకు ఇష్టమైన సమయంలో ప్రాణం విడిచాడు.\n\nజవాబు: ఈయనే భీష్ముడు!"
+    ),
+    purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
+)
+_B2_SLOKA_2 = PuranaConceptShort(
+    concept_type=ConceptType.SLOKA,
+    title_te="తల్లి తండ్రే తొలి దైవం", title_en="Parents Are The First Gods",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "మాతృదేవో భవ, పితృదేవో భవ. అంటే తల్లిని దైవంగా, తండ్రిని దైవంగా భావించు అని తైత్తిరీయ ఉపనిషత్తు చెబుతుంది. "
+        "మనకు జన్మనిచ్చి, కష్టపడి పెంచినవారిని గౌరవించడమే మొదటి పూజ అని పెద్దలు అంటారు."
+    ),
+    purana_name_te="ఉపనిషత్ బోధన", purana_name_en="Upanishad Teaching",
+)
+_B2_PLACE_2 = PuranaConceptShort(
+    concept_type=ConceptType.SACRED_PLACE,
+    title_te="శ్రీకాళహస్తి క్షేత్ర మహత్యం", title_en="Srikalahasti Kshetra Mahatyam",
+    invocation_te="ఓం నమః శివాయ",
+    body_te=(
+        "శ్రీకాళహస్తి, పంచభూత లింగాల్లో వాయు లింగంగా ప్రసిద్ధి చెందిన శివక్షేత్రం. సాలీడు (శ్రీ), పాము (కాళ), ఏనుగు (హస్తి) శివుని "
+        "భక్తితో పూజించి మోక్షం పొందాయని ఇక్కడి కథ. అందుకే ఈ క్షేత్రానికి ఆ పేరు వచ్చిందని చెబుతారు. రాహు కేతు పూజలకు కూడా ఇది ప్రసిద్ధి."
+    ),
+    purana_name_te="స్థల పురాణం", purana_name_en="Sthala Purana",
+)
+_B2_VRATHA_2 = PuranaConceptShort(
+    concept_type=ConceptType.VRATHA,
+    title_te="కార్తీక మాస వ్రత మహత్యం", title_en="Karthika Masa Vratha Mahatyam",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "కార్తీక మాసం శివకేశవులిద్దరికీ ప్రీతికరమైన పవిత్ర మాసం. ఈ నెలలో తెల్లవారుజామున స్నానం చేసి, సాయంత్రం దీపం వెలిగించి, తులసిని పూజించడం "
+        "శుభమని స్కంద, పద్మ పురాణాలు చెబుతాయి. కార్తీక సోమవారాల్లో ఉపవాసం ఉండే సంప్రదాయం కూడా ఉంది."
+    ),
+    purana_name_te="స్కంద, పద్మ పురాణాలు", purana_name_en="Skanda and Padma Puranas",
+)
+_B2_QA_2 = PuranaConceptShort(
+    concept_type=ConceptType.DHARMA_QA,
+    title_te="తులసిని ఎందుకు పూజిస్తాం?", title_en="Why Do We Worship Tulasi?",
+    invocation_te="ఓం నమో నారాయణాయ",
+    body_te=(
+        "సమాధానం: తులసి శ్రీమహావిష్ణువుకు అత్యంత ప్రియమైన మొక్క అని, తులసి లేకుండా విష్ణు పూజ పూర్తికాదని పద్మ పురాణం చెబుతుంది. "
+        "ఇంటి ముందు తులసి కోట ఉంటే ఇంటికి శుభం కలుగుతుందని నమ్ముతారు. తులసి ఆకులు ఆరోగ్యానికి కూడా మంచివి."
+    ),
+    purana_name_te="పద్మ పురాణం", purana_name_en="Padma Purana",
+)
+_B2_TRIVIA_2 = PuranaConceptShort(
+    concept_type=ConceptType.TRIVIA_LIST,
+    title_te="అష్ట దిక్పాలకులు", title_en="The Eight Direction Guardians",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "ఎనిమిది దిక్కులను కాపాడే అష్ట దిక్పాలకులు: తూర్పున ఇంద్రుడు, ఆగ్నేయాన అగ్ని, దక్షిణాన యముడు, నైరుతిన నిరృతి, పడమర వరుణుడు, "
+        "వాయవ్యాన వాయుదేవుడు, ఉత్తరాన కుబేరుడు, ఈశాన్యాన ఈశానుడు."
+    ),
+    purana_name_te="పురాణ సంప్రదాయం", purana_name_en="Puranic Tradition",
+)
+_B2_QUIZ_2 = PuranaConceptShort(
+    concept_type=ConceptType.CHARACTER_QUIZ,
+    title_te="ఈ పాత్రను గుర్తించండి", title_en="Guess This Character",
+    invocation_te=_UNIVERSAL_INVOCATION,
+    body_te=(
+        "క్లూ: ఈయన కుంతీదేవికి సూర్యుని వల్ల పుట్టిన కుమారుడు. పుట్టుకతోనే కవచకుండలాలు ఉన్నాయి. అడిగినవారికి లేదనకుండా దానం చేసే "
+        "గొప్ప దాత.\n\nజవాబు: ఈయనే కర్ణుడు!"
+    ),
+    purana_name_te="పురాణ పాత్రలు", purana_name_en="Puranic Characters",
+)
+
 # Interleaved one-of-each-type-per-turn (see module docstring) so posting
 # in list order cycles through all 6 concepts before any repeat.
 PURANA_CONCEPT_SHORTS: list[PuranaConceptShort] = [
@@ -488,6 +612,9 @@ PURANA_CONCEPT_SHORTS: list[PuranaConceptShort] = [
     _PLACE_RAMESWARAM, _PLACE_PURI,
     # Tirumala facts, one a day in a row
     _TIRUMALA_1, _TIRUMALA_2, _TIRUMALA_3, _TIRUMALA_4, _TIRUMALA_5, _TIRUMALA_6,
+    # batch 2 (2026-11-03), interleaved by type
+    _B2_SLOKA_1, _B2_PLACE_1, _B2_VRATHA_1, _B2_QA_1, _B2_TRIVIA_1, _B2_QUIZ_1,
+    _B2_SLOKA_2, _B2_PLACE_2, _B2_VRATHA_2, _B2_QA_2, _B2_TRIVIA_2, _B2_QUIZ_2,
 ]
 
 

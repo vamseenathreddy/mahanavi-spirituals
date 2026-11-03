@@ -35,3 +35,18 @@ def test_jitter_pause_is_off_in_tests_and_random_otherwise(monkeypatch):
     monkeypatch.setattr(jitter.time, "sleep", slept.append)
     vals = {jitter.pause() for _ in range(30)}
     assert len(vals) > 5 and max(vals) <= 59 and len(slept) == 30
+
+
+def test_concept_pick_next_is_fresh_only(tmp_path, monkeypatch):
+    import channels.engine.used_registry as ur
+    from mahanavi.content.purana_concept_shorts import PURANA_CONCEPT_SHORTS as C, is_paused
+    from mahanavi.scripts import post_concept_short as pcs
+
+    monkeypatch.setattr(ur, "DATA_DIR", tmp_path)
+    live = [c for c in C if not is_paused(c)]
+    used = {pcs.concept_id(c) for c in live[:5]}
+    assert pcs.pick_next(C, used, []) == C.index(live[5])            # the first unused one
+    assert pcs.pick_next(C, {pcs.concept_id(c) for c in live}, []) == -1   # all used: nothing to post
+    posted = [live[5].title_te] if sum(c.title_te == live[5].title_te for c in C) == 1 else []
+    if posted:
+        assert pcs.pick_next(C, used, posted) == C.index(live[6])    # already on the channel: skipped

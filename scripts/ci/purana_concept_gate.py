@@ -39,13 +39,20 @@ from zoneinfo import ZoneInfo
 
 IST = ZoneInfo("Asia/Kolkata")
 DATA_DIR = Path("data")
-WINDOW_START_HOUR = 11  # 11:00 AM IST
+WINDOW_START_HOUR = 0  # 12:00 AM IST (owner 2026-11-03: concepts post on the days Chanakya does not, same midnight window)
 # The cron-job.org watchdog now ticks every 15 minutes through the window (11:00, 11:15, ...,
 # 12:45, 12:55 IST) instead of every 5 minutes, to cut billed GitHub Actions minutes on this
 # private repo. The random target must land no later than the second-to-last tick (12:50 leaves
 # the 12:55 tick as a guaranteed catch before the 1:00 PM cutoff) -- same fix already applied to
 # gita_sloka_gate.py after its 2026-10-06 missed post.
-WINDOW_SPAN_MINUTES = 110  # target lands somewhere in 11:00 AM-12:50 PM, posting completes before 1 PM
+WINDOW_SPAN_MINUTES = 110  # target lands somewhere in 12:00-1:50 AM, posting completes before 2:15 AM
+
+
+def _is_off_day(d) -> bool:
+    """Concepts post on the days the Telugu Chanakya card does not (every other day, from Tue 4 Nov 2026)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from channels import chanakya_plan as cp
+    return d > cp.SERIES_START and cp.plan(d) is None
 
 
 def _already_posted_today(today: str) -> bool:
@@ -71,6 +78,9 @@ def _decide(now: datetime, bypass_gate: bool) -> tuple[str, dt_time]:
     if bypass_gate:
         return "post", target
 
+    if not _is_off_day(now.date()):
+        return "none", target
+
     if _already_posted_today(today):
         return "none", target
 
@@ -79,7 +89,7 @@ def _decide(now: datetime, bypass_gate: bool) -> tuple[str, dt_time]:
 
     # Window safety cap: a very late post reads worse than a missed one
     # -- same principle already applied to the other gated Shorts.
-    if now.time() >= dt_time(13, 0):
+    if now.time() >= dt_time(2, 15):
         return "none", target
 
     return "post", target

@@ -114,14 +114,7 @@ SERIES = {
         "safety_minute": 55,
         "wdays": [0],  # weekly Rashi table: Sundays only (cron-job.org: 0 = Sunday)
     },
-    "purana_concept": {
-        "url_fragment": "post-concept-short.yml",
-        "start_hour": 11,
-        "span": 110,
-        "seed_fn": lambda o: o * 2 + 1,
-        "safety_hour": 12,
-        "safety_minute": 55,
-    },
+    # purana_concept: removed 2026-11-03. It now posts on alternate midnights from its own cron-job.org job (cronjob_create.py).
     "gita_sloka": {
         "url_fragment": "post-gita-sloka.yml",
         "start_hour": 15,
