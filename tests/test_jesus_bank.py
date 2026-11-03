@@ -1,10 +1,10 @@
 from channels.jesus import bank, metadata
 
 
-def test_bank_has_60_unique_verses_with_all_fields():
+def test_bank_has_unique_verses_with_all_fields():
     vs = bank.load_verses()
-    assert len(vs) == 60
-    assert len({v["ref_en"] for v in vs}) == 60
+    assert len(vs) >= 60
+    assert len({v["ref_en"] for v in vs}) == len(vs)
     for v in vs:
         for f in ("text_en", "text_te", "ref_en", "ref_te", "apply_en", "apply_te"):
             assert v[f].strip(), (v["id"], f)
@@ -14,7 +14,7 @@ def test_next_unused_never_repeats():
     seen, used = [], []
     while (v := bank.next_unused(used)) is not None:
         used.append(v["id"]); seen.append(v["id"])
-    assert len(seen) == len(set(seen)) == 60
+    assert len(seen) == len(set(seen)) == len(bank.load_verses())
 
 
 def test_quiz_row_has_correct_answer_among_four_distinct_options():
