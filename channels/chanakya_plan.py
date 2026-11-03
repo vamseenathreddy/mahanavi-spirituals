@@ -14,7 +14,15 @@ from zoneinfo import ZoneInfo
 
 from channels.engine import gate as gate_mod
 from channels.engine import state as state_mod
-from mahanavi.content import chanakya_neeti as cn
+
+# The gate step runs with only google libs installed, so do not import the mahanavi package (its __init__ needs Pillow).
+# chanakya_neeti.py is stdlib-only: load it straight from its file.
+import importlib.util as _ilu
+from pathlib import Path as _Path
+
+_spec = _ilu.spec_from_file_location("chanakya_neeti_gate", _Path(__file__).resolve().parents[1] / "src" / "mahanavi" / "content" / "chanakya_neeti.py")
+cn = _ilu.module_from_spec(_spec)
+_spec.loader.exec_module(cn)
 
 IST = ZoneInfo("Asia/Kolkata")
 SERIES_START = dt.date(2026, 11, 3)       # Tuesday: day 1
