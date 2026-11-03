@@ -1,0 +1,53 @@
+name: System | Content stock check
+
+# Every Monday 9:00 AM IST (and on demand): how many NEW posts are left in each finite series. Sends a Telegram warning when a
+# series has about 14 days or fewer left, so it can be refilled before it runs dry. A dry series stops and alerts, it never repeats.
+on:
+  schedule:
+    - cron: '30 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      always:
+        description: "Send the full stock table to Telegram even if nothing is low."
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: content-stock
+  cancel-in-progress: false
+
+jobs:
+  stock:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          pip install google-auth google-api-python-client
+          python scripts/ci/drive_state_sync.py pull
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Check the stock
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/ci/content_stock.py ${{ inputs.always && '--always' || '' }}
