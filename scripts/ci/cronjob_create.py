@@ -47,9 +47,10 @@ TARGETS = [
     ("post-mantra-sangam-purana.yml", "Mantra Sangam - Purana Story Short (5-7 PM)", *_every_10(17, 0, 13)),
     # Jesus posts ONE public Short a day (owner request 2026-10-14: no quiz, no second quote): a static
     # 10-minute ping through the 12-1 AM window; the gate picks the day's random minute inside it.
-    ("post-jesus-worship-waves.yml", "Jesus - Bible Quote Short (12-2:30 AM)", *_every_10(0, 0, 14)),
+    ("post-jesus-worship-waves.yml", "Jesus - Bible Quote Short (1 AM)", *_every_10(1, 0, 12)),
     # PAUSED 2026-10-14 (one Jesus Short a day): ("post-jesus-bible-quiz.yml", "Jesus - Bible Quiz Short (9-10 AM)", *_every_10(9, 0, 6)),
-    ("post-jesus-bible-quote-pm.yml", "Jesus - Bible Quote Short 2 (2:30-4:30 AM)", *_every_10(2, 30, 13)),  # back 2026-11-02: owner wants 2 midnight posts per channel
+    ("post-jesus-bible-quote-pm.yml", "Jesus - Bible Quote Short 2 (9 AM)", *_every_10(9, 0, 12)),  # 2026-11-03: owner wants a Bible quote every 8 hours (1 AM, 9 AM, 5 PM), no quiz
+    ("post-jesus-bible-quote-eve.yml", "Jesus - Bible Quote Short 3 (5 PM)", *_every_10(17, 0, 12)),
     # PAUSED by the owner 2026-10-13: ("post-motivation-mahanavi.yml", "Mahanavi - Purana Motivation Word Short (9 PM)", *_every_10(21, 0, 6)),
     # (job 8633677 is disabled on cron-job.org; move this line back into TARGETS and re-run to resume)
     # Trending news channel (one channel, six languages): a PUBLIC Short every 2 hours from midnight; the gate picks a

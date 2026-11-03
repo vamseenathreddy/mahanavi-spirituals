@@ -1,4 +1,4 @@
-name: Jesus | Bible Quote Short (12 AM IST)
+name: Jesus | Bible Quote Short (1 AM IST)
 
 # 12 AM Bible Quote Short (2026-10-10: Jesus posts 3 public Shorts a day: this at 12-1 AM, the Bible Quiz at 9-10 AM,
 # the second Bible Quote at 5-6 PM = post-jesus-bible-quote-pm.yml). Needs approved BGM
@@ -38,7 +38,7 @@ on:
         default: true
       bypass_gate:
         description: >-
-          Post immediately, ignoring the 00:00-00:40 IST window and today's already-posted
+          Post immediately, ignoring the 01:00-02:50 IST window and today's already-posted
           marker. For manual testing/review runs only.
         required: false
         type: boolean
@@ -48,9 +48,9 @@ on:
         required: false
         default: ''
   schedule:
-    - cron: "30 18 * * *"  # 00:00 IST (cron-job.org pings every 10 min 00:00-00:50 are the reliable trigger)
-    - cron: "0 19 * * *"
-    - cron: "25 19 * * *"  # 00:55 IST, late safety net
+    - cron: "30 19 * * *"
+    - cron: "0 20 * * *"
+    - cron: "30 21 * * *"
 
 concurrency:
   group: post-jesus-worship-waves
@@ -145,4 +145,4 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/ci/notify_failure.py "Jesus | Bible Quote Short (12 AM IST)"
+        run: python scripts/ci/notify_failure.py "Jesus | Bible Quote Short (1 AM IST)"
