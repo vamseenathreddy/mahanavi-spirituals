@@ -1,7 +1,7 @@
-name: Mahanavi | Chanakya Neeti Short (12:30 PM IST)
+name: Mahanavi | Chanakya Neeti Short (12 AM IST)
 
 # Chanakya Neeti: one static card with 5 teachings a day (Telugu), from Mon 9 Nov 2026, 21 days then extend. PUBLIC, day-seeded random
-# minute and second between 12:30 and 14:10 IST. State marker in beej_state_mahanavi.json under POST_SLOT=chanakya.
+# minute and second between 00:00 and 01:50 IST. State marker in beej_state_mahanavi.json under POST_SLOT=chanakya.
 on:
   workflow_dispatch:
     inputs:
@@ -99,4 +99,4 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: python scripts/ci/notify_failure.py "Mahanavi | Chanakya Neeti Short (12:30 PM IST)"
+        run: python scripts/ci/notify_failure.py "Mahanavi | Chanakya Neeti Short (12 AM IST)"

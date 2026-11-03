@@ -91,8 +91,8 @@ TARGETS = [
     # Lakshmi Devi 108 names series (from Fri 6 Nov 2026): the gate only acts on series days, at a day-seeded random minute.
     ("post-lakshmi-name.yml", "Mahanavi - Lakshmi 108 Names Short (6-8 PM)", *_every_10(18, 0, 13)),
     ("post-lakshmi-recap.yml", "Mahanavi - Lakshmi 108 Friday Recap (9-11 AM)", *_every_10(9, 0, 13)),
-    ("post-chanakya-telugu.yml", "Mahanavi - Chanakya Neeti Short (12:30-2:30 PM)", *_every_10(12, 30, 13)),
-    ("post-chanakya-hindi.yml", "Mantra Sangam - Chanakya Neeti Short (11 AM-1 PM)", *_every_10(11, 0, 13)),
+    ("post-chanakya-telugu.yml", "Mahanavi - Chanakya Neeti Short (12-2 AM)", *_every_10(0, 0, 13)),
+    ("post-chanakya-hindi.yml", "Mantra Sangam - Chanakya Neeti Short (12-2 AM)", *_every_10(0, 0, 13)),
     ("post-lakshmi-name-hindi.yml", "Trance Beats - Lakshmi 108 Names Short (4:30-6:30 PM)", *_every_10(16, 30, 13)),
     ("post-lakshmi-recap-hindi.yml", "Trance Beats - Lakshmi 108 Friday Recap (10 AM-12)", *_every_10(10, 0, 13)),
 ]
