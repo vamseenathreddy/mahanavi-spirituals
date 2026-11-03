@@ -25,8 +25,9 @@ def approved_music() -> list[str]:
 def fetch_row(used_ids):
     v = bank.next_unused(used_ids)
     if v is None:
-        raise SystemExit("::error::Verse bank exhausted -- add more verses to channels/jesus/data/verses.json "
-                         "(nothing is ever re-posted automatically).")
+        from channels.engine.exhausted import stop
+        stop("Jesus Bible verse", "the verse bank is used up")
+        raise SystemExit(0)
     return bank.quote_row(v)
 
 
