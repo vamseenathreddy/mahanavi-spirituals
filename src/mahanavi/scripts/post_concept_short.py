@@ -143,11 +143,14 @@ def main() -> int:
 
     if not forced:
         from mahanavi.content.purana_concept_shorts import is_paused
+        from channels.engine.exhausted import stop
         for _ in range(len(PURANA_CONCEPT_SHORTS)):   # paused topics (Tirumala, owner request 2026-11-02) are skipped
             if not is_paused(PURANA_CONCEPT_SHORTS[concept_index]):
                 break
             print(f"Paused topic: '{PURANA_CONCEPT_SHORTS[concept_index].title_en}' -- skipping to the next concept.")
             concept_index = (concept_index + 1) % len(PURANA_CONCEPT_SHORTS)
+        else:
+            return stop("Purana Concept Short", "every concept is paused")
         # Duplicate guard: never post a concept whose title is already on the channel. "Guess This
         # Character" entries share a title by design, so only unique titles are guarded.
         from collections import Counter
@@ -162,6 +165,8 @@ def main() -> int:
                 concept_index = (concept_index + 1) % len(PURANA_CONCEPT_SHORTS)
             else:
                 break
+        else:
+            return stop("Purana Concept Short", "every concept is already on the channel")
 
     concept: PuranaConceptShort = PURANA_CONCEPT_SHORTS[concept_index]
     print(f"Posting concept {concept_index} ({concept.title_en}, {concept.concept_type.value}){' [FORCED]' if forced else ''}")

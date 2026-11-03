@@ -93,6 +93,8 @@ jobs:
       - name: Run Gita Sloka Short pipeline
         if: steps.gate.outputs.target == 'post'
         env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           MAHANAVI_IMAGES_ROOT: ./Images
           MAHANAVI_ASSETS_DIR: ./assets
           MAHANAVI_OUTPUT_DIR: ./data/generated

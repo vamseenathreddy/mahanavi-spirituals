@@ -108,7 +108,7 @@ def _read_state() -> tuple[str, int]:
     raw = STATE_FILE.read_text().strip()
     if ":" not in raw:
         try:
-            return "verse", int(raw) % len(GITA_SLOKAS)
+            return "verse", int(raw)
         except ValueError:
             print(f"Note: {STATE_FILE} had unreadable content, starting at verse 0.")
             return "verse", 0
@@ -117,7 +117,7 @@ def _read_state() -> tuple[str, int]:
         print(f"Note: {STATE_FILE} had unrecognized mode '{mode}', starting at verse 0.")
         return "verse", 0
     try:
-        return mode, int(idx_s) % len(GITA_SLOKAS)
+        return mode, int(idx_s)
     except ValueError:
         print(f"Note: {STATE_FILE} had unreadable index, starting at verse 0.")
         return "verse", 0
@@ -125,7 +125,7 @@ def _read_state() -> tuple[str, int]:
 
 def _write_state(mode: str, index: int) -> None:
     STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    STATE_FILE.write_text(f"{mode}:{index % len(GITA_SLOKAS)}")
+    STATE_FILE.write_text(f"{mode}:{index}")   # not wrapped: index == len means every verse is used up
 
 
 def _resolve_forced_sloka(spec: str) -> int:
@@ -188,6 +188,10 @@ def main() -> int:
         print(f"FAILED: {exc}", file=sys.stderr)
         return 1
 
+    if not forced and state_index >= len(GITA_SLOKAS):
+        from channels.engine.exhausted import stop
+        return stop("Gita Sloka Short", f"all {len(GITA_SLOKAS)} verses in GITA_SLOKAS are already posted")
+
     # --sloka alone (no --mode) means "force this verse", matching the
     # series' pre-existing CLI convention. --mode alone targets whatever
     # verse rotation is currently on.
@@ -203,7 +207,7 @@ def main() -> int:
     if mode == "quiz" and not QUIZ_ENABLED and args.mode is None:
         # Owner request 2026-10-15: stop the Gita Quiz Short (verses continue on their own days).
         # The quiz turn is skipped and the rotation moves on to the next verse.
-        next_index = (target_index + 1) % len(GITA_SLOKAS)
+        next_index = target_index + 1
         _write_state("verse", next_index)
         print(f"Gita quiz is switched off (QUIZ_ENABLED=False): nothing posted, next run posts VERSE {next_index}.")
         return 0
@@ -321,10 +325,13 @@ def main() -> int:
                 _write_state("quiz", target_index)
                 print(f"State advanced: next run will QUIZ on verse {target_index} ({sloka.chapter}.{sloka.verse})")
             else:
-                next_index = (target_index + 1) % len(GITA_SLOKAS)
+                next_index = target_index + 1
                 _write_state("verse", next_index)
-                next_sloka = GITA_SLOKAS[next_index]
-                print(f"State advanced: next run will post VERSE {next_index} ({next_sloka.chapter}.{next_sloka.verse})")
+                if next_index >= len(GITA_SLOKAS):
+                    print("State advanced: that was the LAST verse, the next run will stop and alert (no repeats).")
+                else:
+                    next_sloka = GITA_SLOKAS[next_index]
+                    print(f"State advanced: next run will post VERSE {next_index} ({next_sloka.chapter}.{next_sloka.verse})")
         else:
             print("Forced run -- rotation state left unchanged.")
 

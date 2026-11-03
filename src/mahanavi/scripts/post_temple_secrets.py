@@ -38,8 +38,13 @@ def main(argv: list[str] | None = None) -> int:
         st = state_mod.load()
         temple = next((t for t in ts.TEMPLES if t.slug == args.temple), None) if args.temple else ts.used_and_next(st["used_ids"])
         if temple is None:
-            print("::notice::Temple Secrets list is used up, skipping this week: add more temples to content/temple_secrets.py")
-            return 0
+            from channels.engine.exhausted import stop
+            if st.get("exhausted_alert") == today.isoformat():
+                print("Temple Secrets list is used up (already alerted today).")
+                return 0
+            st["exhausted_alert"] = today.isoformat()
+            state_mod.save(st)
+            return stop("Temple Secrets Short", "every temple in content/temple_secrets.py is used")
         if ts.left(st["used_ids"]) <= ts.LOW_STOCK:
             print(f"::warning::only {ts.left(st['used_ids'])} temple(s) left in the Temple Secrets list, add more")
         spec = ts.build(temple, today)
