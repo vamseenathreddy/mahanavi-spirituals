@@ -156,7 +156,10 @@ def main() -> int:
         from collections import Counter
 
         from mahanavi.publishers.recent_titles import is_posted, recent_titles
-        titles = recent_titles(YouTubeShortsUploader(settings)._build_service())  # noqa: SLF001
+        from mahanavi.publishers.recent_titles import ledger_titles
+        # the channel's last 1500 uploads PLUS the all-time ledger (the old guard read only 100 uploads, about 3 days on this
+        # channel, so an older concept such as "What Is Dharma?" slipped through and was posted twice)
+        titles = recent_titles(YouTubeShortsUploader(settings)._build_service()) + ledger_titles(settings.youtube_token_file)  # noqa: SLF001
         counts = Counter(c.title_te for c in PURANA_CONCEPT_SHORTS)
         for _ in range(len(PURANA_CONCEPT_SHORTS)):
             c = PURANA_CONCEPT_SHORTS[concept_index]

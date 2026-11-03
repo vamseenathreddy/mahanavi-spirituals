@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 
-def recent_titles(youtube: Any, limit: int = 100) -> list[str]:
+def recent_titles(youtube: Any, limit: int = 1500) -> list[str]:
     """Titles of the channel's newest uploads. Returns [] on any API problem (guard is best-effort)."""
     try:
         ch = youtube.channels().list(part="contentDetails", mine=True).execute()
@@ -23,6 +23,12 @@ def recent_titles(youtube: Any, limit: int = 100) -> list[str]:
     except Exception as exc:  # noqa: BLE001
         print(f"Note: duplicate guard skipped (could not read recent uploads: {type(exc).__name__}).")
         return []
+
+
+def ledger_titles(token_file: Any) -> list[str]:
+    """Every title the pre-upload ledger ever recorded for this channel (all-time memory, not just the latest uploads)."""
+    from mahanavi.publishers import post_ledger
+    return [str(v.get("title", "")) for v in post_ledger.load(token_file).values() if isinstance(v, dict)]
 
 
 def is_posted(titles: list[str], *needles: str) -> bool:
