@@ -30,3 +30,7 @@ requests-mock>=1.12,<2.0
 googlenewsdecoder>=0.1.7
 selectolax>=0.3,<1.0  # googlenewsdecoder needs the old parser backend
 edge-tts>=6.1,<8
+
+# --- Series Shorts (Lakshmi 108, Chanakya): frame compositing ---
+numpy>=1.26
+opencv-python-headless>=4.9
