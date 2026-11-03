@@ -57,8 +57,8 @@ def _wrapped_height(probe, text, font, maxw, lead=1.3):
 def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     """Returns (RGBA layer, y where the teaching block ends, y where the share + subscribe block starts)."""
     ui = UI[lang]
-    f_head, f_sub, f_sutra = _font(lang, int(56 * k)), _font(lang, int(28 * k)), _font(lang, int(40 * k))
-    f_label, f_ex, f_subs, f_share = _font(lang, int(30 * k)), _font(lang, int(46 * k)), _font(lang, 40), _font(lang, int(36 * k))
+    f_head, f_sub, f_sutra = _font(lang, int(56 * k)), _font(lang, int(28 * k)), _font(lang, int(48 * k))
+    f_label, f_ex, f_subs, f_share = _font(lang, int(30 * k)), _font(lang, int(36 * k)), _font(lang, 40), _font(lang, int(36 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
@@ -80,18 +80,19 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
 
     block(ui["head"], f_head, GOLD, gap=2)
     block(ui["sub"].format(d=day + 1, n=cn.days()), f_sub, WHITE, gap=int(26 * k))
-    block(cn.sutra(day, lang), f_sutra, (255, 248, 230), gap=int(34 * k))
-    # the MAIN message: bigger, on a dark gold-rimmed panel so it pops
-    ex_lines = _wrap(probe, cn.example(day, lang), f_ex, TEXT_W - 20)
-    ex_h = sum(int((f_ex.getbbox(ln)[3] - f_ex.getbbox(ln)[1]) * 1.3) + 4 for ln in ex_lines)
+    # the MAIN message is what Chanakya said (the sutra): bigger, on a dark gold-rimmed panel so it pops
+    su_lines = _wrap(probe, cn.sutra(day, lang), f_sutra, TEXT_W - 20)
+    su_h = sum(int((f_sutra.getbbox(ln)[3] - f_sutra.getbbox(ln)[1]) * 1.3) + 4 for ln in su_lines)
     pad = 22
-    d.rounded_rectangle((W // 2 - TEXT_W // 2 - 14, y - pad, W // 2 + TEXT_W // 2 + 14, y + ex_h + pad), radius=26,
-                        fill=(18, 8, 4, 190), outline=(255, 200, 80, 255), width=4)
-    for ln in ex_lines:
-        x = (W - probe.textlength(ln, font=f_ex)) / 2
-        d.text((x, y), ln, font=f_ex, fill=(255, 226, 140), stroke_width=4, stroke_fill=INK)
-        y += int((f_ex.getbbox(ln)[3] - f_ex.getbbox(ln)[1]) * 1.3) + 4
     y += pad
+    d.rounded_rectangle((W // 2 - TEXT_W // 2 - 14, y - pad, W // 2 + TEXT_W // 2 + 14, y + su_h + pad), radius=26,
+                        fill=(18, 8, 4, 190), outline=(255, 200, 80, 255), width=4)
+    for ln in su_lines:
+        x = (W - probe.textlength(ln, font=f_sutra)) / 2
+        d.text((x, y), ln, font=f_sutra, fill=(255, 226, 140), stroke_width=4, stroke_fill=INK)
+        y += int((f_sutra.getbbox(ln)[3] - f_sutra.getbbox(ln)[1]) * 1.3) + 4
+    y += pad + int(30 * k)
+    block(cn.example(day, lang), f_ex, WHITE)
     end = y
     sy = share_y
     for ln in _wrap(probe, ui["share"], f_share, TEXT_W):
