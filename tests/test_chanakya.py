@@ -14,8 +14,10 @@ def test_one_sutra_a_day_never_repeats_and_has_an_example():
 def test_plan_window():
     assert p.plan(dt.date(2026, 11, 8)) is None
     assert p.plan(dt.date(2026, 11, 9)) == 0
-    assert p.plan(p.SERIES_START + dt.timedelta(days=cn.days() - 1)) == cn.days() - 1
-    assert p.plan(p.SERIES_START + dt.timedelta(days=cn.days())) is None
+    assert p.plan(dt.date(2026, 11, 10)) is None
+    assert p.plan(dt.date(2026, 11, 11)) == 1
+    assert p.plan(p.SERIES_START + dt.timedelta(days=2 * (cn.days() - 1))) == cn.days() - 1
+    assert p.plan(p.SERIES_START + dt.timedelta(days=2 * cn.days())) is None
 
 
 def test_no_telugu_in_hindi_text_and_vice_versa():

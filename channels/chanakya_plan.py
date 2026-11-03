@@ -18,6 +18,7 @@ from mahanavi.content import chanakya_neeti as cn
 
 IST = ZoneInfo("Asia/Kolkata")
 SERIES_START = dt.date(2026, 11, 9)       # Monday: day 1
+STEP = 2                                  # one card every other day (9, 11, 13 Nov ...)
 # (window start, window minutes, latest)
 WINDOWS = {"te": (dt.time(0, 0), 110, dt.time(2, 15)), "hi": (dt.time(0, 10), 110, dt.time(2, 15))}
 SLOTS = {"te": "chanakya", "hi": "chanakya_hi"}
@@ -25,8 +26,11 @@ SLOTS = {"te": "chanakya", "hi": "chanakya_hi"}
 
 def plan(d: dt.date) -> int | None:
     """0 based day index for that date, or None outside the series (more teachings are added at the end of SUTRAS to extend it)."""
-    i = (d - SERIES_START).days
-    return i if 0 <= i < cn.days() else None
+    n = (d - SERIES_START).days
+    if n < 0 or n % STEP:
+        return None
+    i = n // STEP
+    return i if i < cn.days() else None
 
 
 def jitter_seconds(lang: str, d: dt.date) -> int:

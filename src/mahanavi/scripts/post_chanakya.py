@@ -28,9 +28,9 @@ IST = ZoneInfo("Asia/Kolkata")
 CHANNEL_WORD = {"te": "mahanavi", "hi": "mantra sangam"}
 PLAYLISTS = {
     "te": ("చాణక్య నీతి సూత్రాలు | ప్రతిరోజు ఒక సూత్రం | Chanakya Neeti in Telugu",
-           "ప్రతిరోజు ఒక చాణక్య నీతి సూత్రం, ఈ రోజుల్లో ఎలా వాడాలో ఉదాహరణతో. ఒకటి కూడా మళ్లీ రాదు.\nOne Chanakya Neeti sutra every day in Telugu with a modern-life example, none repeated."),
+           "రెండు రోజులకు ఒక చాణక్య నీతి సూత్రం, ఈ రోజుల్లో ఎలా వాడాలో ఉదాహరణతో. ఒకటి కూడా మళ్లీ రాదు.\nOne Chanakya Neeti sutra every other day in Telugu with a modern-life example, none repeated."),
     "hi": ("चाणक्य नीति सूत्र | रोज़ एक सूत्र | Chanakya Neeti in Hindi",
-           "हर दिन चाणक्य नीति का एक सूत्र, आज के जीवन के उदाहरण के साथ। कोई दोबारा नहीं आता।\nOne Chanakya Neeti sutra every day in Hindi with a modern-life example, none repeated."),
+           "हर दूसरे दिन चाणक्य नीति का एक सूत्र, आज के जीवन के उदाहरण के साथ। कोई दोबारा नहीं आता।\nOne Chanakya Neeti sutra every other day in Hindi with a modern-life example, none repeated."),
 }
 DISCLAIMER = {"te": "ఇవి చాణక్య నీతి స్ఫూర్తితో సులభ భాషలో ఇచ్చిన బోధలు.\nఈ సందేశాన్ని మీకు ఇష్టమైనవారికి WhatsApp లో పంపండి.",
               "hi": "ये चाणक्य नीति की सीख सरल भाषा में हैं।\nयह संदेश अपने प्रियजनों को WhatsApp पर भेजिए।"}
@@ -52,7 +52,7 @@ def metadata(lang: str, day: int) -> tuple[str, str, list[str], str, str]:
     body = f"{head}\n\n{sutra}\n\n{ex}\n\n{DISCLAIMER[lang]}\n\n{hashtags}"
     tags = ["chanakya neeti", "chanakya quotes", "chanakya sutras", "chanakya niti", "life lessons", "motivation", "Shorts"] + tags_x
     title_en = f"Chanakya Neeti Sutras: teaching {day + 1} of {n} with a modern-life example"
-    desc_en = f"One Chanakya Neeti teaching a day, with a short example of how to use it in modern life. Teaching {day + 1} of {n}.\n\n{hashtags}"
+    desc_en = f"One Chanakya Neeti teaching every other day, with a short example of how to use it in modern life. Teaching {day + 1} of {n}.\n\n{hashtags}"
     return title, body, tags, title_en, desc_en
 
 
