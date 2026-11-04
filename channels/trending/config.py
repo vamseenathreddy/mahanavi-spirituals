@@ -101,7 +101,10 @@ def slots_for(day) -> set[str]:
     d = day.isoformat()
     if d == "2026-11-03":      # campaign silence starts 5 PM on 3 Nov: only the daytime slots (before 17:00 IST) post
         return {"t4", "t6", "t8"}
-    if d in ("2026-11-04", "2026-11-05"):   # silence period and polling day: no party card posts (informational scroll Shorts only)
+    # 2026-11-04 owner decision (after being told the silence-period risk): fan posts go out on 4 and 5 Nov too.
+    if FAN_MODE and d in ("2026-11-04", "2026-11-05"):
+        return {"t6", "t10"} if d == "2026-11-04" else {"t2", "t6", "t10"}
+    if d in ("2026-11-04", "2026-11-05"):   # news mode keeps the silence: no party card posts
         return set()
     if FAN_MODE:
         return {"t2", "t6", "t10"}   # 2026-11-04 owner: 3 posts a day, every 8 hours from 02:00 IST (02:00, 10:00, 18:00)

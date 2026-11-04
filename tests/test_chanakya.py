@@ -104,6 +104,6 @@ def test_fan_mode_posts_three_shorts_a_day_after_the_silence_days():
 
     from channels.trending import config as cfg
     assert cfg.FAN_MODE
-    assert cfg.slots_for(dt.date(2026, 11, 4)) == set() and cfg.slots_for(dt.date(2026, 11, 5)) == set()
+    assert cfg.slots_for(dt.date(2026, 11, 4)) == {"t6", "t10"} and cfg.slots_for(dt.date(2026, 11, 5)) == {"t2", "t6", "t10"}
     for d in (6, 7, 8, 9, 20):
         assert cfg.slots_for(dt.date(2026, 11, d)) == {"t2", "t6", "t10"}
