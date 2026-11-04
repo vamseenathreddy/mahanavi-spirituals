@@ -34,7 +34,7 @@ DAY_PATTERN = ["tdp", "ysrcp", "lokesh", "counter", "chandrababu"]
 # evergreen documented-fact fan Shorts (channels/trending/fan_bank.py, then ntr_bank and the achievements bank). The election
 # silence days below (4 and 5 Nov) still post nothing. Set FAN_MODE = False to go back to the news pattern.
 FAN_MODE = True
-FAN_PATTERN = ["ntr", "chandrababu", "lokesh", "amaravati", "development", "tdp"]
+FAN_PATTERN = ["chandrababu", "lokesh", "amaravati", "development", "tdp"]   # no NTR posts (owner 2026-11-04)
 NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp", "go"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
@@ -104,7 +104,7 @@ def slots_for(day) -> set[str]:
     if d in ("2026-11-04", "2026-11-05"):   # silence period and polling day: no party card posts (informational scroll Shorts only)
         return set()
     if FAN_MODE:
-        return {"t10"}   # 2026-11-04 owner: one post a day (18:00 IST)
+        return {"t2", "t6", "t10"}   # 2026-11-04 owner: 3 posts a day, every 8 hours from 02:00 IST (02:00, 10:00, 18:00)
     if ELECTION_WEEK[0] <= d <= ELECTION_WEEK[1]:
         return {"t4", "t6", "t8", "t10", "t11"}
     return {"t4", "t7", "t10", "t11"}

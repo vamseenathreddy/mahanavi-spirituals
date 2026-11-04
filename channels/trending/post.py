@@ -46,15 +46,14 @@ def choose(lang: str, niche: str, used: set, yt, fetch=pick_story, recent=()):
 
 
 def choose_fan(niche: str, used: set):
-    """Fan mode: no news. This niche's fan items first, then the other fan niches, then NTR history (reframed rounds) and the
-    achievements bank. Nothing is ever re-posted: every pool skips keys already in used_ids."""
+    """Fan mode: no news. This niche's fan items first, then the other fan niches, then the achievements bank. Nothing is ever re-posted: every pool skips keys already in used_ids."""
     from channels.trending import bank, fan_bank
     order = [niche] + [n for n in cfg.FAN_PATTERN if n != niche]
     for n in order:
         story = fan_bank.next_story(n, used)
         if story:
             return n, story
-    for n, pool in (("ntr", bank.bank_stories("ntr")), ("development", bank.bank_stories("innovations"))):
+    for n, pool in (("development", bank.bank_stories("innovations")),):   # no NTR posts (owner 2026-11-04)
         story = next((x for x in pool if x.key not in used), None)
         if story:
             return n, story

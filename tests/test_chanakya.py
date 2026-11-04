@@ -78,7 +78,7 @@ def test_fan_bank_items_are_unique_and_cover_every_fan_niche():
     from channels.trending import config as cfg
     from channels.trending import fan_bank
     keys = [s.key for n in cfg.FAN_PATTERN for s in fan_bank.stories(n)]
-    assert len(keys) == len(set(keys)) == len(fan_bank.ITEMS)
+    assert len(keys) == len(set(keys)) == len([i for i in fan_bank.ITEMS if i[0] != "ntr"])
     assert all(fan_bank.stories(n) for n in cfg.FAN_PATTERN)
 
 
@@ -89,19 +89,21 @@ def test_fan_mode_picks_fresh_only_and_plans_fan_niches():
     assert cfg.FAN_MODE and cfg.plan(0)[1] in cfg.FAN_PATTERN
     used = set()
     seen = []
-    for _ in range(len(fan_bank.ITEMS)):
+    assert "ntr" not in cfg.FAN_PATTERN
+    for _ in range(len(fan_bank.ITEMS) - len(fan_bank.stories("ntr"))):
         n, s = choose_fan("chandrababu", used)
+        assert n != "ntr"
         assert s is not None and s.key not in used
         used.add(s.key)
         seen.append(s.key)
     assert len(seen) == len(set(seen))
 
 
-def test_fan_mode_posts_one_short_a_day_after_the_silence_days():
+def test_fan_mode_posts_three_shorts_a_day_after_the_silence_days():
     import datetime as dt
 
     from channels.trending import config as cfg
     assert cfg.FAN_MODE
     assert cfg.slots_for(dt.date(2026, 11, 4)) == set() and cfg.slots_for(dt.date(2026, 11, 5)) == set()
     for d in (6, 7, 8, 9, 20):
-        assert cfg.slots_for(dt.date(2026, 11, d)) == {"t10"}
+        assert cfg.slots_for(dt.date(2026, 11, d)) == {"t2", "t6", "t10"}
