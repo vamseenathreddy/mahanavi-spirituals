@@ -72,3 +72,26 @@ def test_hindi_concepts_cover_every_live_entry_and_pick_fresh(tmp_path, monkeypa
 def test_hindi_plan_runs_on_chanakya_off_days():
     from channels import purana_hindi_plan as p
     assert not p.is_post_day(dt.date(2026, 11, 3)) and p.is_post_day(dt.date(2026, 11, 4)) and not p.is_post_day(dt.date(2026, 11, 5))
+
+
+def test_fan_bank_items_are_unique_and_cover_every_fan_niche():
+    from channels.trending import config as cfg
+    from channels.trending import fan_bank
+    keys = [s.key for n in cfg.FAN_PATTERN for s in fan_bank.stories(n)]
+    assert len(keys) == len(set(keys)) == len(fan_bank.ITEMS)
+    assert all(fan_bank.stories(n) for n in cfg.FAN_PATTERN)
+
+
+def test_fan_mode_picks_fresh_only_and_plans_fan_niches():
+    from channels.trending import config as cfg
+    from channels.trending import fan_bank
+    from channels.trending.post import choose_fan
+    assert cfg.FAN_MODE and cfg.plan(0)[1] in cfg.FAN_PATTERN
+    used = set()
+    seen = []
+    for _ in range(len(fan_bank.ITEMS)):
+        n, s = choose_fan("chandrababu", used)
+        assert s is not None and s.key not in used
+        used.add(s.key)
+        seen.append(s.key)
+    assert len(seen) == len(set(seen))

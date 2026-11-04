@@ -268,10 +268,10 @@ def description(story: Story, lang: str, niche: str) -> str:
     if note(niche, story.key):
         more += [note(niche, story.key), ""]
     if story.related:
-        more += ["ముఖ్యాంశాలు (Key points):" if niche == "ntr" else "Also in the news:"] + [f"- {h}" for h, _ in story.related] + [""]
+        more += ["ముఖ్యాంశాలు (Key points):" if niche == "ntr" or story.kind == "bank" else "Also in the news:"] + [f"- {h}" for h, _ in story.related] + [""]
     if niche == "ntr":
         from channels.trending.ntr_bank import english_line
-        more += [english_line(story.headline) + ". Telugu Desam Party history, NTR and Chandrababu Naidu, told for Telugu supporters.", ""]
+        more += [(english_line(story.headline) + ". " if english_line(story.headline) else "") + "Telugu Desam Party history, NTR and Chandrababu Naidu, told for Telugu supporters.", ""]
     return "\n".join([
         story.headline, "",
         *more,

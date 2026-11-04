@@ -6,6 +6,15 @@ from channels.trending import metadata, post
 from channels.trending.sources import (Story, clean_title, fresh_enough, is_informative, matches_language,
                                        parse_rss, pick_story)
 
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def _news_mode(monkeypatch):
+    """These tests cover the news pattern; fan mode (2026-11-04) has its own tests in test_chanakya.py."""
+    monkeypatch.setattr(cfg, "FAN_MODE", False)
+
+
 RSS = """<?xml version="1.0"?><rss><channel>
 <item><title>భారత్ ఘన విజయం, కోహ్లీ సెంచరీ - Eenadu</title><link>https://n/1</link>
 <pubDate>Fri, 16 Oct 2026 10:00:00 GMT</pubDate><source url="x">Eenadu</source></item>

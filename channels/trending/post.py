@@ -32,12 +32,30 @@ def choose(lang: str, niche: str, used: set, yt, fetch=pick_story, recent=()):
     If the news is quiet everywhere, an NTR and TDP history post (reframed each round, see ntr_bank) fills the slot, so
     the channel never runs dry. Stories that look like a recent post (same story, another outlet) are skipped."""
     extra = {"recent": recent} if recent else {}
+    if cfg.FAN_MODE:
+        return choose_fan(niche, used)
     if niche == "ysrcp":   # attack slots stay on YCP: its own stories, then TDP's replies to YCP, and never positive news
         order = ["ysrcp", "counter"]
     else:
         order = [niche] + [n for n in cfg.NEWS_NICHES if n != niche] + (["ntr"] if cfg.NTR_ENABLED and niche != "ntr" else [])
     for n in dict.fromkeys(order):
         story = fetch(n, lang, used, yt, **extra)
+        if story:
+            return n, story
+    return niche, None
+
+
+def choose_fan(niche: str, used: set):
+    """Fan mode: no news. This niche's fan items first, then the other fan niches, then NTR history (reframed rounds) and the
+    achievements bank. Nothing is ever re-posted: every pool skips keys already in used_ids."""
+    from channels.trending import bank, fan_bank
+    order = [niche] + [n for n in cfg.FAN_PATTERN if n != niche]
+    for n in order:
+        story = fan_bank.next_story(n, used)
+        if story:
+            return n, story
+    for n, pool in (("ntr", bank.bank_stories("ntr")), ("development", bank.bank_stories("innovations"))):
+        story = next((x for x in pool if x.key not in used), None)
         if story:
             return n, story
     return niche, None
@@ -89,6 +107,9 @@ def main(argv=None) -> int:
                 st["local_month"] = date.strftime("%Y-%m")
         if story is None:
             print("No fresh unused story found in any niche for this language; skipping this slot.")
+            if cfg.FAN_MODE:
+                from channels.engine.exhausted import stop
+                return stop("Pulse TDP Fans", "every fan item has been used")
             return 0
 
         if not args.sample:

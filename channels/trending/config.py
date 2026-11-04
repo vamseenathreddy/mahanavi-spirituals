@@ -30,6 +30,11 @@ NTR_WEEKDAY = 6       # 2026-10-23: exactly one NTR Short a week (Sunday, 4th sl
 # 9 of 12 posts were YCP attacks. Back to a mixed day of 5: 1 election/TDP news, 1 YCP exposure, 1 Lokesh, 1 YCP-claim reply
 # (counter), 1 Chandrababu. Only 2 of 5 (40%) are critical, and every critical post comes from a real, named news story.
 DAY_PATTERN = ["tdp", "ysrcp", "lokesh", "counter", "chandrababu"]
+# 2026-11-04 owner: no day-to-day news and no attack posts any more; write like a hardcore TDP fan. FAN_MODE posts only
+# evergreen documented-fact fan Shorts (channels/trending/fan_bank.py, then ntr_bank and the achievements bank). The election
+# silence days below (4 and 5 Nov) still post nothing. Set FAN_MODE = False to go back to the news pattern.
+FAN_MODE = True
+FAN_PATTERN = ["ntr", "chandrababu", "lokesh", "amaravati", "development", "tdp"]
 NEWS_NICHES = ["amaravati", "lokesh", "chandrababu", "counter", "tdp", "nda", "development", "ysrcp", "go"]   # "local" only posts monthly   # the only niches that may post
 
 LANG_EN = {"te": "Telugu", "hi": "Hindi", "en": "English", "ta": "Tamil", "kn": "Kannada", "ml": "Malayalam"}
@@ -56,8 +61,8 @@ WHATSAPP_URL = "https://chat.whatsapp.com/E70aL6tTrzT4eftmUV9npI"
 TELEGRAM_URL = "https://t.me/PulseBoostingTDP"
 # (subscribe line, join-groups line, comment line), drawn under the headline
 CTA = {
-    "te": ("తమ్ముళ్లూ, ఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
-           "ఇలాంటి వార్తల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి"),
+    "te": ("తమ్ముళ్లూ, ఇలాంటి గర్వకారణ విశేషాల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి", "వాట్సాప్, టెలిగ్రామ్ గ్రూపుల్లో చేరండి",
+           "ఇలాంటి గర్వకారణ విశేషాల కోసం ఛానల్‌ను సబ్‌స్క్రైబ్ చేయండి"),
     "en": ("12 Telugu updates daily. Subscribe", "Join our WhatsApp and Telegram groups",
            "You may never see this channel again unless you subscribe right now"),
 }
@@ -98,6 +103,8 @@ def slots_for(day) -> set[str]:
         return {"t4", "t6", "t8"}
     if d in ("2026-11-04", "2026-11-05"):   # silence period and polling day: no party card posts (informational scroll Shorts only)
         return set()
+    if FAN_MODE:
+        return {"t4", "t7", "t10", "t11"}
     if ELECTION_WEEK[0] <= d <= ELECTION_WEEK[1]:
         return {"t4", "t6", "t8", "t10", "t11"}
     return {"t4", "t7", "t10", "t11"}
@@ -174,6 +181,8 @@ def niche_label(lang: str, niche: str) -> str:
 def plan(seq: int, day=None, state: dict | None = None) -> tuple[str, str]:
     """(language, niche) for the seq-th post: Telugu always; niches follow DAY_PATTERN. On the 1st of a month, the
     third post of the day is the monthly Nuzvid and Chatrai post, once (state['local_month'] remembers it)."""
+    if FAN_MODE:
+        return LANGS[0], FAN_PATTERN[seq % len(FAN_PATTERN)]
     niche = DAY_PATTERN[seq % len(DAY_PATTERN)]
     if day is not None and seq % len(DAY_PATTERN) == 3 and (day.toordinal() % 2 == 0 if NTR_ENABLED else day.weekday() == NTR_WEEKDAY):
         niche = "ntr"   # one NTR and Telugu Desam history post a week (every other day only if NTR_ENABLED)
