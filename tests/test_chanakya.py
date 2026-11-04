@@ -95,3 +95,13 @@ def test_fan_mode_picks_fresh_only_and_plans_fan_niches():
         used.add(s.key)
         seen.append(s.key)
     assert len(seen) == len(set(seen))
+
+
+def test_fan_mode_posts_one_short_a_day_after_the_silence_days():
+    import datetime as dt
+
+    from channels.trending import config as cfg
+    assert cfg.FAN_MODE
+    assert cfg.slots_for(dt.date(2026, 11, 4)) == set() and cfg.slots_for(dt.date(2026, 11, 5)) == set()
+    for d in (6, 7, 8, 9, 20):
+        assert cfg.slots_for(dt.date(2026, 11, d)) == {"t10"}

@@ -104,7 +104,7 @@ def slots_for(day) -> set[str]:
     if d in ("2026-11-04", "2026-11-05"):   # silence period and polling day: no party card posts (informational scroll Shorts only)
         return set()
     if FAN_MODE:
-        return {"t4", "t7", "t10", "t11"}
+        return {"t10"}   # 2026-11-04 owner: one post a day (18:00 IST)
     if ELECTION_WEEK[0] <= d <= ELECTION_WEEK[1]:
         return {"t4", "t6", "t8", "t10", "t11"}
     return {"t4", "t7", "t10", "t11"}
