@@ -137,7 +137,13 @@ def main(argv: list[str] | None = None) -> int:
             from channels.engine import upload
 
             pid = upload.find_or_create_playlist(youtube, PLAYLIST[0], PLAYLIST[1], "hi")
-            print(f"Playlist: {'added' if pl.add_once(youtube, video_id, pid) else 'already listed'}")
+            try:
+                added = pl.add_once(youtube, video_id, pid)
+            except Exception:  # noqa: BLE001  a just-created playlist can 404 for a few seconds
+                import time
+                time.sleep(20)
+                added = pl.add_once(youtube, video_id, pid)
+            print(f"Playlist: {'added' if added else 'already listed'}")
         except Exception as exc:  # noqa: BLE001  a playlist failure must never lose the upload
             print(f"WARNING: could not add to the playlist: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 0
