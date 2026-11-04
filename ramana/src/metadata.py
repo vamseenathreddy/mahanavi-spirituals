@@ -44,8 +44,16 @@ def plain(row):
     return en.translate(strip).strip(), te.replace("|", " ").translate(strip).strip()
 
 
+def _short(text, n):
+    """Cut text to at most n characters on a word edge, with an ellipsis when something was removed."""
+    if len(text) <= n:
+        return text
+    return text[: n - 1].rsplit(" ", 1)[0].rstrip(",.:;") + "…"
+
+
 def title(row, special):
-    """SEO title (max 100 chars): the Short's own text first, then channel keywords, then Telugu."""
+    """SEO title (max 100 chars): the Short's own text first, then channel keywords, then the Telugu text.
+    The Telugu text is always in the title (cut to fit when long); the English part gives way first."""
     en, te = plain(row)
     word = CAT_WORD[row["category"]]
     if row["category"] in ("quote", "qa") and any(w in en.lower() for w in MEDITATION_WORDS):
@@ -54,18 +62,22 @@ def title(row, special):
         word = "Devotees Experiences"
     elif not special:
         word = SEARCH_WORD[row["category"]]
-    if row["id"].startswith("d") and not special:  # devotee story: the search phrase first, then as much of the sentence as fits
+    if row["id"].startswith("d") and not special:  # devotee story: the search phrase first, then the sentence, then Telugu
         head = "Ramana Maharshi Devotees Experiences: "
-        cut = en if len(head + en) <= 100 else en[: 100 - len(head) - 1].rsplit(" ", 1)[0].rstrip(",.:;") + "…"
-        return head + cut
+        te_part = " | " + _short(te, 30)
+        for cand in (head + en + " | " + te, head + en + te_part):
+            if len(cand) <= 100:
+                return cand
+        return head + _short(en, 100 - len(head) - len(te_part)) + te_part
     if special:
         en = f"{special['label_en']}: {en}"
-    for cand in (f"{en} | Ramana Maharshi {word} | {te}", f"{en} | Ramana Maharshi {word}", f"{en} | Ramana Maharshi"):
+    for cand in (f"{en} | Ramana Maharshi {word} | {te}", f"{en} | Ramana Maharshi | {te}"):
         if len(cand) <= 100:
             return cand
-    tail = " | Ramana Maharshi"
-    cut = en[: 100 - len(tail) - 1].rsplit(" ", 1)[0].rstrip(",.:;")
-    return f"{cut}…{tail}"
+    te_part = " | Ramana Maharshi | " + _short(te, 30)
+    if len(en + te_part) <= 100:
+        return en + te_part
+    return _short(en, 100 - len(te_part)) + te_part
 
 
 def hashtags(row, special):
