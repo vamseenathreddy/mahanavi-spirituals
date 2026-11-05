@@ -40,7 +40,9 @@ def service(token_file: Path):
     if credentials.expired and credentials.refresh_token:
         credentials.refresh(Request())
         Path(token_file).write_text(credentials.to_json(), encoding="utf-8")
-    yt = build("youtube", "v3", credentials=credentials, cache_discovery=False)
+    from mahanavi.publishers.desc_clean import wrap
+
+    yt = wrap(build("youtube", "v3", credentials=credentials, cache_discovery=False))
     yt._token_file = str(token_file)  # used by the duplicate ledger
     return yt
 

@@ -321,4 +321,6 @@ class YouTubeShortsUploader:
             credentials.refresh(Request())
             token_file.write_text(credentials.to_json(), encoding="utf-8")
 
-        return build("youtube", "v3", credentials=credentials)
+        from mahanavi.publishers.desc_clean import wrap
+
+        return wrap(build("youtube", "v3", credentials=credentials))
