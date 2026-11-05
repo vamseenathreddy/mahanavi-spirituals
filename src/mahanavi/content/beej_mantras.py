@@ -313,16 +313,16 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
     tithi_line = (f"{PAKSHA[paksha][i]} {TITHI_NAME[t][i]}" if t else "")
     count = "108 बार जपें (कम से कम 11 बार)" if hi else "108 సార్లు జపించండి (కనీసం 11 సార్లు)"
     if hi:
-        title = f"{name} {kind} | {why} {d.day} {MONTH_NAME[d.month - 1][1]} | Beej Mantra"
+        title = f"{name} {kind} | {why} | Beej Mantra"
         ctas = ("अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे", "रोज़ सुबह 6 बजे नया मंत्र - सब्सक्राइब करें")
         footer_line = ctas[0]
     else:
-        title = f"{name} {kind} | {why} {d.day} {MONTH_NAME[d.month - 1][0]} | Beeja Mantra"
+        title = f"{name} {kind} | {why} | Beeja Mantra"
         ctas = ("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "ప్రతి రోజూ ఉదయం 6 గంటలకు కొత్త మంత్రం - సబ్‌స్క్రైబ్ చేయండి")
         footer_line = ctas[0]
     if len(title) > 100:
         title = title[:99] + "…"
-    desc_head = (f"🙏 {date_line}\n{why}" + (f" ({tithi_line})" if tithi_line and tithi_line not in why else "") +
+    desc_head = (f"🙏 {why}" + (f" ({tithi_line})" if tithi_line and tithi_line not in why else "") +
                  f"\n\n{name} {kind}: {mantra}\n{dei.translit}" + (f"\n\n{meaning}" if meaning else "") + f"\n\n{gain}\n{count}"
                  f"\n\n" + "\n".join(f"• {b}" for b in benefits_for(dei.key, hi)))
     desc_en = (f"{dei.key.title()} {kind_en} mantra for {d.day} {d.strftime('%B %Y')}: {dei.translit}\n"
@@ -350,9 +350,9 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
         slides=(  # ONE card, 12 s: date + tithi on top, then the mantra, transliteration and count
             Slide("mantra", 4.9, f"{name} {kind}", mantra, dei.translit, count, _fit_benefits(benefits_for(dei.key, hi), mantra, dei.translit)),
         ),
-        title=title, title_en=f"{dei.key.title()} {kind_en} Mantra - {d.strftime('%d %b %Y')} | Chant 108 Times",
+        title=title, title_en=f"{dei.key.title()} {kind_en} Mantra | Chant 108 Times",
         description_te=desc_head, description_en=desc_en, hashtags=hashtags, tags=tags,
         bg_image=_photo_for(dei.key, d), mantra_kind=mkind,
         lang=cfg["lang"], token_file=cfg["token_file"], expected_channel=cfg["expected"], watermark=cfg["watermark"],
-        header=f"{date_line} · {tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why}", tag_footer=footer_line, cta_lines=ctas, playlist_line=_PLAYLIST_LINE if channel == "mahanavi" else _HI_LINE.format(x="बीज मंत्र"), footer_main=footer, footer_en=footer_en,
+        header=(tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why) or WEEKDAY_NAME[d.weekday()][i], tag_footer=footer_line, cta_lines=ctas, playlist_line=_PLAYLIST_LINE if channel == "mahanavi" else _HI_LINE.format(x="बीज मंत्र"), footer_main=footer, footer_en=footer_en,
     )

@@ -35,9 +35,7 @@ WEEKLY_SECONDS = 12.0  # 2026-11-01: was 4.9; the card now also carries the dail
 
 def build_seo(date_text: str, rows: list[dict]) -> ShortSeoContent:
     lines_te = [f"{r['name']} ({r['name_en']}): {r['mantra']}" for r in rows]
-    title = f"ఈ వారం రాశి మంత్రాలు ({date_text}) | Weekly Rashi Mantra"
-    if len(title) > 100:
-        title = f"ఈ వారం రాశి మంత్రాలు | Weekly Rashi Mantra All 12 Rashis ({date_text})"[:100]
+    title = "రాశి మంత్రాలు | Rashi Mantra for All 12 Rashis"  # no date in the title (owner 2026-11-05)
     description = (
         f"{brand_tagline('rashi_mantra')}\n\n"
         f"ఈ వారం ({date_text}) మీ రాశికి సూచించిన మంత్రం:\n\n" + "\n".join(lines_te) +
