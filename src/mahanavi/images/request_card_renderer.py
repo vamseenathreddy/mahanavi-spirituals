@@ -306,16 +306,17 @@ class RequestCardRenderer:
                 points = []
             big = len(points) > 10            # a full-month list: tighter gaps and a taller block (still above the Shorts UI)
             gap = 30 if big else (46 if uniform else 70)
-            top = 330 if uniform else 520
-            budget = (1480 if big else (1500 if uniform else 1290)) - top
+            top = 290 if uniform else 520
+            budget = (1480 if big else (1590 if uniform else 1290)) - top
             per = budget // max(len(points), 1) - gap
             blocks = []
-            size_cap = 84 if uniform else 62
+            size_cap = 110 if uniform else 62
             while points:
                 blocks = [self._fit(pt, size_cap, 30, max(per, 80)) for pt in points]
-                if uniform:   # one size for every line: the smallest any line needed, then refit all at that size
-                    size_cap = min(b[1].size for b in blocks)
-                    blocks = [self._fit(pt, size_cap, 30, 10_000) for pt in points]
+                if uniform:   # one size for every line (the smallest any line needed); the last line (the moral) 30% bigger
+                    size_cap = min(b[1].size for b in blocks[:-1] or blocks)
+                    blocks = [self._fit(pt, size_cap, 30, 10_000) for pt in points[:-1]]
+                    blocks.append(self._fit(points[-1], int(size_cap * 1.3), 30, 10_000))
                 total = sum(len(b[0]) * b[2] for b in blocks) + gap * (len(points) - 1)
                 if total <= budget or size_cap <= 34:
                     break
@@ -323,7 +324,7 @@ class RequestCardRenderer:
             y = top + (max(0, (budget - total) // 2) if points else 0)
             for i, (lines, font, lh) in enumerate(blocks):
                 y = self._block(layer, boxes, lines, font, lh, y,
-                                (GOLD if i == 0 else CREAM) if uniform else (CREAM if i % 2 == 0 else SOFT))
+                                (GOLD if i in (0, len(blocks) - 1) else CREAM) if uniform else (CREAM if i % 2 == 0 else SOFT))
                 if i < len(blocks) - 1:
                     self._ornament(layer, y + gap // 2)
                     y += gap
