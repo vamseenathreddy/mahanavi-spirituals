@@ -117,19 +117,21 @@ def build(s: Story) -> RequestShort:
     story = "\n".join(s.lines)
     body = "\n".join((s.name_te, *s.lines, f"నీతి: {s.moral}"))
     slides = (Slide("points", 10.0, "", body),)   # one card, all the text, 10 seconds
-    title = f"రామాయణ కథ {s.n}: {s.name_te} | {s.name_en} | Ramayana Story {s.n}/10"
+    title = f"రామాయణ కథ {s.n}: {s.name_te} | Ramayana Movie 2026 | {s.name_en}"
     title_en = f"Ramayana Story {s.n}/10: {s.name_en}"
     desc = (f"🙏 రామాయణ కథ {s.n}/10: {s.name_te}\n\n" + "\n".join(f"• {x}" for x in s.lines) +
             f"\n\n💡 నీతి: {s.moral}\n\n"
             "ప్రతిరోజూ ఒక చిన్న రామాయణ కథ. ప్లేలిస్ట్ లో 10 కథలూ చూడండి, ఛానల్ ను ఫాలో అవ్వండి.\n"
             "కథలు వాల్మీకి రామాయణం ఆధారంగా సంక్షిప్తంగా చెప్పినవి; ప్రాంతాన్ని బట్టి కొన్ని వివరాలు మారవచ్చు.")
     desc_en = (f"Ramayana story {s.n} of 10: {s.name_en}.\n" + " ".join(s.lines[:0]) +
+               "Ramayana story in Telugu, one every day for 10 days: Ramayana movie 2026 and Ramayana Part 1 viewers, learn the stories behind the epic. "
                "A short Ramayana story every day for 10 days. Stories are told in brief after Valmiki Ramayana; details vary by tradition.")
-    tags = ["ramayana", "ramayana stories", "ramayana part 1", "ramayana movie", "ramayana movie telugu", "ramayana 2026",
-            "ramayana story in telugu", "ramayana kathalu", "ramayanam", "ramayanam in telugu", "sri rama", "rama", "sita rama",
-            "hanuman", "valmiki ramayana", "ramayana short stories", "telugu devotional", "telugu stories", "moral stories telugu",
-            "jai shri ram", "jai sri ram", "ramayana telugu", "bhakti", s.name_en.lower(), "shorts"]
-    hashtags = ["#Ramayana", "#RamayanaPart1", "#SriRama", "#JaiShriRam", "#RamayanaStory", "#TeluguDevotional", "#Shorts", "#రామాయణం"]
+    tags = ["ramayana", "ramayana movie", "ramayana part 1", "ramayana movie 2026", "ramayana movie telugu", "ramayana part 1 telugu",
+            "ramayana story in telugu", "ramayana stories", "ramayana kathalu", "ramayanam", "ramayanam in telugu", "ramayana telugu",
+            "sri rama", "jai shri ram", "sita rama", "hanuman", "valmiki ramayana", "ramayana short stories", "telugu devotional",
+            "telugu bhakti", "moral stories telugu", s.name_en.lower(), "shorts"]
+    hashtags = ["#Ramayana", "#RamayanaMovie", "#RamayanaPart1", "#SriRama", "#JaiShriRam", "#RamayanaStory", "#RamayanaInTelugu",
+                "#TeluguDevotional", "#Hanuman", "#Ramayanam", "#Bhakti", "#Shorts", "#రామాయణం"]
     return RequestShort(
         slug=f"ramayana_{s.n:02d}_{s.slug}", handle="", comment_id="", deity_te="శ్రీరాముడు",
         bg_top=(30, 14, 6), bg_mid=(86, 40, 12), bg_bottom=(14, 8, 4), glow=(255, 190, 80), slides=slides,
