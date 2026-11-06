@@ -27,29 +27,56 @@ FPS = 30
 
 
 def _dust(folder, secs: float) -> None:
-    """Golden dust motes that drift slowly upward and twinkle (RGBA PNG sequence at half size; ffmpeg scales it up)."""
+    """Rainbow-coloured butterflies that flutter very slowly across the picture (RGBA PNG sequence; ffmpeg overlays it)."""
+    import math
     import random
 
     from PIL import Image, ImageDraw, ImageFilter
 
     folder.mkdir(parents=True, exist_ok=True)
-    rnd = random.Random(7)
-    w, h, n = 540, 960, 70
-    motes = [dict(x=rnd.uniform(0, w), y=rnd.uniform(0, h), r=rnd.choice([2, 2, 3, 3, 4, 6]), v=rnd.uniform(14, 40),
-                  sway=rnd.uniform(6, 18), ph=rnd.uniform(0, 6.28), tw=rnd.uniform(0.6, 1.6)) for _ in range(n)]
-    import math
+    rnd = random.Random(11)
+    w, h = 1080, 1920
+    rainbow = [(255, 70, 70), (255, 150, 40), (255, 220, 60), (90, 220, 110), (60, 200, 240), (90, 120, 255), (190, 100, 255), (255, 110, 200)]
+    flies = []
+    for i in range(9):
+        flies.append(dict(x=rnd.uniform(80, w - 80), y=rnd.uniform(200, h - 200), s=rnd.choice([44, 52, 60, 70]), c=rainbow[i % 8],
+                          vx=rnd.uniform(-22, 22), vy=rnd.uniform(-34, -10), sway=rnd.uniform(25, 55), ph=rnd.uniform(0, 6.28),
+                          fr=rnd.uniform(0.7, 1.1)))
+
+    UP = [(0.05, -0.05), (0.22, -0.55), (0.62, -0.95), (0.98, -0.78), (1.0, -0.4), (0.78, -0.08), (0.3, 0.04)]
+    LO = [(0.05, 0.0), (0.7, 0.0), (0.88, 0.32), (0.7, 0.72), (0.38, 0.82), (0.12, 0.45)]
 
     for f in range(int(secs * FPS)):
         t = f / FPS
         im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(im)
-        for m in motes:
-            y = (m["y"] - m["v"] * t) % h
-            x = m["x"] + math.sin(t * 0.7 + m["ph"]) * m["sway"]
-            a = int(120 + 110 * math.sin(t * m["tw"] * 3 + m["ph"]))
-            r = m["r"]
-            d.ellipse((x - r, y - r, x + r, y + r), fill=(255, 220, 140, max(0, min(255, a))))
-        im.filter(ImageFilter.GaussianBlur(1.6)).save(folder / f"d{f:04d}.png")
+        for b in flies:
+            x = (b["x"] + b["vx"] * t + math.sin(t * 0.55 + b["ph"]) * b["sway"]) % w
+            y = (b["y"] + b["vy"] * t + math.cos(t * 0.4 + b["ph"]) * b["sway"] * 0.6) % h
+            s = b["s"] * 2                                   # drawn at 2x, then shrunk for smooth edges
+            flap = 0.22 + 0.78 * abs(math.cos(2 * math.pi * b["fr"] * t + b["ph"]))
+            rot = math.sin(t * 0.5 + b["ph"]) * 0.35
+            size = int(s * 2.4)
+            lay = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+            ld = ImageDraw.Draw(lay)
+            ox = oy = size / 2
+            col = b["c"]
+            light = tuple(min(255, c + 80) for c in col)
+            dark = tuple(int(c * 0.55) for c in col)
+            for side in (-1, 1):
+                for shape, tone in ((LO, dark), (UP, col)):
+                    pts = [(ox + side * px * s * flap, oy + py * s) for px, py in shape]
+                    ld.polygon(pts, fill=tone + (235,), outline=(30, 15, 10, 230))
+                    cxp = sum(px for px, _ in shape) / len(shape)
+                    cyp = sum(py for _, py in shape) / len(shape)
+                    inner = [(ox + side * (cxp + (px - cxp) * 0.55) * s * flap, oy + (cyp + (py - cyp) * 0.55) * s) for px, py in shape]
+                    ld.polygon(inner, fill=light + (170,))
+            ld.ellipse((ox - s * 0.05, oy - s * 0.35, ox + s * 0.05, oy + s * 0.55), fill=(30, 15, 10, 255))
+            ld.line((ox, oy - s * 0.32, ox - s * 0.18, oy - s * 0.6), fill=(30, 15, 10, 255), width=max(2, int(s * 0.03)))
+            ld.line((ox, oy - s * 0.32, ox + s * 0.18, oy - s * 0.6), fill=(30, 15, 10, 255), width=max(2, int(s * 0.03)))
+            lay = lay.rotate(-math.degrees(rot), resample=Image.Resampling.BICUBIC).resize((size // 2, size // 2), Image.Resampling.LANCZOS)
+            im.alpha_composite(lay, (int(x - size / 4), int(y - size / 4)))
+        im.filter(ImageFilter.GaussianBlur(0.7)).save(folder / f"d{f:04d}.png")
 
 
 def cinematic(bg, text, music, secs: float, out) -> None:
@@ -65,7 +92,7 @@ def cinematic(bg, text, music, secs: float, out) -> None:
     fc = (
         f"[0:v]scale=2160:3840,zoompan=z='1.0+0.00055*on':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d={frames}:s=1080x1920:fps={FPS},"
         f"vignette=PI/5[bg];"
-        f"[2:v]scale=1080:1920,format=rgba[dt];[bg][dt]overlay=0:0:shortest=1[lit];"
+        f"[2:v]format=rgba[dt];[bg][dt]overlay=0:0:shortest=1[lit];"
         f"[lit][1:v]overlay=0:0,fade=t=in:st=0:d=0.5,fade=t=out:st={secs - 0.5}:d=0.5,format=yuv420p[v];"
         f"[3:a]atrim=0:{secs},afade=t=in:st=0:d=0.8,afade=t=out:st={secs - 1.2}:d=1.2[a]")
     cmd = ["ffmpeg", "-y", "-v", "error", "-loop", "1", "-i", str(bg), "-i", str(text),
