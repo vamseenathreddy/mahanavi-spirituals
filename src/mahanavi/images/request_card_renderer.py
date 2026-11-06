@@ -151,7 +151,7 @@ class RequestCardRenderer:
         sd = ImageDraw.Draw(shade)
         for y in range(H):  # darker behind the whole text stack (y 150-1520, it now runs down to the footer), lighter below
             t = min(1.0, y / 220, max(0.0, (1760 - y) / 240))
-            sd.line((0, y, W, y), fill=int(70 + 125 * max(0.0, t)))
+            sd.line((0, y, W, y), fill=int((50 + 85 * max(0.0, t)) if spec.uniform_text else (70 + 125 * max(0.0, t))))
         im = Image.composite(Image.new("RGB", (W, H), (10, 4, 4)), im, shade)
         d = ImageDraw.Draw(im)
         if getattr(self, "_frame", True):

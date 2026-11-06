@@ -50,7 +50,7 @@ def cinematic(bg, text, music, secs: float, out) -> None:
     _light_sweep(light)
     frames = int(secs * FPS)
     fc = (
-        f"[0:v]scale=2160:3840,zoompan=z='1.0+0.0009*on':x='(iw-iw/zoom)/2+sin(on/48)*46':"
+        f"[0:v]scale=2160:3840,zoompan=z='1.0+0.0006*on':x='(iw-iw/zoom)/2+sin(on/48)*46':"
         f"y='(ih-ih/zoom)/2+cos(on/61)*60':d={frames}:s=1080x1920:fps={FPS},"
         f"eq=brightness='0.03*sin(2*PI*t/3.3)':saturation=1.12,vignette=PI/5[bg];"
         f"[2:v]format=rgba[lt];[bg][lt]overlay=x='-w+(W+w)*t/{secs}':y=0:shortest=1[lit];"
