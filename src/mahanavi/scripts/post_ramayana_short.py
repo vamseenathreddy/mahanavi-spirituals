@@ -26,42 +26,57 @@ IST = ZoneInfo("Asia/Kolkata")
 FPS = 30
 
 
-def _light_sweep(path) -> None:
-    """A soft diagonal band of warm light (RGBA); the video slides it across the picture like a slow lens flare."""
-    import numpy as np
-    from PIL import Image
+def _dust(folder, secs: float) -> None:
+    """Golden dust motes that drift slowly upward and twinkle (RGBA PNG sequence at half size; ffmpeg scales it up)."""
+    import random
 
-    w, h = 1500, 1920
-    x = np.arange(w)[None, :] - np.arange(h)[:, None] * 0.35        # diagonal
-    d = (x - w * 0.45) / (w * 0.16)
-    a = np.exp(-(d ** 2)) * 70                                       # peak alpha 70/255
-    rgba = np.zeros((h, w, 4), dtype=np.uint8)
-    rgba[..., 0], rgba[..., 1], rgba[..., 2], rgba[..., 3] = 255, 214, 150, a.astype(np.uint8)
-    Image.fromarray(rgba, "RGBA").save(path)
+    from PIL import Image, ImageDraw, ImageFilter
+
+    folder.mkdir(parents=True, exist_ok=True)
+    rnd = random.Random(7)
+    w, h, n = 540, 960, 70
+    motes = [dict(x=rnd.uniform(0, w), y=rnd.uniform(0, h), r=rnd.choice([2, 2, 3, 3, 4, 6]), v=rnd.uniform(14, 40),
+                  sway=rnd.uniform(6, 18), ph=rnd.uniform(0, 6.28), tw=rnd.uniform(0.6, 1.6)) for _ in range(n)]
+    import math
+
+    for f in range(int(secs * FPS)):
+        t = f / FPS
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        for m in motes:
+            y = (m["y"] - m["v"] * t) % h
+            x = m["x"] + math.sin(t * 0.7 + m["ph"]) * m["sway"]
+            a = int(120 + 110 * math.sin(t * m["tw"] * 3 + m["ph"]))
+            r = m["r"]
+            d.ellipse((x - r, y - r, x + r, y + r), fill=(255, 220, 140, max(0, min(255, a))))
+        im.filter(ImageFilter.GaussianBlur(1.6)).save(folder / f"d{f:04d}.png")
 
 
 def cinematic(bg, text, music, secs: float, out) -> None:
-    """Slow push-in with a gentle drift on the picture, a travelling light sweep, a breathing glow and a vignette;
-    the words and frame stay still on top. Music is trimmed/looped to the length with a fade in and out."""
+    """One steady, slow push-in on the picture, drifting golden dust over it and a soft vignette; the words and frame stay
+    still on top. Music is trimmed/looped to the length with a fade in and out."""
+    import shutil
     import subprocess
     from pathlib import Path
 
-    light = Path(out).with_name("light.png")
-    _light_sweep(light)
+    dust = Path(out).with_name("dust")
+    _dust(dust, secs)
     frames = int(secs * FPS)
     fc = (
-        f"[0:v]scale=2160:3840,zoompan=z='1.0+0.0006*on':x='(iw-iw/zoom)/2+sin(on/48)*46':"
-        f"y='(ih-ih/zoom)/2+cos(on/61)*60':d={frames}:s=1080x1920:fps={FPS},"
-        f"eq=brightness='0.03*sin(2*PI*t/3.3)':saturation=1.12,vignette=PI/5[bg];"
-        f"[2:v]format=rgba[lt];[bg][lt]overlay=x='-w+(W+w)*t/{secs}':y=0:shortest=1[lit];"
+        f"[0:v]scale=2160:3840,zoompan=z='1.0+0.00055*on':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d={frames}:s=1080x1920:fps={FPS},"
+        f"vignette=PI/5[bg];"
+        f"[2:v]scale=1080:1920,format=rgba[dt];[bg][dt]overlay=0:0:shortest=1[lit];"
         f"[lit][1:v]overlay=0:0,fade=t=in:st=0:d=0.5,fade=t=out:st={secs - 0.5}:d=0.5,format=yuv420p[v];"
         f"[3:a]atrim=0:{secs},afade=t=in:st=0:d=0.8,afade=t=out:st={secs - 1.2}:d=1.2[a]")
     cmd = ["ffmpeg", "-y", "-v", "error", "-loop", "1", "-i", str(bg), "-i", str(text),
-           "-loop", "1", "-i", str(light), "-stream_loop", "-1", "-i", str(music),
+           "-framerate", str(FPS), "-i", str(dust / "d%04d.png"), "-stream_loop", "-1", "-i", str(music),
            "-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-t", f"{secs}", "-r", str(FPS),
            "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
            "-movflags", "+faststart", str(out)]
-    subprocess.run(cmd, check=True)
+    try:
+        subprocess.run(cmd, check=True)
+    finally:
+        shutil.rmtree(dust, ignore_errors=True)
 
 
 def main(argv: list[str] | None = None) -> int:
