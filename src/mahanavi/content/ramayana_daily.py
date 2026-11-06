@@ -115,8 +115,8 @@ def _bg(s: Story) -> str:
 
 def build(s: Story) -> RequestShort:
     story = "\n".join(s.lines)
-    body = "\n".join((*s.lines, f"నీతి: {s.moral}"))
-    slides = (Slide("points", 10.0, s.name_te, body),)   # one card, all the text, 10 seconds
+    body = "\n".join((s.name_te, *s.lines, f"నీతి: {s.moral}"))
+    slides = (Slide("points", 10.0, "", body),)   # one card, all the text, 10 seconds
     title = f"రామాయణ కథ {s.n}: {s.name_te} | {s.name_en} | Ramayana Story {s.n}/10"
     title_en = f"Ramayana Story {s.n}/10: {s.name_en}"
     desc = (f"🙏 రామాయణ కథ {s.n}/10: {s.name_te}\n\n" + "\n".join(f"• {x}" for x in s.lines) +
@@ -135,7 +135,7 @@ def build(s: Story) -> RequestShort:
         bg_top=(30, 14, 6), bg_mid=(86, 40, 12), bg_bottom=(14, 8, 4), glow=(255, 190, 80), slides=slides,
         title=title[:100], description_te=desc, description_en=desc_en, title_en=title_en[:100],
         hashtags=hashtags, tags=tags, lang="te", token_file="youtube_token.json", expected_channel="Mahanavi",
-        watermark="@MahanaviSpirituals", header=f"రామాయణ కథ {s.n}/10", bg_image=_bg(s),
+        watermark="@MahanaviSpirituals", header="", bg_image=_bg(s), uniform_text=True,
         playlist_line="రామాయణ కథలన్నీ ఒకే చోట!\nడిస్క్రిప్షన్‌లో ప్లేలిస్ట్ లింక్",
         cta_lines=("ప్రతిరోజూ ఒక రామాయణ కథ", "ఛానల్ ను ఫాలో అవ్వండి"), tag_footer="",
         footer_main=_CHANNEL_FOOTER_TE, footer_en=_CHANNEL_FOOTER_EN)

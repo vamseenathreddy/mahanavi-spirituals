@@ -295,28 +295,35 @@ class RequestCardRenderer:
                 lines, font, lh = self._fit(spec.tag_footer, 38, 24, 60)
                 self._block(layer, boxes, lines, font, lh, 1318, SOFT)
         elif slide.kind == "points":
-            if spec.header:
+            uniform = spec.uniform_text
+            if spec.header and not uniform:
                 self._line(layer, boxes, spec.header, self._font(40), 262, SOFT)
-            self._line(layer, boxes, slide.label, self._font(72), 360, GOLD)
+            if not uniform:
+                self._line(layer, boxes, slide.label, self._font(72), 360, GOLD)
             points = slide.text.split("\n")
             if any(pt.startswith("##") for pt in points):   # a do / don't card: two headed sides, items under each heading
                 self._sectioned(layer, boxes, points)
                 points = []
             big = len(points) > 10            # a full-month list: tighter gaps and a taller block (still above the Shorts UI)
-            gap = 30 if big else 70
-            budget = (1480 if big else 1290) - 520
+            gap = 30 if big else (46 if uniform else 70)
+            top = 330 if uniform else 520
+            budget = (1480 if big else (1500 if uniform else 1290)) - top
             per = budget // max(len(points), 1) - gap
             blocks = []
-            size_cap = 62
+            size_cap = 84 if uniform else 62
             while points:
                 blocks = [self._fit(pt, size_cap, 30, max(per, 80)) for pt in points]
+                if uniform:   # one size for every line: the smallest any line needed, then refit all at that size
+                    size_cap = min(b[1].size for b in blocks)
+                    blocks = [self._fit(pt, size_cap, 30, 10_000) for pt in points]
                 total = sum(len(b[0]) * b[2] for b in blocks) + gap * (len(points) - 1)
                 if total <= budget or size_cap <= 34:
                     break
                 size_cap -= 4
-            y = 520 + (max(0, (budget - total) // 2) if points else 0)
+            y = top + (max(0, (budget - total) // 2) if points else 0)
             for i, (lines, font, lh) in enumerate(blocks):
-                y = self._block(layer, boxes, lines, font, lh, y, CREAM if i % 2 == 0 else SOFT)
+                y = self._block(layer, boxes, lines, font, lh, y,
+                                (GOLD if i == 0 else CREAM) if uniform else (CREAM if i % 2 == 0 else SOFT))
                 if i < len(blocks) - 1:
                     self._ornament(layer, y + gap // 2)
                     y += gap
