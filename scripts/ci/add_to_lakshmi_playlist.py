@@ -3,6 +3,9 @@ Usage: python scripts/ci/add_to_lakshmi_playlist.py VIDEO_ID [en|hi]"""
 from __future__ import annotations
 
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 
 def main() -> int:
