@@ -40,8 +40,8 @@ def _dust(folder, secs: float) -> None:
     flies = []
     for i in range(9):
         flies.append(dict(x=rnd.uniform(80, w - 80), y=rnd.uniform(200, h - 200), s=rnd.choice([44, 52, 60, 70]), c=rainbow[i % 8],
-                          vx=rnd.uniform(-22, 22), vy=rnd.uniform(-34, -10), sway=rnd.uniform(25, 55), ph=rnd.uniform(0, 6.28),
-                          fr=rnd.uniform(0.7, 1.1)))
+                          vx=rnd.uniform(-60, 60), vy=rnd.uniform(-120, -55), sway=rnd.uniform(50, 100), ph=rnd.uniform(0, 6.28),
+                          fr=rnd.uniform(1.6, 2.3)))
 
     UP = [(0.05, -0.05), (0.22, -0.55), (0.62, -0.95), (0.98, -0.78), (1.0, -0.4), (0.78, -0.08), (0.3, 0.04)]
     LO = [(0.05, 0.0), (0.7, 0.0), (0.88, 0.32), (0.7, 0.72), (0.38, 0.82), (0.12, 0.45)]
@@ -51,11 +51,11 @@ def _dust(folder, secs: float) -> None:
         im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(im)
         for b in flies:
-            x = (b["x"] + b["vx"] * t + math.sin(t * 0.55 + b["ph"]) * b["sway"]) % w
-            y = (b["y"] + b["vy"] * t + math.cos(t * 0.4 + b["ph"]) * b["sway"] * 0.6) % h
+            x = (b["x"] + b["vx"] * t + math.sin(t * 1.1 + b["ph"]) * b["sway"]) % w
+            y = (b["y"] + b["vy"] * t + math.cos(t * 0.8 + b["ph"]) * b["sway"] * 0.6) % h
             s = b["s"] * 2                                   # drawn at 2x, then shrunk for smooth edges
             flap = 0.22 + 0.78 * abs(math.cos(2 * math.pi * b["fr"] * t + b["ph"]))
-            rot = math.sin(t * 0.5 + b["ph"]) * 0.35
+            rot = math.sin(t * 1.1 + b["ph"]) * 0.4
             size = int(s * 2.4)
             lay = Image.new("RGBA", (size, size), (0, 0, 0, 0))
             ld = ImageDraw.Draw(lay)
