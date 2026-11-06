@@ -154,8 +154,9 @@ class RequestCardRenderer:
             sd.line((0, y, W, y), fill=int(70 + 125 * max(0.0, t)))
         im = Image.composite(Image.new("RGB", (W, H), (10, 4, 4)), im, shade)
         d = ImageDraw.Draw(im)
-        d.rectangle((30, 30, W - 30, H - 30), outline=GOLD, width=4)
-        d.rectangle((42, 42, W - 42, H - 42), outline=GOLD, width=2)
+        if getattr(self, "_frame", True):
+            d.rectangle((30, 30, W - 30, H - 30), outline=GOLD, width=4)
+            d.rectangle((42, 42, W - 42, H - 42), outline=GOLD, width=2)
         return bake_watermark(im.convert("RGBA"), handle=spec.watermark).convert("RGB")
 
     def _background(self, spec: RequestShort) -> Image.Image:
@@ -175,8 +176,9 @@ class RequestCardRenderer:
         glow = glow.filter(ImageFilter.GaussianBlur(170))
         im = Image.composite(Image.new("RGB", (W, H), spec.glow), im, glow)
         d = ImageDraw.Draw(im)
-        d.rectangle((30, 30, W - 30, H - 30), outline=GOLD, width=4)
-        d.rectangle((42, 42, W - 42, H - 42), outline=GOLD, width=2)
+        if getattr(self, "_frame", True):
+            d.rectangle((30, 30, W - 30, H - 30), outline=GOLD, width=4)
+            d.rectangle((42, 42, W - 42, H - 42), outline=GOLD, width=2)
         return bake_watermark(im.convert("RGBA"), handle=spec.watermark).convert("RGB")
 
     # ---- drawing -----------------------------------------------------------------------------
@@ -341,9 +343,30 @@ class RequestCardRenderer:
                 y = self._block(layer, boxes, lines, font, lh, y, GOLD if k == 0 else CREAM) + 14
 
         bg = self._background(spec).convert("RGBA")
+        self._last_layer = layer
         out.parent.mkdir(parents=True, exist_ok=True)
         Image.alpha_composite(bg, layer).convert("RGB").save(out)
         return RenderedSlide(out, boxes)
+
+    def render_parts(self, spec: RequestShort, index: int, out_dir: Path) -> tuple[Path, Path]:
+        """For an animated background: (background without frame, text + frame layer with transparency), both PNG.
+        The text layer is the same one render() draws, so the words sit exactly where the still card puts them."""
+        out_dir.mkdir(parents=True, exist_ok=True)
+        still = self.render(spec, index, out_dir / "still.png")  # draws the text layer; boxes unused here
+        del still
+        layer = self._last_layer
+        d = ImageDraw.Draw(layer)
+        d.rectangle((30, 30, W - 30, H - 30), outline=GOLD, width=4)
+        d.rectangle((42, 42, W - 42, H - 42), outline=GOLD, width=2)
+        self._frame = False
+        try:
+            bg = self._background(spec)
+        finally:
+            self._frame = True
+        bg_path, layer_path = out_dir / "bg.png", out_dir / "text.png"
+        bg.save(bg_path)
+        layer.save(layer_path)
+        return bg_path, layer_path
 
     def render_all(self, spec: RequestShort, out_dir: Path) -> list[RenderedSlide]:
         return [self.render(spec, i, out_dir / f"{spec.slug}_{i + 1}.png") for i in range(len(spec.slides))]
