@@ -43,7 +43,7 @@ def assemble(spec: RequestShort, images: list[Path], music: Path, out: Path) -> 
         offset += secs[i - 1]
         chain.append(f"[{prev}][v{i}]xfade=transition=fadeblack:duration={FADE}:offset={offset:.2f}[x{i}]")
         prev = f"x{i}"
-    chain.append(f"[{len(images)}:a]afade=t=in:st=0:d=1,afade=t=out:st={total - 1.5:.2f}:d=1.5[a]")
+    chain.append(f"[{len(images)}:a]afade=t=in:st=0:d=1[a]")
     cmd += ["-filter_complex", ";".join(chain), "-map", f"[{prev}]", "-map", "[a]", "-t", f"{total:.2f}",
             "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-r", str(FPS),
             "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-movflags", "+faststart", str(out)]

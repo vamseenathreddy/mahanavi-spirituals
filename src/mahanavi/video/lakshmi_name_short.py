@@ -279,7 +279,7 @@ def render(n: int, out: Path, music: Path | None = None, layers: list | None = N
     out.parent.mkdir(parents=True, exist_ok=True)
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
            "-stream_loop", "-1", "-i", str(music), "-filter_complex",
-           f"[1:a]afade=t=in:st=0:d=1,afade=t=out:st={SECONDS - 1.5}:d=1.5[a]", "-map", "0:v", "-map", "[a]", "-t", str(SECONDS),
+           f"[1:a]afade=t=in:st=0:d=1[a]", "-map", "0:v", "-map", "[a]", "-t", str(SECONDS),
            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
            "-movflags", "+faststart", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)

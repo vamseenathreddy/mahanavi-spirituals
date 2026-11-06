@@ -139,7 +139,7 @@ def assemble_short(
     else:
         cmd += ["-t", str(duration_seconds), "-vf", video_filter]
 
-    if fade_out_seconds > 0:
+    if False and fade_out_seconds > 0:   # owner rule: no fade-out at the end of any Short
         fade_start = max(duration_seconds - fade_out_seconds, 0)
         cmd += ["-af", f"afade=t=out:st={fade_start}:d={fade_out_seconds}"]
 

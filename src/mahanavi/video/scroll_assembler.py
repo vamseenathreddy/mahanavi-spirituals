@@ -105,7 +105,7 @@ def assemble_scroll_video(
         "-filter_complex", filter_complex,
         "-map", "[v]", "-map", "2:a",
         "-t", str(duration_seconds),
-        "-af", f"volume={audio_volume},afade=t=out:st={fade_start}:d={AUDIO_FADE_OUT_SECONDS}",
+        "-af", f"volume={audio_volume}"   # no fade-out: Shorts end on a hard cut (owner rule),
         "-c:v", "libx264", "-pix_fmt", "yuv420p",
         "-c:a", "aac",
         str(output_path),

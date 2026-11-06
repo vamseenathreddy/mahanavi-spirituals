@@ -117,15 +117,15 @@ def build(s: Story) -> RequestShort:
     story = "\n".join(s.lines)
     body = "\n".join((s.name_te, *s.lines, f"నీతి: {s.moral}"))
     slides = (Slide("points", 10.0, "", body),)   # one card, all the text, 10 seconds
-    title = f"రామాయణ కథ {s.n}: {s.name_te} | Ramayana Movie 2026 | {s.name_en}"
-    title_en = f"Ramayana Story {s.n}/10: {s.name_en}"
-    desc = (f"🙏 రామాయణ కథ {s.n}/10: {s.name_te}\n\n" + "\n".join(f"• {x}" for x in s.lines) +
+    title = f"రామాయణ కథ: {s.name_te} | Ramayana Movie 2026 | {s.name_en}"
+    title_en = f"Ramayana Story: {s.name_en}"
+    desc = (f"🙏 రామాయణ కథ: {s.name_te}\n\n" + "\n".join(f"• {x}" for x in s.lines) +
             f"\n\n💡 నీతి: {s.moral}\n\n"
-            "ప్రతిరోజూ ఒక చిన్న రామాయణ కథ. ప్లేలిస్ట్ లో 10 కథలూ చూడండి, ఛానల్ ను ఫాలో అవ్వండి.\n"
+            "ప్రతిరోజూ ఒక చిన్న రామాయణ కథ. ప్లేలిస్ట్ లో అన్ని కథలూ చూడండి, ఛానల్ ను ఫాలో అవ్వండి.\n"
             "కథలు వాల్మీకి రామాయణం ఆధారంగా సంక్షిప్తంగా చెప్పినవి; ప్రాంతాన్ని బట్టి కొన్ని వివరాలు మారవచ్చు.")
-    desc_en = (f"Ramayana story {s.n} of 10: {s.name_en}.\n" + " ".join(s.lines[:0]) +
-               "Ramayana story in Telugu, one every day for 10 days: Ramayana movie 2026 and Ramayana Part 1 viewers, learn the stories behind the epic. "
-               "A short Ramayana story every day for 10 days. Stories are told in brief after Valmiki Ramayana; details vary by tradition.")
+    desc_en = (f"Ramayana story: {s.name_en}.\n" + " ".join(s.lines[:0]) +
+               "Ramayana story in Telugu, one every day: Ramayana movie 2026 and Ramayana Part 1 viewers, learn the stories behind the epic. "
+               "A short Ramayana story every day. Stories are told in brief after Valmiki Ramayana; details vary by tradition.")
     tags = ["ramayana", "ramayana movie", "ramayana part 1", "ramayana movie 2026", "ramayana movie telugu", "ramayana part 1 telugu",
             "ramayana story in telugu", "ramayana stories", "ramayana kathalu", "ramayanam", "ramayanam in telugu", "ramayana telugu",
             "sri rama", "jai shri ram", "sita rama", "hanuman", "valmiki ramayana", "ramayana short stories", "telugu devotional",

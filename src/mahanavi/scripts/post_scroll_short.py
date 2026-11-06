@@ -127,7 +127,7 @@ def build(spec: ScrollShort, settings, out_dir: Path) -> Path:
     fc = (f"[0:v]scale={W}:{H},setsar=1,fps={FPS}[b];"
           f"[1:v]format=rgba[t];"
           f"[b][t]overlay=x=0:y='{START_Y}-{speed:.4f}*t':shortest=1,format=yuv420p[v];"
-          f"[2:a]afade=t=in:st=0:d=1.5,afade=t=out:st={spec.seconds - 2:.1f}:d=2[a]")
+          f"[2:a]afade=t=in:st=0:d=1.5[a]")
     cmd = ["ffmpeg", "-y", "-v", "error", "-loop", "1", "-framerate", str(FPS), "-t", f"{spec.seconds:.1f}", "-i", str(bg),
            "-loop", "1", "-framerate", str(FPS), "-t", f"{spec.seconds:.1f}", "-i", str(txt),
            "-stream_loop", "-1", "-i", str(music), "-filter_complex", fc, "-map", "[v]", "-map", "[a]",
