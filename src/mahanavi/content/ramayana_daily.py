@@ -118,23 +118,22 @@ def build(s: Story) -> RequestShort:
     slides = (
         Slide("intro", 4.0, "రామాయణ కథ", f"{s.name_te}", f"Ramayana Story {s.n} of 10", "శ్రీరామ జయం 🙏"),
         Slide("points", 17.0, s.name_te, story),
-        Slide("points", 8.0, "సినిమా సంగతి", f"{s.movie}\n\nనీతి: {s.moral}"),
+        Slide("points", 6.0, "నీతి", s.moral),
         Slide("outro", 5.0, "జై శ్రీరామ్", "రేపటి రామాయణ కథ కోసం\nఛానల్ ను ఫాలో అవ్వండి"),
     )
     title = f"రామాయణ కథ {s.n}: {s.name_te} | {s.name_en} | Ramayana Story {s.n}/10"
-    title_en = f"Ramayana Story {s.n}/10: {s.name_en} | Ramayana Part 1 Movie"
+    title_en = f"Ramayana Story {s.n}/10: {s.name_en}"
     desc = (f"🙏 రామాయణ కథ {s.n}/10: {s.name_te}\n\n" + "\n".join(f"• {x}" for x in s.lines) +
-            f"\n\n💡 {s.moral}\n\n🎬 {s.movie}\n\n"
-            "రామాయణం పార్ట్ 1 సినిమా విడుదలైన సందర్భంగా ప్రతిరోజూ ఒక చిన్న రామాయణ కథ. ప్లేలిస్ట్ లో అన్నీ చూడండి.\n"
+            f"\n\n💡 నీతి: {s.moral}\n\n"
+            "ప్రతిరోజూ ఒక చిన్న రామాయణ కథ. ప్లేలిస్ట్ లో 10 కథలూ చూడండి, ఛానల్ ను ఫాలో అవ్వండి.\n"
             "కథలు వాల్మీకి రామాయణం ఆధారంగా సంక్షిప్తంగా చెప్పినవి; ప్రాంతాన్ని బట్టి కొన్ని వివరాలు మారవచ్చు.")
     desc_en = (f"Ramayana story {s.n} of 10: {s.name_en}.\n" + " ".join(s.lines[:0]) +
-               "A short Ramayana story every day, released with Ramayana Part 1 (Nov 5, 2026, directed by Nitesh Tiwari). "
-               "Stories are told in brief after Valmiki Ramayana; details vary by tradition. "
-               "Movie notes are paraphrased from a published review, not affiliated with the film.")
-    tags = ["ramayana", "ramayana stories", "ramayana part 1", "ramayana movie", "sri rama", "rama", "sita", "hanuman",
-            "valmiki ramayana", "ramayanam in telugu", "telugu devotional", "ramayana telugu", "jai shri ram", "shorts",
-            s.name_en.lower(), "ramayana kathalu"]
-    hashtags = ["#Shorts", "#Ramayana", "#RamayanaPart1", "#SriRama", "#JaiShriRam", "#Hanuman", "#రామాయణం"]
+               "A short Ramayana story every day for 10 days. Stories are told in brief after Valmiki Ramayana; details vary by tradition.")
+    tags = ["ramayana", "ramayana stories", "ramayana part 1", "ramayana movie", "ramayana movie telugu", "ramayana 2026",
+            "ramayana story in telugu", "ramayana kathalu", "ramayanam", "ramayanam in telugu", "sri rama", "rama", "sita rama",
+            "hanuman", "valmiki ramayana", "ramayana short stories", "telugu devotional", "telugu stories", "moral stories telugu",
+            "jai shri ram", "jai sri ram", "ramayana telugu", "bhakti", s.name_en.lower(), "shorts"]
+    hashtags = ["#Ramayana", "#RamayanaPart1", "#SriRama", "#JaiShriRam", "#RamayanaStory", "#TeluguDevotional", "#Shorts", "#రామాయణం"]
     return RequestShort(
         slug=f"ramayana_{s.n:02d}_{s.slug}", handle="", comment_id="", deity_te="శ్రీరాముడు",
         bg_top=(30, 14, 6), bg_mid=(86, 40, 12), bg_bottom=(14, 8, 4), glow=(255, 190, 80), slides=slides,

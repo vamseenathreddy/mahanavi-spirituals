@@ -15,7 +15,7 @@ from zoneinfo import ZoneInfo
 
 from channels.engine import state as state_mod
 from channels.engine import upload as eng_upload
-from mahanavi.config import get_settings
+from mahanavi.config import PROJECT_ROOT, get_settings
 from mahanavi.content import ramayana_daily as rd
 from mahanavi.exceptions import MahanaviError, YouTubeUploadError
 from mahanavi.images.request_card_renderer import RequestCardRenderer
@@ -45,7 +45,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{today} -> {spec.slug}: {spec.title}")
         out_dir = settings.output_dir / "ramayana" / spec.slug
         slides = RequestCardRenderer(settings).render_all(spec, out_dir)
-        music = settings.alert_short_music_path
+        own = PROJECT_ROOT / "assets" / "music" / "ramayana_bg.mp3"   # owner's song, looped/trimmed by assemble()
+        music = own if own.exists() else settings.alert_short_music_path
         if music is None or not music.exists():
             raise MahanaviError(f"Music file missing: {music}")
         video = assemble(spec, [s.path for s in slides], music, out_dir / f"{spec.slug}.mp4")
