@@ -115,12 +115,8 @@ def _bg(s: Story) -> str:
 
 def build(s: Story) -> RequestShort:
     story = "\n".join(s.lines)
-    slides = (
-        Slide("intro", 4.0, "రామాయణ కథ", f"{s.name_te}", f"Ramayana Story {s.n} of 10", "శ్రీరామ జయం"),
-        Slide("points", 17.0, s.name_te, story),
-        Slide("points", 6.0, "నీతి", s.moral),
-        Slide("outro", 5.0, "జై శ్రీరామ్", "రేపటి రామాయణ కథ కోసం\nఛానల్ ను ఫాలో అవ్వండి"),
-    )
+    body = "\n".join((*s.lines, f"నీతి: {s.moral}"))
+    slides = (Slide("points", 10.0, s.name_te, body),)   # one card, all the text, 10 seconds
     title = f"రామాయణ కథ {s.n}: {s.name_te} | {s.name_en} | Ramayana Story {s.n}/10"
     title_en = f"Ramayana Story {s.n}/10: {s.name_en}"
     desc = (f"🙏 రామాయణ కథ {s.n}/10: {s.name_te}\n\n" + "\n".join(f"• {x}" for x in s.lines) +
