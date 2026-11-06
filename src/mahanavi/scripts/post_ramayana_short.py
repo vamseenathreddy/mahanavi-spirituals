@@ -93,8 +93,8 @@ def cinematic(bg, text, music, secs: float, out) -> None:
         f"[0:v]scale=2160:3840,zoompan=z='1.0+0.00055*on':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d={frames}:s=1080x1920:fps={FPS},"
         f"vignette=PI/5[bg];"
         f"[2:v]format=rgba[dt];[bg][dt]overlay=0:0:shortest=1[lit];"
-        f"[lit][1:v]overlay=0:0,fade=t=in:st=0:d=0.5,fade=t=out:st={secs - 0.5}:d=0.5,format=yuv420p[v];"
-        f"[3:a]atrim=0:{secs},afade=t=in:st=0:d=0.8,afade=t=out:st={secs - 1.2}:d=1.2[a]")
+        f"[lit][1:v]overlay=0:0,format=yuv420p[v];"
+        f"[3:a]atrim=0:{secs},asetpts=PTS-STARTPTS[a]")
     cmd = ["ffmpeg", "-y", "-v", "error", "-loop", "1", "-i", str(bg), "-i", str(text),
            "-framerate", str(FPS), "-i", str(dust / "d%04d.png"), "-stream_loop", "-1", "-i", str(music),
            "-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-t", f"{secs}", "-r", str(FPS),
