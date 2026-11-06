@@ -116,7 +116,7 @@ def _bg(s: Story) -> str:
 def build(s: Story) -> RequestShort:
     story = "\n".join(s.lines)
     slides = (
-        Slide("intro", 4.0, "రామాయణ కథ", f"{s.name_te}", f"Ramayana Story {s.n} of 10", "శ్రీరామ జయం 🙏"),
+        Slide("intro", 4.0, "రామాయణ కథ", f"{s.name_te}", f"Ramayana Story {s.n} of 10", "శ్రీరామ జయం"),
         Slide("points", 17.0, s.name_te, story),
         Slide("points", 6.0, "నీతి", s.moral),
         Slide("outro", 5.0, "జై శ్రీరామ్", "రేపటి రామాయణ కథ కోసం\nఛానల్ ను ఫాలో అవ్వండి"),
