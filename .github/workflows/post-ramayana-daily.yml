@@ -15,6 +15,10 @@ on:
         required: false
         type: boolean
         default: false
+      story:
+        description: "Force story number 1-10 (re-post a deleted day). Blank = next unposted story."
+        required: false
+        default: ''
       date:
         description: "Optional ISO date to treat as today (testing). Blank = today."
         required: false
@@ -83,6 +87,7 @@ jobs:
           ARGS=""
           if [ "${{ inputs.public }}" != "false" ]; then ARGS="$ARGS --public"; else ARGS="$ARGS --private"; fi
           if [ -n "${{ inputs.date }}" ]; then ARGS="$ARGS --date ${{ inputs.date }}"; fi
+          if [ -n "${{ inputs.story }}" ]; then ARGS="$ARGS --story ${{ inputs.story }}"; fi
           python3 -m mahanavi.scripts.post_ramayana_short $ARGS
 
       - name: Push state to Drive
