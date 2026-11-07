@@ -28,7 +28,7 @@ IST = ZoneInfo("Asia/Kolkata")
 SERIES_START = dt.date(2026, 11, 3)       # Tuesday: day 1
 STEP = 2                                  # one card every other day (3, 5, 7 Nov ...)
 # (window start, window minutes, latest)
-WINDOWS = {"te": (dt.time(0, 0), 110, dt.time(2, 15)), "hi": (dt.time(0, 10), 110, dt.time(2, 15))}
+WINDOWS = {"te": (dt.time(15, 0), 50, dt.time(15, 55)), "hi": (dt.time(0, 10), 110, dt.time(2, 15))}
 SLOTS = {"te": "chanakya", "hi": "chanakya_hi"}
 
 
