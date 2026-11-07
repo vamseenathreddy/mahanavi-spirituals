@@ -21,14 +21,11 @@ for every video -- notably for some Shorts/vertical uploads -- which
 would have caused the same "image sometimes missing" symptom even with
 a correctly-evaluated formula.)
 
-REQUIRES the https://www.googleapis.com/auth/blogger scope on the
-saved token (added 2026-10-06 to youtube_shorts_auth_setup.py's
-SCOPES). A token saved before this change does NOT have it until a
-one-time LOCAL re-auth (this needs a real browser window, so it cannot
-be done from CI): re-run
-`python -m mahanavi.scripts.youtube_shorts_auth_setup` once, then push
-the refreshed data/youtube_token.json to Drive
-(`python scripts/ci/drive_state_sync.py push`).
+UPDATE 2026-11-07: uses its OWN token, data/blogger_token.json (scope
+blogger only, synced through Drive like the YouTube tokens), created once
+with `python -m mahanavi.scripts.blogger_auth_setup`. It is never mixed into
+a YouTube token, because that mix once made Google pick the wrong YouTube
+channel (see youtube_shorts_auth_setup.py).
 
 Same non-fatal, logs-a-warning-and-returns-False pattern as
 YouTubeShortsUploader.post_comment() / add_to_playlist() -- a failed
@@ -62,11 +59,11 @@ def _build_service(settings: Settings, token_file: Path | None = None) -> "objec
             "Missing packages. Run: pip install google-api-python-client google-auth-oauthlib google-auth"
         ) from exc
 
-    token_file = token_file if token_file is not None else settings.youtube_token_file
+    token_file = token_file if token_file is not None else settings.blogger_token_file
     if not token_file.exists():
         raise YouTubeUploadError(
-            f"No saved YouTube/Blogger API token at {token_file}. "
-            "Run `python -m mahanavi.scripts.youtube_shorts_auth_setup` once first."
+            f"No saved Blogger token at {token_file}. "
+            "Run `python -m mahanavi.scripts.blogger_auth_setup` once first."
         )
 
     # Same deliberate omission of an explicit `scopes=` argument as
@@ -100,7 +97,7 @@ def post_to_blogger(
     reuse this same function to post to THEIR OWN separate Blogger blog,
     added 2026-10 when this repo grew beyond one channel/one blog.
 
-    token_file: overrides settings.youtube_token_file -- only needed if a
+    token_file: overrides settings.blogger_token_file (the Blogger-only sign-in) -- only needed if a
     new channel's Google account differs from the main one (if it's the
     same Google account under a different brand-account channel, the
     default main token already has Blogger access to every blog that
@@ -112,7 +109,7 @@ def post_to_blogger(
 
     try:
         service = _build_service(settings, token_file)
-    except YouTubeUploadError as exc:
+    except Exception as exc:  # noqa: BLE001  missing, empty ("{}") or unreadable token must never fail a posting run
         logger.warning("Could not post to Blogger for video %s (service build failed): %s", video_id, exc)
         return False
 
@@ -145,8 +142,8 @@ def post_to_blogger(
         return True
     except HttpError as exc:
         logger.warning(
-            "Could not post to Blogger for video %s -- likely needs a re-run of "
-            "youtube_shorts_auth_setup.py for the blogger scope: %s", video_id, exc,
+            "Could not post to Blogger for video %s -- check data/blogger_token.json "
+            "(re-run blogger_auth_setup.py) and the blog id: %s", video_id, exc,
         )
         return False
     except Exception as exc:  # genuinely need to catch anything else the SDK can raise

@@ -1,0 +1,63 @@
+name: Tools | Blogger Sign-in
+
+# One-time Blogger sign-in (scope: blogger only). Run 1 with mode=url prints the Google address to open.
+# Run 2 with mode=code and the address Google sent you to saves data/blogger_token.json to Drive.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "url or code"
+        required: true
+        default: "url"
+      code:
+        description: "mode=code: the full http://localhost... address Google redirected to"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  blogger-auth:
+  
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Blogger sign-in step
+        env:
+          CODE: ${{ inputs.code }}
+        run: |
+          if [ "${{ inputs.mode }}" = "url" ]; then
+            python -m mahanavi.scripts.blogger_auth_setup --url | sed 's/^/BLOGGER_AUTH_URL /'
+          else
+            python -m mahanavi.scripts.blogger_auth_setup --code "$CODE"
+          fi
+
+      - name: Push state to Drive
+        if: inputs.mode == 'code'
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push

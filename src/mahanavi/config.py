@@ -201,6 +201,10 @@ class Settings(BaseSettings):
     # (see youtube_shorts_auth_setup.py's SCOPES). Unset = blog posting
     # is silently skipped everywhere, never a hard failure.
     blogger_blog_id: str | None = Field(default=None)
+    # 2026-11-07: Blogger has its OWN saved sign-in (data/blogger_token.json, scope blogger only), kept apart from every
+    # YouTube token so the blogger scope can never again change which YouTube channel a token picks. Create it with
+    # `python -m mahanavi.scripts.blogger_auth_setup`. It is the Google account that owns the blogs.
+    blogger_token_file: Path = Field(default=PROJECT_ROOT / "data" / "blogger_token.json")
 
     # --- Channel D (second YouTube channel, same repo, added
     # 2026-10) -- a fully separate channel/pipeline under ramana/ at the

@@ -178,6 +178,7 @@ DATA_DIR = Path("data")
 STATE_FILES = [
     "mahanavi.db",
     "youtube_token.json",
+    "blogger_token.json",  # Blogger-only sign-in (2026-11-07); MUST be pre-created in Drive by the human account
     "last_run_date_rahu_kalam.txt",
     "last_run_date_shubha_ghadiyalu.txt",
     "last_run_date_durmuhurtham.txt",
