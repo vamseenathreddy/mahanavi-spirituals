@@ -36,7 +36,7 @@ def main() -> int:
     blog = bp._build_service(st)  # noqa: SLF001
     have, tok = set(), None
     while True:
-        r = blog.posts().list(blogId=st.blogger_blog_id, maxResults=50, pageToken=tok, fetchBodies=False, status=["live", "draft"]).execute()
+        r = blog.posts().list(blogId=st.blogger_blog_id, maxResults=50, pageToken=tok, fetchBodies=False, status=["LIVE", "DRAFT"]).execute()
         have |= {p["title"].strip() for p in r.get("items", [])}
         tok = r.get("nextPageToken")
         if not tok or len(have) > 400:
