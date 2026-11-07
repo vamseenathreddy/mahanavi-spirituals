@@ -129,6 +129,7 @@ function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentL
 ready(function(){try{
 var cards=[].slice.call(d.querySelectorAll('.grid .card'));
 cards.forEach(function(c){var im=c.querySelector('img'),id=vid(im&&im.src);if(id){c.setAttribute('data-v',id);im.src=thumb(id);c.querySelector('.th').style.setProperty('--t','url('+thumb(id)+')')}else if(im){c.querySelector('.th').style.setProperty('--t','url('+im.src+')')}});
+if(!cards.length&&/(^| )(index|archive)( |$)/.test(d.body.className)){var w2=d.querySelector('.wrap');if(w2){var n=d.createElement('p');n.style.cssText='padding:40px 0;text-align:center;color:#ff9a1f';n.textContent='No videos were received from Blogger on this page (theme debug: sections='+d.querySelectorAll('.section').length+', grid='+d.querySelectorAll('.grid').length+').';w2.appendChild(n)}}
 var pb=d.querySelector('.post-body');
 if(d.body.classList.contains('item')&&pb){
  var f=pb.querySelector('iframe'),pl=d.querySelector('.pl'),im=pb.querySelector('img'),id=f&&/embed\/([\w-]{11})/.exec(f.src);
@@ -189,7 +190,7 @@ def xml():
     import urllib.parse as up
     chips = "<div class='chips nosel'><a class='chip on' expr:href='data:blog.homepageUrl'>All</a>" + "".join(
         f"<a class='chip' href='/search/label/{up.quote(c)}'>{html.escape(c)}</a>" for c in CHIPS) + "</div>"
-    blog = """<b:section class='mainsec' id='main' showaddelement='false'>
+    blog = """<b:section class='mainsec' id='main' showaddelement='no' growth='vertical'>
 <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
 <b:includable id='main' var='top'>
 <b:if cond='data:blog.pageType == &quot;error_page&quot;'>
