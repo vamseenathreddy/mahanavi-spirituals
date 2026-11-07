@@ -21,6 +21,15 @@ KEYWORDS = ["Ramana Maharshi", "Sri Ramana Maharshi", "Bhagavan Ramana Maharshi"
             "Ramana Maharshi teachings in English", "Talks with Ramana Maharshi", "Ramana Maharshi self enquiry",
             "spiritual reality in Telugu", "Telugu spiritual quotes", "spiritual shorts", "meditation",
             "రమణ మహర్షి", "శ్రీ రమణ మహర్షి", "అరుణాచలం", "ఆధ్యాత్మికం", "రమణ మహర్షి బోధనలు"]
+# 2026-11-07: the Telugu spiritual searches YouTube shows for this audience. Only the ones this channel's Shorts really
+# answer (Ramana's teaching on the mind, self-enquiry, silence) are used, and only on rows about the mind or self-enquiry.
+# Other creators' names, kriya yoga and manifestation are left out: the Shorts do not teach them.
+MEDITATION_KEYWORDS = ["Ramana Maharshi guided meditation", "Ramana Maharshi meditation in Telugu",
+                       "how to control your mind Telugu", "how to control subconscious mind",
+                       "meditation in Telugu", "guided meditation Telugu", "mind control meditation Telugu",
+                       "self enquiry meditation Telugu", "మనసును ఎలా నియంత్రించాలి", "ధ్యానం తెలుగులో"]
+GENERAL_SEARCH_KEYWORDS = ["meditation in Telugu", "Telugu meditation", "ధ్యానం తెలుగులో"]
+MEDITATION_HASHTAGS = ["#GuidedMeditation", "#MeditationInTelugu", "#ControlYourMind"]
 EXTRA_KEYWORDS = {"quote": ["spiritual quotes", "Ramana Maharshi quotes in Telugu"],
                   "qa": ["satsang", "Ramana Maharshi Q&A", "Ramana Maharshi questions and answers"],
                   "life": ["Ramana Maharshi life story", "Ramana Maharshi biography", "Ramana Maharshi devotees experiences"]}
@@ -80,9 +89,15 @@ def title(row, special):
     return _short(en, 100 - len(te_part)) + te_part
 
 
+def is_meditation(row):
+    en, _ = plain(row)
+    return row["category"] in ("quote", "qa") and any(w in en.lower() for w in MEDITATION_WORDS)
+
+
 def hashtags(row, special):
     calm = bool(special) and special.get("tone") == "calm"
-    tags = CORE_TAGS + ["#Arunachala", "#అరుణాచలం"] if calm else CORE_TAGS + CAT_TAGS[row["category"]] + COMMON_TAGS
+    extra = MEDITATION_HASHTAGS if is_meditation(row) else []
+    tags = CORE_TAGS + ["#Arunachala", "#అరుణాచలం"] if calm else CORE_TAGS + extra + CAT_TAGS[row["category"]] + COMMON_TAGS
     seen, out = set(), []
     for h in tags:
         if h.lower() not in seen:
@@ -103,7 +118,10 @@ def description(row, special, playlist_url=None, contact=None):
     if not calm:  # intro
         out += ["Sri Ramana Maharshi (Bhagavan Ramana) on Self-inquiry (Atma Vichara), Advaita and Arunachala. "
                 "A new 5 second teaching every day in Telugu and English: Ramana Maharshi meditation technique (Self-enquiry, Who am I?), "
-                "teachings in English, questions and answers, and life story.", ""]
+                "teachings in English, questions and answers, and life story."]
+        if is_meditation(row):
+            out += ["Guided meditation in Telugu on how to control your mind: Ramana Maharshi's way of calming thoughts through self-enquiry."]
+        out += [""]
     out += [DISCLOSURE, "", f"Source: {row['source']}", ""]  # originality statement, then context
     if not calm:  # call to action, playlist
         out += [f"Like, share and subscribe to {CHANNEL} for a daily teaching. ప్రతిరోజూ శ్రీ రమణ మహర్షి బోధనలు."]
@@ -139,15 +157,17 @@ def fit_tags(tags, limit=TAG_LIMIT):
 
 
 def tags(row, special):
-    return fit_tags(KEYWORDS + EXTRA_KEYWORDS[row["category"]])
+    new = MEDITATION_KEYWORDS if is_meditation(row) else GENERAL_SEARCH_KEYWORDS
+    return fit_tags(KEYWORDS[:5] + new + KEYWORDS[5:] + EXTRA_KEYWORDS[row["category"]])
 
 
 def localizations(row, special):
     """Telugu title and description so Telugu viewers see Telugu in search and suggestions."""
     _, te = plain(row)
     label = f"{special['label_te']}: " if special else ""
-    desc = "\n".join([te, "", "ప్రతిరోజూ శ్రీ రమణ మహర్షి బోధనలు: ఆత్మవిచారణ (నేను ఎవరిని?), ధ్యానం, ఆధ్యాత్మిక సత్యం తెలుగులో.",
-                      "", " ".join(hashtags(row, special))])
+    desc = "\n".join([te, "", "ప్రతిరోజూ శ్రీ రమణ మహర్షి బోధనలు: ఆత్మవిచారణ (నేను ఎవరిని?), ధ్యానం, ఆధ్యాత్మిక సత్యం తెలుగులో."]
+                     + (["మనసును ఎలా నియంత్రించాలి? రమణ మహర్షి చెప్పిన ధ్యానం తెలుగులో."] if is_meditation(row) else [])
+                     + ["", " ".join(hashtags(row, special))])
     return {"te": {"title": f"{label}{te} | శ్రీ రమణ మహర్షి"[:100], "description": desc}}
 
 
