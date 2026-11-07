@@ -14,6 +14,11 @@ on:
         required: false
         type: boolean
         default: false
+      relabel:
+        description: "Give labels to posts that have none (instead of posting)"
+        required: false
+        type: boolean
+        default: false
       limit:
         description: "Max posts"
         required: false
@@ -54,7 +59,7 @@ jobs:
         env:
           MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
-        run: python scripts/ci/blogger_backfill.py --since "${{ inputs.since }}" --limit "${{ inputs.limit }}" ${{ inputs.apply && '--apply' || '' }}
+        run: python scripts/ci/blogger_backfill.py --since "${{ inputs.since }}" --limit "${{ inputs.limit }}" ${{ inputs.apply && '--apply' || '' }} ${{ inputs.relabel && '--relabel' || '' }}
 
       - name: Push state to Drive
         if: always()

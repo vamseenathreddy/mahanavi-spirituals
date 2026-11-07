@@ -18,8 +18,28 @@ def main() -> int:
     ap.add_argument("--since", required=True)
     ap.add_argument("--limit", type=int, default=30)
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--relabel", action="store_true", help="give labels to posts since --since that have none")
     a = ap.parse_args()
     st = get_settings()
+    if a.relabel:
+        from mahanavi.publishers.blog_labels import labels_for
+        blog = bp._build_service(st)  # noqa: SLF001
+        tok, n = None, 0
+        while True:
+            r = blog.posts().list(blogId=st.blogger_blog_id, maxResults=50, pageToken=tok, fetchBodies=False, fetchImages=False,
+                                  startDate=a.since, status=["LIVE"]).execute()
+            for p in r.get("items", []):
+                if not p.get("labels"):
+                    lab = labels_for(p["title"])
+                    print(f"  {p['id']} {lab} {p['title'][:60]}")
+                    if a.apply:
+                        blog.posts().patch(blogId=st.blogger_blog_id, postId=p["id"], body={"labels": lab}).execute()
+                        n += 1
+            tok = r.get("nextPageToken")
+            if not tok:
+                break
+        print(f"::notice::relabelled {n} posts")
+        return 0
     if not st.blogger_blog_id:
         print("::error::MAHANAVI_BLOGGER_BLOG_ID is not set")
         return 1
