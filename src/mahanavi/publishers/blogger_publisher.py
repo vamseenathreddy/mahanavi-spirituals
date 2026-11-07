@@ -132,9 +132,9 @@ def post_to_blogger(
         f'style="max-width:100%;height:auto;"/></a></p>'
         f"<p>{description}</p>"
         f'<p><iframe width="560" height="315" '
-        f'src="https://www.youtube-nocookie.com/embed/{video_id}" title="{title}" '
+        f'src="https://www.youtube-nocookie.com/embed/{video_id}?loop=1&playlist={video_id}&rel=0" title="{title}" '
         f'frameborder="0" allow="accelerometer; autoplay; clipboard-write; '
-        f'encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>'
+        f'encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></p>'
     )
 
     try:
