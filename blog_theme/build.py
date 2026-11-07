@@ -129,17 +129,23 @@ function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentL
 ready(function(){try{
 var cards=[].slice.call(d.querySelectorAll('.grid .card'));
 cards.forEach(function(c){var im=c.querySelector('img'),id=vid(im&&im.src);if(id){c.setAttribute('data-v',id);im.src=thumb(id);c.querySelector('.th').style.setProperty('--t','url('+thumb(id)+')')}else if(im){c.querySelector('.th').style.setProperty('--t','url('+im.src+')')}});
-if(!cards.length&&/(^| )(index|archive)( |$)/.test(d.body.className)){var w2=d.querySelector('.wrap');if(w2){var n=d.createElement('p');n.style.cssText='padding:40px 0;text-align:center;color:#ff9a1f';n.textContent='No videos were received from Blogger on this page (theme debug: sections='+d.querySelectorAll('.section').length+', grid='+d.querySelectorAll('.grid').length+').';w2.appendChild(n)}}
+if(!cards.length&&!isItem&&!isPage&&d.getElementById('hero-host')){var w2=d.querySelector('.wrap');if(w2){var n=d.createElement('p');n.style.cssText='padding:40px 0;text-align:center;color:#ff9a1f';n.textContent='No videos were received from Blogger on this page (theme debug: sections='+d.querySelectorAll('.section').length+', grid='+d.querySelectorAll('.grid').length+').';w2.appendChild(n)}}
+var P=w.location.pathname,lm=/^\/search\/label\/([^?]+)/.exec(P);
+if(lm&&d.getElementById('hero-host')){var hh=d.createElement('h1');hh.className='page';hh.textContent=decodeURIComponent(lm[1].replace(/\+/g,' '));d.getElementById('hero-host').parentNode.insertBefore(hh,d.getElementById('hero-host'))}
+var qm=/[?&]q=([^&]+)/.exec(w.location.search);
+if(qm&&d.getElementById('hero-host')){var h2=d.createElement('h1');h2.className='page';h2.textContent='Results for: '+decodeURIComponent(qm[1].replace(/\+/g,' '));d.getElementById('hero-host').parentNode.insertBefore(h2,d.getElementById('hero-host'))}
+var isItem=!!d.querySelector('.watch'),isPage=/^\/p\//.test(P);
+if(isItem&&!isPage)d.body.classList.add('item');
 var pb=d.querySelector('.post-body');
-if(d.body.classList.contains('item')&&pb){
+if(isItem&&!isPage&&pb){
  var f=pb.querySelector('iframe'),pl=d.querySelector('.pl'),im=pb.querySelector('img'),id=f&&/embed\/([\w-]{11})/.exec(f.src);
  id=id?id[1]:vid(im&&im.src);
  if(id&&pl){pl.innerHTML='<div class="stage" style="position:absolute;inset:0;border-radius:0;box-shadow:none"><div class="bg" style="background-image:url('+thumb(id)+')"></div><img class="fr" alt="" src="'+thumb(id)+'"/><button class="pbtn" aria-label="Play video"></button></div>';
   pl.querySelector('.pbtn').onclick=function(){embed(id,pl)};
   var sb=d.getElementById('subbtn');if(sb)sb.href='https://www.youtube.com/watch?v='+id}else if(pl){pl.style.display='none'}
 }
-if(d.body.classList.contains('static_page')&&pb)pb.className+=' page';
-var home=d.body.classList.contains('index')&&!location.search&&cards.length>2,host=d.getElementById('hero-host');
+if(isPage&&pb){pb.className+=' page';var pl0=d.querySelector('.pl');if(pl0)pl0.style.display='none';var sb0=d.querySelector('.sbar');if(sb0)sb0.style.display='none'}
+var home=!isItem&&!location.search&&!/^\/(p|search|\d{4})\//.test(P)&&cards.length>2,host=d.getElementById('hero-host');
 if(!home||!host)return;
 var first=cards.shift();first.classList.add('gone');
 var fid=first.getAttribute('data-v'),ft=first.querySelector('h2 a'),fd=first.querySelector('time'),fu=ft.href,fx=ft.textContent;
@@ -193,36 +199,28 @@ def xml():
     blog = """<b:section class='mainsec' id='main' showaddelement='no' growth='vertical'>
 <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
 <b:includable id='main' var='top'>
-<b:if cond='data:blog.pageType == &quot;error_page&quot;'>
-<div class='err'><h1>404</h1><p>This page could not be found.</p><a class='more' expr:href='data:blog.homepageUrl'>Back to all videos</a></div>
-<b:elseif cond='data:blog.pageType == &quot;item&quot;'/>
+<b:if cond='data:view.isMultipleItems'>
+<div id='hero-host'></div>
+<div class='grid'>
+<b:loop values='data:posts' var='post'>
+<article class='card'>
+<a class='th' expr:href='data:post.url'><b:if cond='data:post.thumbnailUrl'><img alt='' loading='lazy' expr:src='data:post.thumbnailUrl'/></b:if><span class='play'></span></a>
+<div class='meta'><h2><a expr:href='data:post.url'><data:post.title/></a></h2><b:if cond='data:post.date'><time><data:post.date/></time></b:if></div>
+</article>
+</b:loop>
+</div>
+<b:if cond='data:olderPageUrl'><a class='more' expr:href='data:olderPageUrl'>Load older videos</a></b:if>
+<b:else/>
 <b:loop values='data:posts' var='post'>
 <article class='watch'>
 <div class='pl'></div>
 <h1><data:post.title/></h1>
-<div class='by'><time><data:post.timestamp/></time></div>
+<b:if cond='data:post.date'><div class='by'><time><data:post.date/></time></div></b:if>
 <div class='sbar nosel'><span class='om'>&#2384;</span><div><b>Mahanavi Spirituals</b><span>New devotional video every day</span></div><span class='sp'></span><a class='btn pri' id='subbtn' rel='noopener noreferrer' target='_blank' href='%%YT%%'>Watch on YouTube</a><a class='btn' rel='noopener noreferrer' target='_blank' href='%%SUB%%'>Subscribe</a></div>
 <div class='post-body'><data:post.body/></div>
 <b:if cond='data:post.labels'><div class='tags nosel'><b:loop values='data:post.labels' var='label'><a class='chip' expr:href='data:label.url'><data:label.name/></a></b:loop></div></b:if>
 </article>
 </b:loop>
-<b:elseif cond='data:blog.pageType == &quot;static_page&quot;'/>
-<b:loop values='data:posts' var='post'>
-<article class='watch'><h1><data:post.title/></h1><div class='post-body'><data:post.body/></div></article>
-</b:loop>
-<b:else/>
-<b:if cond='data:blog.searchLabel'><h1 class='page'><data:blog.searchLabel/></h1></b:if>
-<b:if cond='data:blog.searchQuery'><h1 class='page'>Results for &#8220;<data:blog.searchQuery/>&#8221;</h1></b:if>
-<div id='hero-host'></div>
-<div class='grid'>
-<b:loop values='data:posts' var='post'>
-<article class='card'>
-<a class='th' expr:href='data:post.url' expr:title='data:post.title'><b:if cond='data:post.thumbnailUrl'><img alt='' loading='lazy' expr:src='data:post.thumbnailUrl'/></b:if><span class='play'></span></a>
-<div class='meta'><h2><a expr:href='data:post.url'><data:post.title/></a></h2><time><data:post.timestamp/></time></div>
-</article>
-</b:loop>
-</div>
-<b:if cond='data:blog.olderPageUrl'><a class='more' expr:href='data:blog.olderPageUrl'>Load older videos</a></b:if>
 </b:if>
 </b:includable>
 </b:widget></b:section>"""
@@ -243,7 +241,7 @@ def xml():
 <link href='https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap' rel='stylesheet'/>
 <b:skin><![CDATA[{head_css}]]></b:skin>
 </head>
-<body expr:class='data:blog.pageType'>
+<body>
 {HEADER.replace('%%NAV%%', nav).replace('%%SUB%%', YT + '?sub_confirmation=1')}
 <main class='wrap' id='main-content'>
 {chips}
