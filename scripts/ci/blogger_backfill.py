@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 
 from mahanavi.config import get_settings
 from mahanavi.publishers import blogger_publisher as bp
@@ -49,7 +50,12 @@ def main() -> int:
         print(f"  {v['id']} {sn['publishedAt']} {sn['title'][:70]}")
         if a.apply:
             desc = sn.get("description", "")[:1500]
-            done += bool(bp.post_to_blogger(st, v["id"], sn["title"], desc))
+            ok = bool(bp.post_to_blogger(st, v["id"], sn["title"], desc))
+            if not ok:  # Blogger rate limit (429): wait and try once more
+                time.sleep(120)
+                ok = bool(bp.post_to_blogger(st, v["id"], sn["title"], desc))
+            done += ok
+            time.sleep(75)
     if a.apply:
         print(f"::notice::posted {done} of {len(todo)}")
     return 0
