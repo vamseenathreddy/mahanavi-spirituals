@@ -1,0 +1,303 @@
+import re, json, html
+
+BLOG = "https://mahanavispirituals.blogspot.com/"
+YT = "https://www.youtube.com/@mahanavispirituals"
+
+CSS = r"""
+:root{--bg:#0d0807;--panel:#1a0f0c;--panel2:#241510;--line:#2f1d17;--ink:#f7ede5;--muted:#bba99d;--saf:#ff9a1f;--gold:#ffc766;--mar:#8a2231;--red:#ff2d3d;--r:16px;--sh:0 10px 30px rgba(0,0,0,.45)}
+@media (prefers-color-scheme:light){:root{--bg:#fff8f1;--panel:#ffffff;--panel2:#fff0e2;--line:#ecd9ca;--ink:#2b1511;--muted:#7b6459;--sh:0 10px 28px rgba(90,40,10,.12)}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 'Poppins','Noto Sans Telugu',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+body:before{content:'';position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(900px 480px at 85% -10%,rgba(255,154,31,.16),transparent 60%),radial-gradient(700px 420px at -5% 10%,rgba(138,34,49,.28),transparent 60%)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.skip{position:absolute;left:-999px;top:8px;background:var(--saf);color:#000;padding:8px 14px;border-radius:8px;z-index:99}
+.skip:focus{left:8px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+.bar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid var(--line)}
+.bar .in{max-width:1320px;margin:auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2px;font-size:19px;white-space:nowrap}
+.om{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:22px;color:#2b1100;background:conic-gradient(from 210deg,#ffd27a,#ff9a1f,#ff6a1f,#ffd27a);box-shadow:0 0 0 3px rgba(255,154,31,.25),0 6px 18px rgba(255,120,20,.4)}
+.brand small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;line-height:1.2}
+.menu{display:flex;gap:4px;margin-left:10px;overflow-x:auto;scrollbar-width:none}
+.menu::-webkit-scrollbar{display:none}
+.menu a{padding:8px 9px;border-radius:999px;font-size:13.5px;color:var(--muted);white-space:nowrap;transition:.2s}
+.menu a:hover{background:var(--panel2);color:var(--ink)}
+.sp{flex:1}
+.search{position:relative}
+.search input{width:150px;max-width:34vw;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:9px 16px 9px 38px;font:inherit;font-size:14px;transition:.2s}
+.search input:focus{width:210px;border-color:var(--saf);outline:none}
+.search:before{content:'';position:absolute;left:14px;top:50%;width:11px;height:11px;border:2px solid var(--muted);border-radius:50%;transform:translateY(-62%)}
+.search:after{content:'';position:absolute;left:25px;top:calc(50% + 5px);width:6px;height:2px;background:var(--muted);transform:rotate(45deg)}
+.sub{display:inline-flex;align-items:center;gap:8px;background:var(--red);color:#fff;font-weight:600;font-size:14px;padding:9px 18px;border-radius:999px;box-shadow:0 6px 18px rgba(255,45,61,.35);transition:.2s;white-space:nowrap}
+.sub:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.sub i{width:0;height:0;border-left:9px solid #fff;border-top:6px solid transparent;border-bottom:6px solid transparent}
+.wrap{max-width:1320px;margin:auto;padding:22px 20px 60px}
+.chips{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 14px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 16px;border:1px solid var(--line);background:var(--panel);border-radius:999px;font-size:13.5px;color:var(--muted);transition:.2s}
+.chip:hover,.chip.on{background:linear-gradient(135deg,var(--saf),#ff6a1f);color:#220d00;border-color:transparent;font-weight:600}
+h1.page{font-size:24px;margin:6px 0 16px}
+#hero{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(300px,1fr);gap:22px;margin-bottom:34px}
+.stage{position:relative;aspect-ratio:16/9;border-radius:22px;overflow:hidden;background:#000;box-shadow:var(--sh);isolation:isolate}
+.stage .bg{position:absolute;inset:-30px;background:center/cover;filter:blur(26px) saturate(1.35) brightness(.8);z-index:-1}
+.stage img.fr{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pbtn{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border:0;border-radius:50%;background:rgba(255,45,61,.94);cursor:pointer;box-shadow:0 0 0 10px rgba(255,45,61,.25),0 10px 30px rgba(0,0,0,.5);transition:.25s}
+.pbtn:hover{transform:scale(1.08)}
+.pbtn:after{content:'';position:absolute;left:33px;top:25px;border-left:26px solid #fff;border-top:16px solid transparent;border-bottom:16px solid transparent}
+.new{position:absolute;left:14px;top:14px;background:var(--saf);color:#2b1100;font-weight:700;font-size:12px;letter-spacing:1.5px;padding:5px 12px;border-radius:999px}
+.hinfo{grid-column:1;padding:14px 4px 0}
+.hinfo h2{font-size:clamp(20px,2.3vw,28px);line-height:1.35;margin-bottom:8px}
+.hinfo time,.meta time{font-size:13px;color:var(--muted)}
+.btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{padding:10px 20px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid var(--line);background:var(--panel);transition:.2s}
+.btn:hover{border-color:var(--saf)}
+.btn.pri{background:var(--red);border-color:transparent;color:#fff}
+.next{grid-column:2;grid-row:1/span 2;display:flex;flex-direction:column;gap:12px}
+.next h3,.sec h3{font-size:15px;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:2px}
+.row{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:8px;border-radius:14px;transition:.2s}
+.row:hover{background:var(--panel)}
+.row .th{aspect-ratio:16/9;border-radius:10px;overflow:hidden;position:relative;background:#000}
+.row p{font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.row time{font-size:12px;color:var(--muted)}
+.sec{margin:6px 0 34px}
+.sec .hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sec .hd:before{content:'';width:5px;height:22px;border-radius:4px;background:linear-gradient(var(--saf),var(--mar))}
+.rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:thin;scrollbar-color:var(--saf) transparent}
+.sh{flex:none;width:176px;scroll-snap-align:start}
+.sh .th{aspect-ratio:9/16;border-radius:16px;overflow:hidden;position:relative;background:#000;box-shadow:var(--sh)}
+.sh .th img{width:100%;height:100%;object-fit:cover;transform:scale(1.02)}
+.sh p{font-size:13px;line-height:1.4;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sh .th:after{content:'';position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgba(0,0,0,.65))}
+.sh .tag{position:absolute;left:10px;bottom:10px;z-index:2;font-size:11px;font-weight:700;letter-spacing:1px;background:var(--red);color:#fff;padding:3px 8px;border-radius:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:26px 20px}
+.card{display:flex;flex-direction:column;gap:12px;transition:transform .25s}
+.card:hover{transform:translateY(-4px)}
+.card.gone{display:none}
+.th{position:relative;display:block;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;isolation:isolate}
+.th:before{content:'';position:absolute;inset:-16px;background:var(--t) center/cover;filter:blur(16px) saturate(1.3) brightness(.8);z-index:-1}
+.th img{width:100%;height:100%;object-fit:contain;transition:transform .4s}
+.card:hover .th img{transform:scale(1.04)}
+.play{position:absolute;right:12px;bottom:12px;width:38px;height:38px;border-radius:50%;background:rgba(255,45,61,.95);box-shadow:0 4px 14px rgba(0,0,0,.5);opacity:0;transform:scale(.8);transition:.25s}
+.play:after{content:'';position:absolute;left:15px;top:11px;border-left:12px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.card:hover .play{opacity:1;transform:none}
+.meta h2{font-size:15.5px;line-height:1.45;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta h2 a:hover{color:var(--gold)}
+.more{display:block;width:max-content;margin:38px auto 0;padding:13px 30px;border-radius:999px;background:linear-gradient(135deg,var(--saf),#ff6a1f);color:#220d00;font-weight:700;box-shadow:0 10px 26px rgba(255,120,20,.35)}
+.watch{max-width:980px;margin:auto}
+.watch .pl{position:relative;aspect-ratio:16/9;max-height:78vh;width:100%;border-radius:20px;overflow:hidden;background:#000;box-shadow:var(--sh);margin-bottom:20px}
+.watch .pl iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.watch h1{font-size:clamp(21px,2.6vw,30px);line-height:1.4;margin-bottom:8px}
+.watch .by{display:flex;gap:14px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:14px;margin-bottom:16px}
+.sbar{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px 18px;margin:16px 0 22px;flex-wrap:wrap}
+.sbar .om{width:46px;height:46px}
+.sbar b{display:block}
+.sbar span{font-size:13px;color:var(--muted)}
+.post-body{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 22px;font-size:15.5px;line-height:1.85;overflow-wrap:anywhere}
+.post-body:not(.page) img{display:none}
+.post-body:not(.page) iframe{display:none}
+.post-body a{color:var(--gold);text-decoration:underline}
+.post-body.page img{display:block;margin:12px auto;border-radius:12px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.err{text-align:center;padding:90px 0}
+.err h1{font-size:64px;color:var(--saf)}
+footer{border-top:1px solid var(--line);margin-top:30px;background:linear-gradient(transparent,rgba(138,34,49,.18))}
+footer .in{max-width:1320px;margin:auto;padding:34px 20px;display:flex;gap:30px;flex-wrap:wrap;justify-content:space-between;color:var(--muted);font-size:14px}
+footer nav{display:flex;gap:18px;flex-wrap:wrap}
+footer a:hover{color:var(--gold)}
+footer p{max-width:520px}
+.nosel{-webkit-user-select:none;user-select:none}
+@media (max-width:980px){#hero{grid-template-columns:1fr}.next{grid-column:1;grid-row:auto}.hinfo{grid-column:1}.menu{display:none}.search input{width:140px}.search input:focus{width:170px}}
+@media (max-width:560px){.bar .in{gap:10px;padding:9px 14px}.brand small{display:none}.brand{font-size:16px}.om{width:36px;height:36px;font-size:19px}.search{display:none}.wrap{padding:16px 14px 50px}.grid{grid-template-columns:1fr}.sh{width:150px}.row{grid-template-columns:128px 1fr}.stage{border-radius:16px}.pbtn{transform:scale(.8)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+"""
+
+JS = r"""
+(function(){
+var d=document,w=window;
+%%LOCK%%
+d.addEventListener('contextmenu',function(e){if(!/^(INPUT|TEXTAREA)$/.test(e.target.tagName))e.preventDefault()});
+d.addEventListener('dragstart',function(e){e.preventDefault()});
+d.addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase(),c=e.ctrlKey||e.metaKey;if(e.key==='F12'||(c&&(k==='u'||k==='s'||k==='p'))||(c&&e.shiftKey&&(k==='i'||k==='j'||k==='c')))e.preventDefault()});
+function vid(s){var m=/\/vi(?:_webp)?\/([\w-]{11})\//.exec(s||'');return m?m[1]:null}
+function thumb(id){return 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
+function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentLoaded',fn)}
+ready(function(){
+var cards=[].slice.call(d.querySelectorAll('.grid .card'));
+cards.forEach(function(c){var im=c.querySelector('img'),id=vid(im&&im.src);if(id){c.setAttribute('data-v',id);im.src=thumb(id);c.querySelector('.th').style.setProperty('--t','url('+thumb(id)+')')}else if(im){c.querySelector('.th').style.setProperty('--t','url('+im.src+')')}});
+var pb=d.querySelector('.post-body');
+if(d.body.classList.contains('item')&&pb){
+ var f=pb.querySelector('iframe'),pl=d.querySelector('.pl'),im=pb.querySelector('img'),id=f&&/embed\/([\w-]{11})/.exec(f.src);
+ id=id?id[1]:vid(im&&im.src);
+ if(id&&pl){pl.innerHTML='<div class="stage" style="position:absolute;inset:0;border-radius:0;box-shadow:none"><div class="bg" style="background-image:url('+thumb(id)+')"></div><img class="fr" alt="" src="'+thumb(id)+'"/><button class="pbtn" aria-label="Play video"></button></div>';
+  pl.querySelector('.pbtn').onclick=function(){embed(id,pl)};
+  var sb=d.getElementById('subbtn');if(sb)sb.href='https://www.youtube.com/watch?v='+id}else if(pl){pl.style.display='none'}
+}
+if(d.body.classList.contains('static_page')&&pb)pb.className+=' page';
+var home=d.body.classList.contains('index')&&!location.search&&cards.length>2,host=d.getElementById('hero-host');
+if(!home||!host)return;
+var first=cards.shift();first.classList.add('gone');
+var fid=first.getAttribute('data-v'),ft=first.querySelector('h2 a'),fd=first.querySelector('time'),fu=ft.href,fx=ft.textContent;
+var nx=cards.splice(0,4);nx.forEach(function(c){c.classList.add('gone')});
+var rl=cards.splice(0,10);rl.forEach(function(c){c.classList.add('gone')});
+var h='<section id="hero"><div><div class="stage">'+(fid?'<div class="bg" style="background-image:url('+thumb(fid)+')"></div><img class="fr" alt="" src="'+thumb(fid)+'"/><button class="pbtn" aria-label="Play latest video"></button>':'')+'<span class="new">NEW</span></div></div><div class="next"><h3>Up next</h3>';
+nx.forEach(function(c){var a=c.querySelector('h2 a'),t=c.querySelector('time'),v=c.getAttribute('data-v'),s=v?thumb(v):(c.querySelector('img')||{}).src||'';h+='<a class="row" href="'+esc(a.href)+'"><div class="th" style="--t:url('+s+')"><img alt="" loading="lazy" src="'+esc(s)+'"/></div><div><p>'+esc(a.textContent)+'</p><time>'+esc(t?t.textContent:'')+'</time></div></a>'});
+h+='</div><div class="hinfo"><h2>'+esc(fx)+'</h2><time>'+esc(fd?fd.textContent:'')+'</time><div class="btns"><a class="btn pri" href="'+esc(fu)+'">Watch now</a><a class="btn" rel="noopener noreferrer" target="_blank" href="'+(fid?'https://www.youtube.com/watch?v='+fid:'%%YT%%')+'">Open on YouTube</a></div></div></section>';
+if(rl.length){h+='<section class="sec"><div class="hd"><h3>Latest Shorts</h3></div><div class="rail">';rl.forEach(function(c){var a=c.querySelector('h2 a'),v=c.getAttribute('data-v'),s=v?thumb(v):(c.querySelector('img')||{}).src||'';h+='<a class="sh" href="'+esc(a.href)+'"><div class="th"><img alt="" loading="lazy" src="'+esc(s)+'"/><span class="tag">SHORT</span></div><p>'+esc(a.textContent)+'</p></a>'});h+='</div></section>'}
+if(cards.length)h+='<div class="sec"><div class="hd"><h3>More videos</h3></div></div>';
+host.innerHTML=h;
+var pbn=host.querySelector('.pbtn');if(pbn&&fid)pbn.onclick=function(){embed(fid,host.querySelector('.stage'))};
+});
+})();
+"""
+
+LOCK = r"""var H=w.location.hostname;
+if(!/^(www\.)?mahanavispirituals\.blogspot\.[a-z.]+$/.test(H)&&!/(^|\.)blogger\.com$/.test(H)&&!/(^|\.)googleusercontent\.com$/.test(H)){w.location.replace('%%BLOG%%');return}
+if(w.top!==w.self){try{var r=d.referrer||'';if(!/^https:\/\/((www|draft)\.blogger\.com|mahanavispirituals\.blogspot\.)/.test(r))w.top.location.href=w.location.href}catch(e){w.top.location.href=w.location.href}}"""
+
+def js(lock):
+    s = JS.replace("%%LOCK%%", (LOCK.replace("%%BLOG%%", BLOG) if lock else "")).replace("%%YT%%", YT)
+    return "\n".join(l.strip() for l in s.strip().splitlines() if l.strip())
+
+def css():
+    return "\n".join(l.strip() for l in CSS.strip().splitlines() if l.strip())
+
+HEADER = """<a class='skip' href='#main'>Skip to content</a>
+<header class='bar nosel'><div class='in'>
+<a class='brand' expr:href='data:blog.homepageUrl'><span class='om'>&#2384;</span><span>Mahanavi Spirituals<small>Telugu Devotional</small></span></a>
+%%NAV%%
+<span class='sp'></span>
+<form class='search' action='/search' method='get' role='search'><input name='q' type='search' placeholder='Search videos' aria-label='Search videos' autocomplete='off'/></form>
+<a class='sub' rel='noopener noreferrer' target='_blank' href='%%SUB%%'><i></i>Subscribe</a>
+</div></header>"""
+
+FOOTER = """<footer><div class='in'>
+<div><b>Mahanavi Spirituals</b><p>Daily Telugu devotional Shorts: muhurtham, mantras, Ramayana stories, Gita slokas, Chanakya neeti and more. Visuals are digitally created devotional artwork.</p></div>
+<nav class='nosel'><a href='/p/about.html'>About</a><a href='/p/contact.html'>Contact</a><a href='/p/privacy-policy.html'>Privacy Policy</a><a href='/p/disclaimer.html'>Disclaimer</a><a rel='noopener noreferrer' target='_blank' href='%%YT%%'>YouTube</a></nav>
+<div>&#169; Mahanavi Spirituals. All rights reserved.</div>
+</div></footer>"""
+
+def xml():
+    head_css = css()
+    body_js = js(True)
+    nav = """<b:section class='navsec' id='nav' maxwidgets='1' showaddelement='false'>
+<b:widget id='PageList1' locked='false' title='Pages' type='PageList' version='2'>
+<b:includable id='main'><nav class='menu'><b:loop values='data:links' var='link'><a expr:href='data:link.href'><data:link.title/></a></b:loop></nav></b:includable>
+</b:widget></b:section>"""
+    import urllib.parse as up
+    chips = "<div class='chips nosel'><a class='chip on' expr:href='data:blog.homepageUrl'>All</a>" + "".join(
+        f"<a class='chip' href='/search/label/{up.quote(c)}'>{html.escape(c)}</a>" for c in CHIPS) + "</div>"
+    blog = """<b:section class='mainsec' id='main' showaddelement='false'>
+<b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
+<b:includable id='main' var='top'>
+<b:if cond='data:blog.pageType == &quot;error_page&quot;'>
+<div class='err'><h1>404</h1><p>This page could not be found.</p><a class='more' expr:href='data:blog.homepageUrl'>Back to all videos</a></div>
+<b:elseif cond='data:blog.pageType == &quot;item&quot;'/>
+<b:loop values='data:posts' var='post'>
+<article class='watch'>
+<div class='pl'></div>
+<h1><data:post.title/></h1>
+<div class='by'><time><data:post.timestamp/></time></div>
+<div class='sbar nosel'><span class='om'>&#2384;</span><div><b>Mahanavi Spirituals</b><span>New devotional video every day</span></div><span class='sp'></span><a class='btn pri' id='subbtn' rel='noopener noreferrer' target='_blank' href='%%YT%%'>Watch on YouTube</a><a class='btn' rel='noopener noreferrer' target='_blank' href='%%SUB%%'>Subscribe</a></div>
+<div class='post-body'><data:post.body/></div>
+<b:if cond='data:post.labels'><div class='tags nosel'><b:loop values='data:post.labels' var='label'><a class='chip' expr:href='data:label.url'><data:label.name/></a></b:loop></div></b:if>
+</article>
+</b:loop>
+<b:elseif cond='data:blog.pageType == &quot;static_page&quot;'/>
+<b:loop values='data:posts' var='post'>
+<article class='watch'><h1><data:post.title/></h1><div class='post-body'><data:post.body/></div></article>
+</b:loop>
+<b:else/>
+<b:if cond='data:blog.searchLabel'><h1 class='page'><data:blog.searchLabel/></h1></b:if>
+<b:if cond='data:blog.searchQuery'><h1 class='page'>Results for &#8220;<data:blog.searchQuery/>&#8221;</h1></b:if>
+<div id='hero-host'></div>
+<div class='grid'>
+<b:loop values='data:posts' var='post'>
+<article class='card'>
+<a class='th' expr:href='data:post.url' expr:title='data:post.title'><b:if cond='data:post.thumbnailUrl'><img alt='' loading='lazy' expr:src='data:post.thumbnailUrl'/></b:if><span class='play'></span></a>
+<div class='meta'><h2><a expr:href='data:post.url'><data:post.title/></a></h2><time><data:post.timestamp/></time></div>
+</article>
+</b:loop>
+</div>
+<b:if cond='data:blog.olderPageUrl'><a class='more' expr:href='data:blog.olderPageUrl'>Load older videos</a></b:if>
+</b:if>
+</b:includable>
+</b:widget></b:section>"""
+    out = f"""<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:version='2' class='v2' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<head>
+<meta charset='utf-8'/>
+<meta content='width=device-width,initial-scale=1' name='viewport'/>
+<meta content="object-src 'none'; base-uri 'self'; form-action 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://www.blogger.com https://draft.blogger.com; upgrade-insecure-requests" http-equiv='Content-Security-Policy'/>
+<meta content='strict-origin-when-cross-origin' name='referrer'/>
+<meta content='nosniff' http-equiv='X-Content-Type-Options'/>
+<meta content='#0d0807' name='theme-color'/>
+<b:include data='blog' name='all-head-content'/>
+<title><data:blog.pageTitle/></title>
+<link href='https://fonts.googleapis.com' rel='preconnect'/>
+<link href='https://fonts.gstatic.com' rel='preconnect' crossorigin='anonymous'/>
+<link href='https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap' rel='stylesheet'/>
+<b:skin><![CDATA[{head_css}]]></b:skin>
+</head>
+<body expr:class='data:blog.pageType'>
+{HEADER.replace('%%NAV%%', nav).replace('%%SUB%%', YT + '?sub_confirmation=1')}
+<main class='wrap' id='main-content'>
+{chips}
+{blog.replace('%%YT%%', YT).replace('%%SUB%%', YT + '?sub_confirmation=1')}
+</main>
+{FOOTER.replace('%%YT%%', YT)}
+<script>//<![CDATA[
+{body_js}
+//]]></script>
+</body>
+</html>
+"""
+    return out
+
+# ---------- preview ----------
+VIDS = [
+("povPP7jJrN4","శ్రీ శివుడు శ్లోకం | కృష్ణ త్రయోదశి | Beeja Mantra","Nov 7, 2026"),
+("Z4NTDEh6aWI","ఈరోజు మాస శివరాత్రి | 7 నవంబర్: చేయవలసినవి, చేయకూడనివి","Nov 7, 2026"),
+("zc2Vo75gHtQ","బహుళ త్రయోదశి 7 నవంబర్ దుర్ముహూర్తం ఎప్పుడు? 07:51 AM-08:36 AM","Nov 6, 2026"),
+("LoeBpqAiMRs","బహుళ త్రయోదశి 7 నవంబర్ శుభ ఘడియలు ఎప్పుడు? 11:36 AM-12:22 PM","Nov 6, 2026"),
+("ByCeaVNh81k","చాణక్య నీతి సూత్రాలు | ఈరోజు పనిని రేపటికి వాయిదా వేయకు","Nov 6, 2026"),
+("h47EITtZats","బహుళ త్రయోదశి 7 నవంబర్ రాహు కాలం ఎప్పుడు? 09:10 AM-10:34 AM","Nov 6, 2026"),
+("2X-WL7kxG-Y","ఇంటి గడప నియమాలు | పూజా నియమాలు","Nov 6, 2026"),
+("2QGk7CtRPi0","లక్ష్మీ దేవి 108 నామాలు 1/108 | Prakriti - Primal Nature","Nov 6, 2026"),
+("1htQ7MoENbk","ధన త్రయోదశి ధన్వంతరి (Dhanteras: Dhanvantari and Yama Deepam) | Purana Story","Nov 6, 2026"),
+("DX8egh1vEjA","రామాయణ కథ: శబరి భక్తి | Ramayana Movie 2026 | Shabari's Devotion","Nov 6, 2026"),
+("sVqfHMDRtt0","శ్రీ కృష్ణుడు మూల మంత్రం | కృష్ణ ద్వాదశి | Beeja Mantra","Nov 6, 2026"),
+("fq8Y2UVAg_g","ఈరోజు ప్రదోషం | 6 నవంబర్: చేయవలసినవి, చేయకూడనివి","Nov 6, 2026"),
+("DHOa9I7VBAM","శుక్రవారం దుర్ముహూర్తం 08:35 AM-09:21 AM, 12:22 PM-01:07 PM","Nov 5, 2026"),
+("SVkUXlySGg8","శుక్రవారం శుభ సమయం 11:36 AM-12:22 PM","Nov 5, 2026"),
+("AO0nKu6PhMw","శుక్రవారం రాహు కాలం 10:34 AM-11:59 AM","Nov 5, 2026"),
+("fB-sLbW4kpA","నంది గాయత్రీ మంత్రం | Nandi Gayathri Mantra","Nov 4, 2026"),
+("lwxTkwOdLJ8","విష్ణు గాయత్రీ మంత్రం | Om Narayanaya Vidmahe","Nov 3, 2026"),
+("fX84-mWv_94","షణ్ముఖ గాయత్రీ మంత్రం | Om Tatpurushaya Vidmahe","Nov 2, 2026"),
+]
+CHIPS = ["Muhurta","Mantras","Shlokas","Ramayana","Chanakya Neethi","Purana Stories","Lakshmi","Festivals & Vratas","Pooja Rules","Shorts"]
+
+def preview():
+    cards = "\n".join(
+        f"<article class='card'><a class='th' href='#' title='{html.escape(t)}'><img alt='' src='https://i.ytimg.com/vi/{i}/hqdefault.jpg'/><span class='play'></span></a><div class='meta'><h2><a href='#'>{html.escape(t)}</a></h2><time>{dt}</time></div></article>"
+        for i,t,dt in VIDS)
+    nav = "<nav class='menu'>" + "".join(f"<a href='#'>{n}</a>" for n in ["Home","About","Bhakti Songs","Mantras & Stotras","Testimonials","Daily Devotion","Contact"]) + "</nav>"
+    chips = "<div class='chips nosel'><a class='chip on' href='#'>All</a>" + "".join(f"<a class='chip' href='#'>{html.escape(c)}</a>" for c in CHIPS) + "</div>"
+    hdr = HEADER.replace("%%NAV%%", nav).replace("%%SUB%%", YT).replace("expr:href='data:blog.homepageUrl'", "href='#'")
+    return f"""<!doctype html><html lang='te'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Mahanavi Spirituals theme preview</title>
+<link href='https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&family=Poppins:wght@400;500;600;700&display=swap' rel='stylesheet'>
+<style>{css()}</style></head><body class='index'>
+{hdr}
+<main class='wrap' id='main'>{chips}
+<div id='hero-host'></div><div class='grid'>{cards}</div><a class='more' href='#'>Load older videos</a></main>
+{FOOTER.replace('%%YT%%', YT)}
+<script>{js(False)}</script></body></html>"""
+
+open("theme.xml","w",encoding="utf-8").write(xml())
+open("preview.html","w",encoding="utf-8").write(preview())
+print(len(xml()), len(preview()))
