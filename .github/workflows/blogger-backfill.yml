@@ -1,0 +1,64 @@
+name: Tools | Blogger Backfill
+
+# One-time Blogger sign-in (scope: blogger only). Run 1 with mode=url prints the Google address to open.
+# Run 2 with mode=code and the address Google sent you to saves data/blogger_token.json to Drive.
+on:
+  workflow_dispatch:
+    inputs:
+      since:
+        description: "Post uploads published after this UTC time"
+        required: true
+        default: "2026-11-06T00:00:00Z"
+      apply:
+        description: "Post for real (off = only list)"
+        required: false
+        type: boolean
+        default: false
+      limit:
+        description: "Max posts"
+        required: false
+        default: "30"
+
+permissions:
+  contents: read
+
+jobs:
+  blogger-backfill:
+  
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Backfill
+        env:
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
+        run: python scripts/ci/blogger_backfill.py --since "${{ inputs.since }}" --limit "${{ inputs.limit }}" ${{ inputs.apply && '--apply' || '' }}
+
+      - name: Push state to Drive
+        if: always()
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push

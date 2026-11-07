@@ -121,6 +121,9 @@ def post_to_blogger(
 
     # hqdefault.jpg, not maxresdefault.jpg -- see module docstring for
     # why maxresdefault isn't a safe universal choice.
+    import html as _html
+    title = _html.escape(title, quote=True)
+    description = _html.escape(description).replace("\n", "<br>")
     thumbnail_url = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
     watch_url = f"https://www.youtube.com/watch?v={video_id}"
     content = (
@@ -136,7 +139,7 @@ def post_to_blogger(
     try:
         service.posts().insert(  # type: ignore[attr-defined]
             blogId=blog_id,
-            body={"title": title, "content": content},
+            body={"title": _html.unescape(title), "content": content},
         ).execute()
         logger.info("Posted to Blogger for video %s", video_id)
         return True
