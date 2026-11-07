@@ -126,10 +126,7 @@ footer p{max-width:520px}
 <a class='skip' href='#main'>Skip to content</a>
 <header class='bar nosel'><div class='in'>
 <a class='brand' expr:href='data:blog.homepageUrl'><span class='om'>&#2384;</span><span>Mahanavi Spirituals<small>Telugu Devotional</small></span></a>
-<b:section class='navsec' id='nav' maxwidgets='1' showaddelement='false'>
-<b:widget id='PageList1' locked='false' title='Pages' type='PageList' version='2'>
-<b:includable id='main'><nav class='menu'><b:loop values='data:links' var='link'><a expr:href='data:link.href'><data:link.title/></a></b:loop></nav></b:includable>
-</b:widget></b:section>
+<nav class='menu'><a href='/'>Home</a><a href='/p/about.html'>About</a><a href='/p/bhakti-songs.html'>Bhakti Songs</a><a href='/p/mantras-stotras.html'>Mantras &amp; Stotras</a><a href='/p/testimonials.html'>Testimonials</a><a href='/p/daily-devotion.html'>Daily Devotion</a><a href='/p/contact.html'>Contact</a></nav>
 <span class='sp'></span>
 <form class='search' action='/search' method='get' role='search'><input name='q' type='search' placeholder='Search videos' aria-label='Search videos' autocomplete='off'/></form>
 <a class='sub' rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals?sub_confirmation=1'><i></i>Subscribe</a>
@@ -192,7 +189,7 @@ function thumb(id){return 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
 function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentLoaded',fn)}
-ready(function(){
+ready(function(){try{
 var cards=[].slice.call(d.querySelectorAll('.grid .card'));
 cards.forEach(function(c){var im=c.querySelector('img'),id=vid(im&&im.src);if(id){c.setAttribute('data-v',id);im.src=thumb(id);c.querySelector('.th').style.setProperty('--t','url('+thumb(id)+')')}else if(im){c.querySelector('.th').style.setProperty('--t','url('+im.src+')')}});
 var pb=d.querySelector('.post-body');
@@ -217,7 +214,7 @@ if(rl.length){h+='<section class="sec"><div class="hd"><h3>Latest Shorts</h3></d
 if(cards.length)h+='<div class="sec"><div class="hd"><h3>More videos</h3></div></div>';
 host.innerHTML=h;
 var pbn=host.querySelector('.pbtn');if(pbn&&fid)pbn.onclick=function(){embed(fid,host.querySelector('.stage'))};
-});
+}catch(e){[].forEach.call(d.querySelectorAll('.card.gone'),function(c){c.classList.remove('gone')})}});
 })();
 //]]></script>
 </body>

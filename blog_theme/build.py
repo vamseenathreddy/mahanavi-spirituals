@@ -126,7 +126,7 @@ function thumb(id){return 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
 function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentLoaded',fn)}
-ready(function(){
+ready(function(){try{
 var cards=[].slice.call(d.querySelectorAll('.grid .card'));
 cards.forEach(function(c){var im=c.querySelector('img'),id=vid(im&&im.src);if(id){c.setAttribute('data-v',id);im.src=thumb(id);c.querySelector('.th').style.setProperty('--t','url('+thumb(id)+')')}else if(im){c.querySelector('.th').style.setProperty('--t','url('+im.src+')')}});
 var pb=d.querySelector('.post-body');
@@ -151,7 +151,7 @@ if(rl.length){h+='<section class="sec"><div class="hd"><h3>Latest Shorts</h3></d
 if(cards.length)h+='<div class="sec"><div class="hd"><h3>More videos</h3></div></div>';
 host.innerHTML=h;
 var pbn=host.querySelector('.pbtn');if(pbn&&fid)pbn.onclick=function(){embed(fid,host.querySelector('.stage'))};
-});
+}catch(e){[].forEach.call(d.querySelectorAll('.card.gone'),function(c){c.classList.remove('gone')})}});
 })();
 """
 
@@ -184,10 +184,8 @@ FOOTER = """<footer><div class='in'>
 def xml():
     head_css = css()
     body_js = js(True)
-    nav = """<b:section class='navsec' id='nav' maxwidgets='1' showaddelement='false'>
-<b:widget id='PageList1' locked='false' title='Pages' type='PageList' version='2'>
-<b:includable id='main'><nav class='menu'><b:loop values='data:links' var='link'><a expr:href='data:link.href'><data:link.title/></a></b:loop></nav></b:includable>
-</b:widget></b:section>"""
+    MENU = [("Home","/"),("About","/p/about.html"),("Bhakti Songs","/p/bhakti-songs.html"),("Mantras &amp; Stotras","/p/mantras-stotras.html"),("Testimonials","/p/testimonials.html"),("Daily Devotion","/p/daily-devotion.html"),("Contact","/p/contact.html")]
+    nav = "<nav class='menu'>" + "".join(f"<a href='{u}'>{n}</a>" for n,u in MENU) + "</nav>"
     import urllib.parse as up
     chips = "<div class='chips nosel'><a class='chip on' expr:href='data:blog.homepageUrl'>All</a>" + "".join(
         f"<a class='chip' href='/search/label/{up.quote(c)}'>{html.escape(c)}</a>" for c in CHIPS) + "</div>"
