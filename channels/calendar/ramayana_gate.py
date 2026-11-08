@@ -1,5 +1,5 @@
 """Gate for the Mahanavi 10-day Ramayana story Shorts: one per day from 2026-11-06, at a day-seeded random minute in
-14:00-15:50 IST, latest 16:00. Skips when all ten are posted.
+15:00-15:50 IST (moved from 14:00 on 2026-11-08, owner request), latest 15:55. Skips when all ten are posted.
 
   STATE_FILE=data/mahanavi_ramayana_state.json POST_SLOT=ramayana python -m channels.calendar.ramayana_gate
 """
@@ -20,7 +20,7 @@ def main() -> int:
             with open(out, "a") as f:
                 f.write(f"post=false\ndate={today.isoformat()}\n")
         return 0
-    return gate.run("ramayana", dt.time(14, 0), 110, dt.time(16, 0))
+    return gate.run("ramayana", dt.time(15, 0), 50, dt.time(15, 55))
 
 
 if __name__ == "__main__":
