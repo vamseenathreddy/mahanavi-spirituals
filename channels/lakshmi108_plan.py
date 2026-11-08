@@ -26,6 +26,9 @@ WINDOWS = {"name": (dt.time(18, 0), 100, dt.time(21, 0)), "recap": (dt.time(9, 0
 # Hindi channels (Devotional Trance Beats): other slots in the day are 6-8 AM beej, 7-9 AM bhagavatam, 1-3 PM mantra, 7-9 PM gita
 WINDOWS_HI = {"name": (dt.time(16, 30), 100, dt.time(19, 0)), "recap": (dt.time(10, 0), 100, dt.time(12, 30))}
 SLOTS = {"name": "lakshmi", "recap": "lakshmi_recap"}
+# Owner request 2026-11-08: from Mon 9 Nov the Telugu Name Short posts 2-3 PM IST (6 PM before, so the 8 Nov name still goes out tonight)
+TE_NAME_MOVE = dt.date(2026, 11, 9)
+WINDOWS_TE_NAME_2PM = (dt.time(14, 0), 50, dt.time(15, 0))
 
 
 def plan(kind: str, d: dt.date) -> int | None:
@@ -47,6 +50,8 @@ def gate(kind: str, now: dt.datetime, lang: str = "te") -> int:
     d = now.astimezone(IST).date()
     num = plan(kind, d)
     ws, wm, latest = (WINDOWS_HI if lang == "hi" else WINDOWS)[kind]
+    if lang != "hi" and kind == "name" and d >= TE_NAME_MOVE:
+        ws, wm, latest = WINDOWS_TE_NAME_2PM
     if num is None:
         post, msg, iso = False, f"DECISION: skip, no Lakshmi {kind} Short on {d} (series {SERIES_START} to {LAST_DAY})", d.isoformat()
     else:

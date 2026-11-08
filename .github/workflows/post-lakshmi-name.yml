@@ -1,5 +1,6 @@
 name: Mahanavi | Lakshmi 108 Names Short (6 PM IST)
 
+# From Mon 9 Nov 2026 the Telugu name posts 2:00-2:50 PM IST (owner request); before that 6-7:40 PM.
 # Sri Lakshmi Devi 108 Names: one name a day (1..108) from Fri 6 Nov 2026 to Sun 21 Feb 2027, public, at a day-seeded random
 # minute and second between 6:00 and 7:40 PM IST (channels/lakshmi108_plan.py). cron-job.org pings every 10 min 6-8 PM IST.
 # The state marker is the Mahanavi beej state file under POST_SLOT=lakshmi (no new Drive file).
