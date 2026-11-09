@@ -72,6 +72,7 @@ def test_hindi_concepts_cover_every_live_entry_and_pick_fresh(tmp_path, monkeypa
 def test_hindi_plan_runs_on_chanakya_off_days():
     from channels import purana_hindi_plan as p
     assert not p.is_post_day(dt.date(2026, 11, 3)) and p.is_post_day(dt.date(2026, 11, 4)) and not p.is_post_day(dt.date(2026, 11, 5))
+    assert not p.is_post_day(dt.date(2026, 11, 6)) and p.is_post_day(dt.date(2026, 11, 8))
 
 
 def test_fan_bank_items_are_unique_and_cover_every_fan_niche():

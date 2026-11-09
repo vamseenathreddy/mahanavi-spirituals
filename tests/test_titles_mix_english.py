@@ -16,7 +16,8 @@ def _title_lists():
         for n in ast.walk(tree):
             if isinstance(n, ast.Assign) and isinstance(n.value, (ast.List, ast.Tuple)):
                 names = [t.id for t in n.targets if isinstance(t, ast.Name)]
-                if any("TITLE" in x.upper() for x in names):
+                # TITLE_ENDINGS are Telugu fragments that title() always joins with the English reference (ref_en)
+                if any("TITLE" in x.upper() and x != "TITLE_ENDINGS" for x in names):
                     for e in n.value.elts:
                         if isinstance(e, ast.Constant) and isinstance(e.value, str):
                             yield f, names[0], e.value

@@ -1,6 +1,6 @@
 """Stdlib-only gate for the Hindi Purana Concept Shorts (Divine Mantra Sangam and Devotional Trance Beats).
 
-They post every other day, on the days the Chanakya card does not (from Wed 4 Nov 2026), at a day-seeded random minute inside a window.
+They post every 4th day (from Wed 4 Nov 2026), on days the Chanakya card does not, at a day-seeded random minute inside a window.
     python -m channels.purana_hindi_plan --channel sangam|trance [--now 2026-11-04T01:00:00]   # writes post=true/false
 """
 from __future__ import annotations
@@ -20,8 +20,10 @@ IST = ZoneInfo("Asia/Kolkata")
 WINDOWS = {"sangam": (dt.time(0, 20), 100, dt.time(2, 15)), "trance": (dt.time(11, 0), 100, dt.time(13, 15))}
 
 
+# 2026-11-09 weekly review: Hindi Purana concepts got 0 to 2 views on both Hindi channels (timings and vrat posts win), so they now
+# post every 4th day instead of every other day (the Chanakya off-days with an odd offset 1, 5, 9 ... from SERIES_START).
 def is_post_day(d: dt.date) -> bool:
-    return d > cp.SERIES_START and cp.plan(d) is None
+    return d > cp.SERIES_START and cp.plan(d) is None and (d - cp.SERIES_START).days % 4 == 1
 
 
 def gate(channel: str, now: dt.datetime) -> int:
