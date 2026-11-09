@@ -3,13 +3,13 @@
   "label": "Mahanavi Spirituals",
   "row": {
    "date": "2026-11-09",
-   "subs": 3910,
+   "subs": 3940,
    "views": 82559,
    "prev_views": 50334,
    "net": 105,
    "likes": 1093,
    "uploads_7d": 50,
-   "median_settled": 329
+   "median_settled": 309.0
   },
   "flags": [],
   "top": [
@@ -98,8 +98,8 @@
   ],
   "settled": {
    "uploads_7d": 50,
-   "settled_n": 35,
-   "median_settled": 329,
+   "settled_n": 30,
+   "median_settled": 309.0,
    "recent_n": 37,
    "median_recent": 443,
    "best_settled": [
@@ -107,7 +107,7 @@
      "id": "DHOa9I7VBAM",
      "title": "శుక్రవారం దుర్ముహూర్తం 08:35 AM-09:21 AM, 12:22 PM-01:07 PM | 6 నవంబర్, బహుళ… | Mahanavi Spirituals",
      "age": 3,
-     "views": 3400,
+     "views": 3402,
      "privacy": "public"
     },
     {
@@ -121,7 +121,7 @@
      "id": "dG5jdiHANO0",
      "title": "బహుళ ఏకాదశి 5 నవంబర్ - పూజకు, కొత్త పనికి మంచి వేళ: 11:36 AM-12:22 PM | Mahanavi Spirituals",
      "age": 4,
-     "views": 3025,
+     "views": 3026,
      "privacy": "public"
     }
    ],
@@ -130,7 +130,7 @@
      "id": "OA8UYYh18C0",
      "title": "Purana Story | ఈ నరకాసుర సంహారం (Narakasura Vadha: Krishna and Satyabhama) కథ… | Mahanavi Spirituals",
      "age": 2,
-     "views": 71,
+     "views": 74,
      "privacy": "public"
     },
     {
@@ -141,10 +141,10 @@
      "privacy": "public"
     },
     {
-     "id": "2XzwDreLeVU",
-     "title": "సత్యం వద, ధర్మం చర (Speak Truth, Follow Dharma) | Puranic Sloka | Mahanavi Spirituals",
+     "id": "xviECpp09DE",
+     "title": "Purana Story | కామదహనం (Kamadahana: Shiva Burns Manmatha) - ఈ కథ వినండి | Mahanavi Spirituals",
      "age": 5,
-     "views": 93,
+     "views": 107,
      "privacy": "public"
     }
    ],
@@ -195,11 +195,11 @@
   "sources": [
    [
     "YouTube search",
-    3936
+    3938
    ],
    [
     "Shorts feed",
-    317
+    315
    ],
    [
     "Notifications",
@@ -298,8 +298,8 @@
    "prev_views": 1424,
    "net": 3,
    "likes": 43,
-   "uploads_7d": 43,
-   "median_settled": 29.0
+   "uploads_7d": 44,
+   "median_settled": 30
   },
   "flags": [],
   "top": [
@@ -375,9 +375,9 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 43,
-   "settled_n": 38,
-   "median_settled": 29.0,
+   "uploads_7d": 44,
+   "settled_n": 37,
+   "median_settled": 30,
    "recent_n": 25,
    "median_recent": 30,
    "best_settled": [
@@ -503,7 +503,7 @@
    "settled_n": 8,
    "median_settled": 197.5,
    "recent_n": 4,
-   "median_recent": 241.5,
+   "median_recent": 256.5,
    "best_settled": [
     {
      "id": "l20kXW8xMHU",
@@ -557,7 +557,7 @@
   "label": "Ramana Maharshi TV",
   "row": {
    "date": "2026-11-09",
-   "subs": 52,
+   "subs": 54,
    "views": 2773,
    "prev_views": 1527,
    "net": 11,
@@ -639,7 +639,7 @@
    "settled_n": 24,
    "median_settled": 103.5,
    "recent_n": 12,
-   "median_recent": 85.5,
+   "median_recent": 93.5,
    "best_settled": [
     {
      "id": "G20IXVJBN6g",

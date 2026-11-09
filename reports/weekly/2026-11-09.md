@@ -6,12 +6,12 @@
 - Pulse Boosting: NO SUBSCRIBER GROWTH for two weeks in a row
 
 ## Mahanavi Spirituals
-- subscribers 3910 (+105 this week)
+- subscribers 3940 (+105 this week)
 - views 82559 (previous week 50334), 50 uploads, about 1651 views per upload
-- median views of settled posts: 329
-- best: 3400 views, శుక్రవారం దుర్ముహూర్తం 08:35 AM-09:21 AM, 12:22 PM-01:07 PM | 6 నవంబర్
+- median views of settled posts: 309.0
+- best: 3402 views, శుక్రవారం దుర్ముహూర్తం 08:35 AM-09:21 AM, 12:22 PM-01:07 PM | 6 నవంబర్
 - best: 3181 views, శుక్రవారం శుభ సమయం 11:36 AM-12:22 PM | 6 నవంబర్, బహుళ ద్వాదశి | Mahana
-- weakest: 71 views, Purana Story | ఈ నరకాసుర సంహారం (Narakasura Vadha: Krishna and Satyabh
+- weakest: 74 views, Purana Story | ఈ నరకాసుర సంహారం (Narakasura Vadha: Krishna and Satyabh
 - weakest: 83 views, గణపతికి ఏవి సమర్పించాలి | పూజా నియమాలు | Mahanavi Spirituals
 
 ## Divine Mantra Sangam
@@ -26,8 +26,8 @@
 
 ## Devotional Trance Beats
 - subscribers 47 (+3 this week)
-- views 1835 (previous week 1424), 43 uploads, about 43 views per upload
-- median views of settled posts: 29.0
+- views 1835 (previous week 1424), 44 uploads, about 42 views per upload
+- median views of settled posts: 30
 - best: 179 views, भगवान सूर्य बीज मंत्र | कृष्ण सप्तमी 1 नवंबर | Beej Mantra
 - best: 98 views, आज मासिक शिवरात्रि 7 नवंबर: क्या करें, क्या न करें | Masik Shivaratri 
 - weakest: 1 views, काशी क्षेत्र महात्म्य | पुराण ज्ञान
@@ -43,7 +43,7 @@
 - weakest: 88 views, రోమీయులకు 15:13 | నేటి బైబిల్ వచనం | Bible Verse of the Day
 
 ## Ramana Maharshi TV
-- subscribers 52 (+11 this week)
+- subscribers 54 (+11 this week)
 - views 2773 (previous week 1527), 24 uploads, about 116 views per upload
 - median views of settled posts: 103.5
 - best: 345 views, Ramana Maharshi Devotees Experiences: On the evening Lakshmi died, Ram
