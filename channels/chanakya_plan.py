@@ -41,6 +41,18 @@ def plan(d: dt.date) -> int | None:
     return i if i < cn.days() else None
 
 
+TE_DAILY_FROM = dt.date(2026, 11, 10)     # owner request 2026-11-09: the Telugu card goes out every day from here
+TE_DAILY_FIRST = 4                        # cards 0-3 went out 3, 5, 7, 9 Nov, so the daily run continues at index 4
+
+
+def plan_for(lang: str, d: dt.date) -> int | None:
+    """Card index for a language: Telugu is daily from TE_DAILY_FROM; everything else keeps the every other day plan()."""
+    if lang == "te" and d >= TE_DAILY_FROM:
+        i = TE_DAILY_FIRST + (d - TE_DAILY_FROM).days
+        return i if i < cn.days() else None
+    return plan(d)
+
+
 def jitter_seconds(lang: str, d: dt.date) -> int:
     return int(hashlib.sha256(f"chanakya-{lang}-sec-{d.isoformat()}".encode()).hexdigest(), 16) % 60
 
@@ -48,7 +60,7 @@ def jitter_seconds(lang: str, d: dt.date) -> int:
 def gate(lang: str, now: dt.datetime) -> int:
     d = now.astimezone(IST).date()
     ws, wm, latest = WINDOWS[lang]
-    if plan(d) is None:
+    if plan_for(lang, d) is None:
         post, msg, iso = False, f"DECISION: skip, no Chanakya card on {d} (series from {SERIES_START}, {cn.days()} days)", d.isoformat()
     else:
         post, msg, iso = gate_mod.decide(f"chanakya_{lang}", now, state_mod.load(), ws, wm, latest,

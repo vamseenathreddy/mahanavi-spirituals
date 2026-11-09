@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from channels.chanakya_plan import SERIES_START, jitter_seconds, plan
+from channels.chanakya_plan import SERIES_START, jitter_seconds, plan_for
 from channels.engine import state as state_mod
 from mahanavi.config import get_settings
 from mahanavi.content import chanakya_neeti as cn
@@ -28,7 +28,7 @@ IST = ZoneInfo("Asia/Kolkata")
 CHANNEL_WORD = {"te": "mahanavi", "hi": "mantra sangam"}
 PLAYLISTS = {
     "te": ("చాణక్య నీతి సూత్రాలు | ప్రతిరోజు ఒక సూత్రం | Chanakya Neeti in Telugu",
-           "రెండు రోజులకు ఒక చాణక్య నీతి సూత్రం, ఈ రోజుల్లో ఎలా వాడాలో ఉదాహరణతో. ఒకటి కూడా మళ్లీ రాదు.\nOne Chanakya Neeti sutra every other day in Telugu with a modern-life example, none repeated."),
+           "ప్రతిరోజూ ఒక చాణక్య నీతి సూత్రం, ఈ రోజుల్లో ఎలా వాడాలో ఉదాహరణతో. ఒకటి కూడా మళ్లీ రాదు.\nOne Chanakya Neeti sutra every day in Telugu with a modern-life example, none repeated."),
     "hi": ("चाणक्य नीति सूत्र | रोज़ एक सूत्र | Chanakya Neeti in Hindi",
            "हर दूसरे दिन चाणक्य नीति का एक सूत्र, आज के जीवन के उदाहरण के साथ। कोई दोबारा नहीं आता।\nOne Chanakya Neeti sutra every other day in Hindi with a modern-life example, none repeated."),
 }
@@ -52,7 +52,7 @@ def metadata(lang: str, day: int) -> tuple[str, str, list[str], str, str]:
     body = f"{head}\n\n{sutra}\n\n{ex}\n\n{DISCLAIMER[lang]}\n\n{hashtags}"
     tags = ["chanakya neeti", "chanakya quotes", "chanakya sutras", "chanakya niti", "life lessons", "motivation", "Shorts"] + tags_x
     title_en = f"Chanakya Neeti Sutras: teaching {day + 1} of {n} with a modern-life example"
-    desc_en = f"One Chanakya Neeti teaching every other day, with a short example of how to use it in modern life. Teaching {day + 1} of {n}.\n\n{hashtags}"
+    desc_en = f"One Chanakya Neeti teaching {'every day' if lang == 'te' else 'every other day'}, with a short example of how to use it in modern life. Teaching {day + 1} of {n}.\n\n{hashtags}"
     return title, body, tags, title_en, desc_en
 
 
@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
     settings = get_settings()
     today = dt.date.fromisoformat(args.date) if args.date else dt.datetime.now(IST).date()
-    day = plan(today)
+    day = plan_for(args.lang, today)
     if day is None:
         print(f"Nothing to post on {today} (series starts {SERIES_START}, {cn.days()} days).")
         return 0
