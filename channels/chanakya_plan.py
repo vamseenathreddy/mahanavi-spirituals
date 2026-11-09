@@ -46,8 +46,8 @@ TE_DAILY_FIRST = 4                        # cards 0-3 went out 3, 5, 7, 9 Nov, s
 
 
 # Cards the owner has proofread and approved (index 0 .. APPROVED_CARDS-1). NOTHING at or past this index is posted, so unverified
-# text never goes out on its own. Cards 0-3 were already live (3, 5, 7, 9 Nov). Raise this number only when the owner says so.
-APPROVED_CARDS = 4
+# text never goes out on its own. Cards 1-13 approved by the owner on 2026-11-09 (cards 1-3 went out earlier). Raise this number only when the owner says so.
+APPROVED_CARDS = 13
 
 
 def plan_for(lang: str, d: dt.date) -> int | None:
