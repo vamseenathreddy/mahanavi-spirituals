@@ -21,3 +21,11 @@ def test_metadata_fits_youtube_limits():
         title, desc, tags, title_en, desc_en = pv.metadata("shiv_tandav_hi", d)
         assert len(title) <= 100 and len(desc) < 5000 and "http" not in desc
         assert sum(len(t) + (2 if " " in t else 0) + 1 for t in tags) < 450
+
+
+def test_trance_series_and_metadata():
+    k = "shiv_tandav_trance"
+    assert vs.plan(k, dt.date(2026, 11, 10)) == 0 and vs.plan(k, dt.date(2026, 11, 25)) is None
+    t1 = pv.metadata(k, 0)[0]
+    t2 = pv.metadata("shiv_tandav_hi", 0)[0]
+    assert t1 != t2 and len(t1) <= 100

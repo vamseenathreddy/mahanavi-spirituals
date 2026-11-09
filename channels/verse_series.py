@@ -30,11 +30,15 @@ class Series:
     channel: str           # music / image set: "mantra_sangam", "trance_beats", "mahanavi"
     channel_word: str      # must appear in the YouTube channel title the token acts as
     image_hint: str = ""   # only background pictures whose file name contains this (falls back to all)
+    variant: str = "meaning"   # "meaning" = verse + meaning card; "chant" = first line + Har Har Mahadev, sound-led (Trance Beats)
+    bg_channel: str = ""   # take pictures from this channel's backgrounds instead (Trance Beats has no Shiva pictures)
 
 
 SERIES = {
     # Divine Mantra Sangam: Shiv Tandav Stotram, 15 verses, 9:00-9:50 AM IST from Tue 10 Nov 2026
     "shiv_tandav_hi": Series("shiv_tandav_hi", dt.date(2026, 11, 10), 15, (dt.time(9, 0), 50, dt.time(9, 55)), "shiv_tandav", "hi", "mantra_sangam", "mantra sangam", "shiva"),
+    # Devotional Trance Beats: the same stotram as a chant loop, 15 days, 8:00-8:50 AM IST from Tue 10 Nov 2026
+    "shiv_tandav_trance": Series("shiv_tandav_trance", dt.date(2026, 11, 10), 15, (dt.time(8, 0), 50, dt.time(8, 55)), "shiv_tandav_trance", "hi", "trance_beats", "trance beats", "shiva", "chant", "mantra_sangam"),
 }
 
 

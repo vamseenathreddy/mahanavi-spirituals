@@ -20,9 +20,10 @@ from mahanavi.images.fonts import FontManager
 from mahanavi.video.lakshmi_name_short import FPS, GOLD, H, HIND, IMG_SECONDS, INK, SECONDS, W, XFADE, WHITE, _wrap, cover, vignette
 
 TOP_Y, BOTTOM_LIMIT, TEXT_W = 140, 965, 540
-CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi"}
+CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi"}
 UI = {
     "hi": dict(sub="श्लोक {d}", subscribe="रोज़ एक श्लोक के लिए सब्सक्राइब करें"),
+    "chant": dict(head="शिव ताण्डव ट्रांस", sub="जाप {d}", tail="हर हर महादेव", subscribe="रोज़ एक ट्रांस जाप के लिए सब्सक्राइब करें"),
     "te": dict(sub="శ్లోకం {d}", subscribe="రోజూ ఒక శ్లోకం కోసం సబ్‌స్క్రైబ్ చేయండి"),
 }
 
@@ -34,7 +35,7 @@ def content(key: str):
 
 
 def image_files(s: vs.Series) -> list[Path]:
-    folder = PROJECT_ROOT / "channels" / s.channel / "assets" / "backgrounds"
+    folder = PROJECT_ROOT / "channels" / (s.bg_channel or s.channel) / "assets" / "backgrounds"
     files = sorted(p for p in folder.glob("*") if p.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")) if folder.exists() else []
     hinted = [p for p in files if s.image_hint and s.image_hint in p.name.lower()]
     return hinted or files
@@ -66,8 +67,11 @@ def _lh(font) -> int:
 
 def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     s, c = vs.SERIES[key], content(key)
-    ui = UI[s.lang]
+    ui = UI["chant" if s.variant == "chant" else s.lang]
     verse, meaning = c.VERSES[day]
+    head = ui.get("head", c.HEAD)
+    if s.variant == "chant":
+        verse, meaning = verse.split("\n")[0].replace("।", "").replace("॥", "").strip(), ui["tail"]
     f_head, f_sub, f_verse = _font(s.lang, int(52 * k)), _font(s.lang, int(30 * k)), _font(s.lang, int(36 * k))
     f_mean, f_subs = _font(s.lang, int(33 * k)), _font(s.lang, 38)
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
@@ -84,7 +88,7 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
             y += _lh(font)
         y += gap
 
-    block(c.HEAD, f_head, GOLD)
+    block(head, f_head, GOLD)
     block(ui["sub"].format(d=day + 1), f_sub, WHITE, gap=int(18 * k))
     verse = verse.replace(" ।", "\u00a0।").replace(" ॥", "\u00a0॥")   # keep the danda on the line it ends
     vl = _lines(probe, verse, f_verse, TEXT_W - 50)

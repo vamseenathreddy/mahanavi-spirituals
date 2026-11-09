@@ -24,11 +24,15 @@ from mahanavi.video import verse_short
 SERIES_TAGS = {
     "shiv_tandav_hi": ["Shiv Tandav Stotram", "Shiva Tandava Stotram", "Shiv Tandav", "Shiv Tandav with meaning", "Shiv Tandav Hindi meaning",
                        "Ravana Shiv Tandav", "Shiva stotram", "Mahadev", "Shiva mantra", "stotram", "Hindi devotional", "Shorts"],
+    "shiv_tandav_trance": ["Shiv Tandav trance", "Shiv Tandav trance beats", "Shiv Tandav chant", "Har Har Mahadev", "Mahadev trance", "Shiva trance",
+                           "Shiva chant loop", "devotional trance", "Hindi devotional", "Mahadev status", "Shorts"],
 }
 PLAYLISTS = {
     "shiv_tandav_hi": ("शिव ताण्डव स्तोत्र | श्लोक और हिंदी अर्थ | Shiv Tandav Stotram with Meaning",
                        "शिव ताण्डव स्तोत्र के सभी 15 श्लोक, हर श्लोक का हिंदी अर्थ, क्रम से। श्लोक 1 से शुरू करें।\n"
                        "Shiv Tandav Stotram, all 15 verses in order, each with its meaning in Hindi. Start from verse 1."),
+    "shiv_tandav_trance": ("शिव ताण्डव ट्रांस | हर हर महादेव जाप | Shiv Tandav Trance Beats",
+                           "शिव ताण्डव की धुन पर रोज़ एक ट्रांस जाप, 15 दिन।\nShiv Tandav trance chant loops, one every day for 15 days."),
 }
 
 
@@ -46,6 +50,13 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
         title_en = f"Shiv Tandav Stotram, verse {n} with meaning"
         desc_en = f"Shiv Tandav Stotram, verse {n} of {c.count()}, with its meaning in Hindi. One verse every day.\n\n{hashtags}"
         return title[:100], desc, SERIES_TAGS[key], title_en, desc_en
+    if key == "shiv_tandav_trance":
+        line = verse.split("\n")[0]
+        title = f"शिव ताण्डव ट्रांस जाप {n} | हर हर महादेव 🔱 | Mahadev Trance Beats"
+        hashtags = "#ShivTandav #HarHarMahadev #MahadevTrance #महादेव #Shorts"
+        desc = (f"शिव ताण्डव ट्रांस, जाप {n}\n\n{line}\n\nहर हर महादेव। हेडफ़ोन लगाकर सुनिए, यह जाप आपको भोलेनाथ से जोड़ेगा।\n\n"
+                f"Shiv Tandav trance chant {n} of {c.count()}. One new chant loop every day.\n\n{hashtags}")
+        return title[:100], desc, SERIES_TAGS[key], f"Shiv Tandav trance chant {n}, Har Har Mahadev", f"Shiv Tandav trance chant {n} of {c.count()}. One a day.\n\n{hashtags}"
     raise KeyError(key)
 
 
