@@ -29,3 +29,8 @@ def test_trance_series_and_metadata():
     t1 = pv.metadata(k, 0)[0]
     t2 = pv.metadata("shiv_tandav_hi", 0)[0]
     assert t1 != t2 and len(t1) <= 100
+
+
+def test_english_meaning_for_every_verse():
+    assert len(st.MEANING_EN) == st.count() and all(m.strip() for m in st.MEANING_EN)
+    assert "Meaning in English" in pv.metadata("shiv_tandav_hi", 0)[1]

@@ -43,3 +43,23 @@ VERSES: list[tuple[str, str]] = [
 
 def count() -> int:
     return len(VERSES)
+
+
+# Short English meaning of each verse (same order as VERSES), shown on the card under the Hindi meaning
+MEANING_EN: list[str] = [
+    "Shiva, whose matted locks let the Ganga flow down, a serpent garland on his neck, the damaru sounding, performed his fierce dance. May he bless us.",
+    "I love Shiva, whose locks hold the restless waves of the Ganga, whose forehead blazes with fire and who wears the crescent moon.",
+    "May my mind find joy in Shiva, delighted with Parvati, whose merciful glance removes even the hardest troubles.",
+    "May my mind find wonder in Shiva, the lord of beings, clad in an elephant hide, with the gems of his serpents lighting up all directions.",
+    "May Shiva, the moon crested one, whose footstool is dusty with flowers from the crowns of the gods, grant us lasting prosperity.",
+    "May Shiva, who burned Kama with the spark of his forehead fire and whom Indra bows to, grant us success and wealth.",
+    "I love the three eyed Shiva, whose forehead fire consumed Kama and who alone paints designs on Parvati.",
+    "May Shiva, whose throat is dark like a new moon night with clouds, who bears the Ganga and the moon, grant us wealth.",
+    "I worship Shiva, whose throat is dark like blue lotuses, who destroyed Kama, Tripura, worldly bonds, Daksha's yajna, Gajasura, Andhaka and Yama.",
+    "I worship Shiva, the bee at the honey of all auspicious arts, who ended Kama, Tripura, Bhava, the yajna, Gajasura, Andhaka and Yama.",
+    "May Shiva, whose forehead fire flares with the hiss of serpents, dancing to the beat of the mridanga, always be victorious.",
+    "Seeing stone and soft bed, snake and pearl necklace, friend and foe, king and subject alike, when shall I worship Sadashiva?",
+    "When shall I be happy by the Ganga, free of evil thoughts, hands folded, eyes calm, chanting the name of Shiva?",
+    "One who reads, recalls or recites this hymn daily stays pure and quickly gains firm devotion to Shiva and the Guru. Thinking of Shankara removes delusion.",
+    "One who reads this hymn by Ravana at the end of worship at dusk is given steady wealth, with chariots, elephants and horses, by Shambhu.",
+]

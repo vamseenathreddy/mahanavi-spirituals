@@ -44,7 +44,7 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
     if key == "shiv_tandav_hi":
         title = f"शिव ताण्डव स्तोत्र श्लोक {n} | हिंदी अर्थ सहित | Shiv Tandav Stotram"
         hashtags = "#ShivTandav #ShivTandavStotram #Mahadev #शिवताण्डव #Shorts"
-        desc = (f"शिव ताण्डव स्तोत्र, श्लोक {n}\n\n{verse}\n\nअर्थ: {meaning}\n\n"
+        desc = (f"शिव ताण्डव स्तोत्र, श्लोक {n}\n\n{verse}\n\nअर्थ: {meaning}\n\nMeaning in English: {c.MEANING_EN[day]}\n\n"
                 f"रावण रचित शिव ताण्डव स्तोत्र का एक श्लोक रोज़, हिंदी अर्थ के साथ। नए हैं? प्लेलिस्ट में श्लोक 1 से शुरू करें।\n\n"
                 f"Shiv Tandav Stotram, verse {n} of {c.count()}, with its meaning in Hindi. One verse every day, none repeated.\n\n{hashtags}")
         title_en = f"Shiv Tandav Stotram, verse {n} with meaning"

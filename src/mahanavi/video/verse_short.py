@@ -74,6 +74,7 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
         verse, meaning = verse.split("\n")[0].replace("।", "").replace("॥", "").strip(), ui["tail"]
     f_head, f_sub, f_verse = _font(s.lang, int(52 * k)), _font(s.lang, int(30 * k)), _font(s.lang, int(36 * k))
     f_mean, f_subs = _font(s.lang, int(33 * k)), _font(s.lang, 38)
+    f_en = ImageFont.truetype(str(HIND), int(28 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
@@ -92,6 +93,11 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     block(ui["sub"].format(d=day + 1), f_sub, WHITE, gap=int(18 * k))
     verse = verse.replace(" ।", "\u00a0।").replace(" ॥", "\u00a0॥")   # keep the danda on the line it ends
     vl = _lines(probe, verse, f_verse, TEXT_W - 50)
+    vl = [ln for ln in vl]
+    for i in range(len(vl) - 1, 0, -1):          # a line holding only a danda goes back onto the line before it
+        if vl[i].replace("\u00a0", "").strip() in ("।", "॥"):
+            vl[i - 1] = vl[i - 1] + " " + vl[i].strip()
+            del vl[i]
     too_wide = any(probe.textlength(ln, font=f_verse) > TEXT_W - 40 for ln in vl)
     pad = 20
     vh = len(vl) * _lh(f_verse)
@@ -101,7 +107,9 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
         d.text(((W - probe.textlength(ln, font=f_verse)) / 2, y), ln, font=f_verse, fill=(255, 226, 140), stroke_width=3, stroke_fill=INK)
         y += _lh(f_verse)
     y += pad + int(22 * k)
-    block(meaning, f_mean, WHITE)
+    block(meaning, f_mean, WHITE, gap=int(14 * k))
+    if s.variant == "meaning" and hasattr(c, "MEANING_EN"):
+        block(c.MEANING_EN[day], f_en, (255, 236, 190))
     end = y
     sy = sub_y
     for ln in sub_lines:
