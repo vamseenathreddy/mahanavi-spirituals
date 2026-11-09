@@ -1,7 +1,7 @@
-name: Mahanavi | Ramayana Story Short (3 PM IST, 10 days)
+name: Mahanavi | Ramayana Story Short (9 AM IST, 10 days)
 
 # One Ramayana story Short a day for 10 days from 2026-11-06 (Ramayana Part 1 release). Public by default.
-# cron-job.org pings every 10 min; the gate posts at a day-seeded random minute in 15:00-15:50 IST. Posts PUBLIC by default.
+# cron-job.org pings every 10 min; the gate posts at a day-seeded random minute in 9:00-9:50 AM IST (3 PM on 9 Nov). Posts PUBLIC by default.
 on:
   workflow_dispatch:
     inputs:

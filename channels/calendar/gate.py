@@ -24,6 +24,21 @@ WINDOWS = {"tips": (dt.time(20, 30), 90, dt.time(22, 30)),
            "vratas": (dt.time(19, 0), 110, dt.time(22, 0))}
 
 
+TIPS_MORNING = (dt.time(9, 0), 50, dt.time(9, 55))
+RAMAYANA_STATE = "data/mahanavi_ramayana_state.json"
+
+
+def ramayana_done_before(today: dt.date, path: str = RAMAYANA_STATE) -> bool:
+    """True once every Ramayana story is posted and the last one went out on an earlier day."""
+    from channels.engine import state as state_mod
+    from mahanavi.content import ramayana_daily as rd
+    st = state_mod.load(path)
+    if any(s.slug not in st["used_ids"] for s in rd.STORIES):
+        return False
+    days = [dt.date.fromisoformat(k.split("#")[0]) for k in st["posted"]]
+    return bool(days) and max(days) < today
+
+
 def next_month(d: dt.date) -> tuple[int, int]:
     return (d.year + (d.month == 12), d.month % 12 + 1)
 
@@ -57,6 +72,8 @@ def main() -> int:
                 f.write(f"post=false\ndate={today.isoformat()}\n")
         return 0
     start, minutes, latest = WINDOWS[kind]
+    if kind == "tips" and channel == "mahanavi" and ramayana_done_before(today):
+        start, minutes, latest = TIPS_MORNING   # owner request 2026-11-09: Pooja Rules takes the 9-10 AM slot once the Ramayana series is complete
     return gate.run(f"cal_{kind}", start, minutes, latest)
 
 
