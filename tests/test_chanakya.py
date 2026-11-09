@@ -113,5 +113,10 @@ def test_fan_mode_posts_three_shorts_a_day_after_the_silence_days():
 def test_telugu_daily_from_10_nov():
     import datetime as dt
     assert [p.plan_for("te", dt.date(2026, 11, d)) for d in (3, 4, 5, 7, 9)] == [0, None, 1, 2, 3]
-    assert [p.plan_for("te", dt.date(2026, 11, d)) for d in (10, 11, 12)] == [4, 5, 6]
-    assert p.plan_for("hi", dt.date(2026, 11, 10)) == p.plan(dt.date(2026, 11, 10))
+    assert [p.plan_for("te", dt.date(2026, 11, d)) for d in (10, 11, 12)] == [None, None, None]   # not approved yet
+    p.APPROVED_CARDS = 100
+    try:
+        assert [p.plan_for("te", dt.date(2026, 11, d)) for d in (10, 11, 12)] == [4, 5, 6]
+        assert p.plan_for("hi", dt.date(2026, 11, 10)) == p.plan(dt.date(2026, 11, 10))
+    finally:
+        p.APPROVED_CARDS = 4

@@ -45,12 +45,20 @@ TE_DAILY_FROM = dt.date(2026, 11, 10)     # owner request 2026-11-09: the Telugu
 TE_DAILY_FIRST = 4                        # cards 0-3 went out 3, 5, 7, 9 Nov, so the daily run continues at index 4
 
 
+# Cards the owner has proofread and approved (index 0 .. APPROVED_CARDS-1). NOTHING at or past this index is posted, so unverified
+# text never goes out on its own. Cards 0-3 were already live (3, 5, 7, 9 Nov). Raise this number only when the owner says so.
+APPROVED_CARDS = 4
+
+
 def plan_for(lang: str, d: dt.date) -> int | None:
-    """Card index for a language: Telugu is daily from TE_DAILY_FROM; everything else keeps the every other day plan()."""
+    """Card index for a language: Telugu is daily from TE_DAILY_FROM; everything else keeps the every other day plan().
+    Returns None for any card that is not yet approved (APPROVED_CARDS)."""
     if lang == "te" and d >= TE_DAILY_FROM:
         i = TE_DAILY_FIRST + (d - TE_DAILY_FROM).days
-        return i if i < cn.days() else None
-    return plan(d)
+        i = i if i < cn.days() else None
+    else:
+        i = plan(d)
+    return i if i is not None and i < APPROVED_CARDS else None
 
 
 def jitter_seconds(lang: str, d: dt.date) -> int:
