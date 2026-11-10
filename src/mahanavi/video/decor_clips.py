@@ -27,8 +27,8 @@ DECOR = PROJECT / "assets" / "decor"
 # name, scale (of the full 1080x1920 frame), anchor "full" or "bottom", loop length used for cross-fading
 LAYERS = {
     "top": dict(file="decor_top.mp4", scale=1.0, anchor="full", mode="strict"),      # has a green parrot: only the pure green screen is removed
-    "low_a": dict(file="decor_low_a.mp4", scale=0.5, anchor="bottom", mode="floor"),
-    "low_b": dict(file="decor_low_b.mp4", scale=0.5, anchor="bottom", mode="floor"),
+    "low_a": dict(file="decor_low_a.mp4", scale=0.82, anchor="bottom", mode="floor"),
+    "low_b": dict(file="decor_low_b.mp4", scale=0.82, anchor="bottom", mode="floor"),
 }
 XFADE = 0.8
 
@@ -51,6 +51,13 @@ class Clip:
             rgb = cv2.resize(rgb, (w, h), interpolation=cv2.INTER_AREA)
             self.frames.append(self._key(rgb, mode))
         cap.release()
+        if anchor != "full":     # feather the clip rectangle so no box edge shows where a character touches the border
+            ramp = lambda n, k: np.clip(np.arange(n) / k, 0, 1)
+            fx = np.minimum(ramp(w, 60), ramp(w, 60)[::-1])
+            fy = ramp(h, 80)
+            mask = (fy[:, None] * fx[None, :]).astype(np.float32)
+            for f in self.frames:
+                f[..., 3] = (f[..., 3] * mask).astype(np.uint8)
         if not self.frames:
             raise RuntimeError(f"no frames in {path}")
 
