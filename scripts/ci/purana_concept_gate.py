@@ -48,6 +48,9 @@ WINDOW_START_HOUR = 0  # 12:00 AM IST (owner 2026-11-03: concepts post on the da
 WINDOW_SPAN_MINUTES = 110  # target lands somewhere in 12:00-1:50 AM, posting completes before 2:15 AM
 
 
+PAUSED = True
+
+
 def _is_off_day(d) -> bool:
     """Concepts post on the days the Telugu Chanakya card does not (every other day, from Tue 4 Nov 2026)."""
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
@@ -77,6 +80,10 @@ def _decide(now: datetime, bypass_gate: bool) -> tuple[str, dt_time]:
 
     if bypass_gate:
         return "post", target
+
+    # 2026-11-11 owner: Purana concept Shorts are PAUSED (Mahanavi reviews: median 70 to 150 views). Set to False to resume.
+    if PAUSED:
+        return "none", target
 
     if not _is_off_day(now.date()):
         return "none", target

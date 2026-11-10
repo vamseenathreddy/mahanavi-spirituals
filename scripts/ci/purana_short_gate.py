@@ -80,6 +80,10 @@ def _decide(now: datetime, bypass_gate: bool) -> tuple[str, dt_time]:
     if bypass_gate:
         return "post", target
 
+    # 2026-11-11 owner: Purana stories get 70 to 150 views, so they post once a week (Sunday) instead of daily.
+    if now.weekday() != 6:
+        return "none", target
+
     if _already_posted_today(today):
         return "none", target
 
