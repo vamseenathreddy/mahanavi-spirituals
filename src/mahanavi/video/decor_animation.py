@@ -132,58 +132,139 @@ def squirrel_run(phase: int, tail_q: int) -> Image.Image:
     return _finish(img, w, h)
 
 
-LILAC = (160, 140, 190, 255)
-RAINBOW = [(255, 90, 110), (255, 160, 60), (255, 220, 70), (110, 210, 120), (90, 170, 255), (170, 120, 255)]
+LILAC = (150, 132, 182, 255)
+MANE_COLS = [(255, 120, 170), (200, 130, 255), (130, 160, 255), (120, 210, 230), (255, 170, 210)]
+
+
+def _spline(pts, closed=True, n=14):
+    """Catmull-Rom curve through the control points, returned as a dense list of points."""
+    P = list(pts)
+    if closed:
+        P = [P[-1]] + P + [P[0], P[1]]
+    else:
+        P = [P[0]] + P + [P[-1]]
+    out = []
+    for i in range(1, len(P) - 2):
+        p0, p1, p2, p3 = P[i - 1], P[i], P[i + 1], P[i + 2]
+        for k in range(n):
+            t = k / n
+            out.append(tuple(0.5 * ((2 * p1[j]) + (-p0[j] + p2[j]) * t + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t * t
+                                    + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t ** 3) for j in range(2)))
+    return out
+
+
+def _fill(img, pts, top, bot, outline=LILAC, ow=3, y0=None, y1=None):
+    """Smooth closed shape with a vertical colour gradient and a soft outline (all coordinates in canvas units)."""
+    sp = [(x * SS, y * SS) for x, y in pts]
+    mask = Image.new("L", img.size, 0)
+    ImageDraw.Draw(mask).polygon(sp, fill=255)
+    ys = [y for _, y in pts]
+    lo, hi = (min(ys) if y0 is None else y0), (max(ys) if y1 is None else y1)
+    col = np.zeros((img.size[1], img.size[0], 4), np.uint8)
+    rows = np.clip((np.arange(img.size[1]) / SS - lo) / max(hi - lo, 1), 0, 1)[:, None]
+    for c in range(3):
+        col[..., c] = (top[c] * (1 - rows) + bot[c] * rows).astype(np.uint8)
+    col[..., 3] = 255
+    layer = Image.fromarray(col, "RGBA")
+    layer.putalpha(mask)
+    img.alpha_composite(layer)
+    if outline:
+        ImageDraw.Draw(img).line(sp + [sp[0]], fill=outline, width=ow * SS, joint="curve")
+
+
+def _strand(d, pts, col, w0, w1):
+    """A tapering flowing strand: overlapping dots along a smooth curve."""
+    sp = _spline(pts, closed=False, n=30)
+    for i, (x, y) in enumerate(sp):
+        r = w0 + (w1 - w0) * i / max(len(sp) - 1, 1)
+        d.ellipse(((x - r) * SS, (y - r) * SS, (x + r) * SS, (y + r) * SS), fill=col + (255,))
+
+
+def _limb(d, joints, widths, col, hoof):
+    """A leg as capsules between joints, tapering, ending in a hoof."""
+    for (x0, y0), (x1, y1), w0, w1 in zip(joints, joints[1:], widths, widths[1:]):
+        steps = 14
+        for k in range(steps + 1):
+            x, y, r = x0 + (x1 - x0) * k / steps, y0 + (y1 - y0) * k / steps, (w0 + (w1 - w0) * k / steps) / 2
+            d.ellipse(((x - r) * SS, (y - r) * SS, (x + r) * SS, (y + r) * SS), fill=col, outline=None)
+    hx, hy = joints[-1]
+    d.ellipse(((hx - 10) * SS, (hy - 7) * SS, (hx + 12) * SS, (hy + 9) * SS), fill=hoof, outline=(120, 90, 40, 255), width=2 * SS)
 
 
 @lru_cache(maxsize=32)
 def unicorn(flap_q: int, leg_q: int) -> Image.Image:
-    """Side view, facing right, flying: flap_q -3..3 raises/lowers the wing, leg_q 0..1 swaps the galloping leg pose."""
-    w, h = 460, 320
+    """Side view, facing right, flying in a gallop pose: flap_q -3..3 moves the wing, leg_q 0..1 alternates the leg pose."""
+    w, h = 700, 470
     img, d = _canvas(w, h)
-    # rainbow tail streaming behind
-    for i, col in enumerate(RAINBOW):
-        d.arc((-30 * SS, (110 + i * 9) * SS, 190 * SS, (250 + i * 9) * SS), 285, 360, fill=col + (255,), width=9 * SS)
-        d.arc((-10 * SS, (96 + i * 9) * SS, 170 * SS, (200 + i * 9) * SS), 300, 360, fill=col + (255,), width=7 * SS)
-    # far legs (behind the body)
-    legs = ([(120, 205, 70, 280), (260, 205, 330, 270)], [(130, 205, 100, 285), (255, 205, 300, 285)])[leg_q]
-    for x0, y0, x1, y1 in legs:
-        d.line((x0 * SS, y0 * SS, x1 * SS, y1 * SS), fill=(235, 230, 245, 255), width=15 * SS)
-        _ell(d, x1, y1, 11, 8, (200, 180, 220, 255), LILAC, 2)
-    # wing, swung around the shoulder
-    wing = Image.new("RGBA", (w * SS, h * SS), (0, 0, 0, 0))
-    wd = ImageDraw.Draw(wing)
-    for k, (dx, dy, col) in enumerate(((0, 0, (245, 240, 255, 255)), (-26, 10, (225, 215, 250, 255)), (-52, 22, (205, 195, 245, 255)))):
-        wd.polygon([((205 + dx) * SS, (150 + dy) * SS), ((140 + dx) * SS, (40 + dy) * SS), ((190 + dx) * SS, (20 + dy) * SS),
-                    ((240 + dx) * SS, (60 + dy) * SS), ((250 + dx) * SS, (140 + dy) * SS)], fill=col, outline=LILAC, width=3 * SS)
-    wing = wing.rotate(flap_q * 9, resample=Image.BICUBIC, center=(215 * SS, 160 * SS))
+    ox, oy = 120, 90
+    T = lambda pts: [(x + ox, y + oy) for x, y in pts]
+    WHITE, SHADE = (255, 252, 255), (214, 206, 236)
+    # tail: flowing strands from the dock
+    dock = (88 + ox, 165 + oy)
+    for i, col in enumerate(MANE_COLS * 2):
+        dy = i * 7 - 18
+        wav = 10 if i % 2 else -10
+        _strand(d, [dock, (dock[0] - 40, dock[1] + 6 + dy * 0.4), (dock[0] - 85, dock[1] + 30 + dy + wav), (dock[0] - 130, dock[1] + 20 + dy * 1.4 - wav), (dock[0] - 165, dock[1] + 52 + dy * 1.2)],
+                col, 8, 2)
+    # far legs (a little darker), then the wing behind the body line, body, near legs
+    far = ([(140, 205), (170, 262), (140, 300), (125, 322)], [(300, 205), (360, 245), (400, 262), (418, 270)]) if leg_q == 0 else \
+          ([(140, 205), (118, 268), (84, 292), (66, 306)], [(300, 205), (340, 250), (372, 290), (380, 318)])
+    for j in far:
+        _limb(d, [(x + ox, y + oy) for x, y in j], [30, 17, 13, 12], (226, 218, 244, 255), (236, 205, 130, 255))
+    # wing: fan of feathers around the shoulder, swung by the flap
+    wing = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    sh = (240 + ox, 150 + oy)
+    for k, (ang, ln) in enumerate(((110, 120), (126, 150), (142, 170), (158, 178), (174, 170), (190, 150), (205, 120), (218, 90))):
+        a = math.radians(ang)
+        tip = (sh[0] + ln * math.cos(a), sh[1] - ln * math.sin(a))
+        side = (math.cos(a + math.pi / 2), -math.sin(a + math.pi / 2))
+        mid = ((sh[0] + tip[0]) / 2, (sh[1] + tip[1]) / 2)
+        pts = [sh, (mid[0] + side[0] * 15, mid[1] + side[1] * 15), tip, (mid[0] - side[0] * 12, mid[1] - side[1] * 12)]
+        _fill(wing, _spline(pts, n=8), (255, 255, 255), (225, 214, 250), outline=(185, 170, 225, 255), ow=2)
+    wing = wing.rotate(flap_q * 7, resample=Image.BICUBIC, center=(sh[0] * SS, sh[1] * SS))
     img.alpha_composite(wing)
     d = ImageDraw.Draw(img)
-    # body and neck
-    _ell(d, 200, 175, 100, 52, (250, 248, 255, 255), LILAC, 3)
-    d.polygon([(255 * SS, 150 * SS), (290 * SS, 70 * SS), (340 * SS, 90 * SS), (300 * SS, 190 * SS)], fill=(250, 248, 255, 255), outline=LILAC, width=3 * SS)
-    # near legs
-    near = ([(150, 210, 100, 270), (285, 205, 350, 255)], [(155, 210, 125, 285), (280, 205, 330, 285)])[leg_q]
-    for x0, y0, x1, y1 in near:
-        d.line((x0 * SS, y0 * SS, x1 * SS, y1 * SS), fill=(250, 248, 255, 255), width=16 * SS)
-        _ell(d, x1, y1, 12, 9, (220, 200, 235, 255), LILAC, 2)
-    # rainbow mane along the neck
-    for i, col in enumerate(RAINBOW):
-        _ell(d, 285 - i * 5 + (i % 2) * 8, 70 + i * 18, 17, 14, col + (255,), None, 0)
-    # head
-    _ell(d, 345, 85, 50, 38, (250, 248, 255, 255), LILAC, 3)
-    _ell(d, 383, 100, 22, 16, (255, 224, 235, 255), None, 0)
-    d.polygon([(322 * SS, 58 * SS), (332 * SS, 22 * SS), (346 * SS, 56 * SS)], fill=(250, 248, 255, 255), outline=LILAC, width=3 * SS)
+    body = T([(250, 150), (205, 146), (150, 146), (112, 152), (88, 168), (88, 205), (104, 242), (150, 240), (205, 240), (262, 236), (306, 222),
+              (330, 192), (348, 150), (372, 112), (392, 100), (428, 108), (448, 100), (450, 86), (434, 66), (404, 50), (382, 28), (360, 20),
+              (338, 40), (310, 80), (282, 118)])
+    _fill(img, _spline(body, n=12), WHITE, SHADE, y0=20 + oy, y1=242 + oy)
+    d = ImageDraw.Draw(img)
+    # soft muscle shading on thigh and shoulder
+    for cx, cy, rx, ry in ((130, 205, 36, 40), (305, 190, 30, 36), (210, 215, 70, 20)):
+        sh_l = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        ImageDraw.Draw(sh_l).ellipse(((cx + ox - rx) * SS, (cy + oy - ry) * SS, (cx + ox + rx) * SS, (cy + oy + ry) * SS), fill=(190, 178, 225, 70))
+        img.alpha_composite(sh_l)
+    d = ImageDraw.Draw(img)
+    near = ([(150, 210), (130, 270), (90, 292), (64, 306)], [(310, 205), (352, 238), (398, 252), (424, 260)]) if leg_q == 0 else \
+           ([(150, 210), (172, 268), (140, 304), (126, 326)], [(310, 205), (350, 252), (376, 292), (386, 322)])
+    for j in near:
+        _limb(d, [(x + ox, y + oy) for x, y in j], [34, 19, 14, 13], WHITE + (255,), (240, 210, 130, 255))
+    # ear, mane
+    d.polygon([((346 + ox) * SS, (34 + oy) * SS), ((352 + ox) * SS, (4 + oy) * SS), ((366 + ox) * SS, (30 + oy) * SS)], fill=WHITE + (255,), outline=LILAC, width=3 * SS)
+    crest = [(352, 28), (338, 44), (322, 66), (306, 90), (292, 114), (280, 134)]
+    for i, col in enumerate(MANE_COLS * 2):
+        bx, by = crest[i % len(crest)]
+        wav = 12 if i % 2 else -8
+        _strand(d, [(bx + ox, by + oy), (bx - 22 + ox, by + 4 + oy), (bx - 52 + ox, by + 26 + wav + oy), (bx - 84 + ox, by + 30 + oy), (bx - 108 + ox, by + 52 - wav + oy)], col, 7, 2)
     # golden spiral horn
-    d.polygon([(352 * SS, 52 * SS), (392 * SS, 0 * SS), (372 * SS, 56 * SS)], fill=(255, 214, 80, 255), outline=(190, 140, 30, 255), width=3 * SS)
-    for t0 in (0.3, 0.55, 0.78):
-        x0, y0 = 352 + 20 * t0 + 6, 52 - 52 * t0 + 22 * 0
-        d.line(((x0 - 6) * SS, (y0 + 6) * SS, (x0 + 8) * SS, (y0 - 2) * SS), fill=(190, 140, 30, 255), width=3 * SS)
-    _ell(d, 352, 78, 9, 11, (60, 40, 90, 255), None, 0)
-    _ell(d, 355, 74, 3, 3, (255, 255, 255, 255), None, 0)
-    d.line((343 * SS, 66 * SS, 336 * SS, 60 * SS), fill=(60, 40, 90, 255), width=3 * SS)
-    _ell(d, 365, 96, 9, 6, (255, 170, 190, 200), None, 0)
-    _ell(d, 394, 98, 3, 3, (150, 110, 150, 255), None, 0)
+    base_a, base_b, tip = (386 + ox, 44 + oy), (404 + ox, 52 + oy), (462 + ox, -40 + oy)
+    d.polygon([(base_a[0] * SS, base_a[1] * SS), (base_b[0] * SS, base_b[1] * SS), (tip[0] * SS, tip[1] * SS)], fill=(255, 214, 90, 255), outline=(190, 140, 30, 255), width=3 * SS)
+    for t0 in (0.22, 0.4, 0.58, 0.76):
+        cx, cy = base_a[0] + (tip[0] - base_a[0]) * t0, base_a[1] + (tip[1] - base_a[1]) * t0
+        wdt = 9 * (1 - t0)
+        d.line(((cx - wdt) * SS, (cy + 6) * SS, (cx + wdt + 4) * SS, (cy - 4) * SS), fill=(190, 140, 30, 255), width=3 * SS)
+    # eye, nostril, mouth, cheek
+    ex, ey = 396 + ox, 66 + oy
+    d.ellipse(((ex - 12) * SS, (ey - 8) * SS, (ex + 12) * SS, (ey + 8) * SS), fill=(255, 255, 255, 255), outline=(70, 50, 100, 255), width=2 * SS)
+    d.ellipse(((ex - 7) * SS, (ey - 8) * SS, (ex + 7) * SS, (ey + 8) * SS), fill=(110, 70, 170, 255))
+    d.ellipse(((ex - 3) * SS, (ey - 4) * SS, (ex + 3) * SS, (ey + 2) * SS), fill=(20, 10, 40, 255))
+    d.ellipse(((ex + 1) * SS, (ey - 7) * SS, (ex + 6) * SS, (ey - 2) * SS), fill=(255, 255, 255, 255))
+    d.line(((ex - 12) * SS, (ey - 6) * SS, (ex - 20) * SS, (ey - 14) * SS), fill=(70, 50, 100, 255), width=3 * SS)
+    d.ellipse(((437 + ox) * SS, (88 + oy) * SS, (445 + ox) * SS, (95 + oy) * SS), fill=(190, 150, 175, 255))
+    d.arc(((410 + ox) * SS, (96 + oy) * SS, (444 + ox) * SS, (118 + oy) * SS), 20, 130, fill=(150, 110, 140, 255), width=3 * SS)
+    cheek = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    ImageDraw.Draw(cheek).ellipse(((388 + ox - 16) * SS, (92 + oy - 10) * SS, (388 + ox + 16) * SS, (92 + oy + 10) * SS), fill=(255, 170, 200, 120))
+    img.alpha_composite(cheek)
     return _finish(img, w, h)
 
 
@@ -288,7 +369,7 @@ def _draw_unicorn(frame: np.ndarray, t: float) -> None:
             for k in range(1, 5):                           # a little trail of sparkles behind
                 tx = x - direction * (150 + 55 * k)
                 _paste(frame, sparkle(40), tx, y + 10 * math.sin(t * 5 + k), alpha=max(0.0, 0.8 - 0.17 * k), scale=0.7)
-            _paste(frame, spr, x, y, scale=0.75)
+            _paste(frame, spr, x, y, scale=0.62)
             return
 
 
