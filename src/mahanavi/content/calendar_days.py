@@ -347,6 +347,18 @@ def _chunks(items: list[str], size: int = 5) -> list[list[str]]:
     return [items[i:i + per] for i in range(0, len(items), per)]
 
 
+_LINE_RE = re.compile(r"^(\d+) ([^\s·]+) · ")
+
+
+def _with_weekday(line: str, year: int, month: int) -> str:
+    """'13 నవంబర్ · నాగుల చవితి' -> '13 నవంబర్ (శుక్ర) · నాగుల చవితి'; grouped weekday lines ('16, 23, 30 ...') and lines that have one stay."""
+    m = _LINE_RE.match(line)
+    if not m or "(" in line.split("·")[0]:
+        return line
+    wd = WEEKDAY_NAME[dt.date(year, month, int(m.group(1))).weekday()][0].removesuffix("వారం")
+    return f"{m.group(1)} {m.group(2)} ({wd}) · " + line[m.end():]
+
+
 def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, heading: str, cover: str, en: str,
                override: list[str] | None = None) -> RequestShort:
     items = month_items(year, month, kinds)
@@ -356,7 +368,7 @@ def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, hea
         wd = WEEKDAY_NAME[d.weekday()][0].removesuffix("వారం")
         lines.append(f"{d.day} {mname} ({wd}) · {OBS[k].te}")
     if override:
-        lines = list(override)
+        lines = [_with_weekday(ln, year, month) for ln in override]
     # one card for the whole list (2026-10-22: no 1/2, 2/2 split, no separate outro card)
     slides = (Slide("points", 14.0, f"{mname} {year} {heading}", "\n".join(lines) if lines else "ఈ నెలలో ప్రత్యేక తేదీలు లేవు"),)
     title = f"{mname} {year} {heading} | {en}"
