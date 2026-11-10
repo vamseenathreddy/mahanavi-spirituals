@@ -171,11 +171,11 @@ def _day_for(rule: tuple[int, str, int, str, str], lo: dt.date, hi: dt.date) -> 
     # a tithi that prevails at the basis time on two days: the first day; a skipped tithi: the day it ends in
     if out:
         return out[-1:] if last else out[:1]
-    d = lo
-    while d <= hi:
-        s, nxt = tithi(_at(d, "sunrise")), tithi(_at(d + dt.timedelta(days=1), "sunrise"))
-        if s == (target - 2) % 30 + 1 and nxt == target % 30 + 1 and month_of(_at(d, "noon")) == month:
-            return [d]
+    d = lo - dt.timedelta(days=1)       # a skipped tithi (it starts and ends between two basis times): the later day
+    while d < hi:
+        t0, t1 = _at(d, basis), _at(d + dt.timedelta(days=1), basis)
+        if tithi(t0) == (target - 2) % 30 + 1 and tithi(t1) == target % 30 + 1 and month_of(t1) == month and d + dt.timedelta(days=1) >= lo:
+            return [d + dt.timedelta(days=1)]
         d += dt.timedelta(days=1)
     return []
 

@@ -1,0 +1,89 @@
+name: Mahanavi | Schedule festival and vrata lists ahead (daily, 2:30 PM IST)
+
+# Uploads each coming month's festival card (public 10 days before the month, 7 PM IST) and vrata card (the next evening),
+# scheduled in YouTube with the animated characters. cron-job.org pings once a day; a card already on the channel is skipped,
+# so each run adds only what is missing, earliest release first, within the daily YouTube quota.
+on:
+  workflow_dispatch:
+    inputs:
+      months:
+        description: "How many months ahead to cover, counted from 2026-12."
+        required: false
+        default: "24"
+      max_uploads:
+        description: "Most cards to upload in this run (YouTube quota)."
+        required: false
+        default: "4"
+      dry_run:
+        description: "Render only, upload nothing."
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: schedule-calendar-ahead
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  schedule:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Install ffmpeg + text shaping libs
+        run: bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
+
+      - name: Build and schedule the cards
+        env:
+          STATE_FILE: data/beej_state.json
+          MAHANAVI_IMAGES_ROOT: ./Images
+          MAHANAVI_ASSETS_DIR: ./assets
+          MAHANAVI_OUTPUT_DIR: ./data/generated
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
+        run: |
+          ARGS="--from 2026-12 --months ${{ inputs.months || '24' }} --max ${{ inputs.max_uploads || '4' }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python3 -m mahanavi.scripts.schedule_calendar_ahead $ARGS
+
+      - name: Push state to Drive
+        if: always()
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/ci/notify_failure.py "Mahanavi | Schedule festival and vrata lists ahead"

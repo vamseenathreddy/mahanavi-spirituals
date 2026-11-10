@@ -78,6 +78,7 @@ TARGETS = [
     ("post-calendar-trance-today.yml", "Trance Beats - Hindi Special Day Morning (5-6 AM)", *_every_10(5, 0, 7)),
     # PAUSED 2026-11-05 (owner): one post per special day, in the morning. ("post-calendar-tomorrow.yml", "Mahanavi - Tomorrow Special Short (7:30-9:30 PM)", *_every_10(19, 30, 13)),
     ("post-calendar-tips.yml", "Mahanavi - Pooja Rules Short (8:30-10:10 PM; 9-10 AM once Ramayana is complete)", [9, 20, 21, 22], list(range(0, 60, 10))),
+    ("schedule-calendar-ahead.yml", "Mahanavi - Schedule festival and vrata lists ahead (2:30 PM)", *_every_10(14, 30, 1)),
     ("post-calendar-festivals.yml", "Mahanavi - Monthly Festival List (7-9 PM)", *_every_10(19, 0, 13)),
     ("post-calendar-vratas.yml", "Mahanavi - Monthly Vrata Calendar (7-9 PM)", *_every_10(19, 0, 13)),
     # PAUSED 2026-11-05 (owner): one post per special day, in the morning. ("post-calendar-trance-tomorrow.yml", "Trance Beats - Hindi Tomorrow Special (7:30-9:30 PM)", *_every_10(19, 30, 13)),

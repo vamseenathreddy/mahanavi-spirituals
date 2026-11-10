@@ -57,6 +57,21 @@ def build(kind: str, today: dt.date, channel: str = "mahanavi"):
     return cal.build_festivals(y, m) if kind == "festivals" else cal.build_vratas(y, m)
 
 
+def _already_on_channel(youtube, title: str) -> bool:
+    """True when a video whose title starts with this card's title (before the first '|') is in the channel's uploads (scheduled ones included)."""
+    key = title.split("|")[0].strip()
+    uploads = youtube.channels().list(part="contentDetails", mine=True).execute()["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+    token = None
+    for _ in range(40):
+        resp = youtube.playlistItems().list(part="snippet", playlistId=uploads, maxResults=50, pageToken=token).execute()
+        if any(key in it["snippet"]["title"] for it in resp["items"]):
+            return True
+        token = resp.get("nextPageToken")
+        if not token:
+            break
+    return False
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--kind", required=True, choices=cal.SPECIAL_KINDS)
@@ -65,9 +80,15 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--private", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--date", default="")
+    ap.add_argument("--month", default="", help="YYYY-MM: build the festivals/vratas card of exactly that month")
+    ap.add_argument("--publish-at", default="", help="ISO time with offset: upload private and let YouTube publish it then")
+    ap.add_argument("--skip-if-exists", action="store_true", help="do nothing when a video with this title is already on the channel")
     args = ap.parse_args(argv)
     settings = get_settings()
     today = dt.date.fromisoformat(args.date) if args.date else dt.datetime.now(IST).date()
+    if args.month:
+        y0, m0 = (int(x) for x in args.month.split("-"))
+        today = dt.date(y0 - (m0 == 1), (m0 - 2) % 12 + 1, 15)     # "today" in the month before, so the card covers --month
     pl_kind = "tomorrow" if args.kind == "today" else args.kind   # the same-day post goes in the "tomorrow special" playlist
     try:
         if args.channel != "mahanavi" and args.kind == "tips":
@@ -105,6 +126,9 @@ def main(argv: list[str] | None = None) -> int:
         got = youtube.channels().list(part="snippet", mine=True).execute()["items"][0]["snippet"]["title"]
         if spec.expected_channel.lower() not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected '{spec.expected_channel}'.")
+        if args.skip_if_exists and _already_on_channel(youtube, spec.title):
+            print(f"SKIP: '{spec.title}' is already on the channel")
+            return 0
         if args.channel == "mahanavi":
             top = cal.playlist_block(youtube, pl_kind)
         else:
@@ -114,12 +138,19 @@ def main(argv: list[str] | None = None) -> int:
         if top:
             spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
         privacy = "private" if args.private else "public"   # 2026-10-22: never unlisted
-        video_id = upload(youtube, spec, video, privacy)
-        print(f"Channel: {got}\nUploaded ({privacy}): https://www.youtube.com/watch?v={video_id}")
-        print(f"::notice::calendar short uploaded ({privacy}): https://www.youtube.com/watch?v={video_id}")
-        state = state_mod.load()
-        state_mod.mark_posted(state, today.isoformat(), spec.slug, video_id, True, dt.datetime.now(IST).isoformat())
-        state_mod.save(state)
+        publish_at = ""
+        if args.publish_at:
+            when = dt.datetime.fromisoformat(args.publish_at)
+            publish_at = when.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            privacy = "private"
+        video_id = upload(youtube, spec, video, privacy, publish_at)
+        shown = f"private, goes public {args.publish_at}" if publish_at else privacy
+        print(f"Channel: {got}\nUploaded ({shown}): https://www.youtube.com/watch?v={video_id}")
+        print(f"::notice::calendar short uploaded ({shown}): https://www.youtube.com/watch?v={video_id}")
+        if not publish_at:
+            state = state_mod.load()
+            state_mod.mark_posted(state, today.isoformat(), spec.slug, video_id, True, dt.datetime.now(IST).isoformat())
+            state_mod.save(state)
         try:
             if args.channel == "mahanavi":
                 pid = cal.playlist_ids(youtube)[pl_kind]

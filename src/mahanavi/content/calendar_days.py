@@ -419,7 +419,12 @@ def build_festivals(year: int, month: int) -> RequestShort:
              "margasira", "dhanurmasam", "mukkoti", "datta_jayanti", "margasira_lakshmivaram")
     items = month_items(year, month, kinds)
     cover = items[0][1] if items else "karthika"
-    return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Festivals List", FULL_MONTH.get((year, month)))
+    lines = FULL_MONTH.get((year, month))
+    if lines is None and (year, month) >= (2027, 1):      # every later month: dates computed from the sky (calendar_ahead.py)
+        from mahanavi.content.calendar_ahead import festival_lines
+
+        lines = festival_lines(year, month) or None
+    return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Festivals List", lines)
 
 
 def build_vratas(year: int, month: int) -> RequestShort:
