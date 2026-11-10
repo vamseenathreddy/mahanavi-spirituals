@@ -376,11 +376,6 @@ def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, hea
 # follows the Smarta day (Nov 20), Kshirabdhi Dwadashi / Tulasi Vivaham Nov 21.
 FULL_MONTH: dict[tuple[int, int], list[str]] = {
     (2026, 11): [
-        "5 నవంబర్ · రమా ఏకాదశి",
-        "6 నవంబర్ · ధనత్రయోదశి",
-        "7 నవంబర్ · మాస శివరాత్రి",
-        "8 నవంబర్ · నరక చతుర్దశి, దీపావళి",
-        "9 నవంబర్ · అమావాస్య",
         "10 నవంబర్ · కార్తీక మాసం ప్రారంభం",
         "11 నవంబర్ · భగినీ హస్త భోజనం",
         "13 నవంబర్ · నాగుల చవితి",
