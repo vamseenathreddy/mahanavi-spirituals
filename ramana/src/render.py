@@ -283,17 +283,18 @@ def pick_music(rng):
     return rng.choice(clips)
 
 
-PEACOCK_SCALE = 1.5       # the stored 720x1280 clip shown at 1080x1920: the peacock fills the card, bottom centre
-PEACOCK_OPACITY = 0.45    # 1 = solid; see-through so the Ramana picture stays visible
+DECOR = Path(__file__).resolve().parents[1] / "assets" / "decor"
+# big see-through peacock, bottom centre. Its top fades out (from FADE_FROM to FADE_FULL display pixels) so it never covers Ramana's face.
+BIG = dict(scale=1.5, opacity=0.45, x="(W-w)/2", y="H-h+12", fade=(800, 1060))
+# photos where Ramana's face sits in the lower half of the card: a smaller peacock in the bottom-left corner instead
+BIG_LOW_FACE = dict(scale=0.8, opacity=0.6, x="-w*0.12", y="H-h+12", fade=None)
+LOW_FACE_PHOTOS = {"photo_04.jpg", "photo_09.jpg"}
+# small peacock without the fan: hops onto the branch at the top right beside the head, then walks and looks around (first 1.8 s of the clip)
+SMALL = dict(scale=0.45, x0=740, y0=-192)     # feet on the branch line y~305
 
 
-def _peacock_inputs():
-    """ffmpeg inputs for the pre-keyed peacock clip, or [] when it has not been added (the card is then simply still)."""
-    rgb, alpha = Path(__file__).resolve().parents[1] / "assets" / "decor" / "peacock_rgb.mp4", None
-    alpha = rgb.with_name("peacock_alpha.mp4")
-    if not (rgb.exists() and alpha.exists()):
-        return []
-    return ["-stream_loop", "-1", "-i", str(rgb), "-stream_loop", "-1", "-i", str(alpha)]
+def _have(*names):
+    return all((DECOR / n).exists() for n in names)
 
 
 def render(row, out_mp4, date_key, special=None, workdir="out"):
@@ -324,14 +325,30 @@ def render(row, out_mp4, date_key, special=None, workdir="out"):
     inputs = ["-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(bg_path),
               "-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(tx_path),
               "-i", music]
-    peacock = _peacock_inputs()
-    if peacock:   # animated peacock (assets/decor/peacock_*.mp4, pre-keyed with scripts/prekey_decor.py): behind the text, over the picture
-        inputs += peacock
-        fc = (bg_f + "[3:v]format=rgb24,setsar=1[pr];[4:v]format=gray,setsar=1[pa];[pr][pa]alphamerge[pk0];"
-              f"[pk0]scale=iw*{PEACOCK_SCALE}:-2,format=rgba,colorchannelmixer=aa={PEACOCK_OPACITY}[pk];"     # see-through so the Ramana picture stays visible
-              "[bg][pk]overlay=x=(W-w)/2:y=H-h+12:format=auto[bgp];[1:v]format=rgba[tx];[bgp][tx]overlay=format=auto,format=yuv420p[v]")
-    else:
-        fc = bg_f + "[1:v]format=rgba[tx];[bg][tx]overlay=format=auto,format=yuv420p[v]"  # text is static for the full 5 s
+    parts, last, idx = [bg_f.rstrip(";")], "bg", 3
+    photo_name = Path(photo_for(date_key) or "").name
+    if _have("peacock_rgb.mp4", "peacock_alpha.mp4"):   # animated peacock (assets/decor, pre-keyed with scripts/prekey_decor.py): behind the text, over the picture
+        cfg = BIG_LOW_FACE if photo_name in LOW_FACE_PHOTOS else BIG
+        inputs += ["-stream_loop", "-1", "-i", str(DECOR / "peacock_rgb.mp4"), "-stream_loop", "-1", "-i", str(DECOR / "peacock_alpha.mp4")]
+        fade = ""
+        if cfg["fade"]:
+            f0, f1 = cfg["fade"]
+            fade = f",geq=r='r(X,Y)':g='g(X,Y)':b='b(X,Y)':a='alpha(X,Y)*clip((Y+12-{f0})/{f1 - f0},0,1)'"
+        parts.append(f"[{idx}:v]format=rgb24,setsar=1[pr];[{idx + 1}:v]format=gray,setsar=1[pa];[pr][pa]alphamerge[pk0];"
+                     f"[pk0]scale=iw*{cfg['scale']}:-2,format=rgba{fade},colorchannelmixer=aa={cfg['opacity']}[pk];"
+                     f"[{last}][pk]overlay=x={cfg['x']}:y={cfg['y']}:format=auto[o1]")
+        last, idx = "o1", idx + 2
+    if _have("peacock_small_rgb.mp4", "peacock_small_alpha.mp4", "branch.png"):
+        inputs += ["-i", str(DECOR / "peacock_small_rgb.mp4"), "-i", str(DECOR / "peacock_small_alpha.mp4"),
+                   "-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(DECOR / "branch.png")]
+        sc = SMALL["scale"]
+        parts.append(f"[{idx}:v]format=rgb24,setsar=1[sr];[{idx + 1}:v]format=gray,setsar=1[sa];[sr][sa]alphamerge[sk0];"
+                     f"[sk0]hflip,scale=iw*{sc}:-2,tpad=stop_mode=clone:stop_duration=4,format=rgba[sk];"
+                     f"[{idx + 2}:v]format=rgba[br];[{last}][br]overlay=0:0:format=auto[o2];"
+                     f"[o2][sk]overlay=x='{SMALL['x0']}+260*max(1-t/0.7,0)':y='{SMALL['y0']}-140*sin(PI*min(t/0.7,1))':format=auto[o3]")
+        last, idx = "o3", idx + 3
+    parts.append(f"[1:v]format=rgba[tx];[{last}][tx]overlay=format=auto,format=yuv420p[v]")
+    fc = ";".join(parts)    # text is static for the full 5 s
     cmd = [
         "ffmpeg", "-y", "-v", "error", *inputs,
         "-filter_complex", fc, "-map", "[v]", "-map", "2:a",
