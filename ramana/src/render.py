@@ -289,8 +289,9 @@ BIG = dict(scale=1.5, opacity=0.45, x="(W-w)/2", y="H-h+12", fade=(800, 1060))
 # photos where Ramana's face sits in the lower half of the card: a smaller peacock in the bottom-left corner instead
 BIG_LOW_FACE = dict(scale=0.8, opacity=0.6, x="-w*0.12", y="H-h+12", fade=None)
 LOW_FACE_PHOTOS = {"photo_04.jpg", "photo_09.jpg"}
-# small peacock without the fan, on its own branch at the top right beside the head: flies in, lands, looks around (clip with branch, 8 s, played once)
-SMALL = dict(scale=0.45, x0=756, y0=62)
+# small peacock on its own branch beside the head: starts low next to the big peacock, flies up to the branch, lands and looks around
+# (8 s clip played once). flip=True mirrors it: branch from the left edge, bird facing left, perched at the top left.
+SMALL = dict(scale=1.1, x0=-142, y0=-233, flip=True)
 
 
 def _have(*names):
@@ -341,7 +342,7 @@ def render(row, out_mp4, date_key, special=None, workdir="out"):
     if _have("peacock_small_rgb.mp4", "peacock_small_alpha.mp4"):
         inputs += ["-i", str(DECOR / "peacock_small_rgb.mp4"), "-i", str(DECOR / "peacock_small_alpha.mp4")]
         parts.append(f"[{idx}:v]format=rgb24,setsar=1[sr];[{idx + 1}:v]format=gray,setsar=1[sa];[sr][sa]alphamerge[sk0];"
-                     f"[sk0]scale=iw*{SMALL['scale']}:-2,format=rgba[sk];"
+                     f"[sk0]{'hflip,' if SMALL['flip'] else ''}scale=iw*{SMALL['scale']}:-2,format=rgba[sk];"
                      f"[{last}][sk]overlay=x={SMALL['x0']}:y={SMALL['y0']}:format=auto[o3]")
         last, idx = "o3", idx + 2
     parts.append(f"[1:v]format=rgba[tx];[{last}][tx]overlay=format=auto,format=yuv420p[v]")
