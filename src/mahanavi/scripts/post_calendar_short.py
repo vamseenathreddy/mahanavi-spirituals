@@ -78,7 +78,8 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(f"{today} -> {spec.slug}: {spec.title}")
         out_dir = settings.output_dir / "calendar" / spec.slug
-        slides = RequestCardRenderer(settings).render_all(spec, out_dir)
+        renderer = RequestCardRenderer(settings)
+        slides = renderer.render_all(spec, out_dir)
         if args.channel == "mahanavi":
             music = settings.alert_short_music_path
             if music is None or not music.exists():
@@ -89,6 +90,15 @@ def main(argv: list[str] | None = None) -> int:
             music = music_for(args.channel, today, settings.alert_short_music_path)
         video = assemble(spec, [s.path for s in slides], music, out_dir / f"{spec.slug}.mp4")
         print(f"Assembled: {video} ({spec.total_seconds:.1f}s)")
+        if args.kind in ("festivals", "vratas") and len(slides) == 1:      # list cards: friendly animated characters behind the words
+            try:
+                from mahanavi.video import decor_clips
+
+                bg_png, text_png = renderer.render_parts(spec, 0, out_dir / "parts")
+                video = decor_clips.compose(bg_png, text_png, video, out_dir / f"{spec.slug}_decor.mp4")
+                print(f"Decorated: {video}")
+            except Exception as exc:  # noqa: BLE001  the plain card is always good enough to post
+                print(f"::warning::decoration skipped: {type(exc).__name__}: {exc}", file=sys.stderr)
         if args.dry_run:
             return 0
         youtube = YouTubeShortsUploader(settings)._build_service()  # noqa: SLF001
