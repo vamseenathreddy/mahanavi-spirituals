@@ -59,6 +59,10 @@ def main(argv: list[str] | None = None) -> int:
         slides = RequestCardRenderer(settings).render_all(spec, out_dir)
         music = music_for(args.channel, today, settings.alert_short_music_path)
         video = assemble(spec, [s.path for s in slides], music, out_dir / f"{spec.slug}.mp4")
+        from mahanavi.video.lakshmi_decor import is_lakshmi, themed
+
+        if is_lakshmi(spec.deity_te, spec.slug):      # every Lakshmi mantra Short gets the coins and baby elephants theme
+            video = themed(video)
         print(f"Assembled: {video} ({spec.total_seconds:.1f}s)")
         if args.dry_run:
             return 0

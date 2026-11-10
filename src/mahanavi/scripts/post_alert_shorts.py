@@ -362,6 +362,10 @@ def _process_one(
             fade_in_seconds=LOOP_FRIENDLY_FADE_IN_SECONDS,
             fade_out_seconds=LOOP_FRIENDLY_FADE_OUT_SECONDS,
         )
+        if day_god(for_date) == "lakshmi":      # Friday cards carry the Lakshmi picture: add the gold coins and baby elephants theme
+            from mahanavi.video.lakshmi_decor import themed
+
+            video_path = themed(video_path)
         print(f"Assembled: {video_path}")
 
         try:  # the three series playlists at the top of the description; never blocks the upload

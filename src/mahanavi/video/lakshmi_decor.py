@@ -117,3 +117,61 @@ class LakshmiDecor:
             if avoid is not None:
                 a = a * (1 - avoid[y0:, x0:x0 + pw])
             frame[y0:, x0:x0 + pw] = frame[y0:, x0:x0 + pw] * (1 - a) + r * a
+
+
+# ---- the same theme as an ffmpeg post-process, for Shorts whose text is already baked into the video -------------------------
+LAKSHMI_WORDS = ("lakshmi", "laxmi", "లక్ష్మి", "లక్ష్మీ", "लक्ष्मी", "लक्ष्मि")
+
+
+def is_lakshmi(*texts: str) -> bool:
+    blob = " ".join(t for t in texts if t).lower()
+    return any(w in blob for w in LAKSHMI_WORDS)
+
+
+def themed(src: Path, dst: Path | None = None) -> Path:
+    """Overlay the Lakshmi theme (coins along the sides, a baby elephant in each bottom corner, both see-through, once at the start)
+    on a finished Short. Returns dst (default: replaces src). Never raises: on any problem the original video is kept."""
+    import shutil
+    import subprocess
+
+    dst = dst or src.with_name(src.stem + "_lk.mp4")
+    files = [DECOR / f"{n}_{k}.mp4" for n in ("coins", "eleph") for k in ("rgb", "alpha")]
+    try:
+        if not all(f.exists() for f in files):
+            return src
+        pr = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", str(src)],
+                            capture_output=True, text=True, check=True)
+        w, h = (int(x) for x in pr.stdout.strip().split(",")[:2])
+        dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(src)],
+                                   capture_output=True, text=True, check=True).stdout.strip())
+        sc = w / 720.0
+        ec, cc = LAYERS["eleph"], LAYERS["coins"]
+        pw = int(540 * sc * ec["corners"])
+        eh = int(960 * sc)
+        ss = "(t*t*(3-2*t))"
+        coins_a = (f"alpha(X,Y)*{cc['gain']}*({cc['center_dim']}+{1 - cc['center_dim']}*clip((abs(2*X/W-1)-0.30)/0.35,0,1))")
+
+        def piece(side: str) -> str:
+            t = (f"clip((W-1-X)/({ec['inner_feather']}*W),0,1)" if side == "L" else f"clip(X/({ec['inner_feather']}*W),0,1)")
+            t_ = ss.replace("t", f"({t})")
+            return f"alpha(X,Y)*{ec['gain']}*{t_}*clip(Y/({ec['feather_top']}*H),0,1)"
+
+        fo = lambda c: f"fade=t=in:st=0:d={c['fin']}:alpha=1,fade=t=out:st={max(min(c['cycle'], dur) - c['fout'], 0.5):.2f}:d={c['fout']}:alpha=1"   # noqa: E731
+        geq = lambda a: f"geq=lum='lum(X,Y)':cb='cb(X,Y)':cr='cr(X,Y)':a='{a}'"                                          # noqa: E731
+        fg = (f"[1:v][2:v]alphamerge,format=yuva420p,scale={w}:{h},{geq(coins_a)},{fo(cc)}[co];"
+              f"[3:v][4:v]alphamerge,format=yuva420p,scale=iw*{ec['scale'] * sc:.4f}:ih*{ec['scale'] * sc:.4f},split[e1][e2];"
+              f"[e1]crop={pw}:{eh}:0:0,{geq(piece('L'))},{fo(ec)}[el];"
+              f"[e2]crop={pw}:{eh}:iw-{pw}:0,{geq(piece('R'))},{fo(ec)}[er];"
+              f"[0:v][co]overlay=0:0:eof_action=pass[v1];[v1][el]overlay=0:H-h:eof_action=pass[v2];[v2][er]overlay=W-w:H-h:eof_action=pass,format=yuv420p[v]")
+        tmp = dst.with_name(dst.stem + "_tmp.mp4")
+        cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(src)]
+        for f in files:
+            cmd += ["-i", str(f)]
+        cmd += ["-filter_complex", fg, "-map", "[v]", "-map", "0:a?", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-c:a", "copy",
+                "-movflags", "+faststart", str(tmp)]
+        subprocess.run(cmd, check=True, capture_output=True)
+        shutil.move(str(tmp), str(dst))
+        return dst
+    except Exception as exc:    # noqa: BLE001  the theme is decoration: keep the plain video rather than lose the post
+        print(f"WARNING: Lakshmi theme not added: {type(exc).__name__}: {exc}")
+        return src
