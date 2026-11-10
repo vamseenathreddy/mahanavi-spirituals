@@ -78,8 +78,7 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
             y += int((bb[3] - bb[1]) * 1.3) + 4
         y += gap
 
-    block(ui["head"], f_head, GOLD, gap=2)
-    block(ui["sub"].format(d=day + 1, n=cn.days()), f_sub, WHITE, gap=int(26 * k))
+    block(ui["head"], f_head, GOLD, gap=int(26 * k))
     # the MAIN message is what Chanakya said (the sutra): bigger, on a dark gold-rimmed panel so it pops
     su_lines = _wrap(probe, cn.sutra(day, lang), f_sutra, TEXT_W - 20)
     su_h = sum(int((f_sutra.getbbox(ln)[3] - f_sutra.getbbox(ln)[1]) * 1.3) + 4 for ln in su_lines)

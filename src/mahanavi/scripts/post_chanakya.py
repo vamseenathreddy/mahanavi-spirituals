@@ -41,18 +41,18 @@ def metadata(lang: str, day: int) -> tuple[str, str, list[str], str, str]:
     sutra, ex = cn.sutra(day, lang), cn.example(day, lang)
     if lang == "te":
         title = f"చాణక్య నీతి సూత్రాలు | {sutra}"[:98]
-        head = f"🙏 చాణక్య నీతి సూత్రాలు, సూత్రం {day + 1}/{n}"
+        head = f"🙏 చాణక్య నీతి సూత్రాలు"
         tags_x = ["chanakya neeti telugu", "chanakya niti in telugu", "telugu motivation"]
         hashtags = "#ChanakyaNeeti #చాణక్యనీతి #Telugu #Shorts"
     else:
         title = f"चाणक्य नीति सूत्र | {sutra}"[:98]
-        head = f"🙏 चाणक्य नीति सूत्र, सूत्र {day + 1}/{n}"
+        head = f"🙏 चाणक्य नीति सूत्र"
         tags_x = ["chanakya neeti hindi", "chanakya niti in hindi", "hindi motivation"]
         hashtags = "#ChanakyaNeeti #चाणक्यनीति #Hindi #Shorts"
     body = f"{head}\n\n{sutra}\n\n{ex}\n\n{DISCLAIMER[lang]}\n\n{hashtags}"
     tags = ["chanakya neeti", "chanakya quotes", "chanakya sutras", "chanakya niti", "life lessons", "motivation", "Shorts"] + tags_x
-    title_en = f"Chanakya Neeti Sutras: teaching {day + 1} of {n} with a modern-life example"
-    desc_en = f"One Chanakya Neeti teaching {'every day' if lang == 'te' else 'every other day'}, with a short example of how to use it in modern life. Teaching {day + 1} of {n}.\n\n{hashtags}"
+    title_en = "Chanakya Neeti Sutras: a teaching with a modern-life example"
+    desc_en = f"One Chanakya Neeti teaching {'every day' if lang == 'te' else 'every other day'}, with a short example of how to use it in modern life..\n\n{hashtags}"
     return title, body, tags, title_en, desc_en
 
 
