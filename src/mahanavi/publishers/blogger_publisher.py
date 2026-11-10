@@ -86,6 +86,7 @@ def post_to_blogger(
     description: str,
     blog_id: str | None = None,
     token_file: Path | None = None,
+    publish_at: str = "",
 ) -> bool:
     """Creates a new Blogger post with a real thumbnail image, a short
     description, and an embedded player for `video_id`. Returns False
@@ -97,6 +98,9 @@ def post_to_blogger(
     this repo (e.g. Channel D, settings.ramana_blogger_blog_id)
     reuse this same function to post to THEIR OWN separate Blogger blog,
     added 2026-10 when this repo grew beyond one channel/one blog.
+
+    publish_at: RFC 3339 time (e.g. 2026-11-21T13:30:00Z) for a post that goes live later: the blog entry is scheduled in
+    Blogger to appear when the (scheduled) YouTube video does.
 
     token_file: overrides settings.blogger_token_file (the Blogger-only sign-in) -- only needed if a
     new channel's Google account differs from the main one (if it's the
@@ -140,7 +144,8 @@ def post_to_blogger(
     try:
         service.posts().insert(  # type: ignore[attr-defined]
             blogId=blog_id,
-            body={"title": _html.unescape(title), "content": content, "labels": labels_for(_html.unescape(title))},
+            body={"title": _html.unescape(title), "content": content, "labels": labels_for(_html.unescape(title)),
+                  **({"published": publish_at} if publish_at else {})},
         ).execute()
         logger.info("Posted to Blogger for video %s", video_id)
         return True

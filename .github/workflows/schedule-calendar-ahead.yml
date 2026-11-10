@@ -68,6 +68,7 @@ jobs:
           MAHANAVI_LOG_DIR: ./data/logs
           MAHANAVI_TIMEZONE: Asia/Kolkata
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
         run: |
           ARGS="--from 2026-12 --months ${{ inputs.months || '24' }} --max ${{ inputs.max_uploads || '4' }}"
           if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi

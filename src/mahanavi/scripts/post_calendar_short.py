@@ -176,6 +176,11 @@ def main(argv: list[str] | None = None) -> int:
         shown = f"private, goes public {args.publish_at}" if publish_at else privacy
         print(f"Channel: {got}\nUploaded ({shown}): https://www.youtube.com/watch?v={video_id}")
         print(f"::notice::calendar short uploaded ({shown}): https://www.youtube.com/watch?v={video_id}")
+        if args.channel == "mahanavi":      # the blog entry too (scheduled in Blogger when the video is scheduled)
+            from mahanavi.publishers.blogger_publisher import post_to_blogger
+
+            blogged = post_to_blogger(settings, video_id, spec.title, spec.description_te, publish_at=publish_at)
+            print("Posted to Blogger." if blogged else "Note: could not post to Blogger (non-fatal).")
         if not publish_at:
             state = state_mod.load()
             state_mod.mark_posted(state, today.isoformat(), spec.slug, video_id, True, dt.datetime.now(IST).isoformat())
