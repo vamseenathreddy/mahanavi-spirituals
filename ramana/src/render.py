@@ -289,8 +289,8 @@ BIG = dict(scale=1.5, opacity=0.45, x="(W-w)/2", y="H-h+12", fade=(800, 1060))
 # photos where Ramana's face sits in the lower half of the card: a smaller peacock in the bottom-left corner instead
 BIG_LOW_FACE = dict(scale=0.8, opacity=0.6, x="-w*0.12", y="H-h+12", fade=None)
 LOW_FACE_PHOTOS = {"photo_04.jpg", "photo_09.jpg"}
-# small peacock without the fan: hops onto the branch at the top right beside the head, then walks and looks around (first 1.8 s of the clip)
-SMALL = dict(scale=0.45, x0=740, y0=-192)     # feet on the branch line y~305
+# small peacock without the fan, on its own branch at the top right beside the head: flies in, lands, looks around (clip with branch, 8 s, played once)
+SMALL = dict(scale=0.45, x0=756, y0=62)
 
 
 def _have(*names):
@@ -338,15 +338,12 @@ def render(row, out_mp4, date_key, special=None, workdir="out"):
                      f"[pk0]scale=iw*{cfg['scale']}:-2,format=rgba{fade},colorchannelmixer=aa={cfg['opacity']}[pk];"
                      f"[{last}][pk]overlay=x={cfg['x']}:y={cfg['y']}:format=auto[o1]")
         last, idx = "o1", idx + 2
-    if _have("peacock_small_rgb.mp4", "peacock_small_alpha.mp4", "branch.png"):
-        inputs += ["-i", str(DECOR / "peacock_small_rgb.mp4"), "-i", str(DECOR / "peacock_small_alpha.mp4"),
-                   "-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(DECOR / "branch.png")]
-        sc = SMALL["scale"]
+    if _have("peacock_small_rgb.mp4", "peacock_small_alpha.mp4"):
+        inputs += ["-i", str(DECOR / "peacock_small_rgb.mp4"), "-i", str(DECOR / "peacock_small_alpha.mp4")]
         parts.append(f"[{idx}:v]format=rgb24,setsar=1[sr];[{idx + 1}:v]format=gray,setsar=1[sa];[sr][sa]alphamerge[sk0];"
-                     f"[sk0]hflip,scale=iw*{sc}:-2,tpad=stop_mode=clone:stop_duration=4,format=rgba[sk];"
-                     f"[{idx + 2}:v]format=rgba[br];[{last}][br]overlay=0:0:format=auto[o2];"
-                     f"[o2][sk]overlay=x='{SMALL['x0']}+260*max(1-t/0.7,0)':y='{SMALL['y0']}-140*sin(PI*min(t/0.7,1))':format=auto[o3]")
-        last, idx = "o3", idx + 3
+                     f"[sk0]scale=iw*{SMALL['scale']}:-2,format=rgba[sk];"
+                     f"[{last}][sk]overlay=x={SMALL['x0']}:y={SMALL['y0']}:format=auto[o3]")
+        last, idx = "o3", idx + 2
     parts.append(f"[1:v]format=rgba[tx];[{last}][tx]overlay=format=auto,format=yuv420p[v]")
     fc = ";".join(parts)    # text is static for the full 5 s
     cmd = [

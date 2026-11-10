@@ -23,7 +23,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("clip")
     ap.add_argument("prefix")
-    ap.add_argument("--mode", default="strict", choices=["strict", "floor"])
+    ap.add_argument("--mode", default="strict", choices=["strict", "floor", "wide"])
     ap.add_argument("--floor-cut", type=float, default=0.0, help="below this fraction of the height also remove leftover green floor/shadow (0 = off)")
     ap.add_argument("--feather", type=float, default=0.0, help="fade the left, right and top edges over this fraction of the width, hides clip borders")
     ap.add_argument("--fan-fade", type=float, default=0.0, help="from this second the clip's wide, frame-cropped shape is faded with a soft oval instead of a box edge (peacock fan)")

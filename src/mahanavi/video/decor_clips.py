@@ -67,7 +67,9 @@ class Clip:
         f = rgb.astype(np.float32)
         r, g, b = f[..., 0], f[..., 1], f[..., 2]
         mx = np.maximum(r, b)
-        if mode == "floor":     # the lit green floor is brighter and yellower than the screen: key on green dominance
+        if mode == "wide":      # a pale lit floor (b up to ~130) as well as the screen: any strongly green pixel goes, lime feathers (g-max<50) stay
+            bg = np.clip((g - mx - 50.0) / 30.0, 0, 1) * np.clip((g - 100.0) / 40.0, 0, 1)
+        elif mode == "floor":   # the lit green floor is brighter and yellower than the screen: key on green dominance
             bg = np.clip((g - mx - 55.0) / 35.0, 0, 1) * np.clip((g - 140.0) / 40.0, 0, 1) * np.clip((130.0 - b) / 40.0, 0, 1)
         else:
             bg = np.clip((70.0 - mx) / 45.0, 0, 1) * np.clip((g - 90.0) / 50.0, 0, 1)
@@ -77,7 +79,7 @@ class Clip:
         edge = (alpha > 0.02) & (alpha < 0.98)
         edge = cv2.dilate(edge.astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool) & (g > mx + 25)
         g2 = np.where(edge, np.minimum(g, mx + 25), g)
-        if mode == "floor":     # glows (diya flame, sparkle spray) blend gold with the green screen: pull that lime back to gold
+        if mode in ("floor", "wide"):     # glows (diya flame, sparkle spray) blend gold with the green screen: pull that lime back to gold
             lime = (g2 - mx > 40) & (g2 > 165)
             g2 = np.where(lime, mx + 25.0, g2)
             alpha = np.where(lime, alpha * 0.6, alpha)
