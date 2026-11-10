@@ -283,6 +283,10 @@ def pick_music(rng):
     return rng.choice(clips)
 
 
+PEACOCK_SCALE = 0.75      # the stored 720x1280 clip shown at 540x960 (half the card's height), bottom centre
+PEACOCK_OPACITY = 0.6     # 1 = solid
+
+
 def _peacock_inputs():
     """ffmpeg inputs for the pre-keyed peacock clip, or [] when it has not been added (the card is then simply still)."""
     rgb, alpha = Path(__file__).resolve().parents[1] / "assets" / "decor" / "peacock_rgb.mp4", None
@@ -323,8 +327,9 @@ def render(row, out_mp4, date_key, special=None, workdir="out"):
     peacock = _peacock_inputs()
     if peacock:   # animated peacock (assets/decor/peacock_*.mp4, pre-keyed with scripts/prekey_decor.py): behind the text, over the picture
         inputs += peacock
-        fc = (bg_f + "[3:v]format=rgb24,setsar=1[pr];[4:v]format=gray,setsar=1[pa];[pr][pa]alphamerge[pk];"
-              "[bg][pk]overlay=format=auto[bgp];[1:v]format=rgba[tx];[bgp][tx]overlay=format=auto,format=yuv420p[v]")
+        fc = (bg_f + "[3:v]format=rgb24,setsar=1[pr];[4:v]format=gray,setsar=1[pa];[pr][pa]alphamerge[pk0];"
+              f"[pk0]scale=iw*{PEACOCK_SCALE}:-2,format=rgba,colorchannelmixer=aa={PEACOCK_OPACITY}[pk];"     # see-through so the Ramana picture stays visible
+              "[bg][pk]overlay=x=(W-w)/2:y=H-h+12:format=auto[bgp];[1:v]format=rgba[tx];[bgp][tx]overlay=format=auto,format=yuv420p[v]")
     else:
         fc = bg_f + "[1:v]format=rgba[tx];[bg][tx]overlay=format=auto,format=yuv420p[v]"  # text is static for the full 5 s
     cmd = [
