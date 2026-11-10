@@ -48,8 +48,8 @@ def main() -> int:
     if args.fan_fade:
         yy, xx = np.mgrid[0:h_, 0:w_].astype(np.float32)
         cy = 0.64 * h_
-        d = np.sqrt(((xx - w_ / 2) / (0.5 * w_)) ** 2 + ((yy - cy) / (0.66 * h_)) ** 2)
-        oval = np.clip((1.0 - d) / 0.4, 0, 1)
+        d = np.sqrt(((xx - w_ / 2) / (0.40 * w_)) ** 2 + ((yy - cy) / (0.62 * h_)) ** 2)
+        oval = np.clip((1.0 - d) / 0.55, 0, 1)
         oval = oval * oval * (3 - 2 * oval)           # smoothstep: no visible rim
         for i, f in enumerate(clip.frames):
             w = float(np.clip((i / clip.fps - args.fan_fade) / 0.8, 0, 1))
