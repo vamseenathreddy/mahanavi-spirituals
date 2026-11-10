@@ -283,6 +283,15 @@ def pick_music(rng):
     return rng.choice(clips)
 
 
+def _peacock_inputs():
+    """ffmpeg inputs for the pre-keyed peacock clip, or [] when it has not been added (the card is then simply still)."""
+    rgb, alpha = Path(__file__).resolve().parents[1] / "assets" / "decor" / "peacock_rgb.mp4", None
+    alpha = rgb.with_name("peacock_alpha.mp4")
+    if not (rgb.exists() and alpha.exists()):
+        return []
+    return ["-stream_loop", "-1", "-i", str(rgb), "-stream_loop", "-1", "-i", str(alpha)]
+
+
 def render(row, out_mp4, date_key, special=None, workdir="out"):
     rng = random.Random(_seed(row, date_key))
     layout_idx = rng.randrange(len(LAYOUTS))
@@ -308,12 +317,18 @@ def render(row, out_mp4, date_key, special=None, workdir="out"):
                 ":d=1:s=1080x1920:fps=30[bg];")
     else:
         bg_f = "[0:v]scale=1080:1920,setsar=1[bg];"
-    fc = bg_f + "[1:v]format=rgba[tx];[bg][tx]overlay=format=auto,format=yuv420p[v]"  # text is static for the full 5 s
+    inputs = ["-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(bg_path),
+              "-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(tx_path),
+              "-i", music]
+    peacock = _peacock_inputs()
+    if peacock:   # animated peacock (assets/decor/peacock_*.mp4, pre-keyed with scripts/prekey_decor.py): behind the text, over the picture
+        inputs += peacock
+        fc = (bg_f + "[3:v]format=rgb24,setsar=1[pr];[4:v]format=gray,setsar=1[pa];[pr][pa]alphamerge[pk];"
+              "[bg][pk]overlay=format=auto[bgp];[1:v]format=rgba[tx];[bgp][tx]overlay=format=auto,format=yuv420p[v]")
+    else:
+        fc = bg_f + "[1:v]format=rgba[tx];[bg][tx]overlay=format=auto,format=yuv420p[v]"  # text is static for the full 5 s
     cmd = [
-        "ffmpeg", "-y", "-v", "error",
-        "-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(bg_path),
-        "-loop", "1", "-framerate", "30", "-t", "4.9", "-i", str(tx_path),
-        "-i", music,
+        "ffmpeg", "-y", "-v", "error", *inputs,
         "-filter_complex", fc, "-map", "[v]", "-map", "2:a",
         "-t", "4.9", "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-r", "30",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-shortest", "-movflags", "+faststart",
