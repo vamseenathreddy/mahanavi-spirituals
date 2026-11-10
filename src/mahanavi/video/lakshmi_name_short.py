@@ -142,7 +142,8 @@ SUBSCRIBE = UI["te"]["subscribe"]
 TAGLINE = UI["te"]["tagline"]
 # Phone safe area, same as the other Shorts (RequestCardRenderer: SAFE_L/R 150..930 and SAFE_TOP/BOTTOM 230..1385 on 1080x1920):
 # on 720x1280 that is x 100..620 and y 153..923. The Shorts buttons sit on the right edge and the title bar at the bottom.
-TOP_Y, BOTTOM_LIMIT, TEXT_W = 150, 925, 520
+TOP_Y, BOTTOM_LIMIT, TEXT_W = 110, 1010, 610
+MAIN_BOOST = 1.5        # main lines (name, meaning, story) end up about 30% bigger than before; small print is kept small
 
 
 def text_layers(n: int) -> list[tuple[float, np.ndarray]]:
@@ -159,14 +160,15 @@ def text_layers(n: int) -> list[tuple[float, np.ndarray]]:
 def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
     te, tr, mean, l1, l_en, l2, src = _row(n)
     ui = UI[_LANG]
+    B = k * MAIN_BOOST
     f_head = _tfont(int(32 * k))
-    f_tag = _tfont(int(29 * k))
-    f_name = _tfont(int(58 * k))
-    f_te = _tfont(int(34 * k))
-    f_en = ImageFont.truetype(str(HIND_R), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
+    f_tag = _tfont(int(25 * k))
+    f_name = _tfont(int(58 * B))
+    f_te = _tfont(int(34 * B))
+    f_en = ImageFont.truetype(str(HIND_R), int(30 * B), layout_engine=ImageFont.Layout.RAQM)
     f_cnt = ImageFont.truetype(str(HIND), int(30 * k), layout_engine=ImageFont.Layout.RAQM)
-    f_tr = ImageFont.truetype(str(HIND), int(38 * k), layout_engine=ImageFont.Layout.RAQM)
-    f_small = _tfont(int(25 * k))
+    f_tr = ImageFont.truetype(str(HIND), int(38 * B), layout_engine=ImageFont.Layout.RAQM)
+    f_small = _tfont(int(21 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     maxw = TEXT_W
 
@@ -176,7 +178,7 @@ def _layout(n: int, k: float) -> tuple[list[tuple[float, np.ndarray]], int]:
         for text, font, col, gap in items:
             for ln in _wrap(probe, text, font, maxw):
                 x = (W - probe.textlength(ln, font=font)) / 2
-                d.text((x, y), ln, font=font, fill=col, stroke_width=4, stroke_fill=INK)
+                d.text((x, y), ln, font=font, fill=col, stroke_width=5, stroke_fill=INK)
                 bb = font.getbbox(ln)
                 y += int((bb[3] - bb[1]) * 1.42) + 4
             y += gap
@@ -263,7 +265,11 @@ def vignette() -> np.ndarray:
     return (v * band).astype(np.float32)[..., None]
 
 
-def render(n: int, out: Path, music: Path | None = None, layers: list | None = None) -> Path:
+NAME_SECONDS = 8.0      # a name Short ends when the coins and elephants finish; the Friday recap (custom layers) keeps the longer 15 s
+
+
+def render(n: int, out: Path, music: Path | None = None, layers: list | None = None, decor: bool = True) -> Path:
+    seconds = SECONDS if layers is not None else NAME_SECONDS
     assert 1 <= n <= 108
     files = image_files()
     if not files:
@@ -274,12 +280,21 @@ def render(n: int, out: Path, music: Path | None = None, layers: list | None = N
     chk = chakra()
     layers = layers if layers is not None else text_layers(n)
     vig = vignette()
+    dec = avoid = None
+    if decor:
+        from mahanavi.video.lakshmi_decor import LakshmiDecor
+        dec = LakshmiDecor(W, H)
+        tm = np.zeros((H, W), np.float32)
+        for _, lay in layers:
+            tm = np.maximum(tm, lay[..., 3].astype(np.float32) / 255.0)
+        tm = cv2.GaussianBlur(cv2.dilate(tm, np.ones((9, 9), np.uint8)), (0, 0), 14)
+        avoid = np.clip(tm * 2.2, 0, 0.88)[..., None]
     music = music or get_settings().alert_short_music_path
-    total = int(SECONDS * FPS)
+    total = int(seconds * FPS)
     out.parent.mkdir(parents=True, exist_ok=True)
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
            "-stream_loop", "-1", "-i", str(music), "-filter_complex",
-           f"[1:a]afade=t=in:st=0:d=1[a]", "-map", "0:v", "-map", "[a]", "-t", str(SECONDS),
+           f"[1:a]afade=t=in:st=0:d=1,afade=t=out:st={seconds - 1.2}:d=1.2[a]", "-map", "0:v", "-map", "[a]", "-t", str(seconds),
            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
            "-movflags", "+faststart", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
@@ -306,6 +321,8 @@ def render(n: int, out: Path, music: Path | None = None, layers: list | None = N
         sub = rot[y0 - oy:y1 - oy, x0 - ox:x1 - ox].astype(np.float32)
         al = sub[..., 3:4] / 255.0 * (0.50 * min(1.0, t / 1.5))
         frame[y0:y1, x0:x1] = frame[y0:y1, x0:x1] * (1 - al) + sub[..., :3] * al
+        if dec is not None:
+            frame = dec.apply(frame, t, avoid)      # coins and baby elephants sit behind the text
         for start_s, lay in layers:
             fade = 1.0     # all text is on screen from the first frame, like the other Shorts (no line-by-line reveal)
             la = lay[..., 3:4].astype(np.float32) / 255.0 * fade

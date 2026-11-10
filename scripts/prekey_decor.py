@@ -27,6 +27,7 @@ def main() -> int:
     ap.add_argument("--floor-cut", type=float, default=0.0, help="below this fraction of the height also remove leftover green floor/shadow (0 = off)")
     ap.add_argument("--feather", type=float, default=0.0, help="fade the left, right and top edges over this fraction of the width, hides clip borders")
     ap.add_argument("--fan-fade", type=float, default=0.0, help="from this second the clip's wide, frame-cropped shape is faded with a soft oval instead of a box edge (peacock fan)")
+    ap.add_argument("--gold-despill", action="store_true", help="gold sparkle/water over a green screen: pixels greener than red are pulled back to gold")
     args = ap.parse_args()
     clip = Clip(Path(args.clip), 720 / W, "full", args.mode)       # stored at the clip's own 720x1280, ffmpeg scales it on use
     h_, w_ = clip.frames[0].shape[:2]
@@ -37,6 +38,15 @@ def main() -> int:
             green = np.clip((g - np.maximum(r, b) - 25) / 30.0, 0, 1)
             f[y0:, :, 3] = (f[y0:, :, 3] * (1 - green)).astype(np.uint8)
     Path(args.prefix).parent.mkdir(parents=True, exist_ok=True)
+
+    if args.gold_despill:
+        for f in clip.frames:
+            r, g, b = (f[..., i].astype(np.float32) for i in range(3))
+            lime = g > r + 18
+            f[..., 3] = np.where(lime, f[..., 3] * np.clip((g - 135) / 70.0, 0, 1), f[..., 3]).astype(np.uint8)    # dim lime haze goes clear, bright specks stay
+            f[..., 0] = np.where(lime, np.maximum(r, g * 0.97), r).astype(np.uint8)
+            f[..., 1] = np.where(lime, g * 0.82, g).astype(np.uint8)
+            f[..., 2] = np.where(lime, b * 0.5, b).astype(np.uint8)
 
     if args.feather:
         k = max(int(w_ * args.feather), 1)
