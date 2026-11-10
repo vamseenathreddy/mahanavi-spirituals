@@ -132,6 +132,61 @@ def squirrel_run(phase: int, tail_q: int) -> Image.Image:
     return _finish(img, w, h)
 
 
+LILAC = (160, 140, 190, 255)
+RAINBOW = [(255, 90, 110), (255, 160, 60), (255, 220, 70), (110, 210, 120), (90, 170, 255), (170, 120, 255)]
+
+
+@lru_cache(maxsize=32)
+def unicorn(flap_q: int, leg_q: int) -> Image.Image:
+    """Side view, facing right, flying: flap_q -3..3 raises/lowers the wing, leg_q 0..1 swaps the galloping leg pose."""
+    w, h = 460, 320
+    img, d = _canvas(w, h)
+    # rainbow tail streaming behind
+    for i, col in enumerate(RAINBOW):
+        d.arc((-30 * SS, (110 + i * 9) * SS, 190 * SS, (250 + i * 9) * SS), 285, 360, fill=col + (255,), width=9 * SS)
+        d.arc((-10 * SS, (96 + i * 9) * SS, 170 * SS, (200 + i * 9) * SS), 300, 360, fill=col + (255,), width=7 * SS)
+    # far legs (behind the body)
+    legs = ([(120, 205, 70, 280), (260, 205, 330, 270)], [(130, 205, 100, 285), (255, 205, 300, 285)])[leg_q]
+    for x0, y0, x1, y1 in legs:
+        d.line((x0 * SS, y0 * SS, x1 * SS, y1 * SS), fill=(235, 230, 245, 255), width=15 * SS)
+        _ell(d, x1, y1, 11, 8, (200, 180, 220, 255), LILAC, 2)
+    # wing, swung around the shoulder
+    wing = Image.new("RGBA", (w * SS, h * SS), (0, 0, 0, 0))
+    wd = ImageDraw.Draw(wing)
+    for k, (dx, dy, col) in enumerate(((0, 0, (245, 240, 255, 255)), (-26, 10, (225, 215, 250, 255)), (-52, 22, (205, 195, 245, 255)))):
+        wd.polygon([((205 + dx) * SS, (150 + dy) * SS), ((140 + dx) * SS, (40 + dy) * SS), ((190 + dx) * SS, (20 + dy) * SS),
+                    ((240 + dx) * SS, (60 + dy) * SS), ((250 + dx) * SS, (140 + dy) * SS)], fill=col, outline=LILAC, width=3 * SS)
+    wing = wing.rotate(flap_q * 9, resample=Image.BICUBIC, center=(215 * SS, 160 * SS))
+    img.alpha_composite(wing)
+    d = ImageDraw.Draw(img)
+    # body and neck
+    _ell(d, 200, 175, 100, 52, (250, 248, 255, 255), LILAC, 3)
+    d.polygon([(255 * SS, 150 * SS), (290 * SS, 70 * SS), (340 * SS, 90 * SS), (300 * SS, 190 * SS)], fill=(250, 248, 255, 255), outline=LILAC, width=3 * SS)
+    # near legs
+    near = ([(150, 210, 100, 270), (285, 205, 350, 255)], [(155, 210, 125, 285), (280, 205, 330, 285)])[leg_q]
+    for x0, y0, x1, y1 in near:
+        d.line((x0 * SS, y0 * SS, x1 * SS, y1 * SS), fill=(250, 248, 255, 255), width=16 * SS)
+        _ell(d, x1, y1, 12, 9, (220, 200, 235, 255), LILAC, 2)
+    # rainbow mane along the neck
+    for i, col in enumerate(RAINBOW):
+        _ell(d, 285 - i * 5 + (i % 2) * 8, 70 + i * 18, 17, 14, col + (255,), None, 0)
+    # head
+    _ell(d, 345, 85, 50, 38, (250, 248, 255, 255), LILAC, 3)
+    _ell(d, 383, 100, 22, 16, (255, 224, 235, 255), None, 0)
+    d.polygon([(322 * SS, 58 * SS), (332 * SS, 22 * SS), (346 * SS, 56 * SS)], fill=(250, 248, 255, 255), outline=LILAC, width=3 * SS)
+    # golden spiral horn
+    d.polygon([(352 * SS, 52 * SS), (392 * SS, 0 * SS), (372 * SS, 56 * SS)], fill=(255, 214, 80, 255), outline=(190, 140, 30, 255), width=3 * SS)
+    for t0 in (0.3, 0.55, 0.78):
+        x0, y0 = 352 + 20 * t0 + 6, 52 - 52 * t0 + 22 * 0
+        d.line(((x0 - 6) * SS, (y0 + 6) * SS, (x0 + 8) * SS, (y0 - 2) * SS), fill=(190, 140, 30, 255), width=3 * SS)
+    _ell(d, 352, 78, 9, 11, (60, 40, 90, 255), None, 0)
+    _ell(d, 355, 74, 3, 3, (255, 255, 255, 255), None, 0)
+    d.line((343 * SS, 66 * SS, 336 * SS, 60 * SS), fill=(60, 40, 90, 255), width=3 * SS)
+    _ell(d, 365, 96, 9, 6, (255, 170, 190, 200), None, 0)
+    _ell(d, 394, 98, 3, 3, (150, 110, 150, 255), None, 0)
+    return _finish(img, w, h)
+
+
 @lru_cache(maxsize=8)
 def sparkle(size: int) -> Image.Image:
     img, d = _canvas(size, size)
@@ -163,7 +218,7 @@ def _paste(frame: np.ndarray, spr: Image.Image, cx: float, cy: float, alpha: flo
 
 # main colour, edge colour, size, path (x centre, x swing, y centre, y swing, x period s, y period s, phase); the blue one uses a sharpened x
 BUTTERFLIES = [
-    ((255, 150, 40), (120, 50, 10), 0.85, (540, 440, 1640, 120, 17.0, 6.5, 0.0)),
+    ((255, 150, 40), (120, 50, 10), 0.85, (540, 450, 1230, 260, 18.0, 8.0, 0.0)),
     ((255, 105, 180), (120, 30, 80), 0.7, (700, 330, 215, 60, 14.0, 5.0, 2.0)),
     ((90, 170, 255), (20, 60, 120), 0.75, (540, 450, 960, 560, 20.0, 10.0, 4.0)),   # hugs the side margins, crosses the middle quickly
 ]
@@ -178,12 +233,13 @@ def draw_frame(frame: np.ndarray, t: float) -> None:
             _paste(frame, sparkle(size), x, y, alpha=a, scale=0.6 + 0.5 * a)
     for main, edge, size, (cx, sx, cy, sy, px, py, ph) in BUTTERFLIES:
         sx_raw = math.sin(2 * math.pi * t / px + ph)
-        x = cx + sx * (math.tanh(2.6 * sx_raw) / math.tanh(2.6) if size == 0.75 else sx_raw)
+        x = cx + sx * (math.tanh(2.6 * sx_raw) / math.tanh(2.6) if size in (0.75, 0.85) else sx_raw)
         y = cy + sy * math.sin(2 * math.pi * t / py + ph * 0.7)
         dx = sx * math.cos(2 * math.pi * t / px + ph)
         flap = 1 + int(9 * abs(math.sin(2 * math.pi * 1.7 * t + ph)))
         _paste(frame, butterfly(main, edge, flap), x, y, angle=-max(-25, min(25, dx / 30)), scale=size)
     _draw_squirrel(frame, t)
+    _draw_unicorn(frame, t)
 
 
 SQ_LEFT, SQ_RIGHT, SQ_Y = 140, 940, 250
@@ -213,6 +269,27 @@ def _draw_squirrel(frame: np.ndarray, t: float) -> None:
         if what == "run_l":
             spr = spr.transpose(Image.FLIP_LEFT_RIGHT)
         _paste(frame, spr, x, SQ_Y - 16 - 10 * abs(math.sin(2 * math.pi * t * 4.5)), scale=0.62)
+
+
+UNI_Y = 1625
+# (start s, end s, direction): fly right, then back left, then rest off screen
+UNI_PLAN = [(0.8, 6.8, 1), (7.2, 13.2, -1)]
+
+
+def _draw_unicorn(frame: np.ndarray, t: float) -> None:
+    for a, b, direction in UNI_PLAN:
+        if a <= t < b:
+            u = (t - a) / (b - a)
+            x = -150 + 1380 * u if direction == 1 else 1230 - 1380 * u
+            y = UNI_Y + 28 * math.sin(2 * math.pi * t / 2.4)
+            spr = unicorn(int(round(3 * math.sin(2 * math.pi * t * 1.3))), int(t * 2.2) % 2)
+            if direction == -1:
+                spr = spr.transpose(Image.FLIP_LEFT_RIGHT)
+            for k in range(1, 5):                           # a little trail of sparkles behind
+                tx = x - direction * (150 + 55 * k)
+                _paste(frame, sparkle(40), tx, y + 10 * math.sin(t * 5 + k), alpha=max(0.0, 0.8 - 0.17 * k), scale=0.7)
+            _paste(frame, spr, x, y, scale=0.75)
+            return
 
 
 def decorate(src: Path, dst: Path) -> Path:
