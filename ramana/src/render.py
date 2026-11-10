@@ -283,8 +283,8 @@ def pick_music(rng):
     return rng.choice(clips)
 
 
-PEACOCK_SCALE = 0.75      # the stored 720x1280 clip shown at 540x960 (half the card's height), bottom centre
-PEACOCK_OPACITY = 0.6     # 1 = solid
+PEACOCK_SCALE = 1.5       # the stored 720x1280 clip shown at 1080x1920: the peacock fills the card, bottom centre
+PEACOCK_OPACITY = 0.45    # 1 = solid; see-through so the Ramana picture stays visible
 
 
 def _peacock_inputs():
