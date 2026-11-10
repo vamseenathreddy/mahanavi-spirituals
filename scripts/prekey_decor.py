@@ -26,6 +26,7 @@ def main() -> int:
     ap.add_argument("--mode", default="strict", choices=["strict", "floor"])
     ap.add_argument("--floor-cut", type=float, default=0.0, help="below this fraction of the height also remove leftover green floor/shadow (0 = off)")
     ap.add_argument("--feather", type=float, default=0.0, help="fade the left, right and top edges over this fraction of the width, hides clip borders")
+    ap.add_argument("--fan-fade", type=float, default=0.0, help="from this second the clip's wide, frame-cropped shape is faded with a soft oval instead of a box edge (peacock fan)")
     args = ap.parse_args()
     clip = Clip(Path(args.clip), 720 / W, "full", args.mode)       # stored at the clip's own 720x1280, ffmpeg scales it on use
     h_, w_ = clip.frames[0].shape[:2]
@@ -43,6 +44,16 @@ def main() -> int:
         mask = np.minimum(ramp, ramp[::-1])[None, :] * np.clip(np.arange(h_) / max(int(h_ * 0.05), 1), 0, 1)[:, None]
         for f in clip.frames:
             f[..., 3] = (f[..., 3] * mask).astype(np.uint8)
+
+    if args.fan_fade:
+        yy, xx = np.mgrid[0:h_, 0:w_].astype(np.float32)
+        cy = 0.64 * h_
+        d = np.sqrt(((xx - w_ / 2) / (0.5 * w_)) ** 2 + ((yy - cy) / (0.66 * h_)) ** 2)
+        oval = np.clip((1.0 - d) / 0.4, 0, 1)
+        oval = oval * oval * (3 - 2 * oval)           # smoothstep: no visible rim
+        for i, f in enumerate(clip.frames):
+            w = float(np.clip((i / clip.fps - args.fan_fade) / 0.8, 0, 1))
+            f[..., 3] = (f[..., 3] * (1 - w * (1 - oval))).astype(np.uint8)
 
     def sink(path: str, pix_in: str):   # noqa: E306
         return subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", pix_in, "-s", f"{w_}x{h_}", "-r", str(clip.fps),
