@@ -298,21 +298,21 @@ class RequestCardRenderer:
                 self._block(layer, boxes, lines, font, lh, 1318, SOFT)
         elif slide.kind == "points":
             uniform = spec.uniform_text
-            if spec.header and not uniform:
+            points = slide.text.split("\n")
+            big = len(points) > 10            # a full-month list: tighter gaps and a taller block (still above the Shorts UI)
+            if spec.header and not uniform and not big:      # a full-month list already has the month in its heading
                 self._line(layer, boxes, spec.header, self._font(40), 262, SOFT)
             if not uniform:
-                self._line(layer, boxes, slide.label, self._font(72), 360, GOLD)
-            points = slide.text.split("\n")
+                self._line(layer, boxes, slide.label, self._font(72), 300 if big else 360, GOLD)
             if any(pt.startswith("##") for pt in points):   # a do / don't card: two headed sides, items under each heading
                 self._sectioned(layer, boxes, points)
                 points = []
-            big = len(points) > 10            # a full-month list: tighter gaps and a taller block (still above the Shorts UI)
-            gap = 30 if big else (46 if uniform else 70)
-            top = 290 if uniform else 520
-            budget = (1480 if big else (1590 if uniform else 1290)) - top
+            gap = 18 if big else (46 if uniform else 70)
+            top = 290 if uniform else (410 if big else 520)
+            budget = (1500 if big else (1590 if uniform else 1290)) - top
             per = budget // max(len(points), 1) - gap
             blocks = []
-            size_cap = 110 if uniform else 62
+            size_cap = 110 if uniform else (80 if big else 62)
             while points:
                 blocks = [self._fit(pt, size_cap, 30, max(per, 80)) for pt in points]
                 if uniform:   # one size for every line (the smallest any line needed); the last line (the moral) 30% bigger
