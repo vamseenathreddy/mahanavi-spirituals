@@ -54,7 +54,7 @@ def _wrapped_height(probe, text, font, maxw, lead=1.3):
     return sum(int((font.getbbox(ln)[3] - font.getbbox(ln)[1]) * lead) + 4 for ln in _wrap(probe, text, font, maxw))
 
 
-def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
+def _layout(lang: str, day: int, k: float, numbered: bool = False) -> tuple[np.ndarray, int, int]:
     """Returns (RGBA layer, y where the teaching block ends, y where the share + subscribe block starts)."""
     ui = UI[lang]
     f_head, f_sub, f_sutra = _font(lang, int(56 * k)), _font(lang, int(28 * k)), _font(lang, int(48 * k))
@@ -78,7 +78,11 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
             y += int((bb[3] - bb[1]) * 1.3) + 4
         y += gap
 
-    block(ui["head"], f_head, GOLD, gap=int(26 * k))
+    if numbered:      # posts up to 10 Nov 2026 kept the "sutra N/total" line; later ones drop it
+        block(ui["head"], f_head, GOLD, gap=2)
+        block(ui["sub"].format(d=day + 1, n=cn.days()), f_sub, WHITE, gap=int(26 * k))
+    else:
+        block(ui["head"], f_head, GOLD, gap=int(26 * k))
     # the MAIN message is what Chanakya said (the sutra): bigger, on a dark gold-rimmed panel so it pops
     su_lines = _wrap(probe, cn.sutra(day, lang), f_sutra, TEXT_W - 20)
     su_h = sum(int((f_sutra.getbbox(ln)[3] - f_sutra.getbbox(ln)[1]) * 1.3) + 4 for ln in su_lines)
@@ -108,22 +112,22 @@ def _layout(lang: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     return np.asarray(img), end, share_y
 
 
-def text_layer(lang: str, day: int) -> np.ndarray:
+def text_layer(lang: str, day: int, numbered: bool = False) -> np.ndarray:
     k = 1.5
     while True:
-        lay, end, sub_y = _layout(lang, day, k)
+        lay, end, sub_y = _layout(lang, day, k, numbered)
         if end <= sub_y - 24 or k < 0.6:
             return lay
         k -= 0.03
 
 
-def render(lang: str, day: int, out: Path, music: Path | None = None) -> Path:
+def render(lang: str, day: int, out: Path, music: Path | None = None, numbered: bool = False) -> Path:
     files = image_files()
     pics = [Image.open(f) for f in files]
     seq = [cover(p) for p in pics] if pics else [gradient()]
     start = day % len(seq)
     seq = seq[start:] + seq[:start]          # a different picture first each day
-    lay = text_layer(lang, day)
+    lay = text_layer(lang, day, numbered)
     la = lay[..., 3:4].astype(np.float32) / 255.0
     lrgb = lay[..., :3].astype(np.float32)
     vig = vignette()
