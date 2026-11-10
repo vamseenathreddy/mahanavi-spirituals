@@ -114,18 +114,26 @@ def add_caption(yt, video_id, language, name, srt_text):
     return _retry(lambda: yt.captions().insert(part="snippet", body=body, media_body=media).execute())["id"]
 
 
-def find_or_create_playlist(yt, title, description="", language="en"):
+def find_or_create_playlist(yt, title, description="", language="en", legacy_titles=()):
     """Return the id of this channel's playlist named `title`, creating it (public) if missing, so a
     new series needs no manual setup or secret."""
     token = None
+    legacy_hit = None
     while True:
         r = _retry(lambda: yt.playlists().list(part="snippet", mine=True, maxResults=50, pageToken=token).execute())
         for it in r.get("items", []):
             if it["snippet"]["title"].strip() == title.strip():
                 return it["id"]
+            if legacy_hit is None and it["snippet"]["title"].strip() in {t.strip() for t in legacy_titles}:
+                legacy_hit = it
         token = r.get("nextPageToken")
         if not token:
             break
+    if legacy_hit is not None:      # same playlist under its earlier name: rename it in place, its videos stay
+        snip = dict(legacy_hit["snippet"], title=title, description=description, defaultLanguage=language)
+        body = {"id": legacy_hit["id"], "snippet": {k: snip[k] for k in ("title", "description", "defaultLanguage")}}
+        _retry(lambda: yt.playlists().update(part="snippet", body=body).execute())
+        return legacy_hit["id"]
     body = {"snippet": {"title": title, "description": description, "defaultLanguage": language},
             "status": {"privacyStatus": "public"}}
     return _retry(lambda: yt.playlists().insert(part="snippet,status", body=body).execute())["id"]

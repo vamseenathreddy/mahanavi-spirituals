@@ -25,6 +25,7 @@ from mahanavi.publishers.youtube_shorts_uploader import YouTubeShortsUploader
 from mahanavi.scripts.post_request_short import assemble, upload
 
 IST = ZoneInfo("Asia/Kolkata")
+LAST: dict[str, str] = {"action": ""}      # what the last main() call did: "skipped" or "uploaded" (read by schedule_calendar_ahead)
 
 
 def build(kind: str, today: dt.date, channel: str = "mahanavi"):
@@ -57,19 +58,41 @@ def build(kind: str, today: dt.date, channel: str = "mahanavi"):
     return cal.build_festivals(y, m) if kind == "festivals" else cal.build_vratas(y, m)
 
 
-def _already_on_channel(youtube, title: str) -> bool:
-    """True when a video whose title starts with this card's title (before the first '|') is in the channel's uploads (scheduled ones included)."""
+def _already_on_channel(youtube, title: str) -> dict | None:
+    """The channel video (id, title) whose title contains this card's title (before the first '|'), scheduled ones included, else None."""
     key = title.split("|")[0].strip()
     uploads = youtube.channels().list(part="contentDetails", mine=True).execute()["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
     token = None
     for _ in range(40):
         resp = youtube.playlistItems().list(part="snippet", playlistId=uploads, maxResults=50, pageToken=token).execute()
-        if any(key in it["snippet"]["title"] for it in resp["items"]):
-            return True
+        for it in resp["items"]:
+            if key in it["snippet"]["title"]:
+                return {"id": it["snippet"]["resourceId"]["videoId"], "title": it["snippet"]["title"]}
         token = resp.get("nextPageToken")
         if not token:
             break
-    return False
+    return None
+
+
+def _retitle(youtube, found: dict, spec) -> bool:
+    """Bring an already uploaded card's title (and English title) up to date; True when something changed."""
+    from mahanavi.content.branding import brand_title
+
+    want = brand_title(spec.title)
+    if found["title"] == want:
+        return False
+    cur = youtube.videos().list(part="snippet,localizations", id=found["id"]).execute()["items"][0]
+    snip = cur["snippet"]
+    snip["title"] = want
+    loc = cur.get("localizations") or {}
+    if "en" in loc:
+        loc["en"]["title"] = spec.title_en
+    body = {"id": found["id"], "snippet": snip}
+    parts = "snippet"
+    if loc:
+        body["localizations"], parts = loc, "snippet,localizations"
+    youtube.videos().update(part=parts, body=body).execute()
+    return True
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -98,6 +121,14 @@ def main(argv: list[str] | None = None) -> int:
             print("nothing special: no post")
             return 0
         print(f"{today} -> {spec.slug}: {spec.title}")
+        if args.skip_if_exists and not args.dry_run:      # decide before the slow rendering
+            early = YouTubeShortsUploader(settings)._build_service()  # noqa: SLF001
+            found = _already_on_channel(early, spec.title)
+            if found:
+                changed = _retitle(early, found, spec)
+                print(f"SKIP: '{spec.title}' is already on the channel" + (" (title updated)" if changed else ""))
+                LAST["action"] = "skipped"
+                return 0
         out_dir = settings.output_dir / "calendar" / spec.slug
         renderer = RequestCardRenderer(settings)
         slides = renderer.render_all(spec, out_dir)
@@ -126,9 +157,6 @@ def main(argv: list[str] | None = None) -> int:
         got = youtube.channels().list(part="snippet", mine=True).execute()["items"][0]["snippet"]["title"]
         if spec.expected_channel.lower() not in got.lower():
             raise MahanaviError(f"NOT posting: the token acts as channel '{got}', expected '{spec.expected_channel}'.")
-        if args.skip_if_exists and _already_on_channel(youtube, spec.title):
-            print(f"SKIP: '{spec.title}' is already on the channel")
-            return 0
         if args.channel == "mahanavi":
             top = cal.playlist_block(youtube, pl_kind)
         else:
@@ -144,6 +172,7 @@ def main(argv: list[str] | None = None) -> int:
             publish_at = when.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
             privacy = "private"
         video_id = upload(youtube, spec, video, privacy, publish_at)
+        LAST["action"] = "uploaded"
         shown = f"private, goes public {args.publish_at}" if publish_at else privacy
         print(f"Channel: {got}\nUploaded ({shown}): https://www.youtube.com/watch?v={video_id}")
         print(f"::notice::calendar short uploaded ({shown}): https://www.youtube.com/watch?v={video_id}")

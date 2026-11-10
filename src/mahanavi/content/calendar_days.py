@@ -259,12 +259,23 @@ PLAYLIST_TITLES = {
     "tomorrow": ("రేపు విశేషం | చేయవలసినవి, చేయకూడనివి | Telugu Festival Do's and Don'ts",
                  "రేపు వచ్చే పండుగ, వ్రతం ఏమిటి? ఏం చేయాలి, ఏం చేయకూడదు? ప్రతి ప్రత్యేక రోజుకు ముందు రోజు సాయంత్రం.\n"
                  "Tomorrow's festival or vratam in Telugu, with simple do's and don'ts: Ekadashi, Pradosham, Sankashti, Pournami, Amavasya."),
-    "festivals": ("పండుగల క్యాలెండర్ | Telugu Festival Calendar 2026",
-                  "ప్రతి నెలలో వచ్చే పండుగలు, ముఖ్యమైన తేదీలు ముందే తెలుసుకోండి.\nMonth-wise Telugu festival dates, Karthika Masam, Diwali, Shivaratri and more."),
+    "festivals": ("Telugu Festival Calendar 2026, 2027, 2028 | పండుగల క్యాలెండర్ | తెలుగు పండుగల తేదీలు",
+                  "ప్రతి నెలలో వచ్చే తెలుగు పండుగలు, ముఖ్యమైన తేదీలు ముందే తెలుసుకోండి: ఉగాది, సంక్రాంతి, శ్రీరామ నవమి, వినాయక చవితి, దసరా, దీపావళి, కార్తీక మాసం, ముక్కోటి ఏకాదశి, మహా శివరాత్రి.\n\n"
+                  "Month-wise Telugu festival calendar with exact dates for 2026, 2027 and 2028: Ugadi, Makar Sankranti, Sri Rama Navami, Vinayaka Chavithi, Dasara, Diwali, "
+                  "Karthika Masam, Nagula Chavithi, Mukkoti Ekadashi, Maha Shivaratri. A new festival list Short is added every month, 10 days before the month starts.\n\n"
+                  "#TeluguCalendar #TeluguFestivals #Panchangam #HinduFestivals #Shorts"),
     "tips": ("పూజా నియమాలు | Pooja Rules and Tips in Telugu",
              "పూజ ఎలా చేయాలి, ఏం చేయకూడదు? తులసి, దీపారాధన, నైవేద్యం, ప్రదక్షిణ నియమాలు.\nSimple pooja rules, do's and don'ts in Telugu: tulasi, deepam, naivedyam, pradakshina."),
-    "vratas": ("ఏకాదశి ప్రదోషం సంకష్టహర చతుర్థి క్యాలెండర్ | Telugu Vrata Calendar",
-               "ప్రతి నెలా ఏకాదశి, ప్రదోషం, సంకష్టహర చతుర్థి, పౌర్ణమి, అమావాస్య తేదీలు.\nMonthly Ekadashi, Pradosham, Sankashti Chaturthi, Pournami and Amavasya dates in Telugu."),
+    "vratas": ("Ekadashi Pradosham Sankashti Dates | Telugu Vrata Calendar 2026-2028 | ఏకాదశి ప్రదోషం సంకష్టహర చతుర్థి తేదీలు",
+               "ప్రతి నెలా ఏకాదశి, ప్రదోషం, సంకష్టహర చతుర్థి, మాస శివరాత్రి, పౌర్ణమి, అమావాస్య తేదీలు ఒకే చోట. ఉపవాసం ఏ రోజు చేయాలో ముందే తెలుసుకోండి.\n\n"
+               "Monthly Ekadashi, Pradosham, Sankashti Chaturthi, Masa Shivaratri, Pournami and Amavasya dates in Telugu for 2026, 2027 and 2028. "
+               "Know the exact vrata day in advance: a new vrata list Short is added every month.\n\n"
+               "#EkadashiDates #Pradosham #SankashtiChaturthi #TeluguCalendar #Shorts"),
+}
+# earlier names of the same playlists: an existing playlist with one of these is renamed in place (its videos stay)
+LEGACY_PLAYLIST_TITLES = {
+    "festivals": ("పండుగల క్యాలెండర్ | Telugu Festival Calendar 2026",),
+    "vratas": ("ఏకాదశి ప్రదోషం సంకష్టహర చతుర్థి క్యాలెండర్ | Telugu Vrata Calendar",),
 }
 PLAYLIST_LABELS = {"tips": "పూజా నియమాలు", "tomorrow": "రేపు విశేషం", "festivals": "పండుగల క్యాలెండర్", "vratas": "వ్రతాల క్యాలెండర్"}
 PLAYLIST_LINES = {
@@ -371,8 +382,9 @@ def _list_post(year: int, month: int, kinds: tuple[str, ...], category: str, hea
         lines = [_with_weekday(ln, year, month) for ln in override]
     # one card for the whole list (2026-10-22: no 1/2, 2/2 split, no separate outro card)
     slides = (Slide("points", 14.0, f"{mname} {year} {heading}", "\n".join(lines) if lines else "ఈ నెలలో ప్రత్యేక తేదీలు లేవు"),)
-    title = f"{mname} {year} {heading} | {en}"
-    title_en = f"{en} - {dt.date(year, month, 1).strftime('%B %Y')} Telugu Calendar"
+    long_month = dt.date(year, month, 1).strftime("%B")
+    title = f"{mname} {year} {heading} | {long_month} {year} {en}" + (" | Hindu Festival Dates" if category == "festivals" else "")
+    title_en = f"{long_month} {year} {en} - Telugu Calendar"
     desc_te = (f"🙏 {mname} {year} {heading}:\n\n" + "\n".join(f"• {ln}" for ln in lines) + f"\n\n{DISCLAIMER_TE}")
     desc_en = f"{en} for {dt.date(year, month, 1).strftime('%B %Y')} in Telugu.\n{DISCLAIMER_EN}"
     tags = [en.lower(), f"{en.lower()} {year}", f"{mname} {year}", f"{dt.date(year, month, 1).strftime('%B').lower()} {year} festivals",
@@ -424,7 +436,7 @@ def build_festivals(year: int, month: int) -> RequestShort:
         from mahanavi.content.calendar_ahead import festival_lines
 
         lines = festival_lines(year, month) or None
-    return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Festivals List", lines)
+    return _list_post(year, month, kinds, "festivals", "పండుగలు", cover, "Telugu Festivals List", lines)
 
 
 def build_vratas(year: int, month: int) -> RequestShort:
@@ -434,7 +446,7 @@ def build_vratas(year: int, month: int) -> RequestShort:
 def playlist_ids(youtube) -> dict[str, str]:
     from channels.engine import upload
 
-    return {cat: upload.find_or_create_playlist(youtube, t, d, "te") for cat, (t, d) in PLAYLIST_TITLES.items()}
+    return {cat: upload.find_or_create_playlist(youtube, t, d, "te", LEGACY_PLAYLIST_TITLES.get(cat, ())) for cat, (t, d) in PLAYLIST_TITLES.items()}
 
 
 def playlist_block(youtube, current: str) -> str:

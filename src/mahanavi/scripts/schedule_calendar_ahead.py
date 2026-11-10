@@ -53,7 +53,10 @@ def main(argv: list[str] | None = None) -> int:
                 return 1
             done += 1
             continue
+        pcs.LAST["action"] = ""
         rc = pcs.main(cmd)
+        if rc == 0 and pcs.LAST["action"] == "skipped":
+            continue                      # already scheduled earlier: costs no upload, does not count against --max
         if rc != 0:
             print(f"::error::stopped at {kind} {month} (quota or upload problem); the next daily run continues from here")
             return 1
