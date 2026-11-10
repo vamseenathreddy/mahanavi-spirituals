@@ -101,6 +101,37 @@ def squirrel(tail_q: int, blink: bool, nibble_q: int) -> Image.Image:
     return _finish(img, w, h)
 
 
+@lru_cache(maxsize=16)
+def squirrel_run(phase: int, tail_q: int) -> Image.Image:
+    """Side view, facing right, running: phase 0..3 moves the legs, tail_q -3..3 sways the tail."""
+    w, h = 340, 240
+    img, d = _canvas(w, h)
+    tail = Image.new("RGBA", (w * SS, h * SS), (0, 0, 0, 0))
+    td = ImageDraw.Draw(tail)
+    for rx, ry, col, ox in ((52, 100, FUR, 0), (34, 76, FUR2, 6)):
+        td.ellipse(((70 - rx + ox) * SS, (100 - ry) * SS, (70 + rx + ox) * SS, (100 + ry) * SS), fill=col,
+                   outline=OUTLINE if col == FUR else None, width=4 * SS)
+    tail = tail.rotate(tail_q * 3, resample=Image.BICUBIC, center=(90 * SS, 170 * SS))
+    img.alpha_composite(tail)
+    d = ImageDraw.Draw(img)
+    legs = [(-26, 0), (8, -10), (26, 0), (-8, -10)]   # leg swing offsets by phase
+    for i, base in enumerate((120, 190)):
+        off = legs[(phase + 2 * i) % 4]
+        _ell(d, base + off[0], 214 + off[1], 30, 13, FUR2)
+        _ell(d, base + off[0] * 0.4, 198, 17, 24, FUR)
+    _ell(d, 150, 160, 84, 52, FUR)
+    _ell(d, 160, 182, 52, 26, BELLY, None, 0)
+    hx, hy = 244, 130
+    d.polygon([((hx - 24) * SS, (hy - 24) * SS), ((hx - 10) * SS, (hy - 66) * SS), ((hx + 10) * SS, (hy - 34) * SS)], fill=FUR, outline=OUTLINE, width=3 * SS)
+    _ell(d, hx, hy, 46, 42, FUR)
+    _ell(d, hx + 24, hy + 14, 26, 20, BELLY, None, 0)
+    _ell(d, hx + 14, hy - 8, 9, 11, (30, 18, 10, 255), None, 0)
+    _ell(d, hx + 17, hy - 12, 3, 3, (255, 255, 255, 255), None, 0)
+    _ell(d, hx + 46, hy + 4, 8, 6, (60, 30, 20, 255), None, 0)
+    _ell(d, hx + 6, hy + 14, 9, 6, (244, 150, 140, 190), None, 0)
+    return _finish(img, w, h)
+
+
 @lru_cache(maxsize=8)
 def sparkle(size: int) -> Image.Image:
     img, d = _canvas(size, size)
@@ -132,9 +163,9 @@ def _paste(frame: np.ndarray, spr: Image.Image, cx: float, cy: float, alpha: flo
 
 # main colour, edge colour, size, path (x centre, x swing, y centre, y swing, x period s, y period s, phase); the blue one uses a sharpened x
 BUTTERFLIES = [
-    ((255, 150, 40), (120, 50, 10), 0.85, (540, 440, 1640, 120, 11.0, 4.2, 0.0)),
-    ((255, 105, 180), (120, 30, 80), 0.7, (700, 330, 215, 60, 9.0, 3.1, 2.0)),
-    ((90, 170, 255), (20, 60, 120), 0.75, (540, 450, 960, 560, 13.0, 6.5, 4.0)),   # hugs the side margins, crosses the middle quickly
+    ((255, 150, 40), (120, 50, 10), 0.85, (540, 440, 1640, 120, 17.0, 6.5, 0.0)),
+    ((255, 105, 180), (120, 30, 80), 0.7, (700, 330, 215, 60, 14.0, 5.0, 2.0)),
+    ((90, 170, 255), (20, 60, 120), 0.75, (540, 450, 960, 560, 20.0, 10.0, 4.0)),   # hugs the side margins, crosses the middle quickly
 ]
 SPARKLES = [(120, 560, 52, 0.0), (960, 700, 44, 1.1), (90, 1180, 40, 2.3), (985, 1320, 54, 0.6), (880, 300, 36, 1.9), (200, 1700, 48, 2.9)]
 
@@ -150,13 +181,38 @@ def draw_frame(frame: np.ndarray, t: float) -> None:
         x = cx + sx * (math.tanh(2.6 * sx_raw) / math.tanh(2.6) if size == 0.75 else sx_raw)
         y = cy + sy * math.sin(2 * math.pi * t / py + ph * 0.7)
         dx = sx * math.cos(2 * math.pi * t / px + ph)
-        flap = 1 + int(9 * abs(math.sin(2 * math.pi * 3.2 * t + ph)))
+        flap = 1 + int(9 * abs(math.sin(2 * math.pi * 1.7 * t + ph)))
         _paste(frame, butterfly(main, edge, flap), x, y, angle=-max(-25, min(25, dx / 30)), scale=size)
-    tail_q = int(round(6 * math.sin(2 * math.pi * t / 1.6)))
-    blink = (t % 3.4) < 0.14
-    nibble = int(round(1 + math.sin(2 * math.pi * t / 0.9)))
-    bob = 4 * math.sin(2 * math.pi * t / 1.6)
-    _paste(frame, squirrel(tail_q, blink, nibble), 140, 250 + bob, scale=0.62)
+    _draw_squirrel(frame, t)
+
+
+SQ_LEFT, SQ_RIGHT, SQ_Y = 140, 940, 250
+# (start s, end s, what): sit left, run right, sit right, run left, sit left
+SQ_PLAN = [(0.0, 2.5, "sit_l"), (2.5, 5.0, "run_r"), (5.0, 8.0, "sit_r"), (8.0, 10.5, "run_l"), (10.5, 1e9, "sit_l")]
+
+
+def _draw_squirrel(frame: np.ndarray, t: float) -> None:
+    for a, b, what in SQ_PLAN:
+        if a <= t < b:
+            u = (t - a) / (b - a) if b < 1e8 else 0.0
+            break
+    if what.startswith("sit"):
+        tail_q = int(round(6 * math.sin(2 * math.pi * t / 1.6)))
+        blink = (t % 3.4) < 0.14
+        nibble = int(round(1 + math.sin(2 * math.pi * t / 0.9)))
+        spr = squirrel(tail_q, blink, nibble)
+        if what == "sit_r":
+            spr = spr.transpose(Image.FLIP_LEFT_RIGHT)
+        x = SQ_LEFT if what == "sit_l" else SQ_RIGHT
+        _paste(frame, spr, x, SQ_Y + 4 * math.sin(2 * math.pi * t / 1.6), scale=0.62)
+    else:
+        e = u * u * (3 - 2 * u)                      # ease in and out
+        x = SQ_LEFT + (SQ_RIGHT - SQ_LEFT) * (e if what == "run_r" else 1 - e)
+        phase = int(t * 9) % 4
+        spr = squirrel_run(phase, int(round(3 * math.sin(2 * math.pi * t * 3))))
+        if what == "run_l":
+            spr = spr.transpose(Image.FLIP_LEFT_RIGHT)
+        _paste(frame, spr, x, SQ_Y - 16 - 10 * abs(math.sin(2 * math.pi * t * 4.5)), scale=0.62)
 
 
 def decorate(src: Path, dst: Path) -> Path:
