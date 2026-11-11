@@ -24,7 +24,7 @@ import time
 from pathlib import Path
 
 from channels.engine import state as state_mod
-from mahanavi.config import get_settings
+from mahanavi.config import PROJECT_ROOT, get_settings
 from mahanavi.content.branding import brand_tags, brand_title
 from mahanavi.content.lakshmi108 import NAMES, SOURCES, STOTRA_SOURCE
 from mahanavi.content.lakshmi108_hi import HI, SOURCES_HI, STOTRA_SOURCE_HI
@@ -96,12 +96,38 @@ def metadata_hi(kind: str, first_or_n: int) -> tuple[str, str, list[str], str, s
     return (title, body, tags, title_en, body)
 
 
+CHANT_DIR = PROJECT_ROOT / "assets" / "lakshmi_chant"
+
+
+def approved_chant(num: int) -> Path | None:
+    """Per-name chant clip, used only for names the owner approved (assets/lakshmi_chant/approved.txt)."""
+    try:
+        ok = {int(x) for x in (CHANT_DIR / "approved.txt").read_text().split()}
+    except OSError:
+        return None
+    f = CHANT_DIR / f"{num:03d}.mp3"
+    return f if num in ok and f.exists() else None
+
+
+def _duration(path: Path) -> float:
+    import subprocess
+
+    out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
+                         capture_output=True, text=True, check=True).stdout
+    return round(float(out.strip()), 2)
+
+
 def render_video(kind: str, num: int, out: Path, lang: str = "te", music: Path | None = None) -> Path:
     from mahanavi.video import lakshmi_name_short as lk
 
     lk.use_lang(lang)
 
     if kind == "name":
+        chant = approved_chant(num) if lang == "te" else None
+        if chant is not None:
+            # the name's own chant (Om ... namaha), played once; the Short is as long as the chant
+            lk.NAME_SECONDS = _duration(chant)
+            music = chant
         return lk.render(num, out, music=music)
     return lk.render(num, out, music=music, layers=lk.recap_layers(num))
 
