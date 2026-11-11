@@ -89,7 +89,7 @@ _WEEKEND_POOLS = [("t4", "t5"), ("t6", "t7"), ("t8", "t9"), ("t10",), ("t11",), 
 COOLDOWN_UNTIL = "2026-11-02"
 # 2026-10-28 owner: stop all automatic Pulse TDP posting. Posts only when the owner gives the content (manual runs with
 # bypass_gate=true still work). Set back to True to resume the automatic schedule.
-AUTO_POSTING = True   # 2026-11-01 owner: full growth push (election week), resumed with a smaller, mixed schedule (see slots_for and DAY_PATTERN)
+AUTO_POSTING = False   # 2026-11-11 owner: stop the Pulse TDP Fans channel (not progressing). Set True to resume.
 
 
 ELECTION_WEEK = ("2026-11-02", "2026-11-08")   # MPTC/ZPTC polling 5 Nov, counting 7 Nov (AP SEC revised schedule)
