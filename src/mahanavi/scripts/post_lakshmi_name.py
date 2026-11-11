@@ -123,7 +123,7 @@ def render_video(kind: str, num: int, out: Path, lang: str = "te", music: Path |
     lk.use_lang(lang)
 
     if kind == "name":
-        chant = approved_chant(num) if lang == "te" else None
+        chant = approved_chant(num)
         if chant is not None:
             # the name's own chant (Om ... namaha), played once; the Short is as long as the chant
             lk.NAME_SECONDS = _duration(chant)
