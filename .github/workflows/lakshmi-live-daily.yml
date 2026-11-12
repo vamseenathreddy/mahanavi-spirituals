@@ -30,12 +30,12 @@ jobs:
           print("run=" + ("true" if c.get("enabled") and ist >= c["start_date"] else "false"))
           PY
       - uses: actions/setup-python@v5
-        if: steps.gate.outputs.run == 'true'
+        if: steps.gate.outputs.run == 'true' || inputs.test == true
         with:
           python-version: "3.13"
           cache: "pip"
       - name: Restore tokens from Google Drive
-        if: steps.gate.outputs.run == 'true'
+        if: steps.gate.outputs.run == 'true' || inputs.test == true
         env:
           GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
@@ -43,17 +43,17 @@ jobs:
           pip install google-auth google-api-python-client pillow
           python scripts/ci/drive_state_sync.py pull
       - name: Install dependencies
-        if: steps.gate.outputs.run == 'true'
+        if: steps.gate.outputs.run == 'true' || inputs.test == true
         run: |
           bash scripts/ci/apt_install.sh ffmpeg
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .
       - name: Fetch video
-        if: steps.gate.outputs.run == 'true'
+        if: steps.gate.outputs.run == 'true' || inputs.test == true
         run: bash scripts/ci/lakshmi_long_assets.sh
       - name: Go live
-        if: steps.gate.outputs.run == 'true'
+        if: steps.gate.outputs.run == 'true' || inputs.test == true
         env:
           PYTHONPATH: .
-        run: python scripts/ci/lakshmi_live.py
+        run: python scripts/ci/lakshmi_live.py ${{ inputs.test && '--test' || '' }}

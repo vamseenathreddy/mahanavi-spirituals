@@ -24,6 +24,9 @@ def alert(msg):
 
 
 def main():
+    test = "--test" in sys.argv
+    if test:
+        return run_test()
     cfg = json.loads(Path("data/lakshmi_live.json").read_text())
     now = datetime.now(timezone.utc)
     today_ist = now.astimezone(IST).date().isoformat()
@@ -84,6 +87,40 @@ def main():
     if rc != 0:
         alert(f"Lakshmi live loop ended with ffmpeg exit {rc} ({today_ist})")
         sys.exit(rc)
+
+
+def run_test():
+    """Private 2-minute stream to verify live permission and the ffmpeg push. Nothing public."""
+    yt = up.service(Path("./data/youtube_token.json"))
+    go = datetime.now(timezone.utc) + timedelta(minutes=2)
+    b = yt.liveBroadcasts().insert(part="snippet,status,contentDetails", body={
+        "snippet": {"title": "TEST Lakshmi live (private)", "scheduledStartTime": go.strftime("%Y-%m-%dT%H:%M:%S.000Z")},
+        "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False},
+        "contentDetails": {"enableAutoStart": True, "enableAutoStop": True},
+    }).execute()
+    s = yt.liveStreams().insert(part="snippet,cdn,contentDetails", body={
+        "snippet": {"title": "lakshmi-test"},
+        "cdn": {"frameRate": "variable", "ingestionType": "rtmp", "resolution": "variable"},
+        "contentDetails": {"isReusable": False},
+    }).execute()
+    yt.liveBroadcasts().bind(part="id,contentDetails", id=b["id"], streamId=s["id"]).execute()
+    ing = s["cdn"]["ingestionInfo"]
+    url = f'{ing["ingestionAddress"]}/{ing["streamName"]}'
+    rc = subprocess.call(["ffmpeg", "-hide_banner", "-loglevel", "warning", "-re", "-stream_loop", "-1", "-i", "build/lakshmi/long.mp4",
+                          "-t", "150", "-vf", "scale=1280:720,fps=30", "-c:v", "libx264", "-preset", "veryfast", "-b:v", "3000k",
+                          "-maxrate", "3000k", "-bufsize", "6000k", "-g", "60", "-pix_fmt", "yuv420p",
+                          "-c:a", "aac", "-b:a", "128k", "-ar", "44100", "-f", "flv", url])
+    print("TEST ffmpeg exit", rc, "broadcast", b["id"])
+    try:
+        yt.liveBroadcasts().transition(part="status", id=b["id"], broadcastStatus="complete").execute()
+    except Exception as e:
+        print("transition:", e)
+    try:
+        yt.videos().delete(id=b["id"]).execute()
+        print("test broadcast deleted")
+    except Exception as e:
+        print("delete:", e)
+    sys.exit(rc)
 
 
 if __name__ == "__main__":
