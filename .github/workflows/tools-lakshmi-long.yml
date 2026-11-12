@@ -1,0 +1,51 @@
+name: Mahanavi | Lakshmi Ashtottara Long Video Upload (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish_at:
+        description: "UTC release time, e.g. 2026-11-12T22:15:00Z"
+        required: true
+        type: string
+      dry_run:
+        description: "Check only; nothing is uploaded."
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: lakshmi-long-upload
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Restore tokens from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          pip install google-auth google-api-python-client pillow
+          python scripts/ci/drive_state_sync.py pull
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Fetch video assets
+        run: bash scripts/ci/lakshmi_long_assets.sh
+      - name: Upload
+        run: |
+          ARGS="--publish-at ${{ inputs.publish_at }}"
+          [ "${{ inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry-run"
+          PYTHONPATH=. python scripts/ci/upload_lakshmi_long.py $ARGS
