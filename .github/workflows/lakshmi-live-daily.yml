@@ -1,0 +1,59 @@
+name: Mahanavi | Lakshmi Live Loop (daily 4-8 AM IST)
+
+# Cron 22:00 UTC = 3:30 AM IST. The script waits until 4:00 AM IST and streams for 4 hours.
+# Skips until data/lakshmi_live.json start_date. To stop: set "enabled": false there (or disable this workflow).
+on:
+  schedule:
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: lakshmi-live
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check enabled
+        id: gate
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, datetime as d
+          c = json.load(open("data/lakshmi_live.json"))
+          ist = (d.datetime.utcnow() + d.timedelta(hours=5, minutes=30)).date().isoformat()
+          print("run=" + ("true" if c.get("enabled") and ist >= c["start_date"] else "false"))
+          PY
+      - uses: actions/setup-python@v5
+        if: steps.gate.outputs.run == 'true'
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Restore tokens from Google Drive
+        if: steps.gate.outputs.run == 'true'
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          pip install google-auth google-api-python-client pillow
+          python scripts/ci/drive_state_sync.py pull
+      - name: Install dependencies
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          bash scripts/ci/apt_install.sh ffmpeg
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Fetch video
+        if: steps.gate.outputs.run == 'true'
+        run: bash scripts/ci/lakshmi_long_assets.sh
+      - name: Go live
+        if: steps.gate.outputs.run == 'true'
+        env:
+          PYTHONPATH: .
+        run: python scripts/ci/lakshmi_live.py
