@@ -25,11 +25,10 @@ Search words: Lakshmi devi songs, powerful Mahalakshmi stotram, devotional melod
 """
 
 TAGS = [
-    "Lakshmi Ashtottara", "Lakshmi Ashtottara Shatanamavali", "Lakshmi 108 names", "Sri Lakshmi Ashtothram Telugu",
-    "లక్ష్మీ అష్టోత్తర శతనామావళి", "లక్ష్మీ అష్టోత్తరం", "Lakshmi Devi 108 names Telugu", "Lakshmi mantra", "Mahalakshmi mantra",
-    "Friday Lakshmi puja", "Lakshmi meditation", "Lakshmi chanting", "Mahanavi Spirituals", "Revathy VSL", "Telugu devotional",
-    "Lakshmi devi songs", "powerful Mahalakshmi stotram", "devotional melody songs Telugu", "manifestation meditation in Telugu",
-    "negative energy removal mantra", "Telugu devotional songs", "devotional songs channel", "Lakshmi stotram", "Varalakshmi vratam", "meditation chant", "108 names of Lakshmi", "Lakshmi Ashtothara Sathanamavali",
+    "Lakshmi devi songs", "powerful Mahalakshmi stotram", "Lakshmi Ashtottara Shatanamavali", "Lakshmi 108 names",
+    "లక్ష్మీ అష్టోత్తర శతనామావళి", "devotional melody songs Telugu", "manifestation meditation in Telugu",
+    "negative energy removal mantra", "Telugu devotional songs", "Mahanavi Spirituals", "Revathy VSL",
+    "Lakshmi mantra", "Friday Lakshmi puja", "Lakshmi meditation", "devotional songs channel",
 ]
 
 assert len(TITLE) <= 100, len(TITLE)
