@@ -1,0 +1,53 @@
+name: Mahanavi | Daily blog article (schedules the next articles)
+
+# Schedules the next unpublished articles from data/blog/posts/ on the Mahanavi blog, one per day at 7:00 AM IST.
+# Run it weekly (or ping it from cron-job.org once a day: it only adds what is missing, so repeat runs are harmless).
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Schedule articles up to this many days ahead"
+        required: false
+        default: "7"
+      apply:
+        description: "Post for real (off = only list what would be scheduled)"
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: blog-daily
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  blog-daily:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Restore tokens from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          pip install google-auth google-api-python-client
+          python scripts/ci/drive_state_sync.py pull
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Schedule articles
+        env:
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
+          MAHANAVI_ADSENSE_CLIENT: ${{ secrets.MAHANAVI_ADSENSE_CLIENT }}
+          MAHANAVI_ADSENSE_SLOT: ${{ secrets.MAHANAVI_ADSENSE_SLOT }}
+          PYTHONPATH: .
+        run: python scripts/ci/blog_daily.py --days "${{ inputs.days }}" ${{ inputs.apply && '--apply' || '' }}
