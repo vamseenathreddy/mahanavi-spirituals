@@ -114,15 +114,39 @@ def existing(blog, blog_id: str) -> tuple[set[str], list[dt.datetime]]:
             return titles, dates
 
 
+def patch_ads(blog, blog_id: str, block: str, apply: bool) -> int:
+    """Put the AdSense block into already scheduled/live daily articles that still carry the placeholder comment."""
+    n, tok = 0, None
+    while True:
+        r = blog.posts().list(blogId=blog_id, maxResults=50, pageToken=tok, fetchBodies=True, fetchImages=False,
+                              status=["LIVE", "SCHEDULED"]).execute()
+        for p in r.get("items", []):
+            if AD_MARK in p.get("content", ""):
+                n += 1
+                print(("patching" if apply else "would patch"), p["title"])
+                if apply:
+                    blog.posts().patch(blogId=blog_id, postId=p["id"], body={"content": p["content"].replace(AD_MARK, block)}).execute()
+                    time.sleep(3)
+        tok = r.get("nextPageToken")
+        if not tok:
+            break
+    print(f"{n} post(s) {'patched' if apply else 'need the ad block'}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--patch-ads", action="store_true")
     ap.add_argument("--preview")
     ap.add_argument("--id", type=int)
     ap.add_argument("--days", type=int, default=7)
     ap.add_argument("--apply", action="store_true")
     a = ap.parse_args()
     client = os.environ.get("MAHANAVI_ADSENSE_CLIENT", "").strip() or "ca-pub-7766198162235124"  # publisher id is public (it is in every page that shows ads)
-    slot = os.environ.get("MAHANAVI_ADSENSE_SLOT", "").strip()
+    slot = os.environ.get("MAHANAVI_ADSENSE_SLOT", "").strip() or "1048682654"
+    if a.patch_ads:
+        st, blog = _service()
+        return patch_ads(blog, st.blogger_blog_id, adsense_block(client, slot), a.apply)
     posts = load_posts()
     if a.preview:
         p = next(x for x in posts if x["id"] == (a.id or posts[0]["id"]))

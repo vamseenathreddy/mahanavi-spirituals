@@ -9,6 +9,11 @@ on:
         description: "Schedule articles up to this many days ahead"
         required: false
         default: "7"
+      patch_ads:
+        description: "Instead of scheduling: insert the AdSense block into scheduled/live articles that still have the placeholder"
+        required: false
+        type: boolean
+        default: false
       apply:
         description: "Post for real (off = only list what would be scheduled)"
         required: false
@@ -50,4 +55,4 @@ jobs:
           MAHANAVI_ADSENSE_CLIENT: ${{ secrets.MAHANAVI_ADSENSE_CLIENT }}
           MAHANAVI_ADSENSE_SLOT: ${{ secrets.MAHANAVI_ADSENSE_SLOT }}
           PYTHONPATH: .
-        run: python scripts/ci/blog_daily.py --days "${{ inputs.days }}" ${{ inputs.apply && '--apply' || '' }}
+        run: python scripts/ci/blog_daily.py --days "${{ inputs.days }}" ${{ inputs.patch_ads && '--patch-ads' || '' }} ${{ inputs.apply && '--apply' || '' }}
