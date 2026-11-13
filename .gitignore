@@ -40,3 +40,4 @@ run_daily_shorts_stdout.log
 source_material/
 channels/trance_beats/assets/music/candidates/*.mp3
 channels/trance_beats/assets/music/candidates/index.txt
+build/
