@@ -6,11 +6,27 @@ from __future__ import annotations
 import datetime as dt
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from blog_daily import DAILY_LABEL, ROOT  # noqa: E402
+
+
+VIDEO_RE = re.compile(r"(?:i\.ytimg\.com/vi(?:_webp)?/|youtube(?:-nocookie)?\.com/embed/|watch\?v=)([A-Za-z0-9_-]{11})")
+
+
+def duplicate_groups(posts: list[dict]) -> list[list[dict]]:
+    """Posts (not the daily articles) that embed the same YouTube video: the second one is a duplicate, usually made by the
+    old IFTTT applet. Returns groups of 2 or more."""
+    by_video: dict[str, list[dict]] = {}
+    for p in posts:
+        if DAILY_LABEL in (p.get("labels") or []):
+            continue
+        for vid in set(VIDEO_RE.findall(p.get("content", ""))):
+            by_video.setdefault(vid, []).append(p)
+    return [g for g in by_video.values() if len(g) > 1]
 
 
 def main() -> int:
@@ -37,6 +53,15 @@ def main() -> int:
             tok = r.get("nextPageToken")
             if not tok:
                 break
+    since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=3)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    recent, tok = [], None
+    while True:
+        r = blog.posts().list(blogId=bid, maxResults=50, pageToken=tok, status=["LIVE"], startDate=since, fetchBodies=True, fetchImages=False).execute()
+        recent += r.get("items", [])
+        tok = r.get("nextPageToken")
+        if not tok:
+            break
+    dups = duplicate_groups(recent)
     tgt = 0
     tf = ROOT / "content" / "blog" / "target.json"
     if tf.exists():
@@ -48,6 +73,12 @@ def main() -> int:
     if tgt:
         lines.append(f"- Target {tgt}/month: {m30 / tgt * 100:.0f}% reached; needs {tgt / 30:.0f}/day, now {d7 / 7:.0f}/day "
                      f"({'on track' if d7 / 7 >= tgt / 30 else 'behind'})")
+    if dups:
+        lines.append(f"- DUPLICATES: {len(dups)} video(s) in the last 3 days have 2+ blog posts (the old IFTTT applet is probably still on):")
+        for g in dups[:8]:
+            lines.append("    " + " / ".join(f"{p['published'][:16]} {p['title'][:40]}" for p in sorted(g, key=lambda x: x['published'])))
+    else:
+        lines.append("- Duplicates in the last 3 days: none")
     lines.append("- Latest articles: " + "; ".join(f"{d} {t[:50]}" for d, t in sorted(latest)[-3:]))
     if sched < 6:
         lines.append(f"- ACTION: only {sched} scheduled articles left. Add more to content/blog/posts/.")
