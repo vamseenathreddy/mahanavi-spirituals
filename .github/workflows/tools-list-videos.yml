@@ -2,6 +2,12 @@ name: Mahanavi | List channel videos (read-only) (manual)
 
 on:
   workflow_dispatch:
+    inputs:
+      token:
+        description: "Token file under ./data"
+        required: false
+        default: "youtube_token.json"
+        type: string
 
 concurrency:
   group: list-videos
@@ -35,4 +41,4 @@ jobs:
       - name: List
         env:
           PYTHONPATH: .
-        run: python scripts/ci/list_videos.py
+        run: python scripts/ci/list_videos.py "./data/${{ inputs.token }}"
