@@ -1,6 +1,6 @@
 name: Mahanavi | Daily blog article (schedules the next articles)
 
-# Schedules the next unpublished articles from data/blog/posts/ on the Mahanavi blog, one per day at 7:00 AM IST.
+# Schedules the next unpublished articles from content/blog/posts/ on the Mahanavi blog, one per day at 7:00 AM IST.
 # Run it weekly (or ping it from cron-job.org once a day: it only adds what is missing, so repeat runs are harmless).
 on:
   workflow_dispatch:

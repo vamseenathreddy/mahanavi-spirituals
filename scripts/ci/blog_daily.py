@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Daily blog article for the Mahanavi Blogger blog (a long story, sloka explainer or a money / home guide), separate
-from the per-video blog entries. Articles live in data/blog/posts/NNN.json; this schedules the next ones, one per day.
+from the per-video blog entries. Articles live in content/blog/posts/NNN.json; this schedules the next ones, one per day.
 
   python scripts/ci/blog_daily.py --preview out.html [--id 3]     # build one article locally, no API
   python scripts/ci/blog_daily.py --days 7 [--apply]               # schedule the next unpublished articles (07:00 IST each day)
@@ -20,7 +20,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[2]
-POSTS = ROOT / "data" / "blog" / "posts"
+POSTS = ROOT / "content" / "blog" / "posts"
 RAW = "https://raw.githubusercontent.com/vamseenathreddy/mahanavi-spirituals/main/assets/blog/"
 IST = ZoneInfo("Asia/Kolkata")
 DAILY_LABEL = "Daily Article"
@@ -136,7 +136,7 @@ def main() -> int:
         nxt += dt.timedelta(days=1)
     print(f"::notice::{made} article(s) {'scheduled' if a.apply else 'listed'}; {max(len(todo) - made, 0)} still waiting in the bank")
     if not todo:
-        print("::warning::the article bank is empty: add more data/blog/posts/NNN.json")
+        print("::warning::the article bank is empty: add more content/blog/posts/NNN.json")
     return 0
 
 
