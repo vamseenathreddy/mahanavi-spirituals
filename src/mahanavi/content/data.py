@@ -157,10 +157,23 @@ DEITY_CONTENT: dict[Deity, DeityContent] = {
         mantra="గోవిందా గోవిందా",
         # Less standardized across traditions than Ganesha/Lakshmi's bija --
         # worth a native speaker's confirmation before treating as final.
+        # 13 entries (a prime, so the 7-day Saturday step cycles through all of them before any repeats). Owner request
+        # 2026-11-14: "Om Srinivasaya Namaha" kept appearing on Saturdays (the pool had 3). Names from Venkateswara's
+        # ashtottara namavali; Telugu spelling should be proofread by the owner.
         beeja_mantrams=[
             "ఓం క్లీం వేంకటేశాయ నమః",
             "ఓం నమో వేంకటేశాయ",
             "ఓం శ్రీనివాసాయ నమః",
+            "ఓం శేషాద్రినిలయాయ నమః",
+            "ఓం లక్ష్మీపతయే నమః",
+            "ఓం గోవిందాయ నమః",
+            "ఓం మాధవాయ నమః",
+            "ఓం శ్రీహరయే నమః",
+            "ఓం పురుషోత్తమాయ నమః",
+            "ఓం వైకుంఠపతయే నమః",
+            "ఓం శ్రీవత్సవక్షసే నమః",
+            "ఓం సర్వేశాయ నమః",
+            "ఓం పరంజ్యోతిషే నమః",
         ],
         # Explicit request (2026-10-03): rotate through Venkateswara's
         # OWN mantra namalu instead of always showing "గోవిందా గోవిందా"
