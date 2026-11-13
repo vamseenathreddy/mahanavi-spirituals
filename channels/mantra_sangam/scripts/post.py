@@ -34,7 +34,7 @@ def main():
         blogger_blog_id=settings.mantra_sangam_blogger_blog_id,
         playlist_id=settings.mantra_sangam_playlist_id,
         playlist_items=playlist_links.MS_ITEMS,
-        playlist_header="हमारी प्लेलिस्ट (Playlists):",
+        playlist_header="हमारी प्लेलिस्ट (Playlists):", playlist_bottom=True,
     )
     return run(pipeline)
 

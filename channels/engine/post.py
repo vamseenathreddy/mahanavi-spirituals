@@ -47,6 +47,7 @@ class ChannelPipeline:
     playlist_items: tuple = ()       # (label, kind, value) series playlists linked at the top of the description (channels/playlist_links.py)
     playlist_current: str = ""       # label of this Short's own series: listed first
     playlist_header: str = "Playlists:"
+    playlist_bottom: bool = False   # put the playlist block at the end of the description (better for search snippets)
 
 
 def run(ch: ChannelPipeline, argv=None) -> int:
@@ -121,7 +122,8 @@ def run(ch: ChannelPipeline, argv=None) -> int:
 
             top = playlist_links.block_items(yt, ch.playlist_items, ch.playlist_current, ch.playlist_header)
             if top:
-                meta["description"] = f"{top}\n\n{meta['description']}"
+                meta["description"] = (f"{meta['description']}\n\n{top}" if ch.playlist_bottom
+                                       else f"{top}\n\n{meta['description']}")
         except Exception as e:  # noqa: BLE001
             print(f"::warning::playlist links skipped: {e}")
     privacy_status = "public" if args.public else "unlisted"

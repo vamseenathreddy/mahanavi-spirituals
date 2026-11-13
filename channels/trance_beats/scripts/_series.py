@@ -55,7 +55,7 @@ def main(series: str):
         special_csv=None,
         render_cfg=dataclasses.replace(channel_config.RENDER_CFG, cta_text=channel_config.CTA[series],
                                        playlist_cta=playlist_links.HI_LINE.format(x=x)),
-        playlist_items=playlist_links.TB_ITEMS, playlist_current=cur, playlist_header="हमारी प्लेलिस्ट (Playlists):",
+        playlist_items=playlist_links.TB_ITEMS, playlist_current=cur, playlist_header="हमारी प्लेलिस्ट (Playlists):", playlist_bottom=True,
         rotation=rotation,
         metadata_bundle=metadata.bundle,
         metadata_captions=metadata.captions,

@@ -32,7 +32,7 @@ def main():
         fetch_row=series.fetch_row_for(kind),
         render_cfg=dataclasses.replace(channel_config.SERIES_CFG, music_offset={"purana": 7, "rashi": 9}[kind],
                                        playlist_cta=playlist_links.HI_LINE.format(x=cur)),
-        playlist_items=playlist_links.MS_ITEMS, playlist_current=cur, playlist_header="हमारी प्लेलिस्ट (Playlists):",
+        playlist_items=playlist_links.MS_ITEMS, playlist_current=cur, playlist_header="हमारी प्लेलिस्ट (Playlists):", playlist_bottom=True,
         metadata_bundle=metadata_series.bundle,
         metadata_captions=metadata_series.captions,
         youtube_token_file=settings.mantra_sangam_youtube_token_file,

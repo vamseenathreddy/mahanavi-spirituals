@@ -12,20 +12,17 @@ NAMES = {  # (hindi, english)
 # 2026-10-17: titles carry the date, weekday and sunrise tithi plus one proven hook, so no two days share a title.
 # {d} "17 अक्टूबर", {wd} weekday, {t} tithi (may be empty). Special tithis (Ekadashi, Purnima, Amavasya...) lead.
 TITLE_FMT = {
-    "rahu": ["{d} {wd}{t} - राहु काल | Avoid This Time", "राहु काल {d}{t} - Check Before You Start",
-             "{wd} {d}{t} - Rahu Kaal Today | आज राहु काल",
-             "आज का राहु काल {d} {wd}{t} | Rahu Kaal Time"],
-    "shubh": ["{d} {wd}{t} - शुभ मुहूर्त | Good Time Today", "शुभ मुहूर्त {d}{t} - Abhijit Muhurat Today",
-              "{wd} {d}{t} - Shubh Muhurat | अभिजीत मुहूर्त",
-              "आज का शुभ मुहूर्त {d} {wd}{t} | Abhijit Muhurat Time"],
-    "durm": ["{d} {wd}{t} - दुर्मुहूर्त | Avoid This Time", "दुर्मुहूर्त {d}{t} - Check Before You Start",
-             "{wd} {d}{t} - Durmuhurat Today | दुर्मुहूर्त",
-             "आज का दुर्मुहूर्त {d} {wd}{t} | Durmuhurat Time"],
+    "rahu": ["आज का राहु काल {d} {wd}{t} | Rahu Kaal Today", "{wd} {d}{t} - राहु काल का समय | Rahu Kaal Time",
+             "राहु काल आज कब है? {d} {wd}{t} | Rahu Kalam"],
+    "shubh": ["आज का शुभ मुहूर्त {d} {wd}{t} | Shubh Muhurat Today", "{wd} {d}{t} - अभिजीत मुहूर्त कब है | Abhijit Muhurat",
+              "शुभ मुहूर्त आज {d} {wd}{t} | Good Time Today"],
+    "durm": ["आज का दुर्मुहूर्त {d} {wd}{t} | Durmuhurat Today", "{wd} {d}{t} - दुर्मुहूर्त का समय | Durmuhurat Time",
+             "दुर्मुहूर्त आज कब है? {d} {wd}{t} | Panchang"],
 }
 SPECIAL_FMT = {
-    "rahu": "{tt} {d} {wd} - राहु काल | Avoid This Time",
-    "shubh": "{tt} {d} {wd} - शुभ मुहूर्त | Good Time Today",
-    "durm": "{tt} {d} {wd} - दुर्मुहूर्त | Avoid This Time",
+    "rahu": "{tt} {d} {wd} - आज का राहु काल | Rahu Kaal",
+    "shubh": "{tt} {d} {wd} - आज का शुभ मुहूर्त | Shubh Muhurat",
+    "durm": "{tt} {d} {wd} - आज का दुर्मुहूर्त | Durmuhurat",
 }
 TAGS = {
     "rahu": ["#RahuKaal", "#RahuKalam", "#राहुकाल", "#Panchang"],
@@ -65,7 +62,8 @@ def hashtags(row):
 def description(row):
     hi, en = NAMES[row["category"]]
     k = row["category"]
-    lines = [f"{timings.date_hi(__import__('datetime').date.fromisoformat(row['date_iso']))} का {hi}", ""]
+    dts = timings.date_hi(__import__('datetime').date.fromisoformat(row['date_iso']))
+    lines = [f"आज का {hi} ({en}) - {dts}: सही समय, पंचांग और आज का मंत्र। शुभ काम शुरू करने से पहले देखें।", ""]
     if k == "rahu":
         lines += [f"राहु काल: {row['rahu']}", f"यमगंड: {row['yamagandam']}", f"गुलिक काल: {row['gulika']}",
                   f"वर्ज्य: {row['varjyam']}", f"दुर्मुहूर्त: {row['durm_times']}"]
@@ -74,9 +72,9 @@ def description(row):
     else:
         lines += [f"दुर्मुहूर्त: {row['durm_times']}", f"राहु काल: {row['rahu']}"]
     lines += ["", f"{row['t_mantra_label']}: {row['t_mantra']}", "",
-              f"रोज़ {hi} जानने के लिए {CHANNEL} को सब्सक्राइब करें। अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे।", "",
-              f"{en} for {row['weekday_en']} {_d(row)}. Subscribe to {CHANNEL} for a new "
-              "Hindu panchang timing every day. You may never see this channel again unless you subscribe right now.", ""]
+              f"रोज़ का पंचांग, राहु काल और शुभ मुहूर्त जानने के लिए {CHANNEL} को सब्सक्राइब करें 🙏", "",
+              f"{en} today, {row['weekday_en']} {_d(row)}. Daily Hindu panchang: Rahu Kaal, Shubh Muhurat, "
+              f"Durmuhurat and mantra. Subscribe to {CHANNEL}.", ""]
     contact = os.environ.get("CONTACT_EMAIL", "")
     if contact:
         lines += [f"Contact: {contact}", ""]
@@ -87,7 +85,7 @@ def description(row):
 def tags(row):
     hi, en = NAMES[row["category"]]
     base = [f"{en} today", en, hi, "आज का पंचांग", "panchang today", "Hindi panchang", "Hindu panchang",
-            "daily panchang", "आज का राहु काल", "shubh muhurat today", "Hindi devotional shorts", CHANNEL]
+            "daily panchang", "आज का राहु काल", "आज का शुभ मुहूर्त", "आज का दुर्मुहूर्त", "आज का पंचांग today", "shubh muhurat today", "Hindi devotional shorts", CHANNEL]
     out, total = [], 0
     for t in base:
         c = len(t) + (2 if " " in t else 0)

@@ -28,7 +28,7 @@ def main():
         expected_channel="Mantra Sangam",
         fetch_row=timings.fetch_row_for(kind),
         render_cfg=dataclasses.replace(channel_config.TIMING_CFG, music_offset={"rahu": 0, "shubh": 3, "durm": 5}[kind]),  # no on-card playlist pointer: a timing is only useful today (2026-10-21)
-        playlist_items=playlist_links.MS_ITEMS, playlist_current="आज का पंचांग", playlist_header="हमारी प्लेलिस्ट (Playlists):",
+        playlist_items=playlist_links.MS_ITEMS, playlist_current="आज का पंचांग", playlist_header="हमारी प्लेलिस्ट (Playlists):", playlist_bottom=True,
         metadata_bundle=metadata_timings.bundle,
         metadata_captions=metadata_timings.captions,
         youtube_token_file=settings.mantra_sangam_youtube_token_file,
