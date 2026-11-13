@@ -45,7 +45,9 @@ jobs:
       - name: Fetch video assets
         run: bash scripts/ci/bhavishya_long_assets.sh
       - name: Upload
+        env:
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
         run: |
           ARGS="--publish-at ${{ inputs.publish_at }}"
           [ "${{ inputs.dry_run }}" = "true" ] && ARGS="$ARGS --dry-run"
-          PYTHONPATH=. python scripts/ci/upload_bhavishya_long.py $ARGS
+          PYTHONPATH=src:. python scripts/ci/upload_bhavishya_long.py $ARGS

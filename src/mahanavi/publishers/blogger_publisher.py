@@ -158,3 +158,14 @@ def post_to_blogger(
     except Exception as exc:  # genuinely need to catch anything else the SDK can raise
         logger.warning("Unexpected error posting to Blogger for video %s: %s", video_id, exc)
         return False
+
+
+def post_for_video(video_id: str, title: str, description: str, publish_at: str = "") -> bool:
+    """Blog entry for a Mahanavi video from the current environment settings (used by uploads that have no Settings at hand).
+    Replaces the old IFTTT applet. Never raises; returns False when blogging is not configured or fails."""
+    try:
+        from mahanavi.config import get_settings
+        return post_to_blogger(get_settings(), video_id, title, description, publish_at=publish_at)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Blog post skipped for %s: %s", video_id, exc)
+        return False

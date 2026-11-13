@@ -188,6 +188,9 @@ def main(argv: list[str] | None = None) -> int:
         media = MediaFileUpload(str(video), mimetype="video/mp4", chunksize=-1, resumable=True)
         video_id = str(youtube.videos().insert(part="snippet,status,localizations", body=body, media_body=media).execute()["id"])
         print(f"Channel: {got}\nUploaded: https://www.youtube.com/watch?v={video_id}")
+        if not hi:
+            from mahanavi.publishers.blogger_publisher import post_for_video
+            print("blog post:", post_for_video(video_id, title, desc))
         post_ledger.record(settings.youtube_token_file, title, desc, video_id)
         state = state_mod.load()
         state_mod.mark_posted(state, today.isoformat(), f"lakshmi_{args.kind}{'_hi' if hi else ''}_{num}", video_id, True, dt.datetime.now(IST).isoformat())

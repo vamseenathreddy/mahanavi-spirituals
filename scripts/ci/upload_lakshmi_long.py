@@ -28,6 +28,8 @@ def main():
     yt = up.service(Path(a.token))
     vid = up.upload_video(yt, str(video), m.TITLE, m.DESCRIPTION, m.TAGS, publish_at=when, language="te", category_id="10")
     print("uploaded", vid)
+    from mahanavi.publishers.blogger_publisher import post_for_video
+    print("blog post:", post_for_video(vid, m.TITLE, m.DESCRIPTION, a.publish_at))
     try:
         yt.thumbnails().set(videoId=vid, media_body=MediaFileUpload(str(thumb), mimetype="image/jpeg")).execute()
         print("thumbnail set")

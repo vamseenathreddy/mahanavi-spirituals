@@ -74,6 +74,7 @@ jobs:
           MAHANAVI_LOG_DIR: ./data/logs
           MAHANAVI_TIMEZONE: Asia/Kolkata
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ inputs.token_file }}
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
         run: |
           set -o pipefail
           ARGS="--spec ${{ inputs.spec }}"

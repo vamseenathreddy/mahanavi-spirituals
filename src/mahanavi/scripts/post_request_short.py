@@ -124,6 +124,9 @@ def main(argv: list[str] | None = None) -> int:
         video_id = upload(youtube, spec, video, args.privacy, publish_at)
         print(f"Channel: {got}" + (f" | scheduled public at {args.publish_at}" if args.publish_at else ""))
         print(f"Uploaded ({args.privacy}): https://www.youtube.com/watch?v={video_id}")
+        if "mahanavi" in spec.expected_channel.lower():
+            from mahanavi.publishers.blogger_publisher import post_for_video
+            print("blog post:", post_for_video(video_id, spec.title, spec.description(), publish_at))
         print(f"Studio: https://studio.youtube.com/video/{video_id}/edit")
         print(f"VIDEO_ID={video_id}")
         return 0

@@ -72,6 +72,8 @@ def main() -> int:
         print(f"FAILED to upload: {result.error_message}", file=sys.stderr)
         return 1
     print(f"Uploaded ({args.privacy}): {result.post_url}")
+    from mahanavi.publishers.blogger_publisher import post_for_video
+    print("blog post:", post_for_video(result.video_id, seo.title, seo.full_caption()))
 
     try:
         from googleapiclient.http import MediaFileUpload

@@ -89,6 +89,8 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"::error::token acts as channel '{got}', not Mahanavi Spirituals")
     vid = upload.upload_video(yt, a.file, title, desc, TAGS, publish_at=when, language="te")
     print(f"::notice::uploaded {vid} on '{got}', scheduled public at {a.publish_at}")
+    from mahanavi.publishers.blogger_publisher import post_for_video
+    print("blog post:", post_for_video(vid, title, desc, when.strftime("%Y-%m-%dT%H:%M:%SZ")))
     if a.kind == "long" and a.thumb:
         from googleapiclient.http import MediaFileUpload
         try:

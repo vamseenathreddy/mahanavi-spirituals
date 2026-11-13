@@ -69,6 +69,7 @@ jobs:
       - name: Upload and schedule
         env:
           MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
           MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
           MAHANAVI_LOG_DIR: ./data/logs
           KIND: ${{ inputs.kind }}

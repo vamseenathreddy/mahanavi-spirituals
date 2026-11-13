@@ -59,6 +59,7 @@ jobs:
       - name: Render and upload
         env:
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
           MAHANAVI_PLAYLIST_ID_STOTRAS: ${{ secrets.MAHANAVI_PLAYLIST_ID_STOTRAS }}
           SLUG: ${{ inputs.slug }}
           PRIVACY: ${{ inputs.privacy }}

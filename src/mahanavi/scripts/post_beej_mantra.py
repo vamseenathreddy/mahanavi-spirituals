@@ -90,6 +90,9 @@ def main(argv: list[str] | None = None) -> int:
                 spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
         video_id = upload(youtube, spec, video, "public" if args.public else "unlisted")
         print(f"Channel: {got}\nUploaded: https://www.youtube.com/watch?v={video_id}")
+        if args.channel == "mahanavi":
+            from mahanavi.publishers.blogger_publisher import post_for_video
+            print("blog post:", post_for_video(video_id, spec.title, spec.description()))
         state = state_mod.load()
         state_mod.mark_posted(state, today.isoformat(), spec.slug, video_id, True, dt.datetime.now(IST).isoformat())
         state_mod.save(state)
