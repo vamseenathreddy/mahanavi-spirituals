@@ -121,7 +121,7 @@ def main() -> int:
     ap.add_argument("--days", type=int, default=7)
     ap.add_argument("--apply", action="store_true")
     a = ap.parse_args()
-    client = os.environ.get("MAHANAVI_ADSENSE_CLIENT", "").strip()
+    client = os.environ.get("MAHANAVI_ADSENSE_CLIENT", "").strip() or "ca-pub-7766198162235124"  # publisher id is public (it is in every page that shows ads)
     slot = os.environ.get("MAHANAVI_ADSENSE_SLOT", "").strip()
     posts = load_posts()
     if a.preview:
