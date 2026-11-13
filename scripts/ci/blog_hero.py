@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from mahanavi.images import deity_bg  # noqa: E402
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
+HI_FONT = str(ROOT / "channels" / "engine" / "assets" / "fonts" / "Hind-Bold.ttf")
 
 def wrap(d, text, font, width):
     lines, cur = [], ""
@@ -31,11 +32,12 @@ def main():
         ov = Image.new("RGBA", base.size, (0, 0, 0, 0)); od = ImageDraw.Draw(ov)
         od.rectangle([0, 400, 1200, 630], fill=(20, 8, 0, 150))
         base = Image.alpha_composite(base, ov); dr = ImageDraw.Draw(base)
-        big = ImageFont.truetype(FONT, 56); small = ImageFont.truetype(FONT, 26)
+        ff = HI_FONT if cfg.get("lang") == "hi" else FONT; L = ImageFont.Layout.RAQM
+        big = ImageFont.truetype(ff, 60, layout_engine=L); small = ImageFont.truetype(ff, 28, layout_engine=L)
         y = 425
         for line in wrap(dr, p["hero_title"], big, 1100)[:2]:
             dr.text((50, y), line, font=big, fill=(255, 226, 150)); y += 70
-        dr.text((50, 575), cfg["name"] + "  |  Brahma Purana series", font=small, fill=(255, 255, 255))
+        dr.text((50, 575), cfg["name"] + "  |  " + cfg.get("hero_tag", "Brahma Purana series"), font=small, fill=(255, 255, 255))
         base.convert("RGB").save(out / p["hero"], quality=88)
         print("wrote", out / p["hero"])
 main()

@@ -30,6 +30,17 @@ RELATED_MARK = "<!--related-posts-->"
 RAW = "https://raw.githubusercontent.com/vamseenathreddy/mahanavi-spirituals/main/assets/blog/"
 
 
+def slots_for(site: str, day: dt.date) -> list[dt.datetime]:
+    """Random post times for this day, seeded by site + day so every day differs and no two blogs share a minute."""
+    import random
+    rng = random.Random(f"{site}-{day.isoformat()}")
+    out = []
+    for (h0, m0), (h1, m1) in bd.WINDOWS:
+        t = rng.randint(h0 * 60 + m0, h1 * 60 + m1)
+        out.append(dt.datetime.combine(day, dt.time(t // 60, t % 60), bd.IST))
+    return out
+
+
 def site_dir(site: str) -> Path:
     return ROOT / "content" / "sites" / site
 
@@ -47,6 +58,14 @@ def inline(s: str) -> str:
     return s
 
 
+UI_EN = {"takeaways": "Key takeaways", "toc": "In this article", "faq": "Frequently asked questions", "topics": "Topics",
+         "related": "Related reading", "watch": "Watch the video", "home": "Home"}
+
+
+def ui(cfg: dict, key: str) -> str:
+    return {**UI_EN, **cfg.get("ui", {})}[key]
+
+
 def anchor(i: int) -> str:
     return f"s{i + 1}"
 
@@ -62,11 +81,11 @@ def build_html(cfg: dict, post: dict, client: str, slot: str) -> str:
     o.append(f'<p>{inline(post["intro"])}</p>')
     if post.get("takeaways"):
         o.append('<div style="background:#fff7e6;border-left:5px solid #e08a00;padding:12px 16px;margin:18px 0;border-radius:6px;">'
-                 "<p><b>Key takeaways</b></p><ul>" + "".join(f"<li>{inline(t)}</li>" for t in post["takeaways"]) + "</ul></div>")
+                 f"<p><b>{ui(cfg, 'takeaways')}</b></p><ul>" + "".join(f"<li>{inline(t)}</li>" for t in post["takeaways"]) + "</ul></div>")
     heads = [(i, s) for i, s in enumerate(secs) if s.get("h")]
     if len(heads) >= 3:
-        o.append("<p><b>In this article</b></p><ol>" + "".join(f'<li><a href="#{anchor(i)}">{html.escape(s["h"])}</a></li>' for i, s in heads)
-                 + ('<li><a href="#faq">Frequently asked questions</a></li>' if post.get("faq") else "") + "</ol>")
+        o.append(f"<p><b>{ui(cfg, 'toc')}</b></p><ol>" + "".join(f'<li><a href="#{anchor(i)}">{html.escape(s["h"])}</a></li>' for i, s in heads)
+                 + (f'<li><a href="#faq">{ui(cfg, "faq")}</a></li>' if post.get("faq") else "") + "</ol>")
     for i, s in enumerate(secs):
         if s.get("h"):
             o.append(f'<h2 id="{anchor(i)}">{html.escape(s["h"])}</h2>')
@@ -83,17 +102,17 @@ def build_html(cfg: dict, post: dict, client: str, slot: str) -> str:
         if i == mid:
             o.append(bd.adsense_block(client, slot))
     if post.get("video"):
-        o.append(f'<h2>Watch the video</h2><p><iframe width="560" height="315" src="https://www.youtube.com/embed/{post["video"]}" '
+        o.append(f'<h2>{ui(cfg, "watch")}</h2><p><iframe width="560" height="315" src="https://www.youtube.com/embed/{post["video"]}" '
                  'title="YouTube video" frameborder="0" allowfullscreen style="max-width:100%"></iframe></p>')
     if post.get("faq"):
-        o.append('<h2 id="faq">Frequently asked questions</h2>')
+        o.append(f'<h2 id="faq">{ui(cfg, "faq")}</h2>')
         for f in post["faq"]:
             o.append(f"<h3>{html.escape(f['q'])}</h3><p>{inline(f['a'])}</p>")
     if post.get("note"):
         o.append(f'<p><i>{inline(post["note"])}</i></p>')
     o.append(RELATED_MARK)
     labels = " | ".join(f'<a href="{cfg["url"]}/search/label/{quote(l)}">{html.escape(l)}</a>' for l in post["labels"])
-    o.append(f'<p><b>Topics:</b> {labels} | <a href="{cfg["url"]}">Home</a></p>')
+    o.append(f'<p><b>{ui(cfg, "topics")}:</b> {labels} | <a href="{cfg["url"]}">{ui(cfg, "home")}</a></p>')
     if cfg.get("youtube_url"):
         o.append(f'<p>{html.escape(cfg["cta"])} <a href="{cfg["youtube_url"]}">{html.escape(cfg["youtube_name"])} on YouTube</a>.</p>')
     o.append(jsonld(cfg, post, img))
@@ -112,16 +131,16 @@ def jsonld(cfg: dict, post: dict, img: str) -> str:
     return "".join(f'<script type="application/ld+json">{json.dumps(b, ensure_ascii=False)}</script>' for b in blocks)
 
 
-def related_html(post: dict, others: list[dict]) -> str:
+def related_html(post: dict, others: list[dict], label: str = "Related reading") -> str:
     mine = set(post["labels"])
     scored = sorted((o for o in others if o["title"] != post["title"]), key=lambda o: -len(mine & set(o["labels"])))
     pick = scored[:3]
     if not pick:
         return ""
-    return "<p><b>Related reading:</b></p><ul>" + "".join(f'<li><a href="{o["url"]}">{html.escape(o["title"])}</a></li>' for o in pick) + "</ul>"
+    return f"<p><b>{label}:</b></p><ul>" + "".join(f'<li><a href="{o["url"]}">{html.escape(o["title"])}</a></li>' for o in pick) + "</ul>"
 
 
-def relink(blog, blog_id: str, apply: bool) -> int:
+def relink(blog, blog_id: str, apply: bool, label: str = "Related reading") -> int:
     items, tok = [], None
     while True:
         r = blog.posts().list(blogId=blog_id, maxResults=50, pageToken=tok, fetchBodies=True, fetchImages=False,
@@ -135,7 +154,7 @@ def relink(blog, blog_id: str, apply: bool) -> int:
         if RELATED_MARK not in p.get("content", ""):
             continue
         block = related_html({"title": p["title"], "labels": p.get("labels") or []},
-                             [{"title": x["title"], "labels": x.get("labels") or [], "url": x["url"]} for x in items])
+                             [{"title": x["title"], "labels": x.get("labels") or [], "url": x["url"]} for x in items], label)
         if not block:
             continue
         n += 1
@@ -170,7 +189,7 @@ def main() -> int:
     st, blog = bd._service()  # noqa: SLF001
     blog_id = cfg["blog_id"]
     if a.relink:
-        return relink(blog, blog_id, a.apply)
+        return relink(blog, blog_id, a.apply, ui(cfg, "related"))
     per_day = a.per_day or cfg.get("per_day", 3)
     existing_titles = set()
     tok = None
@@ -189,7 +208,7 @@ def main() -> int:
     todo = [p for p in posts if p["title"] not in existing_titles]
     made, day = 0, now.date()
     while todo and day <= horizon:
-        for slot_t in bd.day_slots(day)[:per_day]:
+        for slot_t in slots_for(a.site, day)[:per_day]:
             if not todo:
                 break
             if slot_t <= now + dt.timedelta(minutes=20) or slot_t in taken or sum(1 for d in taken if d.date() == day) >= per_day:
