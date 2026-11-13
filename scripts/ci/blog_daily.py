@@ -3,7 +3,7 @@
 from the per-video blog entries. Articles live in content/blog/posts/NNN.json; this schedules the next ones, one per day.
 
   python scripts/ci/blog_daily.py --preview out.html [--id 3]     # build one article locally, no API
-  python scripts/ci/blog_daily.py --days 7 [--apply]               # schedule the next unpublished articles (07:00 IST each day)
+  python scripts/ci/blog_daily.py --days 7 [--apply]               # schedule the next unpublished articles, 3 a day at random times
 
 AdSense: set MAHANAVI_ADSENSE_CLIENT (ca-pub-...) and MAHANAVI_ADSENSE_SLOT (the in-article ad unit id). One in-article
 unit is placed in the middle of the text. Without them the article is built with no ad (a warning is printed)."""
@@ -24,7 +24,21 @@ POSTS = ROOT / "content" / "blog" / "posts"
 RAW = "https://raw.githubusercontent.com/vamseenathreddy/mahanavi-spirituals/main/assets/blog/"
 IST = ZoneInfo("Asia/Kolkata")
 DAILY_LABEL = "Daily Article"
-HOUR_IST = 7
+AD_MARK = "<!--mahanavi-ad-slot-->"
+PER_DAY = 3
+# one random minute inside each window (IST), so posting times differ day to day: morning / afternoon / evening
+WINDOWS = [((5, 30), (9, 30)), ((12, 0), (16, 0)), ((18, 30), (22, 30))]
+
+
+def day_slots(day: dt.date) -> list[dt.datetime]:
+    import random
+    rng = random.Random(f"mahanavi-blog-{day.isoformat()}")
+    out = []
+    for (h0, m0), (h1, m1) in WINDOWS[:PER_DAY]:
+        lo, hi = h0 * 60 + m0, h1 * 60 + m1
+        t = rng.randint(lo, hi)
+        out.append(dt.datetime.combine(day, dt.time(t // 60, t % 60), IST))
+    return out
 
 
 def load_posts() -> list[dict]:
@@ -39,7 +53,7 @@ def _inline(s: str) -> str:
 
 def adsense_block(client: str, slot: str) -> str:
     if not client or not slot:
-        return ""
+        return AD_MARK  # placeholder so the ad can be patched into already scheduled posts later
     return (
         '<div class="mahanavi-ad" style="margin:28px 0;text-align:center;">'
         f'<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={client}" crossorigin="anonymous"></script>'
@@ -49,7 +63,7 @@ def adsense_block(client: str, slot: str) -> str:
     )
 
 
-def build_html(post: dict, client: str = "", slot: str = "") -> str:
+def build_html(post: dict, client: str = "", slot: str = "", blog_url: str = "") -> str:
     secs = post["sections"]
     mid = max(0, (len(secs) + 1) // 2 - 1)  # ad goes after this section, i.e. in the middle of the text
     out = [f'<div class="mahanavi-article">']
@@ -61,13 +75,20 @@ def build_html(post: dict, client: str = "", slot: str = "") -> str:
             out.append(f"<p>{_inline(para)}</p>")
         if i == mid:
             out.append(adsense_block(client, slot))
+    if post.get("video"):
+        out.append(f'<h2>Watch the video</h2><p><iframe width="560" height="315" src="https://www.youtube.com/embed/{post["video"]}" '
+                   'title="YouTube video" frameborder="0" allowfullscreen style="max-width:100%"></iframe></p>')
     if post.get("faq"):
-        out.append("<h2>తరచుగా అడిగే ప్రశ్నలు</h2>")
+        out.append("<h2>Frequently asked questions</h2>")
         for f in post["faq"]:
             out.append(f"<h3>{html.escape(f['q'])}</h3><p>{_inline(f['a'])}</p>")
     if post.get("disclaimer"):
         out.append(f'<p><i>{_inline(post["disclaimer"])}</i></p>')
-    out.append("<p>మహానవి స్పిరిచ్యువల్స్ యూట్యూబ్ ఛానెల్‌లో రోజూ కొత్త వీడియోలు, షార్ట్స్ చూడండి.</p></div>")
+    if blog_url:
+        from urllib.parse import quote
+        links = " | ".join(f'<a href="{blog_url.rstrip("/")}/search/label/{quote(l)}">More: {html.escape(l)}</a>' for l in post["labels"])
+        out.append(f"<p><b>Related reading:</b> {links} | <a href=\"{blog_url}\">All articles</a></p>")
+    out.append("<p>Daily Telugu devotional videos and Shorts are on the Mahanavi Spirituals YouTube channel. Subscribe so you do not miss the next one.</p></div>")
     return "\n".join(x for x in out if x)
 
 
@@ -117,26 +138,33 @@ def main() -> int:
         print("::error::MAHANAVI_BLOGGER_BLOG_ID is not set")
         return 1
     titles, dates = existing(blog, st.blogger_blog_id)
-    today = dt.datetime.now(IST).date()
-    nxt = (max(d.date() for d in dates) + dt.timedelta(days=1)) if dates else today + dt.timedelta(days=1)
-    nxt = max(nxt, today + dt.timedelta(days=1))
-    horizon = today + dt.timedelta(days=a.days)
+    try:
+        blog_url = blog.blogs().get(blogId=st.blogger_blog_id).execute().get("url", "")
+    except Exception:
+        blog_url = ""
+    now = dt.datetime.now(IST)
+    taken = {d.replace(second=0, microsecond=0) for d in dates}
+    horizon = (now + dt.timedelta(days=a.days)).date()
     todo = [p for p in posts if p["title"] not in titles]
-    made = 0
-    for p in todo:
-        if nxt > horizon:
-            break
-        when = dt.datetime.combine(nxt, dt.time(HOUR_IST, 0), IST).astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        print(f"{'POST' if a.apply else 'would post'} #{p['id']} {nxt} {p['title'][:60]}")
-        if a.apply:
-            blog.posts().insert(blogId=st.blogger_blog_id, body={
-                "title": p["title"], "content": build_html(p, client, slot), "published": when,
-                "labels": [DAILY_LABEL] + p["labels"]}).execute()
-        made += 1
-        nxt += dt.timedelta(days=1)
-    print(f"::notice::{made} article(s) {'scheduled' if a.apply else 'listed'}; {max(len(todo) - made, 0)} still waiting in the bank")
-    if not todo:
-        print("::warning::the article bank is empty: add more content/blog/posts/NNN.json")
+    made, day = 0, now.date()
+    while todo and day <= horizon:
+        for slot_t in day_slots(day):
+            if not todo:
+                break
+            if slot_t <= now + dt.timedelta(minutes=20) or slot_t in taken or sum(1 for d in taken if d.date() == day) >= PER_DAY:
+                continue
+            p = todo.pop(0)
+            when = slot_t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            print(f"{'POST' if a.apply else 'would post'} #{p['id']} {slot_t:%Y-%m-%d %H:%M} IST {p['title'][:60]}")
+            if a.apply:
+                blog.posts().insert(blogId=st.blogger_blog_id, body={
+                    "title": p["title"], "content": build_html(p, client, slot, blog_url), "published": when,
+                    "labels": [DAILY_LABEL] + p["labels"]}).execute()
+            taken.add(slot_t); made += 1
+        day += dt.timedelta(days=1)
+    print(f"::notice::{made} article(s) {'scheduled' if a.apply else 'listed'}; {len(todo)} still waiting in the bank")
+    if len(todo) < PER_DAY * 7:
+        print(f"::warning::only {len(todo)} unscheduled articles left in the bank: add more content/blog/posts/NNN.json")
     return 0
 
 

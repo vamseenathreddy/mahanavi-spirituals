@@ -20,4 +20,4 @@ def test_ad_in_middle_once():
         h = bd.build_html(p, "ca-pub-1", "99")
         assert h.count("adsbygoogle") >= 2 and h.count('<ins class="adsbygoogle"') == 1
         assert 0.2 < h.index("<ins") / len(h) < 0.7, p["id"]
-        assert "<ins" not in bd.build_html(p, "", "")
+        assert "<ins" not in bd.build_html(p, "", "") and bd.AD_MARK in bd.build_html(p, "", "")

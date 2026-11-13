@@ -1,63 +1,60 @@
 {
  "id": 4,
- "title": "ఇల్లు కొనే ముందు చూడవలసిన పత్రాలు, వాస్తు ప్రాథమికాలు: ఒక సులభమైన చెక్‌లిస్ట్",
+ "title": "Buying a Home in India: Document Checklist, Home Loan Basics and Vastu Tips",
  "labels": [
   "Home & Vastu",
   "Wealth & Money"
  ],
- "hero": "hero_venkateswara.jpg",
- "alt": "ఇల్లు కొనే ముందు చెక్‌లిస్ట్",
- "intro": "సొంత ఇల్లు చాలామందికి జీవితంలోనే అతి పెద్ద కొనుగోలు. అందుకే సంప్రదాయ వాస్తు చూసుకోవడంతో పాటు, చట్టపరమైన పత్రాలు, ఆర్థిక లెక్కలు కూడా సరిగ్గా చూసుకోవాలి. ఈ చెక్‌లిస్ట్ మీకు ఉపయోగపడుతుంది.",
+ "hero": "hero_vishnu.jpg",
+ "alt": "Home buying checklist",
+ "intro": "A home is the biggest purchase most families make. Alongside traditional Vastu preferences, the legal papers and the loan numbers deserve the most attention. Here is a simple checklist.",
  "sections": [
   {
-   "h": "ముందు చూడవలసిన పత్రాలు",
+   "h": "Documents to check first",
    "p": [
-    "విక్రయ దస్తావేజు (సేల్ డీడ్), దానికి ముందు ఉన్న లింక్ డాక్యుమెంట్లు, అంటే ఆ ఆస్తి గతంలో ఎవరి పేరు మీద ఉండేదో తెలిపే పత్రాలు, తప్పక చూడండి.",
-    "ఎన్‌కంబ్రెన్స్ సర్టిఫికెట్ (EC) తీసుకుంటే, ఆ ఆస్తిపై ఏవైనా అప్పులు, వివాదాలు నమోదై ఉన్నాయో లేదో తెలుస్తుంది.",
-    "ఆస్తి పన్ను రసీదులు, కరెంటు, నీటి బిల్లులు బకాయి లేకుండా ఉన్నాయో చూడండి."
+    "Sale deed and the earlier link documents showing who owned the property before.",
+    "Encumbrance certificate (EC) to confirm there are no registered loans or disputes on the property.",
+    "Property tax receipts and utility bills with no dues."
    ]
   },
   {
-   "h": "అపార్ట్‌మెంట్ లేదా లేఅవుట్ అయితే",
+   "h": "For flats and layouts",
    "p": [
-    "ప్రాజెక్టు RERA లో నమోదైందో లేదో రాష్ట్ర RERA వెబ్‌సైట్‌లో చూడండి.",
-    "స్థానిక ప్రణాళికా సంస్థ అనుమతి ఉందో లేదో నిర్ధారించుకోండి. ఇవి ప్రాంతాన్ని బట్టి వేర్వేరు సంస్థలు ఇస్తాయి.",
-    "పూర్తయిన భవనమైతే ఆక్యుపెన్సీ సర్టిఫికెట్ అడగండి."
+    "Check that the project is registered with your state RERA and that approvals from the local planning authority are in place.",
+    "For a completed building, ask for the occupancy certificate."
    ]
   },
   {
-   "h": "హోమ్ లోన్ లెక్కలు",
+   "h": "Home loan basics",
    "p": [
-    "ఇంటి కోసం లోన్ తీసుకునేటప్పుడు, నెలవారీ EMI మీ ఆదాయంలో సాధారణంగా 40 శాతం లోపే ఉండేలా చూసుకుంటే భారం తక్కువగా ఉంటుంది.",
-    "వడ్డీ రేటు, ప్రాసెసింగ్ ఫీజు, ముందస్తు చెల్లింపు నిబంధనలను రెండు మూడు బ్యాంకులతో పోల్చండి. లోన్ ఇన్సూరెన్స్ గురించి కూడా అడగండి."
+    "A common guideline is to keep the total EMI at roughly 40 percent or less of your monthly income.",
+    "Compare interest rate, processing fee and prepayment rules across a few banks, and ask about loan insurance."
    ]
   },
   {
-   "h": "వాస్తు ప్రాథమికాలు",
+   "h": "Vastu basics",
    "p": [
-    "సంప్రదాయ వాస్తు నమ్మకాల ప్రకారం, ఈ విషయాలను చాలామంది గమనిస్తారు:",
-    "ప్రధాన ద్వారం తూర్పు లేదా ఉత్తర దిక్కున ఉండటం శుభంగా భావిస్తారు.",
-    "పూజ గది ఈశాన్య మూలలో, వంటగది ఆగ్నేయంలో ఉండటం మంచిదని చెబుతారు.",
-    "ఇంటి యజమాని పడక గది నైరుతి దిక్కున ఉండాలని సంప్రదాయం చెబుతుంది.",
-    "ఇవి సంప్రదాయ నమ్మకాలు మాత్రమే. వాస్తు కోసం చట్టపరమైన పత్రాలను నిర్లక్ష్యం చేయకండి."
+    "Traditional Vastu beliefs favour a main entrance facing east or north, the puja room in the north east, the kitchen in the south east and the master bedroom in the south west.",
+    "These are traditional beliefs. Never skip legal checks because a house looks good on Vastu."
    ]
   },
   {
-   "h": "చివరగా",
+   "h": "Before you pay the advance",
    "p": [
-    "పత్రాల పరిశీలనకు ఒక అనుభవజ్ఞుడైన న్యాయవాదిని సంప్రదించడం మంచిది. తొందరపడి అడ్వాన్స్ ఇవ్వకండి. అన్నీ సరిగ్గా ఉన్నాయని నిర్ధారించుకున్నాకే ముందుకు వెళ్ళండి. గృహప్రవేశం శుభముహూర్తంలో చేసుకుంటే, ఆ ఇల్లు సంతోషంగా నిలుస్తుందని పెద్దల మాట."
+    "Have a lawyer you trust review the papers. Do not hurry into paying a large advance. After the purchase, a griha pravesham at an auspicious time is a lovely way to begin."
    ]
   }
  ],
  "faq": [
   {
-   "q": "ఇల్లు కొనే ముందు తప్పనిసరిగా చూడవలసిన పత్రం ఏది?",
-   "a": "సేల్ డీడ్, లింక్ డాక్యుమెంట్లు, ఎన్‌కంబ్రెన్స్ సర్టిఫికెట్ ముఖ్యమైనవి."
+   "q": "Which document matters most?",
+   "a": "The sale deed, the link documents and the encumbrance certificate together prove ownership and a clean title."
   },
   {
-   "q": "వాస్తు లేకపోయినా ఇల్లు కొనవచ్చా?",
-   "a": "వాస్తు ఒక సంప్రదాయ నమ్మకం. చట్టపరమైన పత్రాలు సరిగ్గా ఉండటం మొదటి ప్రాధాన్యం, వాస్తు మీ నమ్మకాన్ని బట్టి ఎంచుకోవచ్చు."
+   "q": "Is Vastu necessary?",
+   "a": "It is a belief system. Legal clarity comes first, Vastu is a personal choice."
   }
  ],
- "disclaimer": "గమనిక: ఇది సాధారణ సమాచారం మాత్రమే, న్యాయ లేదా ఆర్థిక సలహా కాదు. నిర్ణయం తీసుకునే ముందు నిపుణుడిని సంప్రదించండి."
+ "disclaimer": "Note: general information only, not legal or financial advice. Please consult a lawyer and a financial adviser.",
+ "video": ""
 }
