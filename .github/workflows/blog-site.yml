@@ -1,4 +1,4 @@
-name: Mahanavi | Extra blogs (PuranaKnowledge and niche blogs): schedule posts, link related
+name: Mahanavi | Extra blogs - schedule posts and link related
 
 # Schedules the next unpublished posts of content/sites/<site>/ (3 a day at random times), then fills the Related reading blocks.
 on:
