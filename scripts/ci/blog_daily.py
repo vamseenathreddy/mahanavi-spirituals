@@ -16,6 +16,7 @@ import json
 import os
 import re
 import sys
+import time
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -157,9 +158,24 @@ def main() -> int:
             when = slot_t.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             print(f"{'POST' if a.apply else 'would post'} #{p['id']} {slot_t:%Y-%m-%d %H:%M} IST {p['title'][:60]}")
             if a.apply:
-                blog.posts().insert(blogId=st.blogger_blog_id, body={
-                    "title": p["title"], "content": build_html(p, client, slot, blog_url), "published": when,
-                    "labels": [DAILY_LABEL] + p["labels"]}).execute()
+                body = {"title": p["title"], "content": build_html(p, client, slot, blog_url), "published": when,
+                        "labels": [DAILY_LABEL] + p["labels"]}
+                ok = False
+                for attempt in range(4):
+                    try:
+                        blog.posts().insert(blogId=st.blogger_blog_id, body=body).execute()
+                        ok = True
+                        break
+                    except Exception as e:  # noqa: BLE001
+                        if "429" in str(e) or "rateLimit" in str(e):
+                            print(f"::warning::Blogger rate limit, waiting {60 * (attempt + 1)}s")
+                            time.sleep(60 * (attempt + 1))
+                        else:
+                            raise
+                if not ok:
+                    print("::warning::Blogger quota still exhausted: stopping, the next run continues")
+                    return 0
+                time.sleep(8)
             taken.add(slot_t); made += 1
         day += dt.timedelta(days=1)
     print(f"::notice::{made} article(s) {'scheduled' if a.apply else 'listed'}; {len(todo)} still waiting in the bank")
