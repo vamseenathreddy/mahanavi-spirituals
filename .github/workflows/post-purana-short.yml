@@ -89,8 +89,35 @@ jobs:
           pip install -r requirements.txt
           pip install -e .
 
+      # From 16 Nov 2026 the daily slot first posts the next Bhavishya Purana story Short (11 in all, sliced from the
+      # 8-minute text video). Exit code 3 = none left / not started yet, so the normal Purana rotation below runs.
+      - name: Bhavishya Purana story Short (if one is due)
+        id: bhavishya
+        if: steps.gate.outputs.target == 'post' && inputs.force_story == ''
+        env:
+          MAHANAVI_IMAGES_ROOT: ./Images
+          MAHANAVI_ASSETS_DIR: ./assets
+          MAHANAVI_OUTPUT_DIR: ./data/generated
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token.json
+          MAHANAVI_PLAYLIST_ID_PURANAS: ${{ secrets.MAHANAVI_PLAYLIST_ID_PURANAS }}
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
+        run: |
+          git fetch --depth 1 origin assets-bhavishya-shorts
+          mkdir -p build
+          git archive FETCH_HEAD bhavishya_shorts | tar -x -C build
+          ARGS=""
+          if [ "${{ inputs.public }}" = "true" ]; then ARGS="--public"; fi
+          set +e
+          python3 -m mahanavi.scripts.post_bhavishya_short $ARGS
+          rc=$?
+          set -e
+          if [ "$rc" = "0" ]; then echo "posted=true" >> "$GITHUB_OUTPUT"; elif [ "$rc" = "3" ]; then echo "posted=false" >> "$GITHUB_OUTPUT"; else exit $rc; fi
+
       - name: Run Purana Story Short pipeline
-        if: steps.gate.outputs.target == 'post'
+        if: steps.gate.outputs.target == 'post' && steps.bhavishya.outputs.posted != 'true'
         env:
           MAHANAVI_IMAGES_ROOT: ./Images
           MAHANAVI_ASSETS_DIR: ./assets
