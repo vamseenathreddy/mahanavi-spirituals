@@ -61,7 +61,9 @@ from mahanavi.images.gita_sloka_card_renderer import (
 from mahanavi.images.layout import vertical_gradient
 from mahanavi.video.watermark import bake_watermark
 
-from mahanavi.images.opinion_line import OPINION_LINES, OPINION_SIZE_FRAC, OPINION_TE
+from mahanavi.images.opinion_line import OPINION_SIZE_FRAC, OPINION_TE, lines_for
+
+OPINION_LINES = lines_for("gita")
 logger = logging.getLogger(__name__)
 
 CARD_WIDTH = 1080
@@ -176,7 +178,7 @@ class GitaQuizCardRenderer:
             # Fixed engagement line (subscribe reminder) sits at the validated
             # footer_bottom; the subscribe line (and everything above it) moves up by its height.
             opinion_font = self._fit_font_to_width(
-                draw, OPINION_LINES[1], max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
+                draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
             opinion_h = int(opinion_font.size * 1.3) * 2   # two lines
             opinion_top = footer_bottom - opinion_h

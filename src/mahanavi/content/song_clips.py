@@ -13,7 +13,7 @@ from mahanavi.content.alert_seo import _CHANNEL_FOOTER_EN, _CHANNEL_FOOTER_TE
 from mahanavi.content.request_shorts import RequestShort, Slide
 
 SONGS_DIR = PROJECT_ROOT / "assets" / "songs"
-_SUB = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"
+_SUB = "రేపటి భక్తి పాట కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి"
 _PLAYLIST_LINE = "పూర్తి పాట మా ఛానల్‌లో ఉంది, డిస్క్రిప్షన్ చూడండి"
 
 _WARM = ((92, 28, 12), (62, 18, 8), (30, 8, 4), (214, 150, 40))

@@ -59,7 +59,9 @@ from mahanavi.images.fonts import FontManager
 from mahanavi.video.watermark import bake_watermark
 from mahanavi.images.layout import vertical_gradient
 
-from mahanavi.images.opinion_line import OPINION_LINES, OPINION_SIZE_FRAC, OPINION_TE
+from mahanavi.images.opinion_line import OPINION_SIZE_FRAC, OPINION_TE, lines_for
+
+OPINION_LINES = lines_for("muhurtam")
 logger = logging.getLogger(__name__)
 
 # True YouTube Shorts vertical format (9:16). NOT the same as the main
@@ -261,9 +263,9 @@ class AlertCardRenderer:
                 footer_bottom = min(footer_bottom + comment_h + footer_line_gap, int(height * 0.75))  # 2026-10-21: was 0.84; Super Thanks button overlapped the subscribe line
             # Fixed engagement line at the very bottom of the footer block (2026-10-08 request).
             opinion_font = self._fit_font_to_width(
-                draw, OPINION_LINES[1], max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
+                draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
-            opinion_bbox = draw.textbbox((0, 0), OPINION_LINES[1], font=opinion_font)
+            opinion_bbox = draw.textbbox((0, 0), max(OPINION_LINES, key=len), font=opinion_font)
             opinion_line_h = int(opinion_font.size * 1.3)
             opinion_h = opinion_line_h * 2   # two lines
             footer_block_h = (subscribe_h + footer_line_gap + opinion_h

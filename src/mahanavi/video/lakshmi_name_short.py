@@ -98,7 +98,7 @@ def _wrap(draw: ImageDraw.ImageDraw, text: str, font, max_w: int) -> list[str]:
 
 # Per-language text. Telugu is the default (Mahanavi Spirituals); "hi" is for the Hindi channels (same layout, same English lines).
 UI = {
-    "te": dict(subscribe="ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు",
+    "te": dict(subscribe="రేపటి లక్ష్మీ నామం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
                tagline="ప్రతిరోజు ఒక నామం యొక్క అర్థాన్ని తెలుసుకోండి", head="శ్రీ లక్ష్మీ 108 నామాలు", om="ఓం {} నమః",
                stotra=STOTRA_SOURCE.split(" | ")[0], recap_head="ఈ వారం మీరు తెలుసుకున్న నామాలు",
                first_time="ఇప్పుడే మొదటిసారి చూస్తున్నట్లయితే, 1వ నామం నుంచి చూడండి",

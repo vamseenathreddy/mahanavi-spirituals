@@ -133,7 +133,7 @@ NARASIMHA = RequestShort(
     description_te=_DESC_TE,
     description_en=_DESC_EN,
     header="శ్రీ నరసింహ స్వామి",
-    cta_lines=("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
+    cta_lines=("రేపటి మంత్రం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
     tag_footer=f"{HANDLE} గారి కోరిక మేరకు",
     hashtags=["#Shorts", "#నరసింహస్వామి", "#NarasimhaMantra", "#NarasimhaSwamy", "#Devotional"],
     tags=[
@@ -193,7 +193,7 @@ Shani beeja mantra: Om Pram Preem Proum Sah Shanaye Namah - chant 108 times (at 
           "sade sati", "ఏలినాటి శని", "శని అమావాస్య", "శని మంత్రం", "శని దేవుడు", "10 october 2026 amavasya",
           "telugu devotional", "mahanavi spirituals", "shorts"],
     header="శని అమావాస్య",
-    cta_lines=("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
+    cta_lines=("రేపటి మంత్రం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి", "మరిన్ని మంత్రాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
 )
 
 _HI_FOOTER = """🎬 और भक्ति Shorts देखें: https://www.youtube.com/@divinemantrasangam/shorts
@@ -245,7 +245,7 @@ Shani beeja mantra: Om Pram Preem Proum Sah Shanaye Namah - chant 108 times (at 
           "hindi devotional", "divine mantra sangam", "shorts"],
     lang="hi", token_file="youtube_token_mantra_sangam.json", expected_channel="Mantra Sangam",
     watermark="@DivineMantraSangam", header="शनि अमावस्या",
-    cta_lines=("अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे", "ऐसे और मंत्रों के लिए सब्सक्राइब करें"),
+    cta_lines=("कल के मंत्र के लिए सब्सक्राइब करें और ऑल नोटिफिकेशन के लिए बेल आइकन दबाएं", "ऐसे और मंत्रों के लिए सब्सक्राइब करें"),
     footer_main=_HI_FOOTER,
     footer_en="Divine Mantra Sangam is a Hindi devotional channel: daily Rahu Kaal, Shubh Muhurat, mantras and Purana stories.",
 )
@@ -287,7 +287,7 @@ Tritiya lasts until the night of the 28th; moonrise time varies by city, so chec
     tags=["atla tadde", "atla tadde 2026", "atla tadde telugu", "atla taddi", "అట్ల తద్ది", "అట్లతద్ది 2026",
           "ashwayuja bahula tadiya", "gauri puja", "telugu festival", "telugu devotional", "mahanavi spirituals", "shorts"],
     header="అట్ల తద్ది",
-    cta_lines=("ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు", "మరిన్ని పండుగ విశేషాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
+    cta_lines=("రేపటి పండుగ విశేషాల కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి", "మరిన్ని పండుగ విశేషాల కోసం సబ్‌స్క్రైబ్ చేయండి"),
 )
 
 
@@ -325,7 +325,7 @@ A fast kept by women of Andhra Pradesh and Telangana on the third day after the 
         tags=["atla tadde", "atla tadde 2026", "atla tadde hindi", "अट्ला तद्दे", "अट्ला तद्दे 2026", "karwa chauth 2026",
               "gauri puja", "hindi devotional", tag_channel, "shorts"],
         lang="hi", token_file=token_file, expected_channel=expected, watermark=watermark, header="अट्ला तद्दे",
-        cta_lines=("अभी सब्सक्राइब नहीं किया तो यह चैनल आपको दोबारा शायद न दिखे", "ऐसे और व्रत-त्योहार जानने के लिए सब्सक्राइब करें"),
+        cta_lines=("कल के व्रत-त्योहार के लिए सब्सक्राइब करें और ऑल नोटिफिकेशन के लिए बेल आइकन दबाएं", "ऐसे और व्रत-त्योहार जानने के लिए सब्सक्राइब करें"),
         footer_main=footer, footer_en=footer_en,
     )
 

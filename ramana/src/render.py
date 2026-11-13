@@ -133,8 +133,8 @@ ATTRIBUTED = ("quote", "qa")  # his own teachings; life facts are about him, so 
 MUSIC_FILE = "om_04.mp3"
 
 # One fixed engagement line on every Short (2026-10-08 request), small, last in the text block.
-OPINION_TE = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే ఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"
-OPINION_EN = "You may never see this channel again unless you subscribe right now"
+OPINION_TE = "రేపటి రమణ బోధల కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి"
+OPINION_EN = "Subscribe for tomorrow's Ramana teaching, tap the bell icon and choose all notifications"
 
 
 UNIFORM_SIZE = 78  # every line of the card is drawn at this one size (2026-10-08 request), then scaled to fit

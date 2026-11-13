@@ -63,7 +63,7 @@ STATE_FILE = Path("data") / "last_rashi_index.txt"
 # (but consistent with) the longer engagement text in the description
 # built by rashi_mantra_seo.py.
 # Subscribe reminder instead of a comment ask (owner request 2026-10-18).
-COMMENT_PROMPT_TEXT = "ఇప్పుడే సబ్‌స్క్రైబ్ చేయకపోతే\nఈ ఛానల్ మీకు మళ్లీ కనిపించకపోవచ్చు"
+COMMENT_PROMPT_TEXT = "మీ రాశి మంత్రం కోసం సబ్‌స్క్రైబ్ చేసి\nఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి"
 
 
 def _icon_paths(settings: Settings) -> list[Path]:

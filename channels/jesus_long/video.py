@@ -18,7 +18,7 @@ W, H = 1920, 1080
 GOLD, WHITE = (255, 214, 140), (255, 255, 255)
 PAUSE = 9.0          # seconds of quiet after each verse is read
 MIN_TOTAL = 8 * 60 + 20   # long enough for mid-roll ads (8 minutes) with a little room
-SUBSCRIBE_EN = "You may never see this channel again unless you subscribe right now"
+SUBSCRIBE_EN = "Subscribe for the next Bible message, tap the bell icon and choose all notifications"
 
 
 def _font(path: Path, size: int) -> ImageFont.FreeTypeFont:
