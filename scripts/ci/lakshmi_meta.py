@@ -1,8 +1,8 @@
 """Title, description and tags for the Lakshmi Ashtottara long video and its daily live loop (Telugu + English SEO)."""
 
-TITLE = "Lakshmi Ashtottara Shatanamavali | లక్ష్మీ అష్టోత్తర శతనామావళి | 108 Names Meditation | Revathy VSL"
+TITLE = "Powerful Mahalakshmi Stotram | లక్ష్మీ అష్టోత్తర శతనామావళి | Lakshmi Devi 108 Names | Revathy VSL"
 
-LIVE_TITLE = "LIVE | Lakshmi Ashtottara 108 Names Chant | లక్ష్మీ అష్టోత్తర శతనామావళి | Meditation | Revathy VSL"
+LIVE_TITLE = "LIVE Lakshmi Devi Songs | లక్ష్మీ అష్టోత్తర శతనామావళి | Powerful Mahalakshmi Stotram | Meditation"
 
 DESCRIPTION = """శ్రీ లక్ష్మీ అష్టోత్తర శతనామావళి (108 నామాలు) ధ్యానం కోసం. ప్రశాంతంగా కళ్ళు మూసుకుని వినండి, మనసులో నామాలను స్మరించండి.
 
@@ -19,6 +19,8 @@ Watch one name with its meaning every day in Shorts. Subscribe to Mahanavi Spiri
 
 Music and vocals were produced with AI-assisted tools. This video contains realistic synthetic visuals.
 
+Search words: Lakshmi devi songs, powerful Mahalakshmi stotram, devotional melody songs Telugu, manifestation meditation in Telugu, negative energy removal mantra, Telugu devotional songs.
+
 #LakshmiAshtottara #Lakshmi108Names #LakshmiShatanamavali #MahalakshmiMantra #TeluguDevotional #MahanaviSpirituals #లక్ష్మీఅష్టోత్తరం
 """
 
@@ -26,7 +28,8 @@ TAGS = [
     "Lakshmi Ashtottara", "Lakshmi Ashtottara Shatanamavali", "Lakshmi 108 names", "Sri Lakshmi Ashtothram Telugu",
     "లక్ష్మీ అష్టోత్తర శతనామావళి", "లక్ష్మీ అష్టోత్తరం", "Lakshmi Devi 108 names Telugu", "Lakshmi mantra", "Mahalakshmi mantra",
     "Friday Lakshmi puja", "Lakshmi meditation", "Lakshmi chanting", "Mahanavi Spirituals", "Revathy VSL", "Telugu devotional",
-    "Lakshmi stotram", "Varalakshmi vratam", "meditation chant", "108 names of Lakshmi", "Lakshmi Ashtothara Sathanamavali",
+    "Lakshmi devi songs", "powerful Mahalakshmi stotram", "devotional melody songs Telugu", "manifestation meditation in Telugu",
+    "negative energy removal mantra", "Telugu devotional songs", "devotional songs channel", "Lakshmi stotram", "Varalakshmi vratam", "meditation chant", "108 names of Lakshmi", "Lakshmi Ashtothara Sathanamavali",
 ]
 
 assert len(TITLE) <= 100, len(TITLE)
