@@ -134,7 +134,7 @@ footer p{max-width:520px}
 </div></header>
 <main class='wrap' id='main-content'>
 <div class='chips nosel'><a class='chip on' expr:href='data:blog.homepageUrl'>అన్నీ</a><a class='chip' href='/search/label/Muhurta'>ముహూర్తం</a><a class='chip' href='/search/label/Mantras'>మంత్రాలు</a><a class='chip' href='/search/label/Shlokas'>శ్లోకాలు</a><a class='chip' href='/search/label/Ramayana'>రామాయణం</a><a class='chip' href='/search/label/Chanakya%20Neethi'>చాణక్య నీతి</a><a class='chip' href='/search/label/Purana%20Stories'>పురాణ కథలు</a><a class='chip' href='/search/label/Lakshmi'>లక్ష్మి</a><a class='chip' href='/search/label/Festivals%20%26%20Vratas'>పండుగలు &amp; వ్రతాలు</a><a class='chip' href='/search/label/Pooja%20Rules'>పూజా నియమాలు</a><a class='chip' href='/search/label/Shorts'>షార్ట్స్</a></div>
-<b:section class='mainsec' id='main' showaddelement='no' growth='vertical'>
+<b:section class='mainsec' id='main' showaddelement='yes' growth='vertical'>
 <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
 <b:includable id='main' var='top'>
 <b:if cond='data:view.isMultipleItems'>
