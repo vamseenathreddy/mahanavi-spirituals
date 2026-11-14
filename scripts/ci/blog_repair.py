@@ -16,7 +16,8 @@ from mahanavi.publishers.blog_labels import labels_for
 BLOG = "4824099583660261070"
 GENERIC = {"Ayyappa Devotional", "Bhakti", "Devotional Lyrics", "Dewali", "Holi", "Karthika Maasam", "Sankranti", "Telugu Songs",
            "Videos", "Vinayaka", "YouTube"}
-BROKEN = re.compile(r"https://i\.ytimg\.com/vi_webp/\*\*\*Url\?split\('v='\)\[1\]\*\*\*/maxresdefault\.webp")
+# IFTTT left an unresolved template (the log shows it as ***Url?split('v=')[1]***) in the image link, whatever the brackets are
+BROKEN = re.compile(r"https://i\.ytimg\.com/vi_webp/[^\"\s]*split\('v='\)[^\"\s]*?/maxresdefault\.webp")
 VID = re.compile(r"youtube(?:-nocookie)?\.com/(?:watch\?v=|embed/)([A-Za-z0-9_-]{11})")
 
 ap = argparse.ArgumentParser()
