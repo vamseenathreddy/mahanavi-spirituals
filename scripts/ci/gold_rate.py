@@ -1,22 +1,15 @@
 #!/usr/bin/env python3
 """Fetch today's Hyderabad gold rate (22K / 24K, per gram and per 10 g) and write data/gold.json for the blog ticker."""
-import json, re, sys, datetime as dt, urllib.request
+import html as H, json, re, sys, datetime as dt, urllib.request
 from pathlib import Path
 URL = "https://www.goodreturns.in/gold-rates/hyderabad.html"
 req = urllib.request.Request(URL, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36", "Accept-Language": "en-IN,en;q=0.9"})
 html = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "ignore")
 text = re.sub(r"<[^>]+>", " ", html)
-text = re.sub(r"\s+", " ", text)
+text = re.sub(r"\s+", " ", H.unescape(text))
 
-def grab(label):
-    m = re.search(label + r"[^₹]{0,80}₹\s?([\d,]{4,9})", text)
-    return int(m.group(1).replace(",", "")) if m else None
-
-g24, g22 = grab(r"24K Gold /g"), grab(r"22K Gold /g")
-if not g24 or not g22:
-    m = re.search(r"1\s*₹\s?([\d,]+)[^₹]*?₹\s?([\d,]+)", text)
-    if m:
-        g24, g22 = int(m.group(1).replace(",", "")), int(m.group(2).replace(",", ""))
+m = re.search(r"Gram 24K 22K 18K 1 ₹\s?([\d,]+)[^₹]*?₹\s?([\d,]+)", text)
+g24, g22 = (int(m.group(1).replace(",", "")), int(m.group(2).replace(",", ""))) if m else (None, None)
 print("parsed", g24, g22, "len", len(html))
 if not g24:
     for m in re.finditer(r"Gold Price Per Gram in Hyderabad", text):
