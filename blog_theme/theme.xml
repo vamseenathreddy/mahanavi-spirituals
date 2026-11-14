@@ -220,12 +220,13 @@ var home=!isItem&&!location.search&&!/^\/(p|search|\d{4})\//.test(P)&&cards.leng
 if(!home||!host)return;
 var fi=0;cards.some(function(c,i){if(c.getAttribute('data-v')){fi=i;return true}return false});var first=cards.splice(fi,1)[0];first.classList.add('gone');
 var fid=first.getAttribute('data-v'),ft=first.querySelector('h2 a'),fd=first.querySelector('time'),fu=ft.href,fx=ft.textContent;
-var nx=cards.splice(0,4);nx.forEach(function(c){c.classList.add('gone')});
+var arts=cards.filter(function(c){return !c.getAttribute('data-v')}).slice(0,8);arts.forEach(function(c){c.classList.add('gone')});cards=cards.filter(function(c){return arts.indexOf(c)===-1});var nx=cards.splice(0,4);nx.forEach(function(c){c.classList.add('gone')});
 var rl=cards.splice(0,10);rl.forEach(function(c){c.classList.add('gone')});
 var h='<section id="hero"><div><div class="stage">'+(fid?'<div class="bg" style="background-image:url('+thumb(fid)+')"></div><img class="fr" alt="" src="'+thumb(fid)+'"/><button class="pbtn" aria-label="ప్లే"></button>':'')+'<span class="new">కొత్త</span></div></div><div class="next"><h3>తదుపరి</h3>';
 nx.forEach(function(c){var a=c.querySelector('h2 a'),t=c.querySelector('time'),v=c.getAttribute('data-v'),s=v?thumb(v):(c.querySelector('img')||{}).src||'';h+='<a class="row" href="'+esc(a.href)+'"><div class="th" style="--t:url('+s+')"><img alt="" loading="lazy" src="'+esc(s)+'"/></div><div><p>'+esc(a.textContent)+'</p><time>'+esc(t?t.textContent:'')+'</time></div></a>'});
 h+='</div><div class="hinfo"><h2>'+esc(fx)+'</h2><time>'+esc(fd?fd.textContent:'')+'</time><div class="btns"><a class="btn pri" href="'+esc(fu)+'">ఇప్పుడు చూడండి</a><a class="btn" rel="noopener noreferrer" target="_blank" href="'+(fid?'https://www.youtube.com/watch?v='+fid:'https://www.youtube.com/@mahanavispirituals')+'">యూట్యూబ్‌లో తెరవండి</a></div></div></section>';
 if(rl.length){h+='<section class="sec"><div class="hd"><h3>తాజా షార్ట్స్</h3></div><div class="rail">';rl.forEach(function(c){var a=c.querySelector('h2 a'),v=c.getAttribute('data-v'),s=v?thumb(v):(c.querySelector('img')||{}).src||'';h+='<a class="sh" href="'+esc(a.href)+'"><div class="th"><img alt="" loading="lazy" src="'+esc(s)+'"/><span class="tag">షార్ట్</span></div><p>'+esc(a.textContent)+'</p></a>'});h+='</div></section>'}
+if(arts.length){h+='<section class="sec"><div class="hd"><h3>తాజా వ్యాసాలు</h3></div><div class="rail">';arts.forEach(function(c){var a=c.querySelector('h2 a'),im=c.querySelector('img'),t=c.querySelector('time');h+='<a class="sh" href="'+esc(a.href)+'"><div class="th"><img alt="" loading="lazy" src="'+esc(im?im.src:'')+'"/><span class="tag">వ్యాసం</span></div><p>'+esc(a.textContent)+'</p></a>'});h+='</div></section>'}
 if(cards.length)h+='<div class="sec"><div class="hd"><h3>మరిన్ని వీడియోలు</h3></div></div>';
 host.innerHTML=h;
 var pbn=host.querySelector('.pbtn');if(pbn&&fid)pbn.onclick=function(){embed(fid,host.querySelector('.stage'))};
