@@ -89,10 +89,10 @@ COLOR_GOLD = (230, 190, 90)
 INVOCATION_FONT_FRAC = 0.046
 SERIES_LABEL_FONT_FRAC = 0.040
 TITLE_FONT_FRAC = 0.072
-STORY_START_FONT_FRAC = 0.052   # starting size the auto-fit shrinks DOWN from
+STORY_START_FONT_FRAC = .062   # starting size the auto-fit shrinks DOWN from
 STORY_MIN_FONT_FRAC = 0.030     # legibility floor -- see module docstring
 STORY_COMFORT_FONT_FRAC = 0.036  # footer decorations are dropped before the story shrinks below this
-MORAL_FONT_FRAC = 0.042
+MORAL_FONT_FRAC = .050
 SOURCE_FONT_FRAC = 0.030
 SUBSCRIBE_FONT_FRAC = 0.038
 
@@ -295,10 +295,11 @@ class PuranaShortCardRenderer:
 
             # Fixed engagement line (subscribe reminder) sits at the validated
             # footer_bottom; the subscribe line (and everything above it) moves up by its height.
+            subscribe_h = 0  # 2026-11-14: subscribe + bell lines removed, space goes to the main text
             opinion_font = self._fit_font_to_width(
                 draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
-            opinion_h = int(opinion_font.size * 1.3) * 2   # two lines
+            opinion_h = 0
             opinion_top = footer_bottom - opinion_h
             subscribe_top = opinion_top - int(height * 0.012) - subscribe_h
             lead_top = subscribe_top        # everything above the footer is laid out against this, as before
@@ -382,9 +383,6 @@ class PuranaShortCardRenderer:
 
             for _k, _pl in enumerate(pl_lines):
                 self._draw_centered_line(draw, _pl, pl_font, width, pl_top + _k * pl_lh, COLOR_GOLD)
-            self._draw_centered_line(draw, card.subscribe_text, subscribe_font, width, subscribe_top, COLOR_TEXT_LIGHT)
-            for _i, _ln in enumerate(OPINION_LINES):
-                self._draw_centered_line(draw, _ln, opinion_font, width, opinion_top + _i * int(opinion_font.size * 1.3), COLOR_TEXT_LIGHT)
 
             return background, chakra_img, chakra_cx, chakra_cy, text_layer
 

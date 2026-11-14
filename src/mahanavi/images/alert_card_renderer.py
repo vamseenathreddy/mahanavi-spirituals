@@ -90,11 +90,11 @@ ICON_ROW_TOP = int(ALERT_CARD_HEIGHT * 0.035)
 # Fixed, generous sizes (fraction of width) -- long content WRAPS instead
 # of shrinking these, so a short line always stays this large.
 TITLE_FONT_FRAC = 0.10
-LABEL_FONT_FRAC = 0.056
-VALUE_FONT_FRAC = 0.074
+LABEL_FONT_FRAC = 0.068
+VALUE_FONT_FRAC = 0.088
 SUBSCRIBE_FONT_FRAC = 0.050
-SECONDARY_FONT_FRAC = 0.048  # 2026-10-17: was 0.032; older viewers could not read it. Close to LABEL size now.
-QUOTE_FONT_FRAC = 0.036  # devotional quote, filling the gap above the footer -- see quote_text below
+SECONDARY_FONT_FRAC = 0.058  # 2026-10-17: was 0.032; older viewers could not read it. Close to LABEL size now.
+QUOTE_FONT_FRAC = 0.044  # devotional quote, filling the gap above the footer -- see quote_text below
 QUOTE_SOURCE_FONT_FRAC = 0.026
 COLOR_QUOTE_TEXT = (235, 215, 170)  # soft gold -- distinct from the plain white body text, matches DATE_BADGE_BG tone
 
@@ -215,15 +215,16 @@ class AlertCardRenderer:
             title_font = self._fit_font_to_width(
                 draw, card.title, max_width=content_width, start_size=int(width * TITLE_FONT_FRAC), weight="Bold",
             )
+            has_sub = bool((card.subscribe_text or "").strip())
             subscribe_font = self._fit_font_to_width(
                 draw, card.subscribe_text, max_width=content_width,
                 start_size=int(width * SUBSCRIBE_FONT_FRAC), weight="Bold",
-            )
+            ) if has_sub else None
 
             title_bbox = draw.textbbox((0, 0), card.title, font=title_font)
             title_h = int(title_bbox[3] - title_bbox[1])
 
-            subscribe_bbox = draw.textbbox((0, 0), card.subscribe_text, font=subscribe_font)
+            subscribe_bbox = draw.textbbox((0, 0), card.subscribe_text, font=subscribe_font) if has_sub else (0, 0, 0, 0)
             subscribe_h = int(subscribe_bbox[3] - subscribe_bbox[1])
 
             # Optional engagement line (e.g. "comment your ishta daivam"),
@@ -262,14 +263,18 @@ class AlertCardRenderer:
                 # content above keeps its size; capped well clear of the caption zone.
                 footer_bottom = min(footer_bottom + comment_h + footer_line_gap, int(height * 0.75))  # 2026-10-21: was 0.84; Super Thanks button overlapped the subscribe line
             # Fixed engagement line at the very bottom of the footer block (2026-10-08 request).
-            opinion_font = self._fit_font_to_width(
-                draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
-            )
-            opinion_bbox = draw.textbbox((0, 0), max(OPINION_LINES, key=len), font=opinion_font)
-            opinion_line_h = int(opinion_font.size * 1.3)
-            opinion_h = opinion_line_h * 2   # two lines
-            footer_block_h = (subscribe_h + footer_line_gap + opinion_h
-                              + (comment_h + footer_line_gap if comment_lines else 0))
+            # 2026-11-14: subscribe + bell/opinion lines removed (empty text -> zero height) so the main text can be bigger.
+            has_op = bool(OPINION_LINES) and has_sub
+            if has_op:
+                opinion_font = self._fit_font_to_width(
+                    draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
+                )
+                opinion_line_h = int(opinion_font.size * 1.3)
+                opinion_h = opinion_line_h * 2   # two lines
+            else:
+                opinion_font, opinion_line_h, opinion_h = None, 0, 0
+            footer_block_h = ((subscribe_h + footer_line_gap if has_sub else 0) + opinion_h
+                              + (comment_h if comment_lines else 0))
             footer_top = footer_bottom - footer_block_h
 
             content_top = badge_bottom + int(height * 0.025) if card.date_text else (
@@ -414,14 +419,15 @@ class AlertCardRenderer:
                     # else: genuinely no room even at the smallest size -- skip silently.
 
             opinion_top = footer_bottom - opinion_h
-            subscribe_top = opinion_top - footer_line_gap - subscribe_h
+            subscribe_top = opinion_top - footer_line_gap - subscribe_h if has_sub else opinion_top
             subscribe_w = subscribe_bbox[2] - subscribe_bbox[0]
-            draw.text(
-                ((width - subscribe_w) // 2, subscribe_top - subscribe_bbox[1]),
-                card.subscribe_text, font=subscribe_font, fill=COLOR_TEXT_LIGHT,
-            )
+            if has_sub:
+                draw.text(
+                    ((width - subscribe_w) // 2, subscribe_top - subscribe_bbox[1]),
+                    card.subscribe_text, font=subscribe_font, fill=COLOR_TEXT_LIGHT,
+                )
 
-            for _i, _ln in enumerate(OPINION_LINES):
+            for _i, _ln in enumerate(OPINION_LINES if has_op else []):
                 _b = draw.textbbox((0, 0), _ln, font=opinion_font)
                 draw.text(
                     ((width - (_b[2] - _b[0])) // 2, opinion_top + _i * opinion_line_h - _b[1]),

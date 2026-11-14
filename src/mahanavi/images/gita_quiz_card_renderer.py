@@ -71,10 +71,10 @@ CARD_HEIGHT = 1920
 
 INVOCATION_FONT_FRAC = 0.046
 SERIES_LABEL_FONT_FRAC = 0.040
-QUESTION_FONT_FRAC = 0.042
+QUESTION_FONT_FRAC = .050
 SANSKRIT_START_FONT_FRAC = 0.050
 SANSKRIT_MIN_FONT_FRAC = 0.030
-OPTION_FONT_FRAC = 0.040
+OPTION_FONT_FRAC = .048
 CTA_START_FONT_FRAC = 0.034
 CTA_MIN_FONT_FRAC = 0.024
 
@@ -177,10 +177,11 @@ class GitaQuizCardRenderer:
 
             # Fixed engagement line (subscribe reminder) sits at the validated
             # footer_bottom; the subscribe line (and everything above it) moves up by its height.
+            subscribe_h = 0  # 2026-11-14: subscribe + bell lines removed, space goes to the main text
             opinion_font = self._fit_font_to_width(
                 draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
-            opinion_h = int(opinion_font.size * 1.3) * 2   # two lines
+            opinion_h = 0
             opinion_top = footer_bottom - opinion_h
             subscribe_top = opinion_top - int(height * 0.012) - subscribe_h
             icon_row_top = subscribe_top - block_gap - icon_size if card.icon_paths else subscribe_top
@@ -228,9 +229,6 @@ class GitaQuizCardRenderer:
             if card.icon_paths:
                 self._draw_icon_row(canvas, card.icon_paths, width, icon_row_top)
 
-            self._draw_paragraph(draw, subscribe_lines, subscribe_font, width, subscribe_top, COLOR_TEXT_LIGHT)
-            for _i, _ln in enumerate(OPINION_LINES):
-                self._draw_centered_line(draw, _ln, opinion_font, width, opinion_top + _i * int(opinion_font.size * 1.3), COLOR_TEXT_LIGHT)
 
             if card.next_verse_hint is not None:
                 self._draw_next_hint_block(

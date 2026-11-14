@@ -100,9 +100,9 @@ COLOR_GOLD = (230, 190, 90)
 INVOCATION_FONT_FRAC = 0.046
 SERIES_LABEL_FONT_FRAC = 0.040
 BADGE_FONT_FRAC = 0.036
-SANSKRIT_START_FONT_FRAC = 0.054
+SANSKRIT_START_FONT_FRAC = .062
 SANSKRIT_MIN_FONT_FRAC = 0.032
-MEANING_START_FONT_FRAC = 0.046
+MEANING_START_FONT_FRAC = .056
 MEANING_MIN_FONT_FRAC = 0.028
 SOURCE_FONT_FRAC = 0.030
 SUBSCRIBE_START_FONT_FRAC = 0.038
@@ -246,10 +246,11 @@ class GitaSlokaCardRenderer:
 
             # Fixed engagement line (subscribe reminder) sits at the validated
             # footer_bottom; the subscribe line (and everything above it) moves up by its height.
+            subscribe_h = 0  # 2026-11-14: subscribe + bell lines removed, space goes to the main text
             opinion_font = self._fit_font_to_width(
                 draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
-            opinion_h = int(opinion_font.size * 1.3) * 2   # two lines
+            opinion_h = 0
             opinion_top = footer_bottom - opinion_h
             subscribe_top = opinion_top - int(height * 0.012) - subscribe_h
             icon_row_top = subscribe_top - block_gap - icon_size if card.icon_paths else subscribe_top
@@ -298,9 +299,6 @@ class GitaSlokaCardRenderer:
             if card.icon_paths:
                 self._draw_icon_row(canvas, card.icon_paths, width, icon_row_top)
 
-            self._draw_paragraph(draw, subscribe_lines, subscribe_font, width, subscribe_top, COLOR_TEXT_LIGHT)
-            for _i, _ln in enumerate(OPINION_LINES):
-                self._draw_centered_line(draw, _ln, opinion_font, width, opinion_top + _i * int(opinion_font.size * 1.3), COLOR_TEXT_LIGHT)
 
             if card.previous_quiz_sloka is not None:
                 self._draw_yesterday_block(draw, card.previous_quiz_sloka, width, content_width, footer_bottom, block_gap)

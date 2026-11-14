@@ -79,10 +79,10 @@ COLOR_GOLD = (230, 190, 90)
 SERIES_LABEL_FONT_FRAC = 0.040
 RASHI_NAME_FONT_FRAC = 0.082
 ENGLISH_NAME_FONT_FRAC = 0.042  # new: English zodiac name shown under the Telugu name
-PLANET_FONT_FRAC = 0.048
+PLANET_FONT_FRAC = .056
 # Mantra now shares RASHI_NAME_FONT_FRAC as its start size (explicit
 # request 2026-10-04: "same size as karkatakam") -- no separate fraction.
-CHANT_COUNT_FONT_FRAC = 0.040
+CHANT_COUNT_FONT_FRAC = .048
 # Shown on EVERY card now (explicit request 2026-10-04: "we have to give
 # benefits of reading it... if it's bad time it will be stable, or if
 # it's good then get more benefits") -- the benefit and the chant count
@@ -272,10 +272,11 @@ class RashiCardRenderer:
             # extended to cover the icon row too.
             # Fixed engagement line (subscribe reminder) sits at the validated
             # footer_bottom; the subscribe line (and everything above it) moves up by its height.
+            subscribe_h = 0  # 2026-11-14: subscribe + bell lines removed, space goes to the main text
             opinion_font = self._fit_font_to_width(
                 draw, max(OPINION_LINES, key=len), max_width=content_width, start_size=int(width * OPINION_SIZE_FRAC), weight="Bold",
             )
-            opinion_h = int(opinion_font.size * 1.3) * 2   # two lines
+            opinion_h = 0
             opinion_top = footer_bottom - opinion_h
             subscribe_top = opinion_top - int(height * 0.012) - subscribe_h
             comment_top = subscribe_top - footer_line_gap - comment_h if card.comment_prompt_text else subscribe_top
@@ -345,9 +346,6 @@ class RashiCardRenderer:
             if card.icon_paths:
                 self._draw_icon_row(canvas, card.icon_paths, width, icon_row_top)
 
-            self._draw_centered_line(draw, card.subscribe_text, subscribe_font, width, subscribe_top, COLOR_TEXT_LIGHT)
-            for _i, _ln in enumerate(OPINION_LINES):
-                self._draw_centered_line(draw, _ln, opinion_font, width, opinion_top + _i * int(opinion_font.size * 1.3), COLOR_TEXT_LIGHT)
             if card.comment_prompt_text and comment_font is not None:
                 line_h = int(comment_font.size * 1.15)
                 for k, comment_line in enumerate(card.comment_prompt_text.split("\n")):
