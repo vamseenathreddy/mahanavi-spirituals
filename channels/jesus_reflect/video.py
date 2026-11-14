@@ -19,7 +19,7 @@ W, H = lv.W, lv.H
 GOLD, WHITE = lv.GOLD, lv.WHITE
 VOICES = ("te-IN-MohanNeural", "te-IN-ShrutiNeural")
 RATE = "-8%"
-SUBSCRIBE_TE = "తర్వాతి సందేశం కోసం సబ్‌స్క్రైబ్ చేసి, బెల్ ఐకాన్ నొక్కి ఆల్ నోటిఫికేషన్స్ ఎంచుకోండి"
+SUBSCRIBE_TE = "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి"
 HEAD_STORY, HEAD_OPINION, HEAD_PRAYER = "ఒక చిన్న కథ", "నా అభిప్రాయం", "ప్రార్థన"
 
 
@@ -142,7 +142,7 @@ def build(item: dict, workdir: Path, out_mp4: Path, seed: int = 0, voice: bool =
         segs.append((text_slide(bgs[k % len(bgs)], p, workdir / f"s_op{i}.png", head=HEAD_OPINION), p, 2.5, HEAD_OPINION if i == 0 else ""))
         k += 1
     segs.append((text_slide(bgs[k % len(bgs)], item["prayer"], workdir / "s_prayer.png", head=HEAD_PRAYER), item["prayer"], 4.0, HEAD_PRAYER))
-    segs.append((signature_slide(bgs[(k + 1) % len(bgs)], workdir / "s_sig.png"), "మీ వంశీ. సబ్‌స్క్రైబ్ చేసి, బెల్ ఐకాన్ నొక్కండి.", 5.0, "Vamsee"))
+    segs.append((signature_slide(bgs[(k + 1) % len(bgs)], workdir / "s_sig.png"), "మీ వంశీ. దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ ఆత్మీయులకు పంచండి.", 5.0, "Vamsee"))
 
     clips, voice_parts, chapters, t = [], [], [], 0.0
     sil = workdir / "sil"
