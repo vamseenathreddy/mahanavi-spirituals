@@ -124,21 +124,21 @@ footer p{max-width:520px}
 ]]></b:skin>
 </head>
 <body>
-<a class='skip' href='#main'>Skip to content</a>
+<a class='skip' href='#main'>ముఖ్య భాగానికి వెళ్ళండి</a>
 <header class='bar nosel'><div class='in'>
-<a class='brand' expr:href='data:blog.homepageUrl'><span class='om'>&#2384;</span><span>Mahanavi Spirituals<small>Telugu Devotional</small></span></a>
-<nav class='menu'><a href='/'>Home</a><a href='/p/about.html'>About</a><a href='/p/bhakti-songs.html'>Bhakti Songs</a><a href='/p/mantras-stotras.html'>Mantras &amp; Stotras</a><a href='/p/testimonials.html'>Testimonials</a><a href='/p/daily-devotion.html'>Daily Devotion</a><a href='/p/contact.html'>Contact</a></nav>
+<a class='brand' expr:href='data:blog.homepageUrl'><span class='om'>&#2384;</span><span>Mahanavi Spirituals<small>తెలుగు భక్తి</small></span></a>
+<nav class='menu'><a href='/'>హోమ్</a><a href='/p/about.html'>మా గురించి</a><a href='/p/bhakti-songs.html'>భక్తి పాటలు</a><a href='/p/mantras-stotras.html'>మంత్రాలు &amp; స్తోత్రాలు</a><a href='/p/testimonials.html'>అభిప్రాయాలు</a><a href='/p/daily-devotion.html'>రోజువారీ భక్తి</a><a href='/p/contact.html'>సంప్రదించండి</a></nav>
 <span class='sp'></span>
-<form class='search' action='/search' method='get' role='search'><input name='q' type='search' placeholder='Search videos' aria-label='Search videos' autocomplete='off'/></form>
-<a class='sub' rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals?sub_confirmation=1'><i></i>Subscribe</a>
+<form class='search' action='/search' method='get' role='search'><input name='q' type='search' placeholder='వీడియోలు వెతకండి' aria-label='వెతకండి' autocomplete='off'/></form>
+<a class='sub' rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals?sub_confirmation=1'><i></i>సబ్‌స్క్రైబ్</a>
 </div></header>
 <main class='wrap' id='main-content'>
-<div class='chips nosel'><a class='chip on' expr:href='data:blog.homepageUrl'>All</a><a class='chip' href='/search/label/Muhurta'>Muhurta</a><a class='chip' href='/search/label/Mantras'>Mantras</a><a class='chip' href='/search/label/Shlokas'>Shlokas</a><a class='chip' href='/search/label/Ramayana'>Ramayana</a><a class='chip' href='/search/label/Chanakya%20Neethi'>Chanakya Neethi</a><a class='chip' href='/search/label/Purana%20Stories'>Purana Stories</a><a class='chip' href='/search/label/Lakshmi'>Lakshmi</a><a class='chip' href='/search/label/Festivals%20%26%20Vratas'>Festivals &amp; Vratas</a><a class='chip' href='/search/label/Pooja%20Rules'>Pooja Rules</a><a class='chip' href='/search/label/Shorts'>Shorts</a></div>
+<div class='chips nosel'><a class='chip on' expr:href='data:blog.homepageUrl'>అన్నీ</a><a class='chip' href='/search/label/Muhurta'>ముహూర్తం</a><a class='chip' href='/search/label/Mantras'>మంత్రాలు</a><a class='chip' href='/search/label/Shlokas'>శ్లోకాలు</a><a class='chip' href='/search/label/Ramayana'>రామాయణం</a><a class='chip' href='/search/label/Chanakya%20Neethi'>చాణక్య నీతి</a><a class='chip' href='/search/label/Purana%20Stories'>పురాణ కథలు</a><a class='chip' href='/search/label/Lakshmi'>లక్ష్మి</a><a class='chip' href='/search/label/Festivals%20%26%20Vratas'>పండుగలు &amp; వ్రతాలు</a><a class='chip' href='/search/label/Pooja%20Rules'>పూజా నియమాలు</a><a class='chip' href='/search/label/Shorts'>షార్ట్స్</a></div>
 <b:section class='mainsec' id='main' showaddelement='no' growth='vertical'>
 <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
 <b:includable id='main' var='top'>
 <b:if cond='data:view.isMultipleItems'>
-<div class='tick nosel' id='tick'><b>Latest</b><div class='tr'><div class='tt' id='tt'></div></div></div>
+<div class='tick nosel' id='tick'><b>తాజా</b><div class='tr'><div class='tt' id='tt'></div></div></div>
 <div id='hero-host'></div>
 <div class='grid'>
 <b:loop values='data:posts' var='post'>
@@ -148,14 +148,14 @@ footer p{max-width:520px}
 </article>
 </b:loop>
 </div>
-<b:if cond='data:olderPageUrl'><a class='more' expr:href='data:olderPageUrl'>Load older videos</a></b:if>
+<b:if cond='data:olderPageUrl'><a class='more' expr:href='data:olderPageUrl'>పాత వీడియోలు</a></b:if>
 <b:else/>
 <b:loop values='data:posts' var='post'>
 <article class='watch'>
 <div class='pl'></div>
 <h1><data:post.title/></h1>
 <b:if cond='data:post.date'><div class='by'><time><data:post.date/></time></div></b:if>
-<div class='sbar nosel'><span class='om'>&#2384;</span><div><b>Mahanavi Spirituals</b><span>New devotional video every day</span></div><span class='sp'></span><a class='btn pri' id='subbtn' rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals'>Watch on YouTube</a><a class='btn' rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals?sub_confirmation=1'>Subscribe</a></div>
+<div class='sbar nosel'><span class='om'>&#2384;</span><div><b>Mahanavi Spirituals</b><span>ప్రతిరోజూ కొత్త భక్తి వీడియో</span></div><span class='sp'></span><a class='btn pri' id='subbtn' rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals'>యూట్యూబ్‌లో చూడండి</a><a class='btn' rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals?sub_confirmation=1'>సబ్‌స్క్రైబ్</a></div>
 <div class='post-body'><data:post.body/></div>
 <b:if cond='data:post.labels'><div class='tags nosel'><b:loop values='data:post.labels' var='label'><a class='chip' expr:href='data:label.url'><data:label.name/></a></b:loop></div></b:if>
 </article>
@@ -165,9 +165,9 @@ footer p{max-width:520px}
 </b:widget></b:section>
 </main>
 <footer><div class='in'>
-<div><b>Mahanavi Spirituals</b><p>Daily Telugu devotional Shorts: muhurtham, mantras, Ramayana stories, Gita slokas, Chanakya neeti and more. Visuals are digitally created devotional artwork.</p></div>
-<nav class='nosel'><a href='/p/about.html'>About</a><a href='/p/contact.html'>Contact</a><a href='/p/privacy-policy.html'>Privacy Policy</a><a href='/p/disclaimer.html'>Disclaimer</a><a rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals'>YouTube</a></nav>
-<div>&#169; Mahanavi Spirituals. All rights reserved.</div>
+<div><b>Mahanavi Spirituals</b><p>ప్రతిరోజూ తెలుగు భక్తి షార్ట్స్: ముహూర్తం, మంత్రాలు, రామాయణ కథలు, గీతా శ్లోకాలు, చాణక్య నీతి మరిన్ని. చిత్రాలు డిజిటల్‌గా రూపొందించిన భక్తి కళాకృతులు.</p></div>
+<nav class='nosel'><a href='/p/about.html'>మా గురించి</a><a href='/p/contact.html'>సంప్రదించండి</a><a href='/p/privacy-policy.html'>గోప్యతా విధానం</a><a href='/p/disclaimer.html'>నిరాకరణ</a><a rel='noopener noreferrer' target='_blank' href='https://www.youtube.com/@mahanavispirituals'>YouTube</a></nav>
+<div>&#169; Mahanavi Spirituals. అన్ని హక్కులు ప్రత్యేకించబడ్డాయి.</div>
 </div></footer>
 <script>//<![CDATA[
 (function(){
@@ -183,10 +183,20 @@ function thumb(id){return 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
 function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentLoaded',fn)}
-function fallback(cb){var sc=d.createElement('script');w.__fb=function(j){try{var e=j.feed.entry||[],h='<div class="tick nosel" id="tick"><b>Latest</b><div class="tr"><div class="tt" id="tt"></div></div></div><div id="hero-host"></div><div class="grid">';e.forEach(function(x){var l=(x.link||[]).filter(function(k){return k.rel==='alternate'})[0];if(!l)return;var ct=(x.content||{}).$t||'',em=/embed\/([\w-]{11})/.exec(ct),mi=/<img[^>]+src=["']([^"']+)/.exec(ct),im=em?thumb(em[1]):(mi?mi[1]:((x['media$thumbnail']||{}).url||'').replace(/\/s72-c\//,'/s400/')).replace(/^http:/,'https:');var dt=(x.published||{}).$t||'';h+='<article class="card"><a class="th" href="'+esc(l.href)+'"><img alt="" src="'+esc(im)+'"/><span class="play"></span></a><div class="meta"><h2><a href="'+esc(l.href)+'">'+esc(x.title.$t)+'</a></h2><time>'+esc(new Date(dt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}))+'</time></div></article>'});h+='</div>';var m=d.querySelector('main.wrap');if(m){var o=d.createElement('div');o.innerHTML=h;while(o.firstChild)m.appendChild(o.firstChild)}}catch(z){}cb()};sc.onerror=cb;sc.src='/feeds/posts/default?alt=json-in-script&max-results=30&callback=__fb';d.body.appendChild(sc)}
+function fallback(cb){var P=w.location.pathname,S=w.location.search,lm=/^\/search\/label\/([^?]+)/.exec(P),qm=/[?&]q=([^&]+)/.exec(S),pg=/^\/p\//.test(P),it=/^\/\d{4}\/\d\d\/.+\.html$/.test(P),u;
+if(pg)u='/feeds/pages/default?max-results=50';else if(it)u='/feeds/posts/default?path='+encodeURIComponent(P);else if(lm)u='/feeds/posts/default/-/'+lm[1]+'?max-results=30';else if(qm)u='/feeds/posts/default?q='+qm[1]+'&max-results=30';else u='/feeds/posts/default?max-results=30';
+u+=(u.indexOf('?')>-1?'&':'?')+'alt=json-in-script&callback=__fb';
+function lk(x){return ((x.link||[]).filter(function(k){return k.rel==='alternate'})[0]||{}).href||''}
+function fd(t){return new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+var sc=d.createElement('script');w.__fb=function(j){try{var e=j.feed.entry||[],h='',m=d.querySelector('main.wrap');
+if(pg||it){var x=e.filter(function(y){try{return new URL(lk(y)).pathname===P}catch(z){return false}})[0]||(it?e[0]:null);if(x){var tg=(x.category||[]).map(function(c){return '<a class="chip" href="/search/label/'+encodeURIComponent(c.term)+'">'+esc(c.term)+'</a>'}).join('');
+h='<article class="watch"><div class="pl"></div><h1>'+esc(x.title.$t)+'</h1><div class="by"><time>'+esc(fd(x.published.$t))+'</time></div><div class="sbar nosel"><span class="om">&#2384;</span><div><b>Mahanavi Spirituals</b><span>ప్రతిరోజూ కొత్త భక్తి వీడియో</span></div><span class="sp"></span><a class="btn pri" id="subbtn" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/@mahanavispirituals">యూట్యూబ్‌లో చూడండి</a><a class="btn" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/@mahanavispirituals?sub_confirmation=1">సబ్‌స్క్రైబ్</a></div><div class="post-body">'+((x.content||{}).$t||'')+'</div>'+(tg?'<div class="tags nosel">'+tg+'</div>':'')+'</article>'}}
+else{h='<div class="tick nosel" id="tick"><b>తాజా</b><div class="tr"><div class="tt" id="tt"></div></div></div><div id="hero-host"></div><div class="grid">';e.forEach(function(x){var l=lk(x);if(!l)return;var ct=(x.content||{}).$t||'',em=/embed\/([\w-]{11})/.exec(ct),mi=/<img[^>]+src=["']([^"']+)/.exec(ct),im=(em?thumb(em[1]):(mi?mi[1]:((x['media$thumbnail']||{}).url||'').replace(/\/s72-c\//,'/s400/'))).replace(/^http:/,'https:');
+h+='<article class="card"><a class="th" href="'+esc(l)+'"><img alt="" src="'+esc(im)+'"/><span class="play"></span></a><div class="meta"><h2><a href="'+esc(l)+'">'+esc(x.title.$t)+'</a></h2><time>'+esc(fd(x.published.$t))+'</time></div></article>'});h+='</div>';if(!e.length)h+='<p style="padding:40px 0;text-align:center;color:#ff9a1f">ఏమీ దొరకలేదు</p>'}
+if(m&&h){var o=d.createElement('div');o.innerHTML=h;while(o.firstChild)m.appendChild(o.firstChild)}}catch(z){}cb()};sc.onerror=cb;sc.src=u;d.body.appendChild(sc)}
 function boot(){try{
-if(!d.querySelector('.grid')&&!d.querySelector('.watch')&&!/^\/(p|search|\d{4})\//.test(w.location.pathname)&&!w.__fbd){w.__fbd=1;fallback(boot);return}
-var tt=d.getElementById('tt');if(tt){var fx='<a class="fx" href="/search?q=gold+price">Today gold price</a><a class="fx" href="/search?q=stock+market">Stock market today</a>';tt.innerHTML=fx;var sc=d.createElement('script');w.__tk=function(j){try{var e=j.feed.entry||[],o=fx;e.forEach(function(x){var l=(x.link||[]).filter(function(k){return k.rel==='alternate'})[0];if(l)o+='<a href="'+esc(l.href)+'">'+esc(x.title.$t)+'</a>'});tt.innerHTML=o}catch(z){}};sc.src='/feeds/posts/summary?alt=json-in-script&max-results=12&callback=__tk';d.body.appendChild(sc)}
+if(!d.querySelector('.grid')&&!d.querySelector('.watch')&&!w.__fbd){w.__fbd=1;fallback(boot);return}
+var tt=d.getElementById('tt');if(tt){var fx='<a class="fx" href="/search?q=gold">నేటి బంగారం ధర</a><a class="fx" href="/search?q=stock+market">నేటి స్టాక్ మార్కెట్</a>';tt.innerHTML=fx;var sc=d.createElement('script');w.__tk=function(j){try{var e=(j.feed.entry||[]).map(function(x){var l=(x.link||[]).filter(function(k){return k.rel==='alternate'})[0];var th=(x['media$thumbnail']||{}).url||'';return {h:l?l.href:'',t:x.title.$t,v:/\/vi\//.test(th),n:new Date(x.published.$t).toDateString()===new Date().toDateString()}}).filter(function(x){return x.h});var vs=e.filter(function(x){return x.v}),td=vs.filter(function(x){return x.n}),pick=(td.length?td:vs.slice(0,12)),o=fx;pick.forEach(function(x){o+='<a href="'+esc(x.h)+'">'+esc(x.t)+'</a>'});e.filter(function(x){return !x.v}).slice(0,4).forEach(function(x){o+='<a href="'+esc(x.h)+'">'+esc(x.t)+'</a>'});tt.innerHTML=o}catch(z){}};sc.src='/feeds/posts/summary?alt=json-in-script&max-results=40&callback=__tk';d.body.appendChild(sc)}
 
 var cards=[].slice.call(d.querySelectorAll('.grid .card'));
 cards.forEach(function(c){var im=c.querySelector('img'),id=vid(im&&im.src);if(id){c.setAttribute('data-v',id);im.src=thumb(id);c.querySelector('.th').style.setProperty('--t','url('+thumb(id)+')')}else if(im){c.querySelector('.th').style.setProperty('--t','url('+im.src+')')}});
@@ -194,7 +204,7 @@ if(!cards.length&&!isItem&&!isPage&&d.getElementById('hero-host')){var w2=d.quer
 var P=w.location.pathname,lm=/^\/search\/label\/([^?]+)/.exec(P);
 if(lm&&d.getElementById('hero-host')){var hh=d.createElement('h1');hh.className='page';hh.textContent=decodeURIComponent(lm[1].replace(/\+/g,' '));d.getElementById('hero-host').parentNode.insertBefore(hh,d.getElementById('hero-host'))}
 var qm=/[?&]q=([^&]+)/.exec(w.location.search);
-if(qm&&d.getElementById('hero-host')){var h2=d.createElement('h1');h2.className='page';h2.textContent='Results for: '+decodeURIComponent(qm[1].replace(/\+/g,' '));d.getElementById('hero-host').parentNode.insertBefore(h2,d.getElementById('hero-host'))}
+if(qm&&d.getElementById('hero-host')){var h2=d.createElement('h1');h2.className='page';h2.textContent='శోధన ఫలితాలు: '+decodeURIComponent(qm[1].replace(/\+/g,' '));d.getElementById('hero-host').parentNode.insertBefore(h2,d.getElementById('hero-host'))}
 var isItem=!!d.querySelector('.watch'),isPage=/^\/p\//.test(P);
 if(isItem&&!isPage)d.body.classList.add('item');
 var pb=d.querySelector('.post-body');
@@ -212,11 +222,11 @@ var fi=0;cards.some(function(c,i){if(c.getAttribute('data-v')){fi=i;return true}
 var fid=first.getAttribute('data-v'),ft=first.querySelector('h2 a'),fd=first.querySelector('time'),fu=ft.href,fx=ft.textContent;
 var nx=cards.splice(0,4);nx.forEach(function(c){c.classList.add('gone')});
 var rl=cards.splice(0,10);rl.forEach(function(c){c.classList.add('gone')});
-var h='<section id="hero"><div><div class="stage">'+(fid?'<div class="bg" style="background-image:url('+thumb(fid)+')"></div><img class="fr" alt="" src="'+thumb(fid)+'"/><button class="pbtn" aria-label="Play latest video"></button>':'')+'<span class="new">NEW</span></div></div><div class="next"><h3>Up next</h3>';
+var h='<section id="hero"><div><div class="stage">'+(fid?'<div class="bg" style="background-image:url('+thumb(fid)+')"></div><img class="fr" alt="" src="'+thumb(fid)+'"/><button class="pbtn" aria-label="ప్లే"></button>':'')+'<span class="new">కొత్త</span></div></div><div class="next"><h3>తదుపరి</h3>';
 nx.forEach(function(c){var a=c.querySelector('h2 a'),t=c.querySelector('time'),v=c.getAttribute('data-v'),s=v?thumb(v):(c.querySelector('img')||{}).src||'';h+='<a class="row" href="'+esc(a.href)+'"><div class="th" style="--t:url('+s+')"><img alt="" loading="lazy" src="'+esc(s)+'"/></div><div><p>'+esc(a.textContent)+'</p><time>'+esc(t?t.textContent:'')+'</time></div></a>'});
-h+='</div><div class="hinfo"><h2>'+esc(fx)+'</h2><time>'+esc(fd?fd.textContent:'')+'</time><div class="btns"><a class="btn pri" href="'+esc(fu)+'">Watch now</a><a class="btn" rel="noopener noreferrer" target="_blank" href="'+(fid?'https://www.youtube.com/watch?v='+fid:'https://www.youtube.com/@mahanavispirituals')+'">Open on YouTube</a></div></div></section>';
-if(rl.length){h+='<section class="sec"><div class="hd"><h3>Latest Shorts</h3></div><div class="rail">';rl.forEach(function(c){var a=c.querySelector('h2 a'),v=c.getAttribute('data-v'),s=v?thumb(v):(c.querySelector('img')||{}).src||'';h+='<a class="sh" href="'+esc(a.href)+'"><div class="th"><img alt="" loading="lazy" src="'+esc(s)+'"/><span class="tag">SHORT</span></div><p>'+esc(a.textContent)+'</p></a>'});h+='</div></section>'}
-if(cards.length)h+='<div class="sec"><div class="hd"><h3>More videos</h3></div></div>';
+h+='</div><div class="hinfo"><h2>'+esc(fx)+'</h2><time>'+esc(fd?fd.textContent:'')+'</time><div class="btns"><a class="btn pri" href="'+esc(fu)+'">ఇప్పుడు చూడండి</a><a class="btn" rel="noopener noreferrer" target="_blank" href="'+(fid?'https://www.youtube.com/watch?v='+fid:'https://www.youtube.com/@mahanavispirituals')+'">యూట్యూబ్‌లో తెరవండి</a></div></div></section>';
+if(rl.length){h+='<section class="sec"><div class="hd"><h3>తాజా షార్ట్స్</h3></div><div class="rail">';rl.forEach(function(c){var a=c.querySelector('h2 a'),v=c.getAttribute('data-v'),s=v?thumb(v):(c.querySelector('img')||{}).src||'';h+='<a class="sh" href="'+esc(a.href)+'"><div class="th"><img alt="" loading="lazy" src="'+esc(s)+'"/><span class="tag">షార్ట్</span></div><p>'+esc(a.textContent)+'</p></a>'});h+='</div></section>'}
+if(cards.length)h+='<div class="sec"><div class="hd"><h3>మరిన్ని వీడియోలు</h3></div></div>';
 host.innerHTML=h;
 var pbn=host.querySelector('.pbtn');if(pbn&&fid)pbn.onclick=function(){embed(fid,host.querySelector('.stage'))};
 }catch(e){[].forEach.call(d.querySelectorAll('.card.gone'),function(c){c.classList.remove('gone')})}}
