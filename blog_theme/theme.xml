@@ -120,7 +120,8 @@ footer p{max-width:520px}
 .nosel{-webkit-user-select:none;user-select:none}
 @media (max-width:980px){#hero{grid-template-columns:1fr}.next{grid-column:1;grid-row:auto}.hinfo{grid-column:1}.menu{display:none}.search input{width:140px}.search input:focus{width:170px}}
 @media (max-width:560px){.bar .in{gap:10px;padding:9px 14px}.brand small{display:none}.brand{font-size:16px}.om{width:36px;height:36px;font-size:19px}.search{display:none}.wrap{padding:16px 14px 50px}.grid{grid-template-columns:1fr}.sh{width:150px}.row{grid-template-columns:128px 1fr}.stage{border-radius:16px}.pbtn{transform:scale(.8)}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}]]></b:skin>
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}.tick{display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:9px 14px;background:var(--panel);border:1px solid var(--line);border-radius:999px;overflow:hidden}.tick b{flex:none;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#2b1100;background:var(--saf);border-radius:999px;padding:3px 10px}.tick .tr{overflow:hidden;flex:1;white-space:nowrap}.tick .tt{display:inline-block;padding-left:100%;animation:tk 90s linear infinite}.tick .tt:hover{animation-play-state:paused}.tick a{margin-right:38px;font-size:14px;color:var(--ink)}.tick a:hover{color:var(--saf)}.tick a.fx{color:var(--gold);font-weight:600}@keyframes tk{to{transform:translateX(-100%)}}@media (prefers-reduced-motion:reduce){.tick .tt{animation:none;padding-left:0}}
+]]></b:skin>
 </head>
 <body>
 <a class='skip' href='#main'>Skip to content</a>
@@ -137,6 +138,7 @@ footer p{max-width:520px}
 <b:widget id='Blog1' locked='true' title='Blog Posts' type='Blog' version='2'>
 <b:includable id='main' var='top'>
 <b:if cond='data:view.isMultipleItems'>
+<div class='tick nosel' id='tick'><b>Latest</b><div class='tr'><div class='tt' id='tt'></div></div></div>
 <div id='hero-host'></div>
 <div class='grid'>
 <b:loop values='data:posts' var='post'>
@@ -182,6 +184,8 @@ function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&am
 function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
 function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentLoaded',fn)}
 ready(function(){try{
+var tt=d.getElementById('tt');if(tt){var fx='<a class="fx" href="/search?q=gold+price">Today gold price</a><a class="fx" href="/search?q=stock+market">Stock market today</a>';tt.innerHTML=fx;var sc=d.createElement('script');w.__tk=function(j){try{var e=j.feed.entry||[],o=fx;e.forEach(function(x){var l=(x.link||[]).filter(function(k){return k.rel==='alternate'})[0];if(l)o+='<a href="'+esc(l.href)+'">'+esc(x.title.$t)+'</a>'});tt.innerHTML=o}catch(z){}};sc.src='/feeds/posts/summary?alt=json-in-script&max-results=12&callback=__tk';d.body.appendChild(sc)}
+
 var cards=[].slice.call(d.querySelectorAll('.grid .card'));
 cards.forEach(function(c){var im=c.querySelector('img'),id=vid(im&&im.src);if(id){c.setAttribute('data-v',id);im.src=thumb(id);c.querySelector('.th').style.setProperty('--t','url('+thumb(id)+')')}else if(im){c.querySelector('.th').style.setProperty('--t','url('+im.src+')')}});
 if(!cards.length&&!isItem&&!isPage&&d.getElementById('hero-host')){var w2=d.querySelector('.wrap');if(w2){var n=d.createElement('p');n.style.cssText='padding:40px 0;text-align:center;color:#ff9a1f';n.textContent='No videos were received from Blogger on this page (theme debug: sections='+d.querySelectorAll('.section').length+', grid='+d.querySelectorAll('.grid').length+').';w2.appendChild(n)}}
@@ -202,7 +206,7 @@ var sb=d.getElementById('subbtn');if(sb)sb.href='https://www.youtube.com/watch?v
 if(isPage&&pb){pb.className+=' page';var pl0=d.querySelector('.pl');if(pl0)pl0.style.display='none';var sb0=d.querySelector('.sbar');if(sb0)sb0.style.display='none'}
 var home=!isItem&&!location.search&&!/^\/(p|search|\d{4})\//.test(P)&&cards.length>2,host=d.getElementById('hero-host');
 if(!home||!host)return;
-var fi=0;for(var q=0;q<cards.length;q++){if(cards[q].getAttribute('data-v')){fi=q;break}}var first=cards.splice(fi,1)[0];first.classList.add('gone');
+var fi=0;cards.some(function(c,i){if(c.getAttribute('data-v')){fi=i;return true}return false});var first=cards.splice(fi,1)[0];first.classList.add('gone');
 var fid=first.getAttribute('data-v'),ft=first.querySelector('h2 a'),fd=first.querySelector('time'),fu=ft.href,fx=ft.textContent;
 var nx=cards.splice(0,4);nx.forEach(function(c){c.classList.add('gone')});
 var rl=cards.splice(0,10);rl.forEach(function(c){c.classList.add('gone')});
