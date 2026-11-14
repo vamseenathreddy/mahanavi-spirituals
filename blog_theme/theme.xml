@@ -183,7 +183,9 @@ function thumb(id){return 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
 function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentLoaded',fn)}
-ready(function(){try{
+function fallback(cb){var sc=d.createElement('script');w.__fb=function(j){try{var e=j.feed.entry||[],h='<div id="hero-host"></div><div class="grid">';e.forEach(function(x){var l=(x.link||[]).filter(function(k){return k.rel==='alternate'})[0];if(!l)return;var im=(x['media$thumbnail']||{}).url||'';var dt=(x.published||{}).$t||'';h+='<article class="card"><a class="th" href="'+esc(l.href)+'"><img alt="" src="'+esc(im)+'"/><span class="play"></span></a><div class="meta"><h2><a href="'+esc(l.href)+'">'+esc(x.title.$t)+'</a></h2><time>'+esc(dt.slice(0,10))+'</time></div></article>'});h+='</div>';var m=d.querySelector('main.wrap');if(m){var o=d.createElement('div');o.innerHTML=h;while(o.firstChild)m.appendChild(o.firstChild)}}catch(z){}cb()};sc.onerror=cb;sc.src='/feeds/posts/default?alt=json-in-script&max-results=30&callback=__fb';d.body.appendChild(sc)}
+function boot(){try{
+if(!d.querySelector('.grid')&&!d.querySelector('.watch')&&!/^\/(p|search|\d{4})\//.test(w.location.pathname)&&!w.__fbd){w.__fbd=1;fallback(boot);return}
 var tt=d.getElementById('tt');if(tt){var fx='<a class="fx" href="/search?q=gold+price">Today gold price</a><a class="fx" href="/search?q=stock+market">Stock market today</a>';tt.innerHTML=fx;var sc=d.createElement('script');w.__tk=function(j){try{var e=j.feed.entry||[],o=fx;e.forEach(function(x){var l=(x.link||[]).filter(function(k){return k.rel==='alternate'})[0];if(l)o+='<a href="'+esc(l.href)+'">'+esc(x.title.$t)+'</a>'});tt.innerHTML=o}catch(z){}};sc.src='/feeds/posts/summary?alt=json-in-script&max-results=12&callback=__tk';d.body.appendChild(sc)}
 
 var cards=[].slice.call(d.querySelectorAll('.grid .card'));
@@ -217,7 +219,8 @@ if(rl.length){h+='<section class="sec"><div class="hd"><h3>Latest Shorts</h3></d
 if(cards.length)h+='<div class="sec"><div class="hd"><h3>More videos</h3></div></div>';
 host.innerHTML=h;
 var pbn=host.querySelector('.pbtn');if(pbn&&fid)pbn.onclick=function(){embed(fid,host.querySelector('.stage'))};
-}catch(e){[].forEach.call(d.querySelectorAll('.card.gone'),function(c){c.classList.remove('gone')})}});
+}catch(e){[].forEach.call(d.querySelectorAll('.card.gone'),function(c){c.classList.remove('gone')})}}
+ready(boot);
 })();
 //]]></script>
 </body>
