@@ -202,7 +202,7 @@ var sb=d.getElementById('subbtn');if(sb)sb.href='https://www.youtube.com/watch?v
 if(isPage&&pb){pb.className+=' page';var pl0=d.querySelector('.pl');if(pl0)pl0.style.display='none';var sb0=d.querySelector('.sbar');if(sb0)sb0.style.display='none'}
 var home=!isItem&&!location.search&&!/^\/(p|search|\d{4})\//.test(P)&&cards.length>2,host=d.getElementById('hero-host');
 if(!home||!host)return;
-var first=cards.shift();first.classList.add('gone');
+var fi=0;for(var q=0;q<cards.length;q++){if(cards[q].getAttribute('data-v')){fi=q;break}}var first=cards.splice(fi,1)[0];first.classList.add('gone');
 var fid=first.getAttribute('data-v'),ft=first.querySelector('h2 a'),fd=first.querySelector('time'),fu=ft.href,fx=ft.textContent;
 var nx=cards.splice(0,4);nx.forEach(function(c){c.classList.add('gone')});
 var rl=cards.splice(0,10);rl.forEach(function(c){c.classList.add('gone')});
