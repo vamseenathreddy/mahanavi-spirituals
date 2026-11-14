@@ -1,0 +1,15 @@
+name: Probe blog home
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: |
+          curl -sL -A "Mozilla/5.0" https://mahanavispirituals.blogspot.com/ -o home.html
+          wc -c home.html
+          echo "cards: $(grep -o "class='card'\|class=\"card\"" home.html | wc -l)"
+          echo "has tick: $(grep -c "id='tick'\|id=\"tick\"" home.html)  has fi: $(grep -c 'splice(fi,1)' home.html)  hero-host: $(grep -c hero-host home.html)"
+          grep -o "<main.\{0,600\}" home.html | head -c 1500
+          echo; echo ---SCRIPT---
+          grep -n "var d=document" home.html | head -2 | cut -c1-200
