@@ -142,7 +142,7 @@ def build(item: dict, workdir: Path, out_mp4: Path, seed: int = 0, voice: bool =
         segs.append((text_slide(bgs[k % len(bgs)], p, workdir / f"s_op{i}.png", head=HEAD_OPINION), p, 2.5, HEAD_OPINION if i == 0 else ""))
         k += 1
     segs.append((text_slide(bgs[k % len(bgs)], item["prayer"], workdir / "s_prayer.png", head=HEAD_PRAYER), item["prayer"], 4.0, HEAD_PRAYER))
-    segs.append((signature_slide(bgs[(k + 1) % len(bgs)], workdir / "s_sig.png"), "మీ వంశీ.", 5.0, "Vamsee"))
+    segs.append((signature_slide(bgs[(k + 1) % len(bgs)], workdir / "s_sig.png"), "మీ వంశీ", 5.0, "Vamsee"))
 
     clips, voice_parts, chapters, t = [], [], [], 0.0
     sil = workdir / "sil"
