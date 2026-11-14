@@ -55,6 +55,7 @@ jobs:
       - name: Schedule posts
         env:
           PYTHONPATH: .
+          MAHANAVI_BLOGGER_BLOG_ID: ${{ secrets.MAHANAVI_BLOGGER_BLOG_ID }}
         run: |
           python scripts/ci/blog_site.py --site "${{ inputs.site }}" --days "${{ inputs.days }}" ${{ inputs.apply && '--apply' || '' }}
           python scripts/ci/blog_site.py --site "${{ inputs.site }}" --relink ${{ inputs.apply && '--apply' || '' }}

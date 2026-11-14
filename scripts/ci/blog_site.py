@@ -114,7 +114,7 @@ def build_html(cfg: dict, post: dict, client: str, slot: str) -> str:
     labels = " | ".join(f'<a href="{cfg["url"]}/search/label/{quote(l)}">{html.escape(l)}</a>' for l in post["labels"])
     o.append(f'<p><b>{ui(cfg, "topics")}:</b> {labels} | <a href="{cfg["url"]}">{ui(cfg, "home")}</a></p>')
     if cfg.get("youtube_url"):
-        o.append(f'<p>{html.escape(cfg["cta"])} <a href="{cfg["youtube_url"]}">{html.escape(cfg["youtube_name"])} on YouTube</a>.</p>')
+        o.append(f'<p>{html.escape(cfg["cta"])} <a href="{cfg["youtube_url"]}">{html.escape(cfg["youtube_name"])}{cfg.get("yt_suffix", " on YouTube")}</a>.</p>')
     o.append(jsonld(cfg, post, img))
     o.append("</div>")
     return "\n".join(x for x in o if x)
@@ -187,7 +187,8 @@ def main() -> int:
         print("wrote", a.preview)
         return 0
     st, blog = bd._service()  # noqa: SLF001
-    blog_id = cfg["blog_id"]
+    import os
+    blog_id = cfg.get("blog_id") or os.environ[cfg["blog_id_env"]]
     if a.relink:
         return relink(blog, blog_id, a.apply, ui(cfg, "related"))
     per_day = a.per_day or cfg.get("per_day", 3)
