@@ -39,8 +39,8 @@ def quote_row(v: dict) -> dict:
         "apply_en": v["apply_en"], "apply_te": v["apply_te"],
         "ref_en": v["ref_en"], "ref_te": v["ref_te"], "verse_en": v["text_en"], "verse_te": v["text_te"],
         "theme": v.get("theme", ""),
-        "sub_en": "Subscribe for tomorrow's Bible verse, tap the bell icon and choose all notifications",
-        "sub_te": "రేపటి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
+        "sub_en": "Subscribe for the next Bible verse, tap the bell icon and choose all notifications",
+        "sub_te": "తదుపరి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
     }
 
 
@@ -58,9 +58,9 @@ def quiz_row(v: dict) -> dict:
         "text_primary": v["text_en"], "text_secondary": v["text_te"],
         "question_en": "Which book and chapter is this verse from?",
         "question_te": "ఈ వచనం ఏ పుస్తకం, ఏ అధ్యాయంలోనిది?",
-        "cta_en": "Subscribe for tomorrow's Bible verse, tap the bell icon and choose all notifications",
-        "cta_te": "రేపటి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
-        "sub_en": "Subscribe for tomorrow's Bible verse, tap the bell icon and choose all notifications", "sub_te": "రేపటి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
+        "cta_en": "Subscribe for the next Bible verse, tap the bell icon and choose all notifications",
+        "cta_te": "తదుపరి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
+        "sub_en": "Subscribe for the next Bible verse, tap the bell icon and choose all notifications", "sub_te": "తదుపరి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
         "answer": v["ref_en"], "answer_te": v["ref_te"], "ref_en": v["ref_en"], "ref_te": v["ref_te"],
         "theme": v.get("theme", ""),
     }
@@ -98,7 +98,7 @@ def trivia_row(q: dict) -> dict:
         "question_en": q["q_en"], "question_te": q["q_te"],
         "text_primary": q["q_en"], "text_secondary": q["q_te"],
         "answer": q["answer"], "answer_te": q["answer_te"], "ref_en": q["ref_en"], "ref_te": q["ref_te"],
-        "sub_en": "Subscribe for tomorrow's Bible verse, tap the bell icon and choose all notifications", "sub_te": "రేపటి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
+        "sub_en": "Subscribe for the next Bible verse, tap the bell icon and choose all notifications", "sub_te": "తదుపరి బైబిల్ వచనం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి",
         "theme": "",
     }
     for letter, opt in zip(letters, opts):

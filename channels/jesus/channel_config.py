@@ -52,10 +52,11 @@ _COMMON = dict(
     layouts=LAYOUTS,
     palettes=PALETTES,
     watermark_handle="@Jesusworshipwaves",
+    cta_size=54,            # 2026-11-14: bigger orange lines for older viewers
     photo_text_h=1130,      # 2026-10-18: text was too small; use the whole safe area (y 240..1385)
-    photo_text_bottom=1385, # stay above the Shorts title/channel/Subscribe row (starts ~y1430)
-    safe_bottom=1385,
-    safe_top=240,           # no logo on this channel: start below the Shorts search/menu icons
+    photo_text_bottom=1180, # (2026-11-14: moved up ~200px incl. bigger text) stay above the Shorts title/channel/Subscribe row (starts ~y1430)
+    safe_bottom=1180,
+    safe_top=165,           # no logo on this channel: start below the Shorts search/menu icons
     text_max_w=800,         # x 140..940: clear of the Like/Comment/Save/Share buttons (x>940)
     photo_shade_from=260,
     photo_shade_alpha=0.92,  # darker scrim: readability matters more than the picture
@@ -67,7 +68,7 @@ QUOTE_CFG = ChannelConfig(
         TextBlock(field="text_primary", font=FONT_TE, size=VERSE_SIZE, color_key="primary", bold=False,
                   strip_chars=QUOTES),
         TextBlock(field="text_secondary", font=FONT_EN_BOLD, size=VERSE_SIZE - 14, color_key="secondary", bold=True),
-        TextBlock(field="sub_te", font=FONT_TE, size=74, color_key="accent", bold=False),
+        TextBlock(field="sub_te", font=FONT_TE, size=86, color_key="accent", bold=False),
     ],
     music_offset=0,
     **_COMMON,
@@ -84,10 +85,10 @@ QUIZ_CFG = ChannelConfig(
         TextBlock(field="opt_c", font=FONT_EN_BOLD, size=76, color_key="primary", bold=True),
         TextBlock(field="opt_d", font=FONT_EN_BOLD, size=76, color_key="primary", bold=True),
         TextBlock(field="sub_en", font=FONT_EN_BOLD, size=62, color_key="accent", bold=True),
-        TextBlock(field="sub_te", font=FONT_TE, size=66, color_key="accent", bold=False),
+        TextBlock(field="sub_te", font=FONT_TE, size=76, color_key="accent", bold=False),
     ],
     music_offset=1,
-    **{**_COMMON, "photo_text_h": 1230, "safe_top": 230, "photo_text_bottom": 1400, "safe_bottom": 1400,
+    **{**_COMMON, "photo_text_h": 1230, "safe_top": 230, "photo_text_bottom": 1200, "safe_bottom": 1200,
        "text_max_w": 760, "photo_shade_from": 200},
 )
 
