@@ -49,6 +49,8 @@ TARGETS = [
     # 10-minute ping through the 12-1 AM window; the gate picks the day's random minute inside it.
     ("post-jesus-worship-waves.yml", "Jesus - Bible Quote Short (1 AM)", *_every_10(1, 0, 12)),
     # PAUSED 2026-10-14 (one Jesus Short a day): ("post-jesus-bible-quiz.yml", "Jesus - Bible Quiz Short (9-10 AM)", *_every_10(9, 0, 6)),
+    # Telugu reflection video (from Wed 18 Nov 2026): the gate only acts on Wednesday and Sunday, 19:00-19:40 IST.
+    ("post-jesus-reflect.yml", "Jesus - Telugu Reflection Video (Wed + Sun 7 PM)", *_every_10(19, 0, 7)),
     ("post-jesus-bible-quote-pm.yml", "Jesus - Bible Quote Short 2 (9 AM)", *_every_10(9, 0, 12)),  # 2026-11-03: owner wants a Bible quote every 8 hours (1 AM, 9 AM, 5 PM), no quiz
     ("post-jesus-bible-quote-eve.yml", "Jesus - Bible Quote Short 3 (5 PM)", *_every_10(17, 0, 12)),
     # PAUSED by the owner 2026-10-13: ("post-motivation-mahanavi.yml", "Mahanavi - Purana Motivation Word Short (9 PM)", *_every_10(21, 0, 6)),

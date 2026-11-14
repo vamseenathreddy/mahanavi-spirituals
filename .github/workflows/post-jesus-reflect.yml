@@ -1,0 +1,112 @@
+name: Jesus | Telugu Reflection Video (Wed + Sun 7 PM IST)
+
+# Telugu reflection video (Bible quote, illustrative story, Vamsee's opinion, prayer, signature) with Telugu narration.
+# Wednesday and Sunday at a random minute in 19:00-19:40 IST.
+# Shares data/jesus_state.json with the Shorts (marker key '<date>#long'), so it uses their concurrency group.
+# Public by default. Reflections are posted in order (state key reflect_idx).
+on:
+  workflow_dispatch:
+    inputs:
+      public:
+        description: "Upload as public. Turn off to upload unlisted for a test."
+        required: false
+        type: boolean
+        default: true
+      dry_run:
+        description: "Render only; nothing is uploaded."
+        required: false
+        type: boolean
+        default: false
+      item:
+        description: "Post this reflection number (1-based) instead of the next one, and do not advance the sequence (testing)."
+        required: false
+        default: ""
+      bypass_gate:
+        description: "Post immediately, ignoring the window and this slot's already-posted marker (testing only)."
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: post-jesus-worship-waves
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  post-jesus-reflect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      POST_SLOT: reflect
+      STATE_FILE: data/jesus_state.json
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync + gate
+        run: pip install google-auth google-api-python-client pillow
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Decide whether this call should post
+        id: gate
+        env:
+          FORCE_POST: ${{ inputs.bypass_gate && 'true' || 'false' }}
+        run: python -m channels.jesus_reflect.gate
+
+      - name: Install ffmpeg + text shaping libs
+        if: steps.gate.outputs.post == 'true'
+        run: |
+          bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
+
+      - name: Install full Python dependencies
+        if: steps.gate.outputs.post == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+          pip install edge-tts numpy
+
+      - name: Build and post the reflection video
+        if: steps.gate.outputs.post == 'true'
+        env:
+          MAHANAVI_JESUS_YOUTUBE_TOKEN_FILE: ./data/youtube_token_jesus.json
+          FORCE_POST: ${{ inputs.bypass_gate && 'true' || 'false' }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          if [ "${{ inputs.public }}" != "false" ]; then
+            ARGS="$ARGS --public"
+          fi
+          if [ -n "${{ inputs.item }}" ]; then
+            ARGS="$ARGS --item ${{ inputs.item }}"
+          fi
+          python3 -m channels.jesus_reflect.post $ARGS
+
+      - name: Push state to Drive
+        if: always() && steps.gate.outputs.post == 'true'
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/ci/notify_failure.py "Jesus | Telugu Reflection Video"
