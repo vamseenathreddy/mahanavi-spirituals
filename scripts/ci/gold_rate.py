@@ -17,7 +17,9 @@ if not g24 or not g22:
     m = re.search(r"1\s*₹\s?([\d,]+)[^₹]*?₹\s?([\d,]+)", text)
     if m:
         g24, g22 = int(m.group(1).replace(",", "")), int(m.group(2).replace(",", ""))
-print("parsed", g24, g22)
+print("parsed", g24, g22, "len", len(html))
+if not g24:
+    i = text.find("24K"); print("CTX", text[:200] if i < 0 else text[max(0, i-100):i+400])
 if not (g24 and g22 and 5000 < g22 < g24 < 40000):
     print("::error::could not parse a sane gold rate"); sys.exit(1)
 ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
