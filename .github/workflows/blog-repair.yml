@@ -33,4 +33,4 @@ jobs:
       - name: Repair
         env:
           PYTHONPATH: .
-        run: python scripts/ci/blog_repair.py ${{ inputs.apply && "--apply" || "" }}
+        run: python scripts/ci/blog_repair.py ${{ inputs.apply && '--apply' || '' }}
