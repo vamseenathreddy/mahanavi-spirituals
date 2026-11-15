@@ -34,8 +34,8 @@ def main():
         print("skip", today_ist, cfg)
         return
     start = now.astimezone(IST).replace(hour=4, minute=0, second=0, microsecond=0)
-    if start < now.astimezone(IST) - timedelta(hours=2):
-        start += timedelta(days=1)
+    # Late start (GitHub schedules can be hours late): go live right away if today's 4-8 AM window is still open,
+    # otherwise skip. Never wait a day (that blocked the runner until the job timeout on 14 Nov).
     start = start.astimezone(timezone.utc)
     end = start + timedelta(hours=cfg.get("hours", 4))
     if now >= end:
