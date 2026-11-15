@@ -36,7 +36,12 @@ def names(god: str) -> list[str] | None:
         return None
 
 
+TITLE_OVERRIDE = {"shiva": "LIVE Om Namah Shivaya Meditation Chant | ఓం నమః శివాయ | Shiva Mantra for Peace | Monday Morning"}
+
+
 def title(god: str) -> str:
+    if god in TITLE_OVERRIDE:
+        return TITLE_OVERRIDE[god]
     g = GODS[god]
     return f"LIVE {g['names_te']} | {g['names_en']} | {g['en']} {g['day_en']} Chanting | మహానవి"[:100]
 
