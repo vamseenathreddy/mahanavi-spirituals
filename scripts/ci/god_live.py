@@ -34,6 +34,9 @@ def main():
     today_ist = now.astimezone(IST).date().isoformat()
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     god = args[0] if args else G.WEEK[now.astimezone(IST).weekday()]
+    if god not in cfg.get("approved_gods", []):
+        print("god not approved, skip:", god)
+        return
     video, thumb = ("build/lakshmi/long.mp4", "build/lakshmi/thumb.jpg") if god == "lakshmi" else (f"build/live/{god}/loop.mp4", f"build/live/{god}/thumb.jpg")
     if not Path(video).exists():
         alert(f"Live for {god} skipped: video missing ({video})")

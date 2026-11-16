@@ -2,6 +2,7 @@ name: Mahanavi | Day-wise God Live (4 AM to ~9:45 AM IST)
 
 # Triggered by cron-job.org about 3:53 AM IST (GitHub schedules are unreliable). God by IST weekday:
 # Mon Shiva, Tue Hanuman, Wed Ganesha, Thu Dattatreya, Fri Lakshmi, Sat Venkateswara, Sun Surya.
+# Only gods listed in approved_gods (data/lakshmi_live.json) go live; add a god there once the owner approves its video.
 # To stop: set "enabled": false in data/lakshmi_live.json.
 on:
   workflow_dispatch:
@@ -39,7 +40,8 @@ jobs:
           W = {0: "shiva", 1: "hanuman", 2: "ganesha", 3: "dattatreya", 4: "lakshmi", 5: "venkateswara", 6: "surya"}
           god = "${{ inputs.god }}" or W[now.weekday()]
           print("god=" + god)
-          print("run=" + ("true" if c.get("enabled") and now.date().isoformat() >= c["start_date"] else "false"))
+          ok = c.get("enabled") and now.date().isoformat() >= c["start_date"] and god in c.get("approved_gods", [])
+          print("run=" + ("true" if ok else "false"))
           PY
       - uses: actions/setup-python@v5
         if: steps.gate.outputs.run == 'true' || inputs.test == true
