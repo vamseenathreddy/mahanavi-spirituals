@@ -19,7 +19,7 @@ W, H = lv.W, lv.H
 GOLD, WHITE = lv.GOLD, lv.WHITE
 VOICES = ("te-IN-MohanNeural", "te-IN-ShrutiNeural")
 RATE = "-8%"
-SUBSCRIBE_TE = "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి"
+SUBSCRIBE_TE = ""
 HEAD_STORY, HEAD_OPINION, HEAD_PRAYER = "ఒక చిన్న కథ", "నా అభిప్రాయం", "ప్రార్థన"
 
 

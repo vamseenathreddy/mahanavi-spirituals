@@ -17,7 +17,7 @@ EXTRA_KEYWORDS = {
     "quiz": ["bible quiz", "bible trivia", "bible quiz Telugu", "guess the bible verse", "బైబిల్ క్విజ్"],
 }
 COMMENTS = {
-    "quote": "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి. 🙏\nShare God's word on WhatsApp with your loved ones and bring them peace.",
+    "quote": "ఆమేన్ 🙏 Amen",
 }
 DISCLOSURE = ("Visuals are digitally created worship artwork. Background music is an original "
               "composition. Scripture English text is public-domain (KJV/WEB).")
@@ -78,8 +78,7 @@ def description(row, special=None, playlist_url=None, contact=None):
         out += [row["question_en"], row["question_te"], "", "Pick A, B, C or D, then check the pinned comment.", ""]
         out += [row["opt_a"], row["opt_b"], row["opt_c"], row["opt_d"], "",
                 f"Answer: {row['correct_letter']}) {row['answer']} ({row['ref_en']}) - see the pinned comment.", ""]
-    out += [DISCLOSURE, "", "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి.",
-            "Share God's word on WhatsApp with your loved ones and bring them peace."]
+    out += [DISCLOSURE]
     if playlist_url:
         out += [f"Playlist: {playlist_url}"]
     out += ["", f"© {CHANNEL}."]

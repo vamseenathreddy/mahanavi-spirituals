@@ -23,7 +23,6 @@ def description(item: dict, chapters: list[tuple[int, str]]) -> str:
     lines += [f"{_ts(s)} {label}" for s, label in chapters]
     lines += ["", "గమనిక: కథ ఉదాహరణ కోసం చెప్పిన ఊహాత్మక కథ. ఇది వంశీ వ్యక్తిగత అభిప్రాయం.",
               "Note: the story is an illustration, and the reflection is Vamsee's personal opinion.",
-              "", "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి.",
               "", "#TeluguBibleMessage #తెలుగుబైబిల్ #JesusWorshipWaves #Telugu #BibleVerses"]
     return "\n".join(lines)
 

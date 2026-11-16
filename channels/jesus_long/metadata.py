@@ -36,7 +36,7 @@ def description(theme: dict, chapters: list[tuple[int, str]], day=None) -> str:
              "", "Chapters (each verse):"]
     lines += [f"{_ts(s)} {label}" for s, label in chapters]
     lines += ["", f"Scripture is read from the {load()['translation']}. The worship music is original, created for this channel.",
-              "", "Share God's word on WhatsApp with your loved ones and bring them peace.",
+              
               "", f"#BibleVerses #{theme['title'].split()[0]} #Scripture #Jesus #WorshipMusic"]
     return "\n".join(lines)
 

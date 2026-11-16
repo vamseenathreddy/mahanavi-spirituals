@@ -41,7 +41,7 @@ PALETTES = [  # fallback gradients (no real photos yet) -- soft heavenly blues
 ]
 
 SHORT_SECONDS = 4.9    # every Short is 5 seconds (owner request); BGM clips are cut to this length
-VERSE_SIZE = 92        # English and Telugu verse use the SAME size
+VERSE_SIZE = 108       # English and Telugu verse use the SAME size
 APPLY_SIZE = 44
 
 _COMMON = dict(
@@ -68,7 +68,6 @@ QUOTE_CFG = ChannelConfig(
         TextBlock(field="text_primary", font=FONT_TE, size=VERSE_SIZE, color_key="primary", bold=False,
                   strip_chars=QUOTES),
         TextBlock(field="text_secondary", font=FONT_EN_BOLD, size=VERSE_SIZE - 14, color_key="secondary", bold=True),
-        TextBlock(field="sub_te", font=FONT_TE, size=86, color_key="accent", bold=False),
     ],
     music_offset=0,
     **_COMMON,
@@ -77,15 +76,13 @@ QUOTE_CFG = ChannelConfig(
 QUIZ_CFG = ChannelConfig(
     channel_name="Jesus Worship Waves",
     blocks=[
-        TextBlock(field="quiz_label", font=FONT_EN_BOLD, size=60, color_key="accent", bold=True),
-        TextBlock(field="question_en", font=FONT_EN_BOLD, size=84, color_key="primary", bold=True),
-        TextBlock(field="question_te", font=FONT_TE, size=84, color_key="secondary", bold=False),
-        TextBlock(field="opt_a", font=FONT_EN_BOLD, size=76, color_key="primary", bold=True),
-        TextBlock(field="opt_b", font=FONT_EN_BOLD, size=76, color_key="primary", bold=True),
-        TextBlock(field="opt_c", font=FONT_EN_BOLD, size=76, color_key="primary", bold=True),
-        TextBlock(field="opt_d", font=FONT_EN_BOLD, size=76, color_key="primary", bold=True),
-        TextBlock(field="sub_en", font=FONT_EN_BOLD, size=62, color_key="accent", bold=True),
-        TextBlock(field="sub_te", font=FONT_TE, size=76, color_key="accent", bold=False),
+        TextBlock(field="quiz_label", font=FONT_EN_BOLD, size=68, color_key="accent", bold=True),
+        TextBlock(field="question_en", font=FONT_EN_BOLD, size=96, color_key="primary", bold=True),
+        TextBlock(field="question_te", font=FONT_TE, size=96, color_key="secondary", bold=False),
+        TextBlock(field="opt_a", font=FONT_EN_BOLD, size=88, color_key="primary", bold=True),
+        TextBlock(field="opt_b", font=FONT_EN_BOLD, size=88, color_key="primary", bold=True),
+        TextBlock(field="opt_c", font=FONT_EN_BOLD, size=88, color_key="primary", bold=True),
+        TextBlock(field="opt_d", font=FONT_EN_BOLD, size=88, color_key="primary", bold=True),
     ],
     music_offset=1,
     **{**_COMMON, "photo_text_h": 1230, "safe_top": 230, "photo_text_bottom": 1200, "safe_bottom": 1200,

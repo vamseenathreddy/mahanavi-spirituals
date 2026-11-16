@@ -26,8 +26,8 @@ def by_id(verse_id: str) -> dict | None:
     return next((v for v in load_verses() if v["id"] == verse_id), None)
 
 
-SUBSCRIBE_EN = "Share God's word on WhatsApp with your loved ones and bring them peace"
-SUBSCRIBE_TE = "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి"
+SUBSCRIBE_EN = ""
+SUBSCRIBE_TE = ""
 
 
 def quote_row(v: dict) -> dict:
@@ -39,8 +39,8 @@ def quote_row(v: dict) -> dict:
         "apply_en": v["apply_en"], "apply_te": v["apply_te"],
         "ref_en": v["ref_en"], "ref_te": v["ref_te"], "verse_en": v["text_en"], "verse_te": v["text_te"],
         "theme": v.get("theme", ""),
-        "sub_en": "Share God's word on WhatsApp with your loved ones and bring them peace",
-        "sub_te": "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి",
+        "sub_en": "",
+        "sub_te": "",
     }
 
 
@@ -58,9 +58,9 @@ def quiz_row(v: dict) -> dict:
         "text_primary": v["text_en"], "text_secondary": v["text_te"],
         "question_en": "Which book and chapter is this verse from?",
         "question_te": "ఈ వచనం ఏ పుస్తకం, ఏ అధ్యాయంలోనిది?",
-        "cta_en": "Share God's word on WhatsApp with your loved ones and bring them peace",
-        "cta_te": "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి",
-        "sub_en": "Share God's word on WhatsApp with your loved ones and bring them peace", "sub_te": "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి",
+        "cta_en": "",
+        "cta_te": "",
+        "sub_en": "", "sub_te": "",
         "answer": v["ref_en"], "answer_te": v["ref_te"], "ref_en": v["ref_en"], "ref_te": v["ref_te"],
         "theme": v.get("theme", ""),
     }
@@ -98,7 +98,7 @@ def trivia_row(q: dict) -> dict:
         "question_en": q["q_en"], "question_te": q["q_te"],
         "text_primary": q["q_en"], "text_secondary": q["q_te"],
         "answer": q["answer"], "answer_te": q["answer_te"], "ref_en": q["ref_en"], "ref_te": q["ref_te"],
-        "sub_en": "Share God's word on WhatsApp with your loved ones and bring them peace", "sub_te": "దేవుని వాక్యాన్ని వాట్సాప్ ద్వారా మీ శ్రేయోభిలాషులకు చేర్చి స్వస్థత కలిగించండి",
+        "sub_en": "", "sub_te": "",
         "theme": "",
     }
     for letter, opt in zip(letters, opts):

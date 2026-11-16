@@ -18,7 +18,7 @@ W, H = 1920, 1080
 GOLD, WHITE = (255, 214, 140), (255, 255, 255)
 PAUSE = 9.0          # seconds of quiet after each verse is read
 MIN_TOTAL = 8 * 60 + 20   # long enough for mid-roll ads (8 minutes) with a little room
-SUBSCRIBE_EN = "Share God's word on WhatsApp with your loved ones and bring them peace"
+SUBSCRIBE_EN = "May the Lord bless you and keep you. Amen."
 
 
 def _font(path: Path, size: int) -> ImageFont.FreeTypeFont:
@@ -129,7 +129,7 @@ def build(theme_key: str, theme: dict, workdir: Path, out_mp4: Path, seed: int =
         vp = audio.speak(f"{v['text']} {v['ref']}.", workdir / f"v{i:02d}.mp3")
         img = verse_slide(bgs[(i + 1) % len(bgs)], v["text"], v["ref"], workdir / f"s{i:02d}.png")
         segments.append((img, vp, audio.duration(vp) + PAUSE, v["ref"]))
-    outro_text = "May the Lord bless you and keep you. If this brought you peace, share it on WhatsApp with someone who needs it. Amen."
+    outro_text = "May the Lord bless you and keep you. Amen."
     ov = audio.speak(outro_text, workdir / "outro.mp3")
     segments.append((subscribe_slide(bgs[1 % len(bgs)], workdir / "s_outro.png"), ov, audio.duration(ov) + 6.0, "Amen"))
 
