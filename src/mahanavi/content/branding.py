@@ -61,7 +61,30 @@ def brand_title(title: str, limit: int = 100) -> str:
     return base + BRAND_TITLE_SUFFIX
 
 
+TAG_LIMIT = 480   # YouTube rejects uploads whose tags total over 500 characters (a tag with a space costs 2 more)
+
+
+def _tag_cost(tag: str) -> int:
+    return len(tag) + (2 if " " in tag else 0) + 1
+
+
 def brand_tags(tags: list[str]) -> list[str]:
-    """Append the brand tags that are not already there (case-insensitive)."""
-    have = {t.lower() for t in tags}
-    return tags + [t for t in BRAND_TAGS if t.lower() not in have]
+    """Clean the tags (no blanks, duplicates or < > characters), then append the brand tags that are not already
+    there (case-insensitive). The result stays under YouTube's 500 character tag limit: brand tags are reserved
+    first, then the original tags fill the rest in order (2026-11-16: calendar Shorts failed with invalidTags)."""
+    seen: set[str] = set()
+    clean: list[str] = []
+    for t in tags:
+        t = " ".join(t.replace("<", " ").replace(">", " ").split())
+        if t and t.lower() not in seen:
+            seen.add(t.lower())
+            clean.append(t)
+    brand = [t for t in BRAND_TAGS if t.lower() not in seen]
+    budget = TAG_LIMIT - sum(_tag_cost(t) for t in brand)
+    kept: list[str] = []
+    for t in clean:
+        c = _tag_cost(t)
+        if c <= budget and len(t) <= 100:
+            kept.append(t)
+            budget -= c
+    return kept + brand
