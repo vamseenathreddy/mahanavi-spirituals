@@ -9,10 +9,10 @@
 
 ## Mahanavi Spirituals
 - subscribers 4110 (+207 this week)
-- views 186913 (previous week 46356), 50 uploads, about 3738 views per upload
-- median views of settled posts: 927.5
-- best: 2018 views, చాణక్య నీతి సూత్రాలు | మరీ నిటారుగా ఉండకు, నిటారు చెట్లనే ముందు నరుకుత
-- best: 1997 views, శ్రీ సుబ్రహ్మణ్య స్వామి గాయత్రీ మంత్రం | నాగుల చవితి | Beeja Mantra | 
+- views 186913 (previous week 46356), 46 uploads, about 4063 views per upload
+- median views of settled posts: 706
+- best: 1993 views, శ్రీ సుబ్రహ్మణ్య స్వామి గాయత్రీ మంత్రం | నాగుల చవితి | Beeja Mantra | 
+- best: 1749 views, 13 నవంబర్ రాహు కాలం ఎప్పుడు? 10:36 AM-12:00 PM | Mahanavi Spirituals
 - weakest: 0 views, LIVE Lakshmi Devi Songs | లక్ష్మీ అష్టోత్తర శతనామావళి | Powerful Mahal
 - weakest: 3 views, Powerful Mahalakshmi Stotram | లక్ష్మీ అష్టోత్తర శతనామావళి | Lakshmi D
 
@@ -28,9 +28,9 @@
 - FLAG: VIEWS DOWN 70%: 801 vs 2677 the week before
 
 ## Devotional Trance Beats
-- subscribers 53 (+5 this week)
+- subscribers 55 (+5 this week)
 - views 2768 (previous week 1204), 50 uploads, about 55 views per upload
-- median views of settled posts: 27.0
+- median views of settled posts: 24.5
 - best: 386 views, भगवान दत्तात्रेय मूल मंत्र | गुरुवार | Beej Mantra
 - best: 231 views, गोविंद जय जय, गोपाल जय जय, राधा रमण हरि गोविंद जय जय। | कृष्ण कीर्तन |
 - weakest: 2 views, धर्म क्या है? | पुराण ज्ञान
@@ -38,7 +38,7 @@
 
 ## Jesus Worship Waves
 - subscribers 17 (+3 this week)
-- views 1337 (previous week 1059), 21 uploads, about 64 views per upload
+- views 1337 (previous week 1059), 22 uploads, about 61 views per upload
 - median views of settled posts: 39.0
 - best: 315 views, హెబ్రీయులకు 13:8 | యేసుక్రీస్తు నిన్న నేడు నిరంతరము ఒక్కటేరీతిగా ఉన్నా
 - best: 294 views, సామెతలు 17:22 | సంతోషముగల హృదయము ఆరోగ్యము కలుగజేయును నలిగిన మనస్సు… | 
@@ -47,10 +47,10 @@
 
 ## Ramana Maharshi TV
 - subscribers 60 (+10 this week)
-- views 2732 (previous week 1598), 23 uploads, about 119 views per upload
-- median views of settled posts: 87.5
+- views 2732 (previous week 1598), 24 uploads, about 114 views per upload
+- median views of settled posts: 89.0
 - best: 329 views, Do not follow thoughts. Look for their source. | Ramana Maharshi | ఆలో
-- best: 262 views, Surrender is not defeat. It is rest. | Ramana Maharshi | శరణాగతి అంటే 
+- best: 265 views, Surrender is not defeat. It is rest. | Ramana Maharshi | శరణాగతి అంటే 
 - weakest: 44 views, In 1948, Bhagavan declared that the cow Lakshmi… | Ramana Maharshi | 1
 - weakest: 53 views, Paul Brunton's writing in the 1930s introduced him… | Ramana Maharshi 
 

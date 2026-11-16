@@ -8,8 +8,8 @@
    "prev_views": 46356,
    "net": 207,
    "likes": 1367,
-   "uploads_7d": 50,
-   "median_settled": 927.5
+   "uploads_7d": 46,
+   "median_settled": 706
   },
   "flags": [],
   "top": [
@@ -97,31 +97,31 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 50,
-   "settled_n": 32,
-   "median_settled": 927.5,
-   "recent_n": 40,
-   "median_recent": 603.0,
+   "uploads_7d": 46,
+   "settled_n": 25,
+   "median_settled": 706,
+   "recent_n": 37,
+   "median_recent": 617,
    "best_settled": [
-    {
-     "id": "KG2JfiAhluM",
-     "title": "చాణక్య నీతి సూత్రాలు | మరీ నిటారుగా ఉండకు, నిటారు చెట్లనే ముందు నరుకుతారు. | Mahanavi Spirituals",
-     "age": 5,
-     "views": 2018,
-     "privacy": "public"
-    },
     {
      "id": "4UtKy0KYVFA",
      "title": "శ్రీ సుబ్రహ్మణ్య స్వామి గాయత్రీ మంత్రం | నాగుల చవితి | Beeja Mantra | Mahanavi Spirituals",
      "age": 3,
-     "views": 1997,
+     "views": 1993,
      "privacy": "public"
     },
     {
-     "id": "JVBcmt7jVdo",
-     "title": "గురువారం శుభ సమయం 11:37 AM-12:22 PM | 12 నవంబర్, శుద్ధ తృతీయ | Mahanavi Spirituals",
-     "age": 4,
-     "views": 1761,
+     "id": "4Ok9gWSoO2k",
+     "title": "13 నవంబర్ రాహు కాలం ఎప్పుడు? 10:36 AM-12:00 PM | Mahanavi Spirituals",
+     "age": 3,
+     "views": 1749,
+     "privacy": "public"
+    },
+    {
+     "id": "CJAs_DTHskg",
+     "title": "చాణక్య నీతి సూత్రాలు | కష్టకాలం కోసం ధనం దాచుకో. | Mahanavi Spirituals",
+     "age": 2,
+     "views": 1533,
      "privacy": "public"
     }
    ],
@@ -282,13 +282,13 @@
   "label": "Devotional Trance Beats",
   "row": {
    "date": "2026-11-16",
-   "subs": 53,
+   "subs": 55,
    "views": 2768,
    "prev_views": 1204,
    "net": 5,
    "likes": 72,
    "uploads_7d": 50,
-   "median_settled": 27.0
+   "median_settled": 24.5
   },
   "flags": [],
   "top": [
@@ -361,8 +361,8 @@
   ],
   "settled": {
    "uploads_7d": 50,
-   "settled_n": 38,
-   "median_settled": 27.0,
+   "settled_n": 36,
+   "median_settled": 24.5,
    "recent_n": 27,
    "median_recent": 27,
    "best_settled": [
@@ -381,10 +381,10 @@
      "privacy": "public"
     },
     {
-     "id": "1xevwFM3LVw",
-     "title": "श्रीकृष्णः शरणं मम | कृष्ण मंत्र जाप | Krishna Mantra Jaap",
-     "age": 7,
-     "views": 161,
+     "id": "vfOxocPvjFI",
+     "title": "श्री गुरु चरन सरोज रज, निज मनु मुकुरु सुधारि। | आरती और चालीसा | Aarti and Chalisa Hindi",
+     "age": 2,
+     "views": 128,
      "privacy": "public"
     }
    ],
@@ -423,7 +423,7 @@
    "prev_views": 1059,
    "net": 3,
    "likes": 96,
-   "uploads_7d": 21,
+   "uploads_7d": 22,
    "median_settled": 39.0
   },
   "flags": [],
@@ -484,11 +484,11 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 21,
+   "uploads_7d": 22,
    "settled_n": 18,
    "median_settled": 39.0,
    "recent_n": 12,
-   "median_recent": 135.5,
+   "median_recent": 138.0,
    "best_settled": [
     {
      "id": "zRI5QqRHZmQ",
@@ -528,10 +528,10 @@
      "privacy": "public"
     },
     {
-     "id": "hVXiv7fdSg4",
-     "title": "యెషయా 40:31 | యెహోవా కొరకు కనిపెట్టువారు నూతన బలము పొందుదురు… | విశ్వాసపు వచనం | Isaiah 40:31",
-     "age": 6,
-     "views": 5,
+     "id": "NBGc229r-8M",
+     "title": "2 కొరింథీయులకు 5:7 | ఆదరణ ఇచ్చే వచనం | 2 Corinthians 5:7",
+     "age": 4,
+     "views": 6,
      "privacy": "public"
     }
    ],
@@ -547,8 +547,8 @@
    "prev_views": 1598,
    "net": 10,
    "likes": 77,
-   "uploads_7d": 23,
-   "median_settled": 87.5
+   "uploads_7d": 24,
+   "median_settled": 89.0
   },
   "flags": [],
   "top": [
@@ -628,11 +628,11 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 23,
+   "uploads_7d": 24,
    "settled_n": 24,
-   "median_settled": 87.5,
+   "median_settled": 89.0,
    "recent_n": 12,
-   "median_recent": 77.5,
+   "median_recent": 81.0,
    "best_settled": [
     {
      "id": "irCY_DsMr9M",
@@ -645,7 +645,7 @@
      "id": "aJvkZupqyoQ",
      "title": "Surrender is not defeat. It is rest. | Ramana Maharshi | శరణాగతి అంటే ఓటమి కాదు, విశ్రాంతి.",
      "age": 2,
-     "views": 262,
+     "views": 265,
      "privacy": "public"
     },
     {
@@ -675,7 +675,7 @@
      "id": "duPtin76CQQ",
      "title": "His answers to Sivaprakasam Pillai's questions… | Ramana Maharshi | శివప్రకాశం పిళ్లై ప్రశ్నలకు…",
      "age": 2,
-     "views": 57,
+     "views": 58,
      "privacy": "public"
     }
    ],
