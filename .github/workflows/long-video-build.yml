@@ -9,7 +9,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -27,8 +27,14 @@ jobs:
           pip install pillow numpy edge-tts
       - name: Build video
         run: python scripts/ci/long_video_build.py "${{ inputs.slug }}"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: long-${{ inputs.slug }}
-          path: build/long/${{ inputs.slug }}/video.mp4
-          retention-days: 7
+      - name: Publish sample to assets branch
+        run: |
+          set -e
+          B="assets-long-${{ inputs.slug }}"
+          D=$(mktemp -d)
+          split -b 90m -d build/long/${{ inputs.slug }}/video.mp4 "$D/video.mp4.part"
+          cd "$D"
+          git init -q -b "$B"
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git add -A; git commit -qm "sample ${{ inputs.slug }}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "$B"
