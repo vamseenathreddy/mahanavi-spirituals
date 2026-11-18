@@ -15,8 +15,8 @@ for attempt in 1 2 3; do
       [ -f "$f" ] && sudo sed -i 's#http://azure.archive.ubuntu.com#http://archive.ubuntu.com#g' "$f"
     done
   fi
-  if { sudo timeout 60 apt-get update -y -o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::ForceIPv4=true \
-     && sudo timeout 120 apt-get install -y --no-install-recommends -o Acquire::ForceIPv4=true "$@"; } >/tmp/apt_out.txt 2>&1; then
+  if { sudo timeout 90 apt-get update -y -o Acquire::Retries=3 -o Acquire::http::Timeout=20 -o Acquire::ForceIPv4=true \
+     && sudo timeout 300 apt-get install -y --no-install-recommends -o Acquire::ForceIPv4=true "$@"; } >/tmp/apt_out.txt 2>&1; then
     exit 0
   fi
   echo "::warning title=apt attempt $attempt::$(tail -n 4 /tmp/apt_out.txt | tr '\n' ' ' | cut -c1-400)"
