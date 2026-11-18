@@ -1,0 +1,34 @@
+name: Mahanavi | Build long explainer video (manual, sample only, nothing is uploaded)
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "content/long/<slug>.md"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Install dependencies
+        run: |
+          command -v ffmpeg >/dev/null || bash scripts/ci/apt_install.sh ffmpeg libraqm0 libfribidi0 libharfbuzz0b
+          pip install pillow numpy edge-tts
+      - name: Build video
+        run: python scripts/ci/long_video_build.py "${{ inputs.slug }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: long-${{ inputs.slug }}
+          path: build/long/${{ inputs.slug }}/video.mp4
+          retention-days: 7
