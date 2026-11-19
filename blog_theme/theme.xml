@@ -4,7 +4,7 @@
 <head>
 <meta charset='utf-8'/>
 <meta content='width=device-width,initial-scale=1' name='viewport'/>
-<meta content="object-src 'none'; base-uri 'self'; form-action 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://www.blogger.com https://draft.blogger.com; upgrade-insecure-requests" http-equiv='Content-Security-Policy'/>
+<meta content="object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" http-equiv='Content-Security-Policy'/>
 <meta content='strict-origin-when-cross-origin' name='referrer'/>
 <meta content='nosniff' http-equiv='X-Content-Type-Options'/>
 <meta content='#0d0807' name='theme-color'/>
