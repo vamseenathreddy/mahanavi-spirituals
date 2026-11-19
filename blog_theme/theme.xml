@@ -123,9 +123,7 @@ footer p{max-width:520px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}.tick{display:flex;align-items:center;gap:12px;margin:0 0 18px;padding:9px 14px;background:var(--panel);border:1px solid var(--line);border-radius:999px;overflow:hidden}.tick b{flex:none;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#2b1100;background:var(--saf);border-radius:999px;padding:3px 10px}.tick .tr{overflow:hidden;flex:1;white-space:nowrap}.tick .tt{display:inline-block;padding-left:0;white-space:nowrap}.tick .tt.run{animation:tk 140s linear infinite}.tick .tt:hover{animation-play-state:paused}.tick a{display:inline-block;margin-right:0;cursor:pointer;pointer-events:auto;font-size:14px;color:var(--ink)}.tick a:hover{color:var(--saf)}@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}@media (prefers-reduced-motion:reduce){.tick .tt.run{animation:none}}
 main .widget:not(.Blog),.mainsec>.widget:not(.Blog),footer .widget,#Attribution1,.widget.ReportAbuse,.widget.BlogSearch,.widget.PageList,.widget.FeaturedPost{display:none!important}
 .tick .gd{display:inline-block;font-size:14px;font-weight:700;color:var(--ink)}.tick .tt a:after,.tick .tt .gd:after{content:'\2022';margin:0 22px;color:var(--saf);font-weight:700}
-.adw{margin:22px 0;text-align:center;overflow:hidden}
 ]]></b:skin>
-<script async='async' crossorigin='anonymous' src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7766198162235124'></script>
 </head>
 <body>
 <a class='skip' href='#main'>ముఖ్య భాగానికి వెళ్ళండి</a>
@@ -198,7 +196,6 @@ h='<article class="watch"><div class="pl"></div><h1>'+esc(x.title.$t)+'</h1><div
 else{h='<div id="hero-host"></div><div class="grid">';e.forEach(function(x){var l=lk(x);if(!l)return;var ct=(x.content||{}).$t||'',em=/embed\/([\w-]{11})/.exec(ct),mi=/<img[^>]+src=["']([^"']+)/.exec(ct),im=(em?thumb(em[1]):(mi?mi[1]:((x['media$thumbnail']||{}).url||'').replace(/\/s72-c\//,'/s400/'))).replace(/^http:/,'https:');
 h+='<article class="card"><a class="th" href="'+esc(l)+'"><img alt="" src="'+esc(im)+'"/><span class="play"></span></a><div class="meta"><h2><a href="'+esc(l)+'">'+esc(x.title.$t)+'</a></h2><time>'+esc(fd(x.published.$t))+'</time></div></article>'});h+='</div>';if(!e.length)h+='<p style="padding:40px 0;text-align:center;color:#ff9a1f">ఏమీ దొరకలేదు</p>'}
 if(m&&h&&!(pg||it)){[].forEach.call(d.querySelectorAll('.grid,#hero-host,.more'),function(n){n.parentNode.removeChild(n)})}if(m&&h){var o=d.createElement('div');o.innerHTML=h;while(o.firstChild)m.appendChild(o.firstChild)}}catch(z){}cb()};sc.onerror=cb;sc.src=u;d.body.appendChild(sc)}
-function ad(par,ref){try{var a=d.createElement('div');a.className='adw';a.innerHTML='<ins class="adsbygoogle" style="display:block;text-align:center" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-7766198162235124" data-ad-slot="1048682654"></ins>';par.insertBefore(a,ref||null);(w.adsbygoogle=w.adsbygoogle||[]).push({})}catch(z){}}
 function boot(){try{
 if(!d.querySelector('.watch')&&(!d.querySelector('.grid')||d.querySelectorAll('.grid .card').length<8)&&!w.__fbd){w.__fbd=1;fallback(boot);return}
 var tt=d.getElementById('tt');if(tt){tt.addEventListener('click',function(e){var n=e.target;while(n&&n!==tt&&n.tagName!=='A')n=n.parentNode;if(n&&n.tagName==='A'&&n.href){e.stopPropagation();w.location.href=n.href}});var fx='';w.__gold='';try{fetch('https://raw.githubusercontent.com/vamseenathreddy/mahanavi-spirituals/main/data/gold.json?t='+Math.floor(Date.now()/600000)).then(function(r){return r.json()}).then(function(g){var f=function(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',')};var t='<span class="gd">నేటి బంగారం ధర ('+g.city+'): 24K ₹'+f(g.g24)+'/గ్రా · 22K ₹'+f(g.g22)+'/గ్రా</span>';w.__gold=t;if(w.__fd){tt.innerHTML=w.__o+t+w.__o+t}}).catch(function(){})}catch(z){}var sc=d.createElement('script');w.__tk=function(j){try{var e=(j.feed.entry||[]).map(function(x){var l=(x.link||[]).filter(function(k){return k.rel==='alternate'})[0];var th=(x['media$thumbnail']||{}).url||'';return {h:l?l.href:'',t:x.title.$t,v:/\/vi\//.test(th),n:new Date(x.published.$t).toDateString()===new Date().toDateString()}}).filter(function(x){return x.h});o='';e.slice(0,10).forEach(function(x){o+='<a href="'+esc(x.h)+'">'+esc(x.t)+'</a>'});w.__o=o;tt.innerHTML=o+w.__gold+o+w.__gold;tt.className='tt run';w.__fd=1}catch(z){}};sc.src='/feeds/posts/summary?alt=json-in-script&max-results=40&callback=__tk';d.body.appendChild(sc)}
@@ -220,7 +217,6 @@ if(id&&pl){pl.innerHTML='<div class="stage" style="position:absolute;inset:0;bor
 pl.querySelector('.pbtn').onclick=function(){embed(id,pl)};
 var sb=d.getElementById('subbtn');if(sb)sb.href='https://www.youtube.com/watch?v='+id}else if(pl){pl.style.display='none'}
 }
-if(isItem&&!isPage&&pb&&pb.parentNode)ad(pb.parentNode,pb.nextSibling);
 if(isPage&&pb){pb.className+=' page';var pl0=d.querySelector('.pl');if(pl0)pl0.style.display='none';var sb0=d.querySelector('.sbar');if(sb0)sb0.style.display='none'}
 var home=!isItem&&!location.search&&!/^\/(p|search|\d{4})\//.test(P)&&cards.length>2,host=d.getElementById('hero-host');
 if(!home||!host)return;
@@ -235,7 +231,6 @@ if(rl.length){h+='<section class="sec"><div class="hd"><h3>తాజా షా�
 if(arts.length){h+='<section class="sec"><div class="hd"><h3>తాజా వ్యాసాలు</h3></div><div class="rail">';arts.forEach(function(c){var a=c.querySelector('h2 a'),im=c.querySelector('img'),t=c.querySelector('time');h+='<a class="sh" href="'+esc(a.href)+'"><div class="th"><img alt="" loading="lazy" src="'+esc(im?im.src:'')+'"/><span class="tag">వ్యాసం</span></div><p>'+esc(a.textContent)+'</p></a>'});h+='</div></section>'}
 if(cards.length)h+='<div class="sec"><div class="hd"><h3>మరిన్ని వీడియోలు</h3></div></div>';
 host.innerHTML=h;
-var ms=host.querySelectorAll('.sec');ad(host,ms.length?ms[ms.length-1]:null);
 var pbn=host.querySelector('.pbtn');if(pbn&&fid)pbn.onclick=function(){embed(fid,host.querySelector('.stage'))};
 }catch(e){[].forEach.call(d.querySelectorAll('.card.gone'),function(c){c.classList.remove('gone')})}}
 ready(boot);
