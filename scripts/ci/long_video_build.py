@@ -29,7 +29,7 @@ def font(size, w="Bold"):
 
 async def _tts(text, voice, out):
     import edge_tts
-    await edge_tts.Communicate(text, voice, rate="-8%").save(str(out))
+    await edge_tts.Communicate(text, voice, rate="-4%").save(str(out))
 
 
 def tts(text, out):
