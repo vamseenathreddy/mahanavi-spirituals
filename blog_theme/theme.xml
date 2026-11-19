@@ -13,7 +13,7 @@
 <link href='https://fonts.googleapis.com' rel='preconnect'/>
 <link href='https://fonts.gstatic.com' rel='preconnect' crossorigin='anonymous'/>
 <link href='https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap' rel='stylesheet'/>
-<b:skin><![CDATA[:root{--bg:#0d0807;--panel:#1a0f0c;--panel2:#241510;--line:#2f1d17;--ink:#f7ede5;--muted:#bba99d;--saf:#ff9a1f;--gold:#ffc766;--mar:#8a2231;--red:#ff2d3d;--r:16px;--sh:0 10px 30px rgba(0,0,0,.45)}
+<b:skin><![CDATA[.mahanavi-ad ins.adsbygoogle[data-ad-status=unfilled],ins.adsbygoogle[data-ad-status=unfilled]{display:none!important}.mahanavi-ad:has(ins[data-ad-status=unfilled]){display:none!important}.mahanavi-ad{min-height:0!important}:root{--bg:#0d0807;--panel:#1a0f0c;--panel2:#241510;--line:#2f1d17;--ink:#f7ede5;--muted:#bba99d;--saf:#ff9a1f;--gold:#ffc766;--mar:#8a2231;--red:#ff2d3d;--r:16px;--sh:0 10px 30px rgba(0,0,0,.45)}
 @media (prefers-color-scheme:light){:root{--bg:#fff8f1;--panel:#ffffff;--panel2:#fff0e2;--line:#ecd9ca;--ink:#2b1511;--muted:#7b6459;--sh:0 10px 28px rgba(90,40,10,.12)}}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}

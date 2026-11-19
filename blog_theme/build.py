@@ -239,7 +239,7 @@ def xml():
 <link href='https://fonts.googleapis.com' rel='preconnect'/>
 <link href='https://fonts.gstatic.com' rel='preconnect' crossorigin='anonymous'/>
 <link href='https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&amp;family=Poppins:wght@400;500;600;700&amp;display=swap' rel='stylesheet'/>
-<b:skin><![CDATA[{head_css}]]></b:skin>
+<b:skin><![CDATA[.mahanavi-ad ins.adsbygoogle[data-ad-status=unfilled],ins.adsbygoogle[data-ad-status=unfilled]{display:none!important}.mahanavi-ad:has(ins[data-ad-status=unfilled]){display:none!important}.mahanavi-ad{min-height:0!important}{head_css}]]></b:skin>
 </head>
 <body>
 {HEADER.replace('%%NAV%%', nav).replace('%%SUB%%', YT + '?sub_confirmation=1')}
