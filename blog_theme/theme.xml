@@ -183,7 +183,7 @@ d.addEventListener('keydown',function(e){var k=(e.key||'').toLowerCase(),c=e.ctr
 function vid(s){var m=/\/vi(?:_webp)?\/([\w-]{11})\//.exec(s||'');return m?m[1]:null}
 function thumb(id){return 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg'}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
+function embed(id,box){var f=d.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&loop=1&playlist='+id+'&rel=0&playsinline=1&modestbranding=1';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.setAttribute('allowfullscreen','');f.referrerPolicy='strict-origin-when-cross-origin';f.title='Mahanavi Spirituals';box.innerHTML='';box.appendChild(f)}
 function ready(fn){d.readyState!=='loading'?fn():d.addEventListener('DOMContentLoaded',fn)}
 function fallback(cb){var P=w.location.pathname,S=w.location.search,lm=/^\/search\/label\/([^?]+)/.exec(P),qm=/[?&]q=([^&]+)/.exec(S),pg=/^\/p\//.test(P),it=/^\/\d{4}\/\d\d\/.+\.html$/.test(P),u;
 if(pg)u='/feeds/pages/default?max-results=50';else if(it)u='/feeds/posts/default?path='+encodeURIComponent(P);else if(lm)u='/feeds/posts/default/-/'+lm[1]+'?max-results=30';else if(qm)u='/feeds/posts/default?q='+qm[1]+'&max-results=30';else u='/feeds/posts/default?max-results=30';

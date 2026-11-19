@@ -53,6 +53,7 @@ def _inline(s: str) -> str:
 
 
 def adsense_block(client: str, slot: str) -> str:
+    return ""  # 2026-11-19: no manual ad (it left an empty gap); Google auto ads place their own
     if not client or not slot:
         return AD_MARK  # placeholder so the ad can be patched into already scheduled posts later
     return (
@@ -77,19 +78,19 @@ def build_html(post: dict, client: str = "", slot: str = "", blog_url: str = "")
         if i == mid:
             out.append(adsense_block(client, slot))
     if post.get("video"):
-        out.append(f'<h2>Watch the video</h2><p><iframe width="560" height="315" src="https://www.youtube.com/embed/{post["video"]}" '
+        out.append(f'<h2>వీడియో చూడండి</h2><p><iframe width="560" height="315" src="https://www.youtube.com/embed/{post["video"]}?loop=1&playlist={post["video"]}&rel=0" '
                    'title="YouTube video" frameborder="0" allowfullscreen style="max-width:100%"></iframe></p>')
     if post.get("faq"):
-        out.append("<h2>Frequently asked questions</h2>")
+        out.append("<h2>తరచు అడిగే ప్రశ్నలు</h2>")
         for f in post["faq"]:
             out.append(f"<h3>{html.escape(f['q'])}</h3><p>{_inline(f['a'])}</p>")
     if post.get("disclaimer"):
         out.append(f'<p><i>{_inline(post["disclaimer"])}</i></p>')
     if blog_url:
         from urllib.parse import quote
-        links = " | ".join(f'<a href="{blog_url.rstrip("/")}/search/label/{quote(l)}">More: {html.escape(l)}</a>' for l in post["labels"])
-        out.append(f"<p><b>Related reading:</b> {links} | <a href=\"{blog_url}\">All articles</a></p>")
-    out.append("<p>Daily Telugu devotional videos and Shorts are on the Mahanavi Spirituals YouTube channel. Subscribe so you do not miss the next one.</p></div>")
+        links = " | ".join(f'<a href="{blog_url.rstrip("/")}/search/label/{quote(l)}">మరిన్ని: {html.escape(l)}</a>' for l in post["labels"])
+        out.append(f"<p><b>మరిన్ని కథలు:</b> {links} | <a href=\"{blog_url}\">అన్ని పోస్టులు</a></p>")
+    out.append("<p>ప్రతిరోజూ తెలుగు భక్తి వీడియోలు, షార్ట్స్ మహనావి స్పిరిచ్యువల్స్ యూట్యూబ్ ఛానెల్‌లో చూడండి. సబ్‌స్క్రైబ్ చేయండి.</p></div>")
     return "\n".join(x for x in out if x)
 
 
@@ -141,6 +142,8 @@ def main() -> int:
     ap.add_argument("--id", type=int)
     ap.add_argument("--days", type=int, default=7)
     ap.add_argument("--apply", action="store_true")
+    ap.add_argument("--now", type=int, default=0, help="publish this many unpublished articles immediately (newest on top)")
+    ap.add_argument("--only-telugu", action="store_true", default=True)
     a = ap.parse_args()
     client = os.environ.get("MAHANAVI_ADSENSE_CLIENT", "").strip() or "ca-pub-7766198162235124"  # publisher id is public (it is in every page that shows ads)
     slot = os.environ.get("MAHANAVI_ADSENSE_SLOT", "").strip() or "1048682654"
@@ -170,7 +173,15 @@ def main() -> int:
     now = dt.datetime.now(IST)
     taken = {d.replace(second=0, microsecond=0) for d in dates}
     horizon = (now + dt.timedelta(days=a.days)).date()
-    todo = [p for p in posts if p["title"] not in titles]
+    todo = [p for p in posts if p["title"] not in titles and re.search(r"[\u0C00-\u0C7F]", p["title"])]  # Telugu titles only
+    if a.now:
+        for k in range(min(a.now, len(todo))):
+            p = todo.pop(0)
+            when = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(minutes=k)).strftime("%Y-%m-%dT%H:%M:%SZ")
+            print(f"{'POST NOW' if a.apply else 'would post now'} #{p['id']} {p['title'][:60]}")
+            if a.apply:
+                blog.posts().insert(blogId=st.blogger_blog_id, body={"title": p["title"], "content": build_html(p, client, slot, blog_url), "published": when, "labels": [DAILY_LABEL] + p["labels"]}).execute()
+                time.sleep(4)
     made, day = 0, now.date()
     while todo and day <= horizon:
         for slot_t in day_slots(day):

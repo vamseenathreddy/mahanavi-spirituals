@@ -14,6 +14,10 @@ on:
         required: false
         type: boolean
         default: false
+      now:
+        description: "Publish this many Telugu articles immediately (newest on top)"
+        required: false
+        default: "0"
       apply:
         description: "Post for real (off = only list what would be scheduled)"
         required: false
@@ -55,4 +59,4 @@ jobs:
           MAHANAVI_ADSENSE_CLIENT: ${{ secrets.MAHANAVI_ADSENSE_CLIENT }}
           MAHANAVI_ADSENSE_SLOT: ${{ secrets.MAHANAVI_ADSENSE_SLOT }}
           PYTHONPATH: .
-        run: python scripts/ci/blog_daily.py --days "${{ inputs.days }}" ${{ inputs.patch_ads && '--patch-ads' || '' }} ${{ inputs.apply && '--apply' || '' }}
+        run: python scripts/ci/blog_daily.py --days "${{ inputs.days }}" --now "${{ inputs.now }}" ${{ inputs.patch_ads && '--patch-ads' || '' }} ${{ inputs.apply && '--apply' || '' }}
