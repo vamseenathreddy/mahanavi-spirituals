@@ -32,6 +32,8 @@ def save(state, path=DEFAULT_PATH):
 
 def mark_posted(state, date_iso, row_id, video_id, special_row, at_iso):
     state["posted"][date_iso] = {"row": row_id, "video_id": video_id, "at": at_iso}
-    if not special_row and row_id not in state["used_ids"]:
+    if not special_row:
+        if row_id in state["used_ids"]:
+            state["used_ids"].remove(row_id)  # recycled line: move to the end so the longest-unused line is chosen next time
         state["used_ids"].append(row_id)
     return state

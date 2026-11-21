@@ -23,7 +23,14 @@ def choose_row(rows, date: dt.date, used_ids, slot=None):
     if len(used_ids) < WARMUP_DAYS:
         pool = [r for r in pool if not any(w in r["english"].lower() for w in SENSITIVE)] or pool
     if not pool:
-        return None, "empty"
+        # Never stop: when every line has been used, recycle the one used LONGEST ago (used_ids is chronological),
+        # so a line only returns after the whole bank has been cycled through.
+        want_c = slot or ROTATION[date.weekday()]
+        cand = [r for r in rows if not r["special"] and r["category"] == want_c] or [r for r in rows if not r["special"]]
+        if not cand:
+            return None, "empty"
+        order = {i: n for n, i in enumerate(used_ids)}
+        return min(cand, key=lambda r: order.get(r["id"], -1)), "recycled-oldest"
     want = slot or ROTATION[date.weekday()]
     cat_pool = [r for r in pool if r["category"] == want]
     reason = f"rotation:{want}" if cat_pool else "fallback"
