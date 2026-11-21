@@ -12,9 +12,7 @@ name: Channel D | Monthly content refresh
 # ever touches ramana/data/content.csv via a reviewed PR, never posts
 # anything) when it runs.
 on:
-  schedule:
-    # 25th of each month, 09:00 IST (03:30 UTC). Gives days to review before the 1st.
-    - cron: "30 3 25 * *"
+  # schedule disabled 2026-11-22: no ANTHROPIC_API_KEY, new rows are written by hand instead.
   workflow_dispatch:
 
 permissions:
