@@ -137,7 +137,7 @@ OPINION_TE = "రేపటి రమణ బోధల కోసం సబ్‌�
 OPINION_EN = "Subscribe for tomorrow's Ramana teaching, tap the bell icon and choose all notifications"
 
 
-UNIFORM_SIZE = 78  # every line of the card is drawn at this one size (2026-10-08 request), then scaled to fit
+UNIFORM_SIZE = 96  # every line of the card is drawn at this one size (2026-10-08 request), then scaled to fit
 
 
 def _blocks(row, layout):
@@ -165,8 +165,7 @@ def _blocks(row, layout):
         if attr:
             blocks.append((ATTR_EN, FONT_EN, z, layout["accent"], False))
     # the subscribe reminder closes every Short, bold and in capitals so it reads as the call to action
-    blocks.append((OPINION_TE, FONT_TE, z, layout["accent"], True))
-    blocks.append((OPINION_EN.upper(), FONT_EN, z, layout["accent"], True))
+    # 2026-11-22: subscribe reminder removed from the card (owner request); text enlarged instead
     return [b for b in blocks if b[0]]
 
 

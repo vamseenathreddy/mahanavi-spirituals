@@ -313,12 +313,15 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
     tithi_line = (f"{PAKSHA[paksha][i]} {TITHI_NAME[t][i]}" if t else "")
     count = "108 बार जपें (कम से कम 11 बार)" if hi else "108 సార్లు జపించండి (కనీసం 11 సార్లు)"
     if hi:
-        title = f"{name} {kind} | {why} | Beej Mantra"
+        title = f"{name} {kind} | {why} | " + ("Beej Mantra" if mkind == "beej" else "Mantra")
         ctas = ("कल के बीज मंत्र के लिए सब्सक्राइब करें और ऑल नोटिफिकेशन के लिए बेल आइकन दबाएं", "रोज़ सुबह 6 बजे नया मंत्र - सब्सक्राइब करें")
         footer_line = ctas[0]
     else:
-        title = f"{name} {kind} | {why} | Beeja Mantra"
+        title = f"{name} {kind} | {why} | " + ("Beeja Mantra" if mkind == "beej" else "Mantra")
         ctas = ("రేపటి బీజ మంత్రం కోసం సబ్‌స్క్రైబ్ చేసి ఆల్ నోటిఫికేషన్స్ బెల్ ఐకాన్ నొక్కండి", "ప్రతి రోజూ ఉదయం 6 గంటలకు కొత్త మంత్రం - సబ్‌స్క్రైబ్ చేయండి")
+        footer_line = ctas[0]
+    if mkind != "beej":  # a shloka / moola / gayatri Short must not be called a beej mantra on the card
+        ctas = (ctas[0].replace("బీజ మంత్రం", "మంత్రం").replace("बीज मंत्र", "मंत्र"),) + tuple(ctas[1:])
         footer_line = ctas[0]
     if len(title) > 100:
         title = title[:99] + "…"
@@ -327,16 +330,16 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
                  f"\n\n" + "\n".join(f"• {b}" for b in benefits_for(dei.key, hi)))
     desc_en = (f"{dei.key.title()} {kind_en} mantra for {d.day} {d.strftime('%B %Y')}: {dei.translit}\n"
                f"Chant 108 times (at least 11) with a calm mind. Chosen by today's festival / tithi / weekday.")
-    base_tags = [f"{dei.key} mantra", f"{dei.key} {kind_en.lower()} mantra", f"{dei.key} {kind_en.lower()}", "beej mantra", "beeja mantra",
+    base_tags = [f"{dei.key} mantra", f"{dei.key} {kind_en.lower()} mantra", f"{dei.key} {kind_en.lower()}", *(["beej mantra", "beeja mantra"] if mkind == "beej" else []),
                  "daily mantra", "today mantra", dei.translit.lower(), name, f"{name} {kind}", "shorts"]
     if hi:
-        base_tags += ["hindi mantra", "बीज मंत्र", "आज का मंत्र", "सनातन धर्म"]
+        base_tags += ["hindi mantra", *(["बीज मंत्र"] if mkind == "beej" else []), "आज का मंत्र", "सनातन धर्म"]
         tags_ch = {"mantra_sangam": "divine mantra sangam", "trance_beats": "devotional trance beats"}[channel]
         footer = _HI_FOOTER if channel == "mantra_sangam" else _TRANCE_FOOTER
         footer_en = ("Divine Mantra Sangam is a Hindi devotional channel: daily Rahu Kaal, Shubh Muhurat, mantras and Purana stories."
                      if channel == "mantra_sangam" else "Devotional Trance Beats: Hindi devotional mantras, bhajans and kirtan.")
     else:
-        base_tags += ["telugu mantra", "బీజ మంత్రం", "నేటి మంత్రం", "telugu devotional"]
+        base_tags += ["telugu mantra", *(["బీజ మంత్రం"] if mkind == "beej" else []), "నేటి మంత్రం", "telugu devotional"]
         tags_ch = "mahanavi spirituals"
         footer, footer_en = _CHANNEL_FOOTER_TE, _CHANNEL_FOOTER_EN
     tags = base_tags + [tags_ch]
@@ -354,5 +357,5 @@ def build(channel: str, d: date, tithi: str) -> RequestShort:
         description_te=desc_head, description_en=desc_en, hashtags=hashtags, tags=tags,
         bg_image=_photo_for(dei.key, d), mantra_kind=mkind,
         lang=cfg["lang"], token_file=cfg["token_file"], expected_channel=cfg["expected"], watermark=cfg["watermark"],
-        header=(tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why) or WEEKDAY_NAME[d.weekday()][i], tag_footer=footer_line, cta_lines=ctas, playlist_line=_PLAYLIST_LINE if channel == "mahanavi" else _HI_LINE.format(x="बीज मंत्र"), footer_main=footer, footer_en=footer_en,
+        header=(tithi_line if why == WEEKDAY_NAME[d.weekday()][i] else why) or WEEKDAY_NAME[d.weekday()][i], tag_footer=footer_line, cta_lines=ctas, playlist_line=((_PLAYLIST_LINE if mkind == "beej" else _PLAYLIST_LINE.replace("బీజ మంత్రాలన్నీ", "మంత్రాలన్నీ")) if channel == "mahanavi" else _HI_LINE.format(x="बीज मंत्र" if mkind == "beej" else "मंत्र")), footer_main=footer, footer_en=footer_en,
     )
