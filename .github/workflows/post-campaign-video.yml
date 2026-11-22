@@ -1,0 +1,74 @@
+name: Tools | Post Campaign Video (Pulse TDP Fans)
+
+# Uploads a finished video (and optional thumbnail) that was pushed to an assets branch, with SEO metadata from content/campaign/<meta>.json.
+on:
+  workflow_dispatch:
+    inputs:
+      assets_branch:
+        description: "Branch holding video.mp4 (and thumb.jpg)"
+        required: true
+      meta:
+        description: "Metadata JSON under content/campaign/"
+        required: true
+        default: "sarpanch_song.json"
+      privacy:
+        description: "private, unlisted or public"
+        required: false
+        default: "public"
+      publish_at:
+        description: "Optional RFC3339 time to schedule (uploads private until then)"
+        required: false
+        default: ""
+      token_file:
+        description: "Saved token of the channel to post on"
+        required: false
+        default: "youtube_token_pulse_boosting.json"
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.assets_branch }}
+          path: assets_in
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Upload
+        env:
+          MAHANAVI_OUTPUT_DIR: ./data/generated
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ inputs.token_file }}
+        run: |
+          set -o pipefail
+          cd assets_in; if ls video.mp4.part* >/dev/null 2>&1; then cat video.mp4.part* > video.mp4; fi; cd ..
+          EXTRA=""; [ -f assets_in/thumb.jpg ] && EXTRA="--thumb assets_in/thumb.jpg"
+          [ -n "${{ inputs.publish_at }}" ] && EXTRA="$EXTRA --publish-at ${{ inputs.publish_at }}"
+          python3 scripts/ci/upload_campaign_video.py assets_in/video.mp4 content/campaign/${{ inputs.meta }} $EXTRA --privacy ${{ inputs.privacy }} 2>&1 | tee data/recent_uploads_log.txt
+      - name: Push state to Drive
+        if: always()
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
