@@ -15,6 +15,7 @@ from mahanavi.content import beej_mantras
 
 GAYATRI = ("గాయత్రీ మంత్రం", "गायत्री मंत्र", "gayatri mantra")
 SHLOKA = ("శ్లోకం", "श्लोक", "shloka")
+MOOLA = ("మూల మంత్రం", "मूल मंत्र", "moola mantra")
 
 
 def kind_of(title: str) -> str | None:
@@ -23,6 +24,8 @@ def kind_of(title: str) -> str | None:
         return "gayatri"
     if any(m.lower() in low for m in SHLOKA):
         return "shloka"
+    if any(m.lower() in low for m in MOOLA):
+        return "moola"
     return None
 
 
@@ -42,12 +45,12 @@ def main() -> int:
                 print(f"::error::{key}: token acts as '{name}', expected '{cfg['expected']}'. Skipped.")
                 rc = 1
                 continue
-            by_kind: dict[str, list[tuple[str, str]]] = {"gayatri": [], "shloka": []}
+            by_kind: dict[str, list[tuple[str, str]]] = {"gayatri": [], "shloka": [], "moola": []}
             for vid, title, _ in bp.channel_beej_videos(yt):
                 k = kind_of(title)
                 if k:
                     by_kind[k].append((vid, title))
-            print(f"::notice::{key} [{name}] gayatri={len(by_kind['gayatri'])} shloka={len(by_kind['shloka'])}")
+            print(f"::notice::{key} [{name}] gayatri={len(by_kind['gayatri'])} shloka={len(by_kind['shloka'])} moola={len(by_kind['moola'])}")
             for k, vids in by_kind.items():
                 for v, t in vids:
                     print(f"   {k}: {v} {t[:70]}")

@@ -76,7 +76,7 @@ def main(argv: list[str] | None = None) -> int:
 
             from channels import playlist_links
 
-            top = playlist_links.block(youtube, settings, "beej")
+            top = playlist_links.block(youtube, settings, "beej" if getattr(spec, "mantra_kind", "beej") == "beej" else "")
             if top:
                 spec = dataclasses.replace(spec, description_te=f"{top}\n\n{spec.description_te}")
         elif args.channel in ("mantra_sangam", "trance_beats"):
