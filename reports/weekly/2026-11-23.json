@@ -4,21 +4,21 @@
   "row": {
    "date": "2026-11-23",
    "subs": 4180,
-   "views": 77747,
+   "views": 77709,
    "prev_views": 156100,
    "net": 70,
-   "likes": 641,
+   "likes": 642,
    "uploads_7d": 34,
-   "median_settled": 911.5
+   "median_settled": 1081
   },
   "flags": [
-   "VIEWS DOWN 50%: 77747 vs 156100 the week before"
+   "VIEWS DOWN 50%: 77709 vs 156100 the week before"
   ],
   "top": [
    {
     "id": "YeNUed_kCvI",
     "title": "19 నవంబర్ దుర్ముహూర్తం ఎప్పుడు? 10:09 AM-10:54 AM, 02:37 PM-03:21 PM | Mahanavi Spirituals",
-    "views": 3687,
+    "views": 3686,
     "likes": 36,
     "avg_pct": 284.71,
     "gained": 1
@@ -34,7 +34,7 @@
    {
     "id": "2rLd3ZkcD70",
     "title": "19 నవంబర్ రాహు కాలం ఎప్పుడు? 01:24 PM-02:48 PM | Mahanavi Spirituals",
-    "views": 2704,
+    "views": 2701,
     "likes": 17,
     "avg_pct": 290.91,
     "gained": 1
@@ -92,30 +92,30 @@
   ],
   "settled": {
    "uploads_7d": 34,
-   "settled_n": 18,
-   "median_settled": 911.5,
-   "recent_n": 28,
-   "median_recent": 825.0,
+   "settled_n": 17,
+   "median_settled": 1081,
+   "recent_n": 27,
+   "median_recent": 929,
    "best_settled": [
     {
      "id": "jx7yXhCYN4g",
      "title": "ఈరోజు దుర్ముహూర్తం 08:40 AM-09:25 AM, 12:23 PM-01:08 PM - జాగ్రత్త | Mahanavi Spirituals",
      "age": 3,
-     "views": 2596,
+     "views": 2616,
      "privacy": "public"
     },
     {
      "id": "1IVnBxqn9RU",
      "title": "శ్రీ మహావిష్ణువు గాయత్రీ మంత్రం | ప్రబోధిని ఏకాదశి | Beeja Mantra | Mahanavi Spirituals",
      "age": 3,
-     "views": 2542,
+     "views": 2592,
      "privacy": "public"
     },
     {
      "id": "NVyj5JfBDmA",
      "title": "డిసెంబర్ 2026 పండుగలు | December 2026 Telugu Festivals List | Hindu Festival… | Mahanavi Spirituals",
      "age": 2,
-     "views": 2433,
+     "views": 2517,
      "privacy": "public"
     }
    ],
@@ -131,14 +131,14 @@
      "id": "SqI5XWkkb7o",
      "title": "లక్ష్మీ దేవి 108 నామాలు 15/108 | Sudha - Nectar | Mahanavi Spirituals",
      "age": 3,
-     "views": 291,
+     "views": 297,
      "privacy": "public"
     },
     {
      "id": "TdH7_ofJH6w",
      "title": "శ్రీశైలం మల్లికార్జున స్వామి రహస్యాలు | 12 నిజాలు | Srisailam Mallikarjuna Te… | Mahanavi Spirituals",
      "age": 3,
-     "views": 299,
+     "views": 317,
      "privacy": "public"
     }
    ],
@@ -272,12 +272,12 @@
   "row": {
    "date": "2026-11-23",
    "subs": 59,
-   "views": 3015,
+   "views": 3014,
    "prev_views": 1955,
    "net": 7,
    "likes": 74,
    "uploads_7d": 50,
-   "median_settled": 31.5
+   "median_settled": 32
   },
   "flags": [],
   "top": [
@@ -350,10 +350,10 @@
   ],
   "settled": {
    "uploads_7d": 50,
-   "settled_n": 38,
-   "median_settled": 31.5,
+   "settled_n": 37,
+   "median_settled": 32,
    "recent_n": 29,
-   "median_recent": 21,
+   "median_recent": 23,
    "best_settled": [
     {
      "id": "euSEKptgjro",
@@ -366,7 +366,7 @@
      "id": "taqX9gRRyTo",
      "title": "भगवान विष्णु गायत्री मंत्र | देवउठनी एकादशी | Beej Mantra",
      "age": 3,
-     "views": 104,
+     "views": 117,
      "privacy": "public"
     },
     {
@@ -386,16 +386,16 @@
      "privacy": "public"
     },
     {
-     "id": "o0o3D2qJoN8",
-     "title": "शिव ताण्डव ट्रांस जाप 7 | हर हर महादेव 🔱 | Mahadev Trance Beats",
-     "age": 7,
-     "views": 4,
-     "privacy": "public"
-    },
-    {
      "id": "v8x0ExisKwo",
      "title": "इस हफ़्ते आपने जो लक्ष्मी नाम जाने 8-14 | 14/108",
      "age": 3,
+     "views": 7,
+     "privacy": "public"
+    },
+    {
+     "id": "xmSzfAPJVqc",
+     "title": "दशावतार | पुराण ज्ञान",
+     "age": 7,
      "views": 7,
      "privacy": "public"
     }
@@ -407,13 +407,13 @@
   "label": "Jesus Worship Waves",
   "row": {
    "date": "2026-11-23",
-   "subs": 24,
-   "views": 4841,
+   "subs": 25,
+   "views": 4835,
    "prev_views": 819,
    "net": 6,
-   "likes": 225,
-   "uploads_7d": 23,
-   "median_settled": 210.5
+   "likes": 226,
+   "uploads_7d": 24,
+   "median_settled": 212.5
   },
   "flags": [],
   "top": [
@@ -481,17 +481,17 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 23,
+   "uploads_7d": 24,
    "settled_n": 24,
-   "median_settled": 210.5,
+   "median_settled": 212.5,
    "recent_n": 12,
-   "median_recent": 249.5,
+   "median_recent": 251.0,
    "best_settled": [
     {
      "id": "-Vx5-COeYOg",
      "title": "1 యోహాను 4:19 | ఆయన మొదట మనలను ప్రేమించెను గనుక మనము… | శాంతి ఇచ్చే వచనం | 1 John 4:19",
      "age": 7,
-     "views": 837,
+     "views": 838,
      "privacy": "public"
     },
     {
@@ -521,7 +521,7 @@
      "id": "M0JK0m3lcOQ",
      "title": "కీర్తనలు 37:4 | యెహోవాయందు ఆనందించుము ఆయన నీ హృదయవాంఛలను తీర్చును.… | దేవుని వాక్యం | Psalms 37:4",
      "age": 3,
-     "views": 64,
+     "views": 66,
      "privacy": "public"
     },
     {
@@ -540,12 +540,12 @@
   "row": {
    "date": "2026-11-23",
    "subs": 65,
-   "views": 1616,
+   "views": 1614,
    "prev_views": 1981,
    "net": 4,
    "likes": 36,
-   "uploads_7d": 16,
-   "median_settled": 78
+   "uploads_7d": 17,
+   "median_settled": 79
   },
   "flags": [],
   "top": [
@@ -560,7 +560,7 @@
    {
     "id": "da9YFWoYbn4",
     "title": "Prayer is not words. It is the heart melting in… | Ramana Maharshi | ప్రార్థన అంటే మాటలు కాదు…",
-    "views": 145,
+    "views": 146,
     "likes": 4,
     "avg_pct": 157.57,
     "gained": 0
@@ -621,9 +621,9 @@
    ]
   ],
   "settled": {
-   "uploads_7d": 16,
+   "uploads_7d": 17,
    "settled_n": 17,
-   "median_settled": 78,
+   "median_settled": 79,
    "recent_n": 5,
    "median_recent": 68,
    "best_settled": [
@@ -668,7 +668,7 @@
      "id": "JUzeksz0wU4",
      "title": "Drop envy and anger, and the mind becomes light. | Ramana Maharshi | అసూయ, కోపం వదిలేస్తే మనసు…",
      "age": 5,
-     "views": 56,
+     "views": 57,
      "privacy": "public"
     }
    ],
@@ -731,7 +731,7 @@
    "settled_n": 2,
    "median_settled": 0.0,
    "recent_n": 1,
-   "median_recent": 6,
+   "median_recent": 7,
    "best_settled": [
     {
      "id": "dPtilg4m7IU",
