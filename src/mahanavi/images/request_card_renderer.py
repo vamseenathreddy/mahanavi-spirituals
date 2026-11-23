@@ -102,15 +102,15 @@ class RequestCardRenderer:
         (e.g. చేయవలసినవి / చేయకూడనివి) and the lines under it are its items. Everything sized to stay above the Shorts UI."""
         head_i = next(i for i, pt in enumerate(points) if pt.startswith("##"))
         intro, rest = points[:head_i], points[head_i:]
-        top, bottom = 480, 1440                  # the whole band between the heading and the Shorts UI (was 520-1290: text came out small)
+        top, bottom = 470, 1500                  # the whole band between the heading and the Shorts UI (was 520-1290: text came out small)
         budget = bottom - top
         cap = 96                                  # start big and shrink only until it fits, so the free space is used
-        sp = 1.3
+        sp = 1.25
         while True:
             fits = [("intro", self._fit(t, cap + 6, 34, 230, sp)) for t in intro]
             fits += [(("head", self._fit(t[2:].strip(), cap + 6, 38, 120, sp)) if t.startswith("##")
                       else ("item", self._fit(t, cap - 6, 34, 170, sp))) for t in rest]
-            gap_item, gap_head = 16, 44
+            gap_item, gap_head = 14, 40
             total = sum(len(f[0]) * f[2] for _, f in fits)
             total += sum(gap_head if kind == "head" else gap_item for kind, _ in fits[:-1])
             if total <= budget or cap <= 40:
