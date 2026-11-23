@@ -1,67 +1,63 @@
-# Weekly channel review, week ending 2026-11-16
+# Weekly channel review, week ending 2026-11-23
 
 ## Flags
-- Divine Mantra Sangam: REACH COLLAPSE: median views of 39 settled posts is 4
-- Divine Mantra Sangam: VIEWS DOWN 70%: 801 vs 2677 the week before
-- Pulse Boosting: REACH COLLAPSE: median views of 22 settled posts is 6
-- Pulse Boosting: VIEWS DOWN 44%: 214 vs 380 the week before
+- Mahanavi Spirituals: VIEWS DOWN 50%: 77747 vs 156100 the week before
+- Divine Mantra Sangam: REACH COLLAPSE: median views of 39 settled posts is 5
 - Pulse Boosting: NO SUBSCRIBER GROWTH for two weeks in a row
 
 ## Mahanavi Spirituals
-- subscribers 4110 (+207 this week)
-- views 186913 (previous week 46356), 46 uploads, about 4063 views per upload
-- median views of settled posts: 706
-- best: 1993 views, శ్రీ సుబ్రహ్మణ్య స్వామి గాయత్రీ మంత్రం | నాగుల చవితి | Beeja Mantra | 
-- best: 1749 views, 13 నవంబర్ రాహు కాలం ఎప్పుడు? 10:36 AM-12:00 PM | Mahanavi Spirituals
-- weakest: 0 views, LIVE Lakshmi Devi Songs | లక్ష్మీ అష్టోత్తర శతనామావళి | Powerful Mahal
-- weakest: 3 views, Powerful Mahalakshmi Stotram | లక్ష్మీ అష్టోత్తర శతనామావళి | Lakshmi D
+- subscribers 4180 (+70 this week)
+- views 77747 (previous week 156100), 34 uploads, about 2287 views per upload
+- median views of settled posts: 911.5
+- best: 2596 views, ఈరోజు దుర్ముహూర్తం 08:40 AM-09:25 AM, 12:23 PM-01:08 PM - జాగ్రత్త | M
+- best: 2542 views, శ్రీ మహావిష్ణువు గాయత్రీ మంత్రం | ప్రబోధిని ఏకాదశి | Beeja Mantra | Ma
+- weakest: 6 views, LIVE Lakshmi Devi Songs | లక్ష్మీ అష్టోత్తర శతనామావళి | Powerful Mahal
+- weakest: 291 views, లక్ష్మీ దేవి 108 నామాలు 15/108 | Sudha - Nectar | Mahanavi Spirituals
+- FLAG: VIEWS DOWN 50%: 77747 vs 156100 the week before
 
 ## Divine Mantra Sangam
-- subscribers 52 (+2 this week)
-- views 801 (previous week 2677), 49 uploads, about 16 views per upload
-- median views of settled posts: 4
-- best: 26 views, बुधवार 11 नवंबर, शुक्ल द्वितीया - Rahu Kaal Today | आज राहु काल
-- best: 17 views, 12 नवंबर गुरुवार, शुक्ल तृतीया - शुभ मुहूर्त | Good Time Today
-- weakest: 0 views, चाणक्य नीति सूत्र | काम शुरू करने से पहले सोचो: क्यों, परिणाम क्या, सफ
-- weakest: 1 views, शिव ताण्डव स्तोत्र श्लोक 5 | हिंदी अर्थ सहित | Shiv Tandav Stotram
-- FLAG: REACH COLLAPSE: median views of 39 settled posts is 4
-- FLAG: VIEWS DOWN 70%: 801 vs 2677 the week before
+- subscribers 54 (+2 this week)
+- views 571 (previous week 433), 43 uploads, about 13 views per upload
+- median views of settled posts: 5
+- best: 26 views, राहु काल आज कब है? 20 नवंबर शुक्रवार, शुक्ल दशमी | Rahu Kalam
+- best: 15 views, आज का शुभ मुहूर्त 15 नवंबर रविवार, शुक्ल षष्ठी | Shubh Muhurat Today
+- weakest: 0 views, शिव ताण्डव स्तोत्र श्लोक 9 | हिंदी अर्थ सहित | Shiv Tandav Stotram
+- weakest: 0 views, सोमवार 16 नवंबर, शुक्ल सप्तमी - दुर्मुहूर्त का समय | Durmuhurat Time
+- FLAG: REACH COLLAPSE: median views of 39 settled posts is 5
 
 ## Devotional Trance Beats
-- subscribers 55 (+5 this week)
-- views 2768 (previous week 1204), 50 uploads, about 55 views per upload
-- median views of settled posts: 24.5
-- best: 386 views, भगवान दत्तात्रेय मूल मंत्र | गुरुवार | Beej Mantra
-- best: 231 views, गोविंद जय जय, गोपाल जय जय, राधा रमण हरि गोविंद जय जय। | कृष्ण कीर्तन |
-- weakest: 2 views, धर्म क्या है? | पुराण ज्ञान
-- weakest: 5 views, आज भाई दूज 11 नवंबर: क्या करें, क्या न करें | Bhai Dooj Niyam
+- subscribers 59 (+7 this week)
+- views 3015 (previous week 1955), 50 uploads, about 60 views per upload
+- median views of settled posts: 31.5
+- best: 118 views, माँ दुर्गा श्लोक | शुक्ल अष्टमी | Beej Mantra
+- best: 104 views, भगवान विष्णु गायत्री मंत्र | देवउठनी एकादशी | Beej Mantra
+- weakest: 4 views, इस पात्र को पहचानिए | पुराण ज्ञान
+- weakest: 4 views, शिव ताण्डव ट्रांस जाप 7 | हर हर महादेव 🔱 | Mahadev Trance Beats
 
 ## Jesus Worship Waves
-- subscribers 17 (+3 this week)
-- views 1337 (previous week 1059), 22 uploads, about 61 views per upload
-- median views of settled posts: 39.0
-- best: 315 views, హెబ్రీయులకు 13:8 | యేసుక్రీస్తు నిన్న నేడు నిరంతరము ఒక్కటేరీతిగా ఉన్నా
-- best: 294 views, సామెతలు 17:22 | సంతోషముగల హృదయము ఆరోగ్యము కలుగజేయును నలిగిన మనస్సు… | 
-- weakest: 2 views, ఫిలిప్పీయులకు 4:7 | అప్పుడు సకల వివేకమునకు మించిన దేవుని సమాధానము… | P
-- weakest: 5 views, 1 కొరింథీయులకు 16:14 | మీరు చేయునదంతయు ప్రేమతో జరుగనీయుడి.… | ఆశీర్వాద
+- subscribers 24 (+6 this week)
+- views 4841 (previous week 819), 23 uploads, about 210 views per upload
+- median views of settled posts: 210.5
+- best: 837 views, 1 యోహాను 4:19 | ఆయన మొదట మనలను ప్రేమించెను గనుక మనము… | శాంతి ఇచ్చే వచ
+- best: 421 views, 1 పేతురు 5:7 | ఆయన మిమ్మునుగూర్చి చింతించుచున్నాడు గనుక మీ చింత… | ఆదర
+- weakest: 53 views, కీర్తనలు 16:8 | నేను యెహోవాను నా యెదుట ఎల్లప్పుడు ఉంచుకొనియున్నాను… | 
+- weakest: 64 views, కీర్తనలు 37:4 | యెహోవాయందు ఆనందించుము ఆయన నీ హృదయవాంఛలను తీర్చును.… | 
 
 ## Ramana Maharshi TV
-- subscribers 60 (+10 this week)
-- views 2732 (previous week 1598), 24 uploads, about 114 views per upload
-- median views of settled posts: 89.0
-- best: 329 views, Do not follow thoughts. Look for their source. | Ramana Maharshi | ఆలో
-- best: 265 views, Surrender is not defeat. It is rest. | Ramana Maharshi | శరణాగతి అంటే 
-- weakest: 44 views, In 1948, Bhagavan declared that the cow Lakshmi… | Ramana Maharshi | 1
-- weakest: 53 views, Paul Brunton's writing in the 1930s introduced him… | Ramana Maharshi 
+- subscribers 65 (+4 this week)
+- views 1616 (previous week 1981), 16 uploads, about 101 views per upload
+- median views of settled posts: 78
+- best: 268 views, Surrender is not defeat. It is rest. | Ramana Maharshi | శరణాగతి అంటే 
+- best: 147 views, Prayer is not words. It is the heart melting in… | Ramana Maharshi | ప
+- weakest: 55 views, God is always watching over you and never forgets you. | Ramana Mahars
+- weakest: 56 views, The Heart is another name for Reality. | Ramana Maharshi | హృదయమే సత్య
 
 ## Pulse Boosting
 - subscribers 60 (+0 this week)
-- views 214 (previous week 380), 13 uploads, about 16 views per upload
-- median views of settled posts: 6.0
-- best: 35 views, సైకిల్ గుర్తు, పసుపు జెండా: తెలుగుదేశం అంటే అభిమానం! | TDP | Pulse TDP
-- best: 31 views, యువగళం: 3,000 కిలోమీటర్లకు పైగా నడిచిన యువ నాయకుడు! | TDP | Pulse TDP 
-- weakest: 0 views, నవంబర్ 19, 20: 659 ఎంపీపీ, 28 జడ్పీ పీఠాలకు ఎన్నిక | TDP | Pulse TDP F
-- weakest: 0 views, రూ.68,702.35 కోట్ల పెట్టుబడులు: ఏపీ సదస్సుల జోరు | TDP | Pulse TDP Fan
-- FLAG: REACH COLLAPSE: median views of 22 settled posts is 6
-- FLAG: VIEWS DOWN 44%: 214 vs 380 the week before
+- views 27 (previous week 99), 2 uploads, about 14 views per upload
+- median views of settled posts: 0.0
+- best: 0 views, రూ.9.89 లక్ష కోట్లు, 303 ఒప్పందాలు: విశాఖ సీఐఐ సదస్సు | TDP | Pulse TD
+- best: 0 views, ఏపీ దేశంలో వేగంగా ఎదుగుతున్న రాష్ట్రం: ఉపరాష్ట్రపతి ప్రశంస | TDP | Pul
+- weakest: 0 views, రూ.9.89 లక్ష కోట్లు, 303 ఒప్పందాలు: విశాఖ సీఐఐ సదస్సు | TDP | Pulse TD
+- weakest: 0 views, ఏపీ దేశంలో వేగంగా ఎదుగుతున్న రాష్ట్రం: ఉపరాష్ట్రపతి ప్రశంస | TDP | Pul
 - FLAG: NO SUBSCRIBER GROWTH for two weeks in a row
