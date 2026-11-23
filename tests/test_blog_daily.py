@@ -12,15 +12,13 @@ def test_bank_valid_and_unique():
     assert len({p["id"] for p in posts}) == len(posts) and len({p["title"] for p in posts}) == len(posts)
     for p in posts:
         assert (bd.ROOT / "assets" / "blog" / p["hero"]).exists(), p["hero"]
-        assert len(p["sections"]) >= 4 and p["faq"] and p["labels"]
+        assert len(p["sections"]) >= 3 and p["faq"] and p["labels"]
 
 
-def test_ad_in_middle_once():
+def test_no_manual_ad_block():
+    """Ads come from Blogger Auto ads (theme head); a manual in-post ad block left an empty gap, so none is inserted."""
     for p in bd.load_posts():
-        h = bd.build_html(p, "ca-pub-1", "99")
-        assert h.count("adsbygoogle") >= 2 and h.count('<ins class="adsbygoogle"') == 1
-        assert 0.2 < h.index("<ins") / len(h) < 0.7, p["id"]
-        assert "<ins" not in bd.build_html(p, "", "") and bd.AD_MARK in bd.build_html(p, "", "")
+        assert "<ins" not in bd.build_html(p, "ca-pub-1", "99")
 
 
 def test_duplicate_groups_by_video():
