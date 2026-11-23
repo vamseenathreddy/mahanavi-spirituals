@@ -120,3 +120,9 @@ def test_telugu_daily_from_10_nov():
         assert p.plan_for("hi", dt.date(2026, 11, 10)) == p.plan(dt.date(2026, 11, 10))
     finally:
         p.APPROVED_CARDS = 13
+
+
+def test_hindi_chanakya_every_fourth_day():
+    import datetime as dt
+    days = [p.plan_for("hi", dt.date(2026, 11, d)) for d in range(3, 12)]
+    assert [x is not None for x in days] == [True, False, False, False, True, False, False, False, True]

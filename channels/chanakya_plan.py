@@ -48,6 +48,7 @@ TE_DAILY_FIRST = 4                        # cards 0-3 went out 3, 5, 7, 9 Nov, s
 # Cards the owner has proofread and approved (index 0 .. APPROVED_CARDS-1). NOTHING at or past this index is posted, so unverified
 # text never goes out on its own. Cards 1-13 approved by the owner on 2026-11-09 (cards 1-3 went out earlier). Raise this number only when the owner says so.
 APPROVED_CARDS = 13
+HI_STEP_DAYS = 4
 
 
 def plan_for(lang: str, d: dt.date) -> int | None:
@@ -58,6 +59,9 @@ def plan_for(lang: str, d: dt.date) -> int | None:
         i = i if i < cn.days() else None
     else:
         i = plan(d)
+        # 2026-11-23 weekly review: Hindi cards got 0 to 2 views for two weeks (Sangam median 5), so Hindi posts every 4th day, not every other.
+        if lang == "hi" and (d - SERIES_START).days % HI_STEP_DAYS:
+            i = None
     return i if i is not None and i < APPROVED_CARDS else None
 
 
