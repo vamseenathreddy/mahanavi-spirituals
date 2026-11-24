@@ -10,8 +10,8 @@ SLOGANS = ["రైతు బిడ్డ", "కష్టాన్ని నమ�
 EN = ["Farmer's son", "A man who trusts hard work", "A man who wants good for everyone", "Our coalition candidate",
       "Our village's son", "Our candidate for our village", "The hand that serves", "A leader who listens to you",
       "Your support for our village's future", "Vote and win!"]
-SLOTS = ["07:00", "12:00", "18:00", "21:00"]
-TODAY_SLOTS = ["13:00", "15:30", "18:00", "21:00"]   # first day starts mid-day
+SLOTS = ["07:00", "15:00", "23:00"]      # one Short every 8 hours from 25 Nov (owner, 24 Nov)
+TODAY_SLOTS = ["12:10", "20:00"]         # first day: one now, one at 8 pm
 START, END = dt.date(2026, 11, 24), dt.date(2026, 12, 4)
 SONG = ("🎵 పూర్తి పాట ఈ ఛానల్‌లో చూడండి: \"గడ్డం ప్రభాకర్ రెడ్డి గారికే మీ ఓటు | Chatrai Sarpanch Candidate Campaign Song\"\n"
         "Watch the full campaign song on this channel: \"Chatrai Sarpanch Candidate Campaign Song\"")
@@ -25,7 +25,8 @@ def main() -> None:
     plan, g, d = [], 0, START
     while d <= END:
         for s, slot in enumerate(TODAY_SLOTS if d == START else SLOTS, 1):
-            te, en = SLOGANS[g % 10], EN[g % 10]
+            k = s - 1 if d == START else ((d - START).days - 1) * 4 + (s - 1) + 4   # slogan index the rendered video was made with
+            te, en = SLOGANS[k % 10], EN[k % 10]
             title = f"{te} | గడ్డం ప్రభాకర్ రెడ్డి | Chatrai Sarpanch #Shorts"
             if len(title) > 95:
                 title = f"{te} | గడ్డం ప్రభాకర్ రెడ్డి #Shorts"
