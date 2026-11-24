@@ -13,6 +13,8 @@ EN = ["Farmer's son", "A man who trusts hard work", "A man who wants good for ev
 SLOTS = ["07:00", "12:00", "18:00", "21:00"]
 TODAY_SLOTS = ["13:00", "15:30", "18:00", "21:00"]   # first day starts mid-day
 START, END = dt.date(2026, 11, 24), dt.date(2026, 12, 4)
+SONG = ("🎵 పూర్తి పాట ఈ ఛానల్‌లో చూడండి: \"గడ్డం ప్రభాకర్ రెడ్డి గారికే మీ ఓటు | Chatrai Sarpanch Candidate Campaign Song\"\n"
+        "Watch the full campaign song on this channel: \"Chatrai Sarpanch Candidate Campaign Song\"")
 HASH = ("#Shorts #Chatrai #చాట్రాయి #Sarpanch #సర్పంచ్ #TDP #తెలుగుదేశం #JanaSena #BJP #NDA #కూటమి #GaddamPrabhakarReddy "
         "#గడ్డంప్రభాకర్రెడ్డి #రైతుబిడ్డ #ChatraiVillage #APPanchayatElections #PanchayatElections #CampaignSong #TeluguSong")
 TAGS = ["Gaddam Prabhakar Reddy", "గడ్డం ప్రభాకర్ రెడ్డి", "Chatrai", "చాట్రాయి", "Chatrai sarpanch", "సర్పంచ్ అభ్యర్థి", "sarpanch election",
@@ -33,7 +35,7 @@ def main() -> None:
                 "description": (f"{te}\n\nచాట్రాయి గ్రామపంచాయతీ సర్పంచ్ అభ్యర్థి శ్రీ గడ్డం ప్రభాకర్ రెడ్డి గారికే మీ అమూల్యమైన ఓటు వేసి ఆశీర్వదించవలసిందిగా ప్రార్థన. "
                                 f"కూటమి బలపరిచిన అభ్యర్థి, శ్రీ మండపాటి బసవరెడ్డి గారు బలపరిచిన అభ్యర్థి.\n\n"
                                 f"{en}. Gaddam Prabhakar Reddy, coalition-supported (TDP, Jana Sena, BJP) candidate for Sarpanch of Chatrai Gram Panchayat, Andhra Pradesh. "
-                                f"Please bless him with your valuable vote.\n\n🔔 Subscribe for more Chatrai campaign videos.\n\n{HASH}"),
+                                f"Please bless him with your valuable vote.\n\n{SONG}\n\n🔔 Subscribe for more Chatrai campaign videos.\n\n{HASH}"),
                 "title_en": f"{en} | Gaddam Prabhakar Reddy for Sarpanch, Chatrai #Shorts {g + 1}"[:100],
                 "description_en": f"{en}. Gaddam Prabhakar Reddy, coalition-supported candidate for Sarpanch of Chatrai Gram Panchayat, Andhra Pradesh.\n\n{HASH}",
                 "tags": TAGS})
