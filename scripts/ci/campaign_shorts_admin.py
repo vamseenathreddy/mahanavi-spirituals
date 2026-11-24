@@ -18,6 +18,8 @@ from mahanavi.publishers.youtube_shorts_uploader import YouTubeShortsUploader
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", required=True); ap.add_argument("--delete", default=""); ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--now", default="", help="slot numbers to make public right away")
+    ap.add_argument("--at", default="", help="slot=HH:MM IST reschedules, comma separated, e.g. 2=20:00")
     a = ap.parse_args()
     plan = [e for e in json.loads(Path("content/campaign/shorts_plan.json").read_text(encoding="utf-8")) if e["date"] == a.date]
     yt = YouTubeShortsUploader(get_settings())._build_service()  # noqa: SLF001
@@ -34,12 +36,25 @@ def main() -> int:
         if not nxt:
             break
     dele = {int(x) for x in a.delete.split(",") if x}
+    now_slots = {int(x) for x in a.now.split(",") if x}
+    at = {int(k): v for k, v in (x.split("=") for x in a.at.split(",") if x)}
     for e in plan:
         slot = int(e["file"].rsplit("_s", 1)[1].split(".")[0]); vid = ids.get(e["title"])
         if not vid:
             print(f"not found: {e['title']}"); continue
         if slot in dele:
             yt.videos().delete(id=vid).execute(); print(f"::notice::deleted #{e['n']} {vid}"); continue
+        if slot in now_slots:
+            yt.videos().update(part="status", body={"id": vid, "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}).execute()
+            print(f"::notice::#{e['n']} public now https://www.youtube.com/shorts/{vid}")
+        if slot in at:
+            import datetime as dt
+            from zoneinfo import ZoneInfo
+            h, m = map(int, at[slot].split(":"))
+            t = dt.datetime.fromisoformat(a.date).replace(hour=h, minute=m, tzinfo=ZoneInfo("Asia/Kolkata")).astimezone(dt.timezone.utc)
+            yt.videos().update(part="status", body={"id": vid, "status": {"privacyStatus": "private", "publishAt": t.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                                                                           "selfDeclaredMadeForKids": False}}).execute()
+            print(f"::notice::#{e['n']} scheduled {at[slot]} IST")
         if a.refresh:
             cur = yt.videos().list(part="snippet", id=vid).execute()["items"][0]["snippet"]
             cur["description"] = strip_links(e["description"]); cur["tags"] = e["tags"]

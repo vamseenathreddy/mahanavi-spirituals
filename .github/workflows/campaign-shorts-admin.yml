@@ -16,6 +16,14 @@ on:
         description: "true = rewrite descriptions and tags from the plan"
         required: false
         default: "false"
+      now:
+        description: "Slot numbers to publish immediately"
+        required: false
+        default: ""
+      at:
+        description: "Reschedule, e.g. 2=20:00 (IST)"
+        required: false
+        default: ""
       token_file:
         required: false
         default: "youtube_token_pulse_boosting.json"
@@ -52,7 +60,7 @@ jobs:
           MAHANAVI_TIMEZONE: Asia/Kolkata
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ inputs.token_file }}
         run: |
-          python3 scripts/ci/campaign_shorts_admin.py --date "${{ inputs.date }}" --delete "${{ inputs.delete }}" $([ "${{ inputs.refresh }}" = true ] && echo --refresh)
+          python3 scripts/ci/campaign_shorts_admin.py --date "${{ inputs.date }}" --delete "${{ inputs.delete }}" --now "${{ inputs.now }}" --at "${{ inputs.at }}" $([ "${{ inputs.refresh }}" = true ] && echo --refresh)
       - name: Push state to Drive
         if: always()
         env:
