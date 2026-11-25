@@ -32,6 +32,8 @@ class Series:
     image_hint: str = ""   # only background pictures whose file name contains this (falls back to all)
     variant: str = "meaning"   # "meaning" = verse + meaning card; "chant" = first line + Har Har Mahadev, sound-led (Trance Beats)
     bg_channel: str = ""   # take pictures from this channel's backgrounds instead (Trance Beats has no Shiva pictures)
+    image_skip: str = ""   # comma list: leave out background pictures whose file name contains any of these
+    music_channel: str = ""   # take the Om music from this channel instead of `channel`
 
 
 SERIES = {
@@ -39,6 +41,10 @@ SERIES = {
     "shiv_tandav_hi": Series("shiv_tandav_hi", dt.date(2026, 11, 10), 15, (dt.time(9, 0), 50, dt.time(9, 55)), "shiv_tandav", "hi", "mantra_sangam", "mantra sangam", "shiva"),
     # Devotional Trance Beats: the same stotram as a chant loop, 15 days, 8:00-8:50 AM IST from Tue 10 Nov 2026
     "shiv_tandav_trance": Series("shiv_tandav_trance", dt.date(2026, 11, 10), 15, (dt.time(8, 0), 50, dt.time(8, 55)), "shiv_tandav_trance", "hi", "trance_beats", "trance beats", "shiva", "chant", "mantra_sangam"),
+    # The 4 Vedas, one mantra a day for 10 days from Thu 26 Nov 2026 (owner approved the start 2026-11-25).
+    # Mahanavi (Telugu + English) 11:00-11:50 AM IST; Divine Mantra Sangam (Hindi + English) 9:00-9:50 AM IST. Pictures and Om music from Sangam, no Shiva-only pictures.
+    "vedas_te": Series("vedas_te", dt.date(2026, 11, 26), 10, (dt.time(11, 0), 50, dt.time(11, 55)), "vedas", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi", "mantra_sangam"),
+    "vedas_hi": Series("vedas_hi", dt.date(2026, 11, 26), 10, (dt.time(9, 0), 50, dt.time(9, 55)), "vedas", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", ""),
 }
 
 

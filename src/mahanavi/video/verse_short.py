@@ -19,8 +19,9 @@ from mahanavi.config import PROJECT_ROOT, get_settings
 from mahanavi.images.fonts import FontManager
 from mahanavi.video.lakshmi_name_short import FPS, GOLD, H, HIND, IMG_SECONDS, INK, SECONDS, W, XFADE, WHITE, _wrap, cover, vignette
 
-TOP_Y, BOTTOM_LIMIT, TEXT_W = 140, 965, 540
-CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi"}
+TOP_Y, BOTTOM_LIMIT, TEXT_W = 130, 1000, 600
+CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
+           "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi"}
 UI = {
     "hi": dict(sub="श्लोक {d}", subscribe="रोज़ एक श्लोक के लिए सब्सक्राइब करें"),
     "chant": dict(head="शिव ताण्डव ट्रांस", sub="जाप {d}", tail="हर हर महादेव", subscribe="रोज़ एक ट्रांस जाप के लिए सब्सक्राइब करें"),
@@ -37,6 +38,8 @@ def content(key: str):
 def image_files(s: vs.Series) -> list[Path]:
     folder = PROJECT_ROOT / "channels" / (s.bg_channel or s.channel) / "assets" / "backgrounds"
     files = sorted(p for p in folder.glob("*") if p.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")) if folder.exists() else []
+    skip = [t for t in s.image_skip.split(",") if t]
+    files = [p for p in files if not any(t in p.name.lower() for t in skip)] or files
     hinted = [p for p in files if s.image_hint and s.image_hint in p.name.lower()]
     return hinted or files
 
@@ -61,15 +64,18 @@ def _lines(probe, text: str, font, maxw: int) -> list[str]:
 
 
 def _lh(font) -> int:
-    bb = font.getbbox("Ag")
-    return int((bb[3] - bb[1]) * 1.34) + 4
+    # Telugu stacks tall vowel signs and conjuncts above and below the line: measure with a sample that has them, or lines overlap
+    h = max(font.getbbox(t)[3] - font.getbbox(t)[1] for t in ("Ag", "శ్రృఞ్చ్ఛ్వ", "क्ष्वृ"))
+    return int(h * 1.34) + 4
 
 
 def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     s, c = vs.SERIES[key], content(key)
     ui = UI["chant" if s.variant == "chant" else s.lang]
     verse, meaning = c.VERSES[day]
-    head = ui.get("head", c.HEAD)
+    head = c.HEADS[day] if hasattr(c, "HEADS") else ui.get("head", c.HEAD)
+    sub = c.SUBS[day] if hasattr(c, "SUBS") else ui["sub"].format(d=day + 1)
+    no_subscribe = hasattr(c, "SUBS")   # the Vedas cards carry no subscribe line and no numbering (owner rules 2026-11-06 / 2026-11-14)
     if s.variant == "chant":
         verse, meaning = verse.split("\n")[0].replace("।", "").replace("॥", "").strip(), ui["tail"]
     f_head, f_sub, f_verse = _font(s.lang, int(52 * k)), _font(s.lang, int(30 * k)), _font(s.lang, int(36 * k))
@@ -78,7 +84,7 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    sub_lines = _lines(probe, ui["subscribe"], f_subs, TEXT_W)
+    sub_lines = [] if no_subscribe else _lines(probe, ui["subscribe"], f_subs, TEXT_W)
     sub_y = BOTTOM_LIMIT - len(sub_lines) * _lh(f_subs)
     y = TOP_Y
 
@@ -90,7 +96,7 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
         y += gap
 
     block(head, f_head, GOLD)
-    block(ui["sub"].format(d=day + 1), f_sub, WHITE, gap=int(18 * k))
+    block(sub, f_sub, WHITE, gap=int(18 * k))
     verse = verse.replace(" ।", "\u00a0।").replace(" ॥", "\u00a0॥")   # keep the danda on the line it ends
     vl = _lines(probe, verse, f_verse, TEXT_W - 50)
     vl = [ln for ln in vl]

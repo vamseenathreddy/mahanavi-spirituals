@@ -104,6 +104,9 @@ TARGETS = [
     ("post-chanakya-hindi.yml", "Mantra Sangam - Chanakya Neeti Short (12-2 AM)", *_every_10(0, 0, 13)),
     ("post-shiv-tandav-hindi.yml", "Mantra Sangam - Shiv Tandav Stotram Short (9-10 AM, 10-24 Nov)", *_every_10(9, 0, 6)),
     ("post-shiv-tandav-trance.yml", "Trance Beats - Shiv Tandav Trance Short (8-9 AM, 10-24 Nov)", *_every_10(8, 0, 6)),
+    # 4 Vedas mantra series (10 days from Thu 26 Nov 2026): the gate only acts on series days, at a day-seeded random minute.
+    ("post-vedas-telugu.yml", "Mahanavi - Vedas Short (11 AM-12 noon, 26 Nov-5 Dec)", *_every_10(11, 0, 6)),
+    ("post-vedas-hindi.yml", "Mantra Sangam - Vedas Short (9-10 AM, 26 Nov-5 Dec)", *_every_10(9, 0, 6)),
     ("post-lakshmi-name-hindi.yml", "Trance Beats - Lakshmi 108 Names Short (4:30-6:30 PM)", *_every_10(16, 30, 13)),
     ("post-lakshmi-recap-hindi.yml", "Trance Beats - Lakshmi 108 Friday Recap (10 AM-12)", *_every_10(10, 0, 13)),
 ]

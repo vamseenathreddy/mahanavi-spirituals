@@ -26,6 +26,10 @@ SERIES_TAGS = {
                        "Ravana Shiv Tandav", "Shiva stotram", "Mahadev", "Shiva mantra", "stotram", "Hindi devotional", "Shorts"],
     "shiv_tandav_trance": ["Shiv Tandav trance", "Shiv Tandav trance beats", "Shiv Tandav chant", "Har Har Mahadev", "Mahadev trance", "Shiva trance",
                            "Shiva chant loop", "devotional trance", "Hindi devotional", "Mahadev status", "Shorts"],
+    "vedas_te": ["Vedas", "Veda mantra", "Rigveda", "Yajurveda", "Samaveda", "Atharvaveda", "Veda mantra with meaning", "Vedic mantra",
+                 "Telugu devotional", "వేద మంత్రం", "వేదాలు", "Hindu mantra", "Shorts"],
+    "vedas_hi": ["Vedas", "Veda mantra", "Rigveda", "Yajurveda", "Samaveda", "Atharvaveda", "Veda mantra with meaning", "Vedic mantra",
+                 "Hindi devotional", "वेद मंत्र", "चारों वेद", "Hindu mantra", "Shorts"],
 }
 PLAYLISTS = {
     "shiv_tandav_hi": ("शिव ताण्डव स्तोत्र | श्लोक और हिंदी अर्थ | Shiv Tandav Stotram with Meaning",
@@ -33,6 +37,10 @@ PLAYLISTS = {
                        "Shiv Tandav Stotram, all 15 verses in order, each with its meaning in Hindi. Start from verse 1."),
     "shiv_tandav_trance": ("शिव ताण्डव ट्रांस | हर हर महादेव जाप | Shiv Tandav Trance Beats",
                            "शिव ताण्डव की धुन पर रोज़ एक ट्रांस जाप, 15 दिन।\nShiv Tandav trance chant loops, one every day for 15 days."),
+    "vedas_te": ("నాలుగు వేదాలు | రోజుకో వేద మంత్రం | 4 Vedas Mantra with Meaning",
+                 "ఋగ్వేదం, యజుర్వేదం, సామవేదం, అథర్వవేదం నుండి రోజుకో మంత్రం, తెలుగు అర్థంతో.\nOne mantra a day from the Rigveda, Yajurveda, Samaveda and Atharvaveda, with meaning."),
+    "vedas_hi": ("चारों वेद | रोज़ एक वेद मंत्र अर्थ सहित | 4 Vedas Mantra with Meaning",
+                 "ऋग्वेद, यजुर्वेद, सामवेद और अथर्ववेद से रोज़ एक मंत्र, हिंदी अर्थ के साथ।\nOne mantra a day from the four Vedas, with meaning in Hindi."),
 }
 
 
@@ -41,6 +49,23 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
     c = verse_short.content(key)
     verse, meaning = c.VERSES[day]
     n = day + 1
+    if key in ("vedas_te", "vedas_hi"):
+        from mahanavi.content import vedas as vd
+
+        m = vd.MANTRAS[day]
+        if key == "vedas_te":
+            title = m.title_te
+            hashtags = "#Vedas #VedaMantra #" + vd.HEAD_EN[m.veda] + " #వేదాలు #Shorts"
+            desc = (f"{m.ref_te}\n\n{m.sa}\n\n{m.te_read}\n\nఅర్థం: {m.te_mean}\n\nMeaning in English: {m.en_mean}\n\n"
+                    f"నాలుగు వేదాల నుండి రోజుకో మంత్రం, అర్థంతో. ఇంతకు ముందు చూడనివారు ప్లేలిస్ట్ లో మొదటి నుండి చూడండి.\n\n"
+                    f"One Vedic mantra every day with its meaning: {m.ref_en}.\n\n{hashtags}")
+        else:
+            title = m.title_hi
+            hashtags = "#Vedas #VedaMantra #" + vd.HEAD_EN[m.veda] + " #वेद #Shorts"
+            desc = (f"{m.ref_hi}\n\n{m.sa}\n\nअर्थ: {m.hi_mean}\n\nMeaning in English: {m.en_mean}\n\n"
+                    f"चारों वेदों से रोज़ एक मंत्र, अर्थ सहित। नए हैं? प्लेलिस्ट में शुरू से देखें।\n\n"
+                    f"One Vedic mantra every day with its meaning: {m.ref_en}.\n\n{hashtags}")
+        return title[:100], desc, SERIES_TAGS[key], m.title_en[:100], f"{m.ref_en}: {m.en_mean}\n\n{hashtags}"
     if key == "shiv_tandav_hi":
         title = f"शिव ताण्डव स्तोत्र श्लोक {n} | हिंदी अर्थ सहित | Shiv Tandav Stotram"
         hashtags = "#ShivTandav #ShivTandavStotram #Mahadev #शिवताण्डव #Shorts"
@@ -80,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{today} {args.series} day {day + 1}\nTITLE: {title}\n{desc}\n")
         from mahanavi.scripts.post_beej_mantra import music_for
 
-        music = music_for(s.channel, today, settings.alert_short_music_path)
+        music = music_for(s.music_channel or s.channel, today, settings.alert_short_music_path)
         video = verse_short.render(args.series, day, settings.output_dir / "verse" / f"{args.series}_{day + 1:03d}.mp4", music)
         print(f"Rendered: {video}")
         if args.dry_run:
