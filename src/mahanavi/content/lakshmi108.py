@@ -181,7 +181,7 @@ NAMES: list[tuple[str, str, str, str, str, str, str]] = [
      "Glorious: fame and a good name come with her grace.", "మంచి పేరు కూడా లక్ష్మి ఇచ్చే సంపదే.", ""),
     ("వసుంధరాయై", "Vasundhara", "Earth-bearer", "భూమిని ధరించేది, భూమి స్వరూపం.",
      "Bearer of the Earth's wealth; also a name of Earth herself.", "శ్రీదేవి, భూదేవి ఇద్దరూ విష్ణువు దేవేరులని సంప్రదాయం.", ""),
-    ("ఉదారాంగాయై", "Udarangi", "Noble-limbed", "ఉదారమైన, అందమైన అవయవాలు గలది.",
+    ("ఉదారాంగాయై", "Udaranga", "Noble-limbed", "ఉదారమైన, అందమైన అవయవాలు గలది.",
      "Noble and well formed; it also hints at a generous giver.", "ఉదార స్వభావం గలవారిని ఆమె ఇష్టపడుతుంది.", ""),
     ("హరిణ్యై", "Harini", "The Golden One", "బంగారు వర్ణంలో మెరిసేది.",
      "Sri Suktam: 'hiranyavarnam harinim', golden and graceful.", "ఇది శ్రీ సూక్తం మొదటి మంత్రంలోని పదం.", "SS"),
