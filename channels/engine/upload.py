@@ -73,7 +73,7 @@ def upload_video(yt, path, title, description, tags, localizations=None, publish
     tf = getattr(yt, "_token_file", None)
     if tf:
         post_ledger.check(tf, title, description)  # raises DuplicatePost
-    status = {"selfDeclaredMadeForKids": False, "containsSyntheticMedia": True}  # realistic AI artwork must be disclosed
+    status = {"selfDeclaredMadeForKids": False, "containsSyntheticMedia": False}  # owner 2026-11-26: no AI label on Shorts
     if publish_at:
         status["privacyStatus"] = "private"
         status["publishAt"] = publish_at.strftime("%Y-%m-%dT%H:%M:%S.000Z")

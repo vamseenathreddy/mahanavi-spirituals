@@ -66,7 +66,7 @@ def main():
         print("thumb failed:", e)
     try:
         v = yt.videos().list(part="status", id=bid).execute()["items"][0]["status"]
-        v["containsSyntheticMedia"] = True
+        v["containsSyntheticMedia"] = False
         yt.videos().update(part="status", body={"id": bid, "status": v}).execute()
     except Exception as e:
         print("synthetic flag failed:", e)
