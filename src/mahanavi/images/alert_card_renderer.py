@@ -185,8 +185,10 @@ class AlertCardRenderer:
         shade = Image.new("L", (w, h), 0)
         sd = ImageDraw.Draw(shade)
         for y in range(h):  # darker behind the title / time block and the subscribe block
-            t = max(1 - abs(y - 480) / 420, 1 - abs(y - 1270) / 230, 0.0)
-            sd.line((0, y, w, y), fill=int(40 + 110 * t))
+            # 2026-11-26 owner: text sat on the god's face and was hard to read. One steady dark band behind the whole
+            # text block (soft 110 px edges) keeps the face out of the lettering; the photo stays clear above and below.
+            t = max(0.0, min(1.0, (y - 300) / 110, (1330 - y) / 110))
+            sd.line((0, y, w, y), fill=int(35 + 150 * t))
         return Image.composite(Image.new("RGBA", (w, h), (12, 4, 4, 255)), tinted, shade)
 
     def render(self, card: AlertCard, for_date: date) -> Path:

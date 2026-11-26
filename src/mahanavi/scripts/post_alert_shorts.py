@@ -273,18 +273,13 @@ def _pick_subscribe_text(pool: list[str], for_date: date) -> str:
 # Thursday is Dattatreya (never Sai Baba); the owner supplied the Dattatreya photos on 2026-10-20.
 # 2026-10-25 owner: Monday Shiva, Tuesday Anjaneya, Friday Lakshmi are fixed; Wed, Thu, Sat and Sun rotate through
 # this pool of gods (a different god on each of those days, photo rotating too).
-_FIXED_GOD = {0: "shiva", 1: "hanuman", 4: "lakshmi", 5: "venkateswara"}   # Saturday fixed 2026-10-31 (owner)
-_ROTATING_SLOT = {2: 0, 3: 1, 5: 2, 6: 3}
-_GOD_POOL = ("ganesha", "venkateswara", "vishnu", "krishna", "rama", "durga", "dattatreya", "saraswati", "narasimha",
-             "murugan", "shani", "surya", "parvati")
+# 2026-11-26 owner: the card's god must match the weekday's mantra lines (Thursday card showed Ganesha over Dattatreya
+# mantras). One fixed god per weekday, the same one WEEKDAY_DEITY_MAP uses for the mantra; photos still rotate by date.
+_DAY_GOD = {0: "shiva", 1: "hanuman", 2: "ganesha", 3: "dattatreya", 4: "lakshmi", 5: "venkateswara", 6: "surya"}
 
 
 def day_god(for_date: date) -> str:
-    wd = for_date.weekday()
-    if wd in _FIXED_GOD:
-        return _FIXED_GOD[wd]
-    week = (for_date.toordinal() - wd) // 7
-    return _GOD_POOL[(week * 4 + _ROTATING_SLOT[wd]) % len(_GOD_POOL)]
+    return _DAY_GOD[for_date.weekday()]
 
 
 def _day_background(for_date: date) -> Path | None:
