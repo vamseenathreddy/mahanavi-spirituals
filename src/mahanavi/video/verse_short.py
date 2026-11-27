@@ -25,12 +25,16 @@ from mahanavi.video.lakshmi_name_short import FPS, GOLD, H, HIND, IMG_SECONDS, I
 TOP_Y, BOTTOM_LIMIT, TEXT_W = 100, 1010, 580
 SHIFT_X = -22
 # text colours: head, sub line, verse, meaning, English meaning (override with VERSE_PALETTE=name for tests)
-PALETTES = {
-    "classic": (GOLD, WHITE, (255, 226, 140), WHITE, (255, 236, 190)),
-    "gold": ((255, 205, 90), (255, 220, 130), (255, 214, 110), (255, 226, 150), (255, 226, 150)),
-    "royal": ((255, 205, 90), (255, 232, 170), (255, 214, 110), (245, 240, 255), (170, 215, 255)),
-    "saffron": ((255, 170, 60), (255, 215, 150), (255, 190, 80), (255, 245, 225), (255, 215, 150)),
-    "lotus": ((255, 205, 90), (255, 200, 225), (255, 214, 110), (255, 235, 245), (255, 190, 215)),
+PALETTES = {      # head, sub line, verse, meaning, English meaning, verse-box outline
+    "classic": (GOLD, WHITE, (255, 226, 140), WHITE, (255, 236, 190), (255, 200, 80)),
+    "gold": ((255, 205, 90), (255, 220, 130), (255, 214, 110), (255, 226, 150), (255, 226, 150), (255, 200, 80)),
+    "royal": ((255, 205, 90), (255, 232, 170), (255, 214, 110), (245, 240, 255), (170, 215, 255), (255, 200, 80)),
+    "ivory": ((255, 250, 235), (225, 235, 255), (255, 248, 225), (240, 245, 255), (180, 215, 255), (200, 220, 255)),
+    "aqua": ((140, 235, 255), (200, 245, 255), (150, 240, 255), (235, 250, 255), (170, 225, 255), (120, 215, 245)),
+    "rose": ((255, 170, 200), (255, 215, 230), (255, 185, 210), (255, 238, 244), (255, 200, 220), (255, 150, 185)),
+    "saffron": ((255, 150, 50), (255, 215, 170), (255, 170, 70), (255, 245, 230), (255, 205, 150), (255, 140, 40)),
+    "violet": ((200, 170, 255), (225, 210, 255), (210, 185, 255), (245, 240, 255), (190, 210, 255), (180, 150, 250)),
+    "mint": ((150, 240, 190), (205, 250, 225), (160, 245, 200), (235, 255, 245), (180, 235, 215), (130, 225, 175)),
 }
 PAL = PALETTES[os.environ.get("VERSE_PALETTE", "classic")]
 CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
@@ -146,7 +150,7 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     pad = 20
     vh = len(vl) * _lh(f_verse)
     y += pad
-    d.rounded_rectangle((W // 2 - TEXT_W // 2 - 14, y - pad, W // 2 + TEXT_W // 2 + 14, y + vh + pad), radius=26, fill=(18, 8, 4, 200), outline=(255, 200, 80, 255), width=4)
+    d.rounded_rectangle((W // 2 - TEXT_W // 2 - 14, y - pad, W // 2 + TEXT_W // 2 + 14, y + vh + pad), radius=26, fill=(18, 8, 4, 200), outline=PAL[5] + (255,), width=4)
     for ln in vl:
         _embossed(img, ((W - probe.textlength(ln, font=f_verse)) / 2, y), ln, f_verse, PAL[2], 3)
         y += _lh(f_verse)
