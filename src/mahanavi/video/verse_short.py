@@ -21,7 +21,8 @@ from mahanavi.video.lakshmi_name_short import FPS, GOLD, H, HIND, IMG_SECONDS, I
 
 TOP_Y, BOTTOM_LIMIT, TEXT_W = 130, 1000, 600
 CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
-           "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi"}
+           "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi",
+           "vishnu_te": "mahanavi.content.vishnu_te", "vishnu_hi": "mahanavi.content.vishnu_hi"}
 UI = {
     "hi": dict(sub="श्लोक {d}", subscribe="रोज़ एक श्लोक के लिए सब्सक्राइब करें"),
     "chant": dict(head="शिव ताण्डव ट्रांस", sub="जाप {d}", tail="हर हर महादेव", subscribe="रोज़ एक ट्रांस जाप के लिए सब्सक्राइब करें"),
@@ -133,6 +134,25 @@ def text_layer(key: str, day: int) -> np.ndarray:
         k -= 0.03
 
 
+def _open_bg_video(s: vs.Series):
+    """Looped background video (e.g. the Vishwaroopa animation) when s.bg_video exists in the repo, else None."""
+    if not s.bg_video:
+        return None
+    path = PROJECT_ROOT / s.bg_video
+    if not path.exists():
+        return None
+    cap = cv2.VideoCapture(str(path))
+    return cap if cap.isOpened() else None
+
+
+def _next_video_frame(cap) -> np.ndarray:
+    ok, fr = cap.read()
+    if not ok:
+        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+        ok, fr = cap.read()
+    return cover(Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)))
+
+
 def render(key: str, day: int, out: Path, music: Path | None = None) -> Path:
     s = vs.SERIES[key]
     pics = [Image.open(f).convert("RGB") for f in image_files(s)]
@@ -150,8 +170,15 @@ def render(key: str, day: int, out: Path, music: Path | None = None) -> Path:
            "-stream_loop", "-1", "-i", str(music), "-filter_complex", "[1:a]afade=t=in:st=0:d=1[a]", "-map", "0:v", "-map", "[a]", "-t", str(SECONDS),
            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
+    vid = _open_bg_video(s)
     for f in range(total):
         t = f / FPS
+        if vid is not None:
+            base = _next_video_frame(vid)
+            frame = base.astype(np.float32) * 0.62 * vig
+            frame = frame * (1 - la) + lrgb * la
+            p.stdin.write(np.clip(frame, 0, 255).astype(np.uint8).tobytes())
+            continue
         i = int(t // IMG_SECONDS)
         into = t - i * IMG_SECONDS
         a = seq[i % len(seq)]

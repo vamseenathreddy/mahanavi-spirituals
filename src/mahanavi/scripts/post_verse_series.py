@@ -30,6 +30,10 @@ SERIES_TAGS = {
                  "Telugu devotional", "వేద మంత్రం", "వేదాలు", "Hindu mantra", "Shorts"],
     "vedas_hi": ["Vedas", "Veda mantra", "Rigveda", "Yajurveda", "Samaveda", "Atharvaveda", "Veda mantra with meaning", "Vedic mantra",
                  "Hindi devotional", "वेद मंत्र", "चारों वेद", "Hindu mantra", "Shorts"],
+    "vishnu_te": ["Vishnu Sahasranamam", "Vishnu Sahasranama", "Vishnu Sahasranama stotram", "vishnu sahasranama stotram telugu", "Vishnu stotram with meaning",
+                  "Vishnu mantra", "Narayana", "Telugu devotional", "విష్ణు సహస్రనామం", "శ్రీ మహావిష్ణు", "Hindu mantra", "Shorts"],
+    "vishnu_hi": ["Vishnu Sahasranamam", "Vishnu Sahasranama", "Vishnu Sahasranama stotram", "vishnu sahasranam in hindi", "Vishnu stotra with meaning",
+                  "Vishnu mantra", "Narayan", "Hindi devotional", "विष्णु सहस्रनाम", "श्री हरि", "Hindu mantra", "Shorts"],
 }
 PLAYLISTS = {
     "shiv_tandav_hi": ("शिव ताण्डव स्तोत्र | श्लोक और हिंदी अर्थ | Shiv Tandav Stotram with Meaning",
@@ -39,6 +43,10 @@ PLAYLISTS = {
                            "शिव ताण्डव की धुन पर रोज़ एक ट्रांस जाप, 15 दिन।\nShiv Tandav trance chant loops, one every day for 15 days."),
     "vedas_te": ("నాలుగు వేదాలు | రోజుకో వేద మంత్రం | 4 Vedas Mantra with Meaning",
                  "ఋగ్వేదం, యజుర్వేదం, సామవేదం, అథర్వవేదం నుండి రోజుకో మంత్రం, తెలుగు అర్థంతో.\nOne mantra a day from the Rigveda, Yajurveda, Samaveda and Atharvaveda, with meaning."),
+    "vishnu_te": ("విష్ణు సహస్రనామం | రోజుకో శ్లోకం | Vishnu Sahasranamam with Meaning",
+                  "శ్రీ విష్ణు సహస్రనామ స్తోత్రం, రోజుకో శ్లోకం, తెలుగు అర్థంతో. మొదటి శ్లోకం నుంచి క్రమంగా వినండి.\nVishnu Sahasranamam, one verse a day with its meaning in Telugu and English. Start from the first verse."),
+    "vishnu_hi": ("विष्णु सहस्रनाम | रोज़ एक श्लोक अर्थ सहित | Vishnu Sahasranamam with Meaning",
+                  "श्री विष्णु सहस्रनाम स्तोत्र, रोज़ एक श्लोक, हिंदी अर्थ के साथ। पहले श्लोक से क्रम में सुनें।\nVishnu Sahasranamam, one verse a day with its meaning in Hindi and English. Start from the first verse."),
     "vedas_hi": ("चारों वेद | रोज़ एक वेद मंत्र अर्थ सहित | 4 Vedas Mantra with Meaning",
                  "ऋग्वेद, यजुर्वेद, सामवेद और अथर्ववेद से रोज़ एक मंत्र, हिंदी अर्थ के साथ।\nOne mantra a day from the four Vedas, with meaning in Hindi."),
 }
@@ -49,6 +57,25 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
     c = verse_short.content(key)
     verse, meaning = c.VERSES[day]
     n = day + 1
+    if key in ("vishnu_te", "vishnu_hi"):
+        from mahanavi.content import vishnu_sahasra as vh
+
+        first = " ".join(verse.split("\n")[:2]).replace(" ।", "").strip()
+        en = vh.EN_MEAN[day]
+        if key == "vishnu_te":
+            title = f"విష్ణు సహస్రనామం | {first} | అర్థంతో"
+            hashtags = "#VishnuSahasranamam #విష్ణుసహస్రనామం #Vishnu #Shorts"
+            desc = (f"శ్రీ విష్ణు సహస్రనామ స్తోత్రం\n\n{verse}\n\nఅర్థం: {meaning}\n\nMeaning in English: {en}\n\n"
+                    f"విష్ణు సహస్రనామం రోజుకో శ్లోకం, అర్థంతో. కొత్తగా చూస్తున్నారా? ప్లేలిస్ట్ లో మొదటి నుంచి వినండి.\n\n"
+                    f"Vishnu Sahasranamam, one verse a day with its meaning in Telugu and English.\n\n{hashtags}")
+        else:
+            title = f"विष्णु सहस्रनाम | {first} | अर्थ सहित"
+            hashtags = "#VishnuSahasranamam #विष्णुसहस्रनाम #Vishnu #Shorts"
+            desc = (f"श्री विष्णु सहस्रनाम स्तोत्र\n\n{verse}\n\nअर्थ: {meaning}\n\nMeaning in English: {en}\n\n"
+                    f"विष्णु सहस्रनाम का एक श्लोक रोज़, अर्थ सहित। नए हैं? प्लेलिस्ट में पहले श्लोक से सुनें।\n\n"
+                    f"Vishnu Sahasranamam, one verse a day with its meaning in Hindi and English.\n\n{hashtags}")
+        title_en = "Vishnu Sahasranamam verse with meaning | Daily Vishnu Stotram"
+        return title[:100], desc, SERIES_TAGS[key], title_en, f"Vishnu Sahasranamam: {en}\n\n{hashtags}"
     if key in ("vedas_te", "vedas_hi"):
         from mahanavi.content import vedas as vd
 

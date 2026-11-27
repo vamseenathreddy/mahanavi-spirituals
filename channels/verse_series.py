@@ -34,6 +34,7 @@ class Series:
     bg_channel: str = ""   # take pictures from this channel's backgrounds instead (Trance Beats has no Shiva pictures)
     image_skip: str = ""   # comma list: leave out background pictures whose file name contains any of these
     music_channel: str = ""   # take the Om music from this channel instead of `channel`
+    bg_video: str = ""        # repo-relative mp4 used (looped) as the background when the file exists; pictures otherwise
 
 
 SERIES = {
@@ -45,6 +46,10 @@ SERIES = {
     # Mahanavi (Telugu + English) 11:00-11:50 AM IST; Divine Mantra Sangam (Hindi + English) 9:00-9:50 AM IST. Pictures and Om music from Sangam, no Shiva-only pictures.
     "vedas_te": Series("vedas_te", dt.date(2026, 11, 26), 10, (dt.time(11, 0), 50, dt.time(11, 55)), "vedas", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi", "mantra_sangam"),
     "vedas_hi": Series("vedas_hi", dt.date(2026, 11, 26), 10, (dt.time(9, 0), 50, dt.time(9, 55)), "vedas", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", ""),
+    # Vishnu Sahasranamam, one verse a day from Sat 28 Nov 2026 (owner 2026-11-27). Mahanavi (Telugu + English) 10:00-10:55 AM IST,
+    # Divine Mantra Sangam (Hindi + English) 10:00-10:55 AM IST. Each channel's own default music; Vishwaroopa video background when supplied.
+    "vishnu_te": Series("vishnu_te", dt.date(2026, 11, 28), 10, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi", "", "assets/vishnu/vishwaroopa_te.mp4"),
+    "vishnu_hi": Series("vishnu_hi", dt.date(2026, 11, 28), 10, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", "", "assets/vishnu/vishwaroopa_hi.mp4"),
 }
 
 

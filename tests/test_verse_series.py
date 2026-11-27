@@ -64,3 +64,19 @@ def test_vedas_metadata_no_numbers_no_links_fits_limits():
             assert not re.search(r"\b\d+\s*/\s*\d+\b|\bpart \d+\b|\bverse \d+\b", (title + desc).lower())
             assert sum(len(t) + (2 if " " in t else 0) + 1 for t in tags) < 450
     assert pv.metadata("vedas_te", 0)[0] != pv.metadata("vedas_hi", 0)[0]
+
+
+def test_vishnu_series_from_28_nov_and_content_complete():
+    from mahanavi.content import vishnu_hi, vishnu_sahasra, vishnu_te
+    from mahanavi.scripts import post_verse_series as pv
+
+    for k in ("vishnu_te", "vishnu_hi"):
+        assert vs.plan(k, dt.date(2026, 11, 27)) is None and vs.plan(k, dt.date(2026, 11, 28)) == 0
+        assert vs.plan(k, dt.date(2026, 12, 7)) == 9 and vs.plan(k, dt.date(2026, 12, 8)) is None
+    assert vishnu_te.count() == vishnu_hi.count() == 10
+    assert len({len(x) for x in (vishnu_sahasra.SA, vishnu_sahasra.TE_READ, vishnu_sahasra.TE_MEAN, vishnu_sahasra.HI_MEAN, vishnu_sahasra.EN_MEAN)}) == 1
+    for k in ("vishnu_te", "vishnu_hi"):
+        for d in range(10):
+            title, desc, tags, title_en, desc_en = pv.metadata(k, d)
+            assert "\n" not in title and len(title) <= 100 and "http" not in desc and not any(ch.isdigit() for ch in title)
+            assert sum(len(x) + 1 for x in tags) < 480
