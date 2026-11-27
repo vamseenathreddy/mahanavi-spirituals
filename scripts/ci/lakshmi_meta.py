@@ -2,9 +2,11 @@
 
 TITLE = "Powerful Mahalakshmi Stotram | లక్ష్మీ అష్టోత్తర శతనామావళి | Lakshmi Devi 108 Names | Revathy VSL"
 
-LIVE_TITLE = "LIVE Lakshmi Devi Meditation Songs | లక్ష్మీ అష్టోత్తర శతనామావళి | Powerful Mahalakshmi Stotram"
+LIVE_TITLE = "LIVE Friday Lakshmi Devi Meditation | Mantras for Abundance & Success | లక్ష్మీ అష్టోత్తర శతనామావళి"
 
-DESCRIPTION = """శ్రీ లక్ష్మీ అష్టోత్తర శతనామావళి (108 నామాలు) ధ్యానం కోసం. ప్రశాంతంగా కళ్ళు మూసుకుని వినండి, మనసులో నామాలను స్మరించండి.
+DESCRIPTION = """మీరు ఎక్కడి నుంచి ప్రార్థిస్తున్నారు? చాట్‌లో మీ ప్రార్థన రాయండి. | Where are you praying from? Share your prayer in the chat.
+
+శ్రీ లక్ష్మీ అష్టోత్తర శతనామావళి (108 నామాలు) ధ్యానం కోసం. ప్రశాంతంగా కళ్ళు మూసుకుని వినండి, మనసులో నామాలను స్మరించండి.
 
 Sri Lakshmi Ashtottara Shatanamavali, the 108 names of Goddess Mahalakshmi, as a calm meditation chant in Telugu. Sit quietly, close your eyes and listen with devotion, especially on Fridays and during your daily puja.
 
