@@ -12,14 +12,17 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 from channels import verse_series as vs
 from mahanavi.config import PROJECT_ROOT, get_settings
 from mahanavi.images.fonts import FontManager
 from mahanavi.video.lakshmi_name_short import FPS, GOLD, H, HIND, IMG_SECONDS, INK, SECONDS, W, XFADE, WHITE, _wrap, cover, vignette
 
-TOP_Y, BOTTOM_LIMIT, TEXT_W = 130, 1000, 600
+# Shorts buttons (owner 2026-11-28): the like/comment/share column covers the right ~16% and the title/channel bar the bottom ~22%, so text stays
+# inside x 38..598 (block shifted left by SHIFT_X) and above y 1010.
+TOP_Y, BOTTOM_LIMIT, TEXT_W = 100, 1010, 580
+SHIFT_X = -22
 CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
            "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi",
            "vishnu_te": "mahanavi.content.vishnu_te", "vishnu_hi": "mahanavi.content.vishnu_hi"}
@@ -70,6 +73,30 @@ def _lh(font) -> int:
     return int(h * 1.34) + 4
 
 
+def _embossed(img: Image.Image, xy: tuple[float, float], text: str, font, fill: tuple[int, int, int], stroke: int) -> None:
+    """Letters that look raised: soft drop shadow, dark outline, top-to-bottom shaded fill, bright upper-left rim and dark lower-right rim."""
+    x, y = xy
+    m = Image.new("L", img.size, 0)
+    ImageDraw.Draw(m).text((x, y), text, font=font, fill=255)
+    sm = Image.new("L", img.size, 0)
+    ImageDraw.Draw(sm).text((x, y), text, font=font, fill=255, stroke_width=stroke, stroke_fill=255)
+    black = Image.new("RGBA", img.size, (0, 0, 0, 255))
+    sh = ImageChops.offset(sm, 5, 7).filter(ImageFilter.GaussianBlur(3)).point(lambda v: int(v * 0.75))
+    img.paste(black, (0, 0), sh)
+    img.paste(Image.new("RGBA", img.size, INK + (255,) if len(INK) == 3 else INK), (0, 0), sm)
+    top = int(y)
+    rows = np.clip((np.arange(img.size[1])[:, None] - top) / max(_lh(font), 1), 0, 1)
+    light = np.array(fill, np.float32) * 0.55 + 255 * 0.45
+    dark = np.array(fill, np.float32) * 0.72
+    grad = (light[None, None, :] * (1 - rows[:, :, None]) + dark[None, None, :] * rows[:, :, None])
+    gimg = Image.fromarray(np.broadcast_to(grad, (img.size[1], img.size[0], 3)).astype(np.uint8)).convert("RGBA")
+    img.paste(gimg, (0, 0), m)
+    rim_hi = ImageChops.subtract(m, ImageChops.offset(m, 2, 2)).point(lambda v: int(v * 1.0))
+    rim_lo = ImageChops.subtract(m, ImageChops.offset(m, -2, -2)).point(lambda v: int(v * 0.85))
+    img.paste(Image.new("RGBA", img.size, (255, 255, 255, 255)), (0, 0), rim_hi)
+    img.paste(Image.new("RGBA", img.size, (60, 25, 0, 255)), (0, 0), rim_lo)
+
+
 def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     s, c = vs.SERIES[key], content(key)
     ui = UI["chant" if s.variant == "chant" else s.lang]
@@ -79,9 +106,9 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     no_subscribe = hasattr(c, "SUBS")   # the Vedas cards carry no subscribe line and no numbering (owner rules 2026-11-06 / 2026-11-14)
     if s.variant == "chant":
         verse, meaning = verse.split("\n")[0].replace("।", "").replace("॥", "").strip(), ui["tail"]
-    f_head, f_sub, f_verse = _font(s.lang, int(52 * k)), _font(s.lang, int(30 * k)), _font(s.lang, int(36 * k))
-    f_mean, f_subs = _font(s.lang, int(33 * k)), _font(s.lang, 38)
-    f_en = ImageFont.truetype(str(HIND), int(28 * k))
+    f_head, f_sub, f_verse = _font(s.lang, int(56 * k)), _font(s.lang, int(32 * k)), _font(s.lang, int(40 * k))
+    f_mean, f_subs = _font(s.lang, int(36 * k)), _font(s.lang, 38)
+    f_en = ImageFont.truetype(str(HIND), int(31 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
@@ -92,7 +119,7 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     def block(text, font, col, gap=0):
         nonlocal y
         for ln in _lines(probe, text, font, TEXT_W):
-            d.text(((W - probe.textlength(ln, font=font)) / 2, y), ln, font=font, fill=col, stroke_width=4, stroke_fill=INK)
+            _embossed(img, ((W - probe.textlength(ln, font=font)) / 2, y), ln, font, col, 4)
             y += _lh(font)
         y += gap
 
@@ -111,7 +138,7 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     y += pad
     d.rounded_rectangle((W // 2 - TEXT_W // 2 - 14, y - pad, W // 2 + TEXT_W // 2 + 14, y + vh + pad), radius=26, fill=(18, 8, 4, 200), outline=(255, 200, 80, 255), width=4)
     for ln in vl:
-        d.text(((W - probe.textlength(ln, font=f_verse)) / 2, y), ln, font=f_verse, fill=(255, 226, 140), stroke_width=3, stroke_fill=INK)
+        _embossed(img, ((W - probe.textlength(ln, font=f_verse)) / 2, y), ln, f_verse, (255, 226, 140), 3)
         y += _lh(f_verse)
     y += pad + int(22 * k)
     block(meaning, f_mean, WHITE, gap=int(14 * k))
@@ -120,9 +147,9 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     end = y
     sy = sub_y
     for ln in sub_lines:
-        d.text(((W - probe.textlength(ln, font=f_subs)) / 2, sy), ln, font=f_subs, fill=GOLD, stroke_width=5, stroke_fill=INK)
+        _embossed(img, ((W - probe.textlength(ln, font=f_subs)) / 2, sy), ln, f_subs, GOLD, 5)
         sy += _lh(f_subs)
-    return np.asarray(img), (10**6 if too_wide else end), sub_y
+    return np.roll(np.asarray(img), SHIFT_X, axis=1), (10**6 if too_wide else end), sub_y
 
 
 def text_layer(key: str, day: int) -> np.ndarray:
