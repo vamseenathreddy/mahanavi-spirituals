@@ -36,7 +36,7 @@ PALETTES = {      # head, sub line, verse, meaning, English meaning, verse-box o
     "violet": ((200, 170, 255), (225, 210, 255), (210, 185, 255), (245, 240, 255), (190, 210, 255), (180, 150, 250)),
     "mint": ((150, 240, 190), (205, 250, 225), (160, 245, 200), (235, 255, 245), (180, 235, 215), (130, 225, 175)),
 }
-PAL = PALETTES[os.environ.get("VERSE_PALETTE", "classic")]
+PAL = PALETTES[os.environ.get("VERSE_PALETTE", "classic")]   # module default; render() switches it per series (Series.palette)
 CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
            "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi",
            "vishnu_te": "mahanavi.content.vishnu_te", "vishnu_hi": "mahanavi.content.vishnu_hi"}
@@ -218,6 +218,8 @@ def _open_bg_video(s: vs.Series, day: int):
 
 def render(key: str, day: int, out: Path, music: Path | None = None) -> Path:
     s = vs.SERIES[key]
+    global PAL
+    PAL = PALETTES[os.environ.get("VERSE_PALETTE") or s.palette or "classic"]
     pics = [Image.open(f).convert("RGB") for f in image_files(s)]
     seq = [cover(p) for p in pics] if pics else [gradient()]
     start = day % len(seq)

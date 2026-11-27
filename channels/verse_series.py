@@ -37,6 +37,7 @@ class Series:
     bg_video: str = ""        # comma list of repo-relative mp4 clips, cross-faded into a never-repeating background; pictures when missing
     bg_shift: int = 0         # rotates which clip is used (so the two channels do not look identical)
     seconds: float = 0        # Short length; 0 = the shared default (15 s)
+    palette: str = ""         # text colour set in video/verse_short.PALETTES; "" = classic
 
 
 SERIES = {
@@ -50,8 +51,8 @@ SERIES = {
     "vedas_hi": Series("vedas_hi", dt.date(2026, 11, 26), 10, (dt.time(9, 0), 50, dt.time(9, 55)), "vedas", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", ""),
     # Vishnu Sahasranamam, one verse a day from Sat 28 Nov 2026 (owner 2026-11-27). Mahanavi (Telugu + English) 10:00-10:55 AM IST,
     # Divine Mantra Sangam (Hindi + English) 10:00-10:55 AM IST. Each channel's own default music; Vishwaroopa video background when supplied.
-    "vishnu_te": Series("vishnu_te", dt.date(2026, 11, 28), 10, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 0, 8),
-    "vishnu_hi": Series("vishnu_hi", dt.date(2026, 11, 28), 10, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 1, 8),
+    "vishnu_te": Series("vishnu_te", dt.date(2026, 11, 28), 10, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 0, 8, "rose"),
+    "vishnu_hi": Series("vishnu_hi", dt.date(2026, 11, 28), 10, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 1, 8, "aqua"),
 }
 
 
