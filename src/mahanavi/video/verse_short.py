@@ -161,41 +161,33 @@ def text_layer(key: str, day: int) -> np.ndarray:
         k -= 0.03
 
 
-SEG, XF = 5.8, 0.8        # seconds taken from each clip, and the cross-fade between clips
+SLOW = 0.5     # background plays at half speed (owner 2026-11-28: calm, not "rolling")
 
 
 class _ClipBg:
-    """Faded background built from several clips: each day starts on a different clip and at a different second, so the days never look
-    the same and nothing visibly loops (15 s = 3 clips x 5.8 s with 0.8 s cross-fades). Dimmed and softened so the text reads neatly."""
+    """Calm background: ONE clip per Short (a different clip and start second each day), played at half speed with frame blending,
+    softened and dimmed so the text reads neatly. No switching between clips inside a Short, so nothing looks like it is rolling or looping."""
 
     def __init__(self, paths: list[Path], day: int, shift: int):
-        n = len(paths)
-        order = [(day + shift + i) % n for i in range(n)]
-        self.segs = []
-        for i, ci in enumerate(order):
-            off = round(((day * 1.3 + i * 0.9 + shift * 0.5) % 2.0), 2)       # 0..2 s into the 8 s clip, so 5.8 s always fits
-            self.segs.append((paths[ci], off))
-        self.caps = [cv2.VideoCapture(str(p)) for p, _ in self.segs]
-        for cap, (_, off) in zip(self.caps, self.segs):
-            cap.set(cv2.CAP_PROP_POS_FRAMES, int(off * 24))
-        self.n = 0
+        self.cap = cv2.VideoCapture(str(paths[(day + shift) % len(paths)]))
+        self.cap.set(cv2.CAP_PROP_POS_FRAMES, int(round(((day * 1.3 + shift * 0.7) % 3.0) * 24)))
+        self.prev = self._read()
+        self.cur = self._read()
+        self.pos = 0.0
 
-    def _read(self, i: int) -> np.ndarray:
-        ok, fr = self.caps[i].read()
+    def _read(self) -> np.ndarray:
+        ok, fr = self.cap.read()
         if not ok:
-            self.caps[i].set(cv2.CAP_PROP_POS_FRAMES, 0)
-            ok, fr = self.caps[i].read()
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            ok, fr = self.cap.read()
         return cover(Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)))
 
     def frame(self, t: float) -> np.ndarray:
-        step = SEG - XF                                   # a new clip starts every 5.0 s and fades in over 0.8 s
-        i = min(int(t // step), len(self.segs) - 1)
-        into = t - i * step
-        cur = self._read(i)
-        if i > 0 and into < XF:                           # the previous clip keeps playing while it fades out
-            w = into / XF
-            cur = cv2.addWeighted(self._read(i - 1), 1 - w, cur, w, 0)
-        return cv2.GaussianBlur(cur, (0, 0), 2.2)
+        self.pos += SLOW
+        while self.pos >= 1.0:
+            self.pos -= 1.0
+            self.prev, self.cur = self.cur, self._read()
+        return cv2.GaussianBlur(cv2.addWeighted(self.prev, 1 - self.pos, self.cur, self.pos, 0), (0, 0), 2.0)
 
 
 def _open_bg_video(s: vs.Series, day: int):
@@ -217,10 +209,11 @@ def render(key: str, day: int, out: Path, music: Path | None = None) -> Path:
     lrgb = lay[..., :3].astype(np.float32)
     vig = vignette()
     music = music or get_settings().alert_short_music_path
-    total = int(SECONDS * FPS)
+    dur = s.seconds or SECONDS
+    total = int(dur * FPS)
     out.parent.mkdir(parents=True, exist_ok=True)
     cmd = ["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-           "-stream_loop", "-1", "-i", str(music), "-filter_complex", "[1:a]afade=t=in:st=0:d=1[a]", "-map", "0:v", "-map", "[a]", "-t", str(SECONDS),
+           "-stream_loop", "-1", "-i", str(music), "-filter_complex", "[1:a]afade=t=in:st=0:d=1[a]", "-map", "0:v", "-map", "[a]", "-t", str(dur),
            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     vid = _open_bg_video(s, day)
