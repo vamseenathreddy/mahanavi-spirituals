@@ -6,6 +6,7 @@ over the channel's own background pictures that cross-fade slowly behind it. Sam
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -23,6 +24,15 @@ from mahanavi.video.lakshmi_name_short import FPS, GOLD, H, HIND, IMG_SECONDS, I
 # inside x 38..598 (block shifted left by SHIFT_X) and above y 1010.
 TOP_Y, BOTTOM_LIMIT, TEXT_W = 100, 1010, 580
 SHIFT_X = -22
+# text colours: head, sub line, verse, meaning, English meaning (override with VERSE_PALETTE=name for tests)
+PALETTES = {
+    "classic": (GOLD, WHITE, (255, 226, 140), WHITE, (255, 236, 190)),
+    "gold": ((255, 205, 90), (255, 220, 130), (255, 214, 110), (255, 226, 150), (255, 226, 150)),
+    "royal": ((255, 205, 90), (255, 232, 170), (255, 214, 110), (245, 240, 255), (170, 215, 255)),
+    "saffron": ((255, 170, 60), (255, 215, 150), (255, 190, 80), (255, 245, 225), (255, 215, 150)),
+    "lotus": ((255, 205, 90), (255, 200, 225), (255, 214, 110), (255, 235, 245), (255, 190, 215)),
+}
+PAL = PALETTES[os.environ.get("VERSE_PALETTE", "classic")]
 CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
            "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi",
            "vishnu_te": "mahanavi.content.vishnu_te", "vishnu_hi": "mahanavi.content.vishnu_hi"}
@@ -86,13 +96,13 @@ def _embossed(img: Image.Image, xy: tuple[float, float], text: str, font, fill: 
     img.paste(Image.new("RGBA", img.size, INK + (255,) if len(INK) == 3 else INK), (0, 0), sm)
     top = int(y)
     rows = np.clip((np.arange(img.size[1])[:, None] - top) / max(_lh(font), 1), 0, 1)
-    light = np.array(fill, np.float32) * 0.55 + 255 * 0.45
-    dark = np.array(fill, np.float32) * 0.72
+    light = np.array(fill, np.float32) * 0.82 + 255 * 0.18
+    dark = np.array(fill, np.float32) * 0.62
     grad = (light[None, None, :] * (1 - rows[:, :, None]) + dark[None, None, :] * rows[:, :, None])
     gimg = Image.fromarray(np.broadcast_to(grad, (img.size[1], img.size[0], 3)).astype(np.uint8)).convert("RGBA")
     img.paste(gimg, (0, 0), m)
-    rim_hi = ImageChops.subtract(m, ImageChops.offset(m, 2, 2)).point(lambda v: int(v * 1.0))
-    rim_lo = ImageChops.subtract(m, ImageChops.offset(m, -2, -2)).point(lambda v: int(v * 0.85))
+    rim_hi = ImageChops.subtract(m, ImageChops.offset(m, 1, 1)).point(lambda v: int(v * 0.55))
+    rim_lo = ImageChops.subtract(m, ImageChops.offset(m, -1, -1)).point(lambda v: int(v * 0.7))
     img.paste(Image.new("RGBA", img.size, (255, 255, 255, 255)), (0, 0), rim_hi)
     img.paste(Image.new("RGBA", img.size, (60, 25, 0, 255)), (0, 0), rim_lo)
 
@@ -123,8 +133,8 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
             y += _lh(font)
         y += gap
 
-    block(head, f_head, GOLD)
-    block(sub, f_sub, WHITE, gap=int(18 * k))
+    block(head, f_head, PAL[0])
+    block(sub, f_sub, PAL[1], gap=int(18 * k))
     verse = verse.replace(" ।", "\u00a0।").replace(" ॥", "\u00a0॥")   # keep the danda on the line it ends
     vl = _lines(probe, verse, f_verse, TEXT_W - 50)
     vl = [ln for ln in vl]
@@ -138,16 +148,20 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     y += pad
     d.rounded_rectangle((W // 2 - TEXT_W // 2 - 14, y - pad, W // 2 + TEXT_W // 2 + 14, y + vh + pad), radius=26, fill=(18, 8, 4, 200), outline=(255, 200, 80, 255), width=4)
     for ln in vl:
-        _embossed(img, ((W - probe.textlength(ln, font=f_verse)) / 2, y), ln, f_verse, (255, 226, 140), 3)
+        _embossed(img, ((W - probe.textlength(ln, font=f_verse)) / 2, y), ln, f_verse, PAL[2], 3)
         y += _lh(f_verse)
     y += pad + int(22 * k)
-    block(meaning, f_mean, WHITE, gap=int(14 * k))
+    mean_y0 = y
+    block(meaning, f_mean, PAL[3], gap=int(14 * k))
     if s.variant == "meaning" and hasattr(c, "MEANING_EN"):
-        block(c.MEANING_EN[day], f_en, (255, 236, 190))
+        block(c.MEANING_EN[day], f_en, PAL[4])
     end = y
+    under = Image.new("RGBA", (W, H), (0, 0, 0, 0))     # soft dark panel behind the meanings so they stay readable on a busy frame
+    ImageDraw.Draw(under).rounded_rectangle((W // 2 - TEXT_W // 2 - 14, mean_y0 - 12, W // 2 + TEXT_W // 2 + 14, end), radius=26, fill=(12, 6, 4, 150))
+    img = Image.alpha_composite(under, img)
     sy = sub_y
     for ln in sub_lines:
-        _embossed(img, ((W - probe.textlength(ln, font=f_subs)) / 2, sy), ln, f_subs, GOLD, 5)
+        _embossed(img, ((W - probe.textlength(ln, font=f_subs)) / 2, sy), ln, f_subs, PAL[0], 5)
         sy += _lh(f_subs)
     return np.roll(np.asarray(img), SHIFT_X, axis=1), (10**6 if too_wide else end), sub_y
 
