@@ -111,7 +111,7 @@ def _embossed(img: Image.Image, xy: tuple[float, float], text: str, font, fill: 
     img.paste(Image.new("RGBA", img.size, (60, 25, 0, 255)), (0, 0), rim_lo)
 
 
-def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
+def _layout(key: str, day: int, k: float, wide: bool = True) -> tuple[np.ndarray, int, int]:
     s, c = vs.SERIES[key], content(key)
     ui = UI["chant" if s.variant == "chant" else s.lang]
     verse, meaning = c.VERSES[day]
@@ -140,20 +140,22 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     block(head, f_head, PAL[0])
     block(sub, f_sub, PAL[1], gap=int(18 * k))
     verse = verse.replace(" ।", "\u00a0।").replace(" ॥", "\u00a0॥")   # keep the danda on the line it ends
-    vl = _lines(probe, verse, f_verse, TEXT_W - 50)
+    vw = TEXT_W + 70 if wide else TEXT_W        # above the like/comment column (y<560) the whole width is free
+    vl = _lines(probe, verse, f_verse, vw - 50)
     vl = [ln for ln in vl]
     for i in range(len(vl) - 1, 0, -1):          # a line holding only a danda goes back onto the line before it
         if vl[i].replace("\u00a0", "").strip() in ("।", "॥"):
             vl[i - 1] = vl[i - 1] + " " + vl[i].strip()
             del vl[i]
-    too_wide = any(probe.textlength(ln, font=f_verse) > TEXT_W - 40 for ln in vl)
+    too_wide = any(probe.textlength(ln, font=f_verse) > vw - 40 for ln in vl)
     pad = 20
     vh = len(vl) * _lh(f_verse)
     y += pad
-    d.rounded_rectangle((W // 2 - TEXT_W // 2 - 14, y - pad, W // 2 + TEXT_W // 2 + 14, y + vh + pad), radius=26, fill=(18, 8, 4, 200), outline=PAL[5] + (255,), width=4)
+    d.rounded_rectangle((W // 2 - vw // 2 - 14, y - pad, W // 2 + vw // 2 + 14, y + vh + pad), radius=26, fill=(18, 8, 4, 200), outline=PAL[5] + (255,), width=4)
     for ln in vl:
         _embossed(img, ((W - probe.textlength(ln, font=f_verse)) / 2, y), ln, f_verse, PAL[2], 3)
         y += _lh(f_verse)
+    vbottom = y + pad
     y += pad + int(22 * k)
     mean_y0 = y
     block(meaning, f_mean, PAL[3], gap=int(14 * k))
@@ -167,14 +169,22 @@ def _layout(key: str, day: int, k: float) -> tuple[np.ndarray, int, int]:
     for ln in sub_lines:
         _embossed(img, ((W - probe.textlength(ln, font=f_subs)) / 2, sy), ln, f_subs, PAL[0], 5)
         sy += _lh(f_subs)
-    return np.roll(np.asarray(img), SHIFT_X, axis=1), (10**6 if too_wide else end), sub_y
+    arr = np.asarray(img)
+    if wide:
+        out = arr.copy()
+        out[vbottom + 6:] = np.roll(arr[vbottom + 6:], SHIFT_X, axis=1)   # head and verse stay centred, the lower text clears the buttons
+        return out, (10**6 if too_wide or vbottom > 556 else end), sub_y
+    return np.roll(arr, SHIFT_X, axis=1), (10**6 if too_wide else end), sub_y
 
 
 def text_layer(key: str, day: int) -> np.ndarray:
-    k = 1.4
+    k = 1.8
     while True:
-        lay, end, sub_y = _layout(key, day, k)
-        if end <= sub_y - 20 or k < 0.5:
+        for wide in (True, False):
+            lay, end, sub_y = _layout(key, day, k, wide)
+            if end <= sub_y - 20:
+                return lay
+        if k < 0.5:
             return lay
         k -= 0.03
 

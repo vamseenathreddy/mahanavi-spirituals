@@ -44,9 +44,11 @@ PLAYLISTS = {
     "vedas_te": ("నాలుగు వేదాలు | రోజుకో వేద మంత్రం | 4 Vedas Mantra with Meaning",
                  "ఋగ్వేదం, యజుర్వేదం, సామవేదం, అథర్వవేదం నుండి రోజుకో మంత్రం, తెలుగు అర్థంతో.\nOne mantra a day from the Rigveda, Yajurveda, Samaveda and Atharvaveda, with meaning."),
     "vishnu_te": ("విష్ణు సహస్రనామం | రోజుకో శ్లోకం | Vishnu Sahasranamam with Meaning",
-                  "శ్రీ విష్ణు సహస్రనామ స్తోత్రం, రోజుకో శ్లోకం, తెలుగు అర్థంతో. మొదటి శ్లోకం నుంచి క్రమంగా వినండి.\nVishnu Sahasranamam, one verse a day with its meaning in Telugu and English. Start from the first verse."),
+                  "విష్ణు సహస్రనామ స్తోత్రం తెలుగు అర్థంతో, రోజుకో శ్లోకం. శ్రీ మహావిష్ణు స్తోత్రం, నారాయణ నామ స్మరణ, లక్ష్మీ నారాయణ భక్తి, గురువారం ఏకాదశి విష్ణు పూజకు అనువైన శ్లోకాలు. మొదటి శ్లోకం నుంచి క్రమంగా వినండి.\n"
+                  "Vishnu Sahasranamam stotram in Telugu with meaning, one verse a day. Sri Maha Vishnu stotram, vishnu sahasranamam lyrics in Telugu with meaning, Narayana, Lakshmi Narayana, Ekadashi and Thursday Vishnu puja. Start from the first verse."),
     "vishnu_hi": ("विष्णु सहस्रनाम | रोज़ एक श्लोक अर्थ सहित | Vishnu Sahasranamam with Meaning",
-                  "श्री विष्णु सहस्रनाम स्तोत्र, रोज़ एक श्लोक, हिंदी अर्थ के साथ। पहले श्लोक से क्रम में सुनें।\nVishnu Sahasranamam, one verse a day with its meaning in Hindi and English. Start from the first verse."),
+                  "विष्णु सहस्रनाम स्तोत्र हिंदी अर्थ सहित, रोज़ एक श्लोक। श्री हरि नारायण स्तुति, लक्ष्मी नारायण भक्ति, एकादशी और गुरुवार विष्णु पूजा के लिए श्लोक। पहले श्लोक से क्रम में सुनें।\n"
+                  "Vishnu Sahasranamam in Hindi with meaning, one verse a day. Vishnu sahasranam stotra lyrics, Shri Hari, Narayana, Lakshmi Narayana, Ekadashi and Thursday Vishnu puja. Start from the first verse."),
     "vedas_hi": ("चारों वेद | रोज़ एक वेद मंत्र अर्थ सहित | 4 Vedas Mantra with Meaning",
                  "ऋग्वेद, यजुर्वेद, सामवेद और अथर्ववेद से रोज़ एक मंत्र, हिंदी अर्थ के साथ।\nOne mantra a day from the four Vedas, with meaning in Hindi."),
 }
