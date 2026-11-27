@@ -134,23 +134,49 @@ def text_layer(key: str, day: int) -> np.ndarray:
         k -= 0.03
 
 
-def _open_bg_video(s: vs.Series):
-    """Looped background video (e.g. the Vishwaroopa animation) when s.bg_video exists in the repo, else None."""
-    if not s.bg_video:
-        return None
-    path = PROJECT_ROOT / s.bg_video
-    if not path.exists():
-        return None
-    cap = cv2.VideoCapture(str(path))
-    return cap if cap.isOpened() else None
+SEG, XF = 5.8, 0.8        # seconds taken from each clip, and the cross-fade between clips
 
 
-def _next_video_frame(cap) -> np.ndarray:
-    ok, fr = cap.read()
-    if not ok:
-        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-        ok, fr = cap.read()
-    return cover(Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)))
+class _ClipBg:
+    """Faded background built from several clips: each day starts on a different clip and at a different second, so the days never look
+    the same and nothing visibly loops (15 s = 3 clips x 5.8 s with 0.8 s cross-fades). Dimmed and softened so the text reads neatly."""
+
+    def __init__(self, paths: list[Path], day: int, shift: int):
+        n = len(paths)
+        order = [(day + shift + i) % n for i in range(n)]
+        self.segs = []
+        for i, ci in enumerate(order):
+            off = round(((day * 1.3 + i * 0.9 + shift * 0.5) % 2.0), 2)       # 0..2 s into the 8 s clip, so 5.8 s always fits
+            self.segs.append((paths[ci], off))
+        self.caps = [cv2.VideoCapture(str(p)) for p, _ in self.segs]
+        for cap, (_, off) in zip(self.caps, self.segs):
+            cap.set(cv2.CAP_PROP_POS_FRAMES, int(off * 24))
+        self.n = 0
+
+    def _read(self, i: int) -> np.ndarray:
+        ok, fr = self.caps[i].read()
+        if not ok:
+            self.caps[i].set(cv2.CAP_PROP_POS_FRAMES, 0)
+            ok, fr = self.caps[i].read()
+        return cover(Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)))
+
+    def frame(self, t: float) -> np.ndarray:
+        step = SEG - XF                                   # a new clip starts every 5.0 s and fades in over 0.8 s
+        i = min(int(t // step), len(self.segs) - 1)
+        into = t - i * step
+        cur = self._read(i)
+        if i > 0 and into < XF:                           # the previous clip keeps playing while it fades out
+            w = into / XF
+            cur = cv2.addWeighted(self._read(i - 1), 1 - w, cur, w, 0)
+        return cv2.GaussianBlur(cur, (0, 0), 2.2)
+
+
+def _open_bg_video(s: vs.Series, day: int):
+    """_ClipBg when every clip in s.bg_video exists in the repo, else None (pictures are used)."""
+    paths = [PROJECT_ROOT / x for x in s.bg_video.split(",") if x]
+    if not paths or not all(p.exists() for p in paths):
+        return None
+    return _ClipBg(paths, day, s.bg_shift)
 
 
 def render(key: str, day: int, out: Path, music: Path | None = None) -> Path:
@@ -170,12 +196,12 @@ def render(key: str, day: int, out: Path, music: Path | None = None) -> Path:
            "-stream_loop", "-1", "-i", str(music), "-filter_complex", "[1:a]afade=t=in:st=0:d=1[a]", "-map", "0:v", "-map", "[a]", "-t", str(SECONDS),
            "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(out)]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE)
-    vid = _open_bg_video(s)
+    vid = _open_bg_video(s, day)
     for f in range(total):
         t = f / FPS
         if vid is not None:
-            base = _next_video_frame(vid)
-            frame = base.astype(np.float32) * 0.62 * vig
+            base = vid.frame(t)
+            frame = base.astype(np.float32) * 0.78 * (0.5 + 0.5 * vig)     # faded, but the deity stays clearly visible
             frame = frame * (1 - la) + lrgb * la
             p.stdin.write(np.clip(frame, 0, 255).astype(np.uint8).tobytes())
             continue
