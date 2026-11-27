@@ -2,7 +2,7 @@
 
 TITLE = "Powerful Mahalakshmi Stotram | లక్ష్మీ అష్టోత్తర శతనామావళి | Lakshmi Devi 108 Names | Revathy VSL"
 
-LIVE_TITLE = "LIVE Lakshmi Devi Songs | లక్ష్మీ అష్టోత్తర శతనామావళి | Powerful Mahalakshmi Stotram | Meditation"
+LIVE_TITLE = "LIVE Lakshmi Devi Meditation Songs | లక్ష్మీ అష్టోత్తర శతనామావళి | Powerful Mahalakshmi Stotram"
 
 DESCRIPTION = """శ్రీ లక్ష్మీ అష్టోత్తర శతనామావళి (108 నామాలు) ధ్యానం కోసం. ప్రశాంతంగా కళ్ళు మూసుకుని వినండి, మనసులో నామాలను స్మరించండి.
 
