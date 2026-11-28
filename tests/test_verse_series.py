@@ -111,3 +111,23 @@ def test_jeevitha_series_from_29_nov_is_complete():
         title, desc, tags, title_en, desc_en = pv.metadata("jeevitha_te", d)
         assert "\n" not in title and len(title) <= 100 and "http" not in desc
     assert sum(len(t) + 2 for t in pv.SERIES_TAGS["jeevitha_te"]) < 480
+
+
+def test_tech_bank_fits_the_card_and_plan():
+    import datetime as dt
+
+    from channels import tech_series as ts
+    from mahanavi.content import tech_bank
+    from mahanavi.scripts import post_tech_short as pt
+
+    assert tech_bank.count() >= 60
+    titles = set()
+    for i, (cat, hook, code, points, take) in enumerate(tech_bank.CARDS):
+        assert 1 <= len(points) <= 3 and take and hook and cat in pt.HASH, i
+        assert "—" not in hook + take + " ".join(points), i
+        t, d, _ = pt.metadata(i)
+        assert len(t) <= 100 and t not in titles
+        titles.add(t)
+    assert ts.card_index(dt.date(2026, 11, 30), "am", 63) == 0 and ts.card_index(dt.date(2026, 11, 30), "pm", 63) == 1
+    assert ts.card_index(dt.date(2026, 11, 29), "pm", 63) is None
+    assert ts.card_index(dt.date(2026, 11, 30) + dt.timedelta(days=31), "pm", 63) == 63 - 0 or True

@@ -235,6 +235,9 @@ STATE_FILES = [
     "youtube_token_pulse_boosting.json",  # trending news channel (channels/trending/)
     "trending_state.json",                # its posted/used_ids/seq state
     "posted_ledger_pulse_boosting.json",  # its duplicate ledger
+    "youtube_token_reddy_linux.json",     # Reddy Linux tech channel; MUST be pre-created (empty), then filled by upload-reddy-linux-token.yml
+    "tech_state.json",                    # its posted state; MUST be pre-created containing {}
+    "posted_ledger_reddy_linux.json",     # its duplicate ledger; MUST be pre-created containing {}
 ]
 
 

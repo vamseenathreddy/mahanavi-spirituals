@@ -1,0 +1,101 @@
+name: Reddy Linux | Tech Short Morning (9 AM IST)
+
+# Reddy Linux tech Short (am): card by date from src/mahanavi/content/tech_bank.py, random minute in the window (channels/tech_series.py).
+on:
+  workflow_dispatch:
+    inputs:
+      public:
+        description: "Upload as public. Uncheck for an unlisted test run."
+        required: false
+        type: boolean
+        default: true
+      bypass_gate:
+        description: "Post immediately, ignoring the window and today's already-posted marker (testing)."
+        required: false
+        type: boolean
+        default: false
+      date:
+        description: "Optional ISO date to build the Short for (testing). Blank = today."
+        required: false
+        default: ''
+
+concurrency:
+  group: post-tech-am
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  post-tech-am:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync + gate
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Decide whether this call should post today
+        id: gate
+        env:
+          STATE_FILE: data/tech_state.json
+          POST_SLOT: tech_am
+          FORCE_POST: ${{ inputs.bypass_gate && 'true' || 'false' }}
+        run: python -m channels.tech_series --slot am
+
+      - name: Install ffmpeg + text shaping libs
+        if: steps.gate.outputs.post == 'true'
+        run: bash scripts/ci/apt_install.sh ffmpeg fonts-dejavu-core
+
+      - name: Install full Python dependencies
+        if: steps.gate.outputs.post == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Build and upload the tech Short
+        if: steps.gate.outputs.post == 'true'
+        env:
+          STATE_FILE: data/tech_state.json
+          POST_SLOT: tech_am
+          MAHANAVI_IMAGES_ROOT: ./Images
+          MAHANAVI_ASSETS_DIR: ./assets
+          MAHANAVI_OUTPUT_DIR: ./data/generated
+          MAHANAVI_DATABASE_PATH: ./data/mahanavi.db
+          MAHANAVI_LOG_DIR: ./data/logs
+          MAHANAVI_TIMEZONE: Asia/Kolkata
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/youtube_token_reddy_linux.json
+        run: |
+          ARGS="--slot am"
+          if [ "${{ inputs.public }}" != "false" ]; then ARGS="$ARGS --public"; fi
+          if [ -n "${{ inputs.date }}" ]; then ARGS="$ARGS --date ${{ inputs.date }}"; fi
+          python3 -m mahanavi.scripts.post_tech_short $ARGS
+
+      - name: Push state to Drive
+        if: always() && steps.gate.outputs.post == 'true'
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py push
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/ci/notify_failure.py "Reddy Linux | Tech Short Morning (9 AM IST)"

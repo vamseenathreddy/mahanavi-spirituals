@@ -113,6 +113,8 @@ TARGETS = [
     ("post-shiva-telugu.yml", "Mahanavi - Shiva Slokam Short (12-1 PM, 29 Nov-13 Dec)", *_every_10(12, 0, 6)),
     ("post-jeevitha-telugu.yml", "Mahanavi - Jeevitha Satyalu Short (8-9 PM, 29 Nov-28 Dec)", *_every_10(20, 0, 6)),
     ("blog-daily-sites.yml", "Blogs (English and Hindi) - schedule next 3 days of posts (6 AM)", *_every_10(6, 0, 1)),
+    ("post-tech-am.yml", "Reddy Linux - Tech Short morning (9-10 AM)", *_every_10(9, 0, 6)),
+    ("post-tech-pm.yml", "Reddy Linux - Tech Short evening (6:30-7:30 PM)", *_every_10(18, 30, 6)),
     ("sync-extra-playlists.yml", "Extra playlists daily top-up (after quota reset)", *_every_10(15, 30, 1)),
     ("post-lakshmi-name-hindi.yml", "Trance Beats - Lakshmi 108 Names Short (4:30-6:30 PM)", *_every_10(16, 30, 13)),
     ("post-lakshmi-recap-hindi.yml", "Trance Beats - Lakshmi 108 Friday Recap (10 AM-12)", *_every_10(10, 0, 13)),
