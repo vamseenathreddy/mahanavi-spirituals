@@ -178,15 +178,29 @@ def _layout(key: str, day: int, k: float, wide: bool = True) -> tuple[np.ndarray
 
 
 def text_layer(key: str, day: int) -> np.ndarray:
-    k = 1.8
-    while True:
+    def fit(k: float):
         for wide in (True, False):
             lay, end, sub_y = _layout(key, day, k, wide)
             if end <= sub_y - 20:
                 return lay
-        if k < 0.5:
-            return lay
-        k -= 0.03
+        return None
+
+    lo, hi, best = 0.5, 1.8, None          # biggest scale that fits (binary search, each layout costs about a second)
+    top = fit(hi)
+    if top is not None:
+        return top
+    while hi - lo > 0.04:
+        mid = (lo + hi) / 2
+        got = fit(mid)
+        if got is not None:
+            lo, best = mid, got
+        else:
+            hi = mid
+    if best is None:
+        best = fit(0.5)
+        if best is None:
+            best = _layout(key, day, 0.5, False)[0]
+    return best
 
 
 SLOW = 0.5     # background plays at half speed (owner 2026-11-28: calm, not "rolling")
