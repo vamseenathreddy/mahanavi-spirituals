@@ -7,7 +7,7 @@ on:
       budget:
         description: "Most videos to add per channel in this run"
         required: false
-        default: "30"
+        default: "10"
 
 permissions:
   contents: read
@@ -47,4 +47,4 @@ jobs:
       - name: Sync the extra playlists
         env:
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ matrix.token }}
-        run: python3 scripts/ci/sync_extra_playlists.py "${{ matrix.token }}" "${{ inputs.budget || '30' }}"
+        run: python3 scripts/ci/sync_extra_playlists.py "${{ matrix.token }}" "${{ inputs.budget || '10' }}"

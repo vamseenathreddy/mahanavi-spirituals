@@ -15,7 +15,7 @@ def main() -> int:
     from mahanavi.scripts import post_lakshmi_name as ln
     from mahanavi.scripts import post_verse_series as pv
 
-    token, budget = sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 30
+    token, budget = sys.argv[1], int(sys.argv[2]) if len(sys.argv) > 2 else 10
     for k, (title, _d) in pv.PLAYLISTS.items():
         ep.MAIN_TITLES[k] = title
     ep.MAIN_TITLES["lakshmi_te"], ep.MAIN_TITLES["lakshmi_hi"] = ln.PLAYLIST_TITLE, ln.PLAYLIST_TITLE_HI
