@@ -208,6 +208,9 @@ def main(argv: list[str] | None = None) -> int:
                     time.sleep(20)
                     added = pl.add_once(youtube, video_id, pid)
                 print(f"Playlist: {'added' if added else 'already listed'}")
+                from channels import extra_playlists
+
+                extra_playlists.add_video(youtube, "lakshmi_hi" if hi else "lakshmi_te", video_id, args.lang)
             except Exception as exc:  # noqa: BLE001
                 print(f"WARNING: could not add to the Lakshmi playlist: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 0

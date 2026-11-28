@@ -53,26 +53,6 @@ PLAYLISTS = {
                  "ऋग्वेद, यजुर्वेद, सामवेद और अथर्ववेद से रोज़ एक मंत्र, हिंदी अर्थ के साथ।\nOne mantra a day from the four Vedas, with meaning in Hindi."),
 }
 
-# More playlists for the same videos, each aimed at a different search: meaning, occasion, morning habit.
-EXTRA_PLAYLISTS = {
-    "vishnu_te": [
-        ("విష్ణు సహస్రనామం తెలుగు అర్థంతో | Vishnu Sahasranamam Lyrics in Telugu with Meaning",
-         "విష్ణు సహస్రనామం శ్లోకాలు తెలుగు లిపిలో, ప్రతి శ్లోకానికి సులభమైన తెలుగు అర్థంతో. vishnu sahasranamam lyrics in telugu with meaning, vishnu sahasranama stotram telugu, sri vishnu sahasranamam telugu lyrics.\nVishnu Sahasranamam verses in Telugu script with a simple meaning for each."),
-        ("ఏకాదశి, గురువారం విష్ణు శ్లోకాలు | Ekadashi and Thursday Vishnu Slokas Telugu",
-         "ఏకాదశి, గురువారం విష్ణు పూజలో చదవడానికి విష్ణు సహస్రనామ శ్లోకాలు. ekadashi slokas telugu, thursday vishnu pooja telugu, narayana stotram telugu.\nVishnu slokas for Ekadashi and Thursday worship, with meaning."),
-        ("ఉదయం 1 నిమిషం శ్లోకాలు | Morning Slokas Telugu | Vishnu Stotram Shorts",
-         "ఉదయం లేవగానే ఒక నిమిషంలో వినే విష్ణు శ్లోకాలు. morning slokas telugu, vishnu stotram shorts telugu, daily sloka telugu, sri maha vishnu slokas.\nOne-minute Vishnu slokas to start the day."),
-    ],
-    "vishnu_hi": [
-        ("विष्णु सहस्रनाम हिंदी अर्थ सहित | Vishnu Sahasranamam Lyrics in Hindi with Meaning",
-         "विष्णु सहस्रनाम के श्लोक देवनागरी में, हर श्लोक का सरल हिंदी अर्थ। vishnu sahasranamam in hindi with meaning, विष्णु सहस्रनाम लिरिक्स हिंदी, vishnu sahasranam stotra hindi.\nVishnu Sahasranamam verses in Devanagari with a simple Hindi meaning."),
-        ("एकादशी और गुरुवार विष्णु श्लोक | Ekadashi and Thursday Vishnu Shlok Hindi",
-         "एकादशी और गुरुवार की विष्णु पूजा में पढ़ने के लिए विष्णु सहस्रनाम श्लोक। ekadashi shlok hindi, guruvar vishnu puja, narayan stotra hindi.\nVishnu shlokas for Ekadashi and Thursday worship, with meaning."),
-        ("सुबह 1 मिनट श्लोक | Morning Shlok Hindi | Vishnu Stotra Shorts",
-         "सुबह उठते ही एक मिनट में सुनें विष्णु श्लोक। morning shlok hindi, vishnu stotra shorts, daily shlok, shri hari mantra.\nOne-minute Vishnu shlokas to start the day."),
-    ],
-}
-
 
 def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
     """(title, description, tags, title_en, description_en); no links anywhere."""
@@ -190,12 +170,9 @@ def main(argv: list[str] | None = None) -> int:
             ptitle, pdesc = PLAYLISTS[args.series]
             pid = upload.find_or_create_playlist(youtube, ptitle, pdesc, s.lang)
             print(f"Playlist: {'added' if pl.add_once(youtube, video_id, pid) else 'already listed'}")
-            for etitle, edesc in EXTRA_PLAYLISTS.get(args.series, []):
-                try:
-                    epid = upload.find_or_create_playlist(youtube, etitle, edesc, s.lang)
-                    print(f"Playlist '{etitle[:30]}': {'added' if pl.add_once(youtube, video_id, epid) else 'already listed'}")
-                except Exception as exc:  # noqa: BLE001  one playlist failing must not stop the others
-                    print(f"WARNING: extra playlist failed: {type(exc).__name__}: {exc}", file=sys.stderr)
+            from channels import extra_playlists
+
+            extra_playlists.add_video(youtube, args.series, video_id, s.lang)
         except Exception as exc:  # noqa: BLE001  a playlist failure must never lose the upload
             print(f"WARNING: could not add to the playlist: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 0

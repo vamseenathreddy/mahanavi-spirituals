@@ -1,0 +1,57 @@
+name: Tools | Backfill Extra Playlists
+
+# One-off: creates the extra search-angle playlists of the Vishnu, Vedas and Lakshmi series and copies the Shorts
+# already posted into them (idempotent; stops at max_adds because every addition costs YouTube API quota).
+on:
+  workflow_dispatch:
+    inputs:
+      max_adds:
+        description: "Most videos to add per series in this run"
+        required: false
+        default: "80"
+
+permissions:
+  contents: read
+
+jobs:
+  backfill:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - {series: vishnu_te, token: youtube_token.json}
+          - {series: vedas_te, token: youtube_token.json}
+          - {series: lakshmi_te, token: youtube_token.json}
+          - {series: vishnu_hi, token: youtube_token_mantra_sangam.json}
+          - {series: vedas_hi, token: youtube_token_mantra_sangam.json}
+          - {series: lakshmi_hi, token: youtube_token_trance_beats.json}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Create the playlists and copy the posted Shorts
+        env:
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ matrix.token }}
+        run: python3 scripts/ci/backfill_extra_playlists.py "${{ matrix.series }}" "${{ inputs.max_adds || '80' }}"
