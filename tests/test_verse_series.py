@@ -72,7 +72,9 @@ def test_vishnu_series_from_28_nov_and_content_complete():
 
     for k in ("vishnu_te", "vishnu_hi"):
         assert vs.plan(k, dt.date(2026, 11, 27)) is None and vs.plan(k, dt.date(2026, 11, 28)) == 0
-        assert vs.plan(k, dt.date(2027, 3, 14)) == 106 and vs.plan(k, dt.date(2027, 3, 15)) is None
+        # alternate days with Mahalakshmi Ashtakam: verses on 28 Nov, 30 Nov, 2 Dec ... and the last one 212 days after the start
+        assert vs.plan(k, dt.date(2026, 11, 29)) is None and vs.plan(k, dt.date(2026, 11, 30)) == 1
+        assert vs.plan(k, dt.date(2027, 6, 28)) == 106 and vs.plan(k, dt.date(2027, 6, 30)) is None
     assert vishnu_te.count() == vishnu_hi.count() == 107
     assert len({len(x) for x in (vishnu_sahasra.SA, vishnu_sahasra.TE_READ, vishnu_sahasra.TE_MEAN, vishnu_sahasra.HI_MEAN, vishnu_sahasra.EN_MEAN)}) == 1
     for k in ("vishnu_te", "vishnu_hi"):
@@ -131,3 +133,23 @@ def test_tech_bank_fits_the_card_and_plan():
     assert ts.card_index(dt.date(2026, 11, 30), "am", 63) == 0 and ts.card_index(dt.date(2026, 11, 30), "pm", 63) == 1
     assert ts.card_index(dt.date(2026, 11, 29), "pm", 63) is None
     assert ts.card_index(dt.date(2026, 11, 30) + dt.timedelta(days=31), "pm", 63) == 63 - 0 or True
+
+
+def test_mahalakshmi_ashtakam_fills_the_off_days_of_vishnu():
+    from mahanavi.content import mlakshmi_hi, mlakshmi_te
+    from mahanavi.scripts import post_verse_series as pv
+
+    for a, b in (("vishnu_te", "mlakshmi_te"), ("vishnu_hi", "mlakshmi_hi")):
+        for i in range(60):
+            d = dt.date(2026, 11, 28) + dt.timedelta(days=i)
+            if i <= 21:
+                assert (vs.plan(a, d) is None) != (vs.plan(b, d) is None), (a, d)   # exactly one of the two posts each day
+            else:
+                assert vs.plan(b, d) is None
+    assert vs.plan("mlakshmi_te", dt.date(2026, 11, 29)) == 0 and vs.plan("mlakshmi_te", dt.date(2026, 12, 19)) == 10
+    assert vs.plan("mlakshmi_te", dt.date(2026, 12, 21)) is None
+    assert mlakshmi_te.count() == mlakshmi_hi.count() == 11
+    for k in ("mlakshmi_te", "mlakshmi_hi"):
+        for d in range(11):
+            title, desc, tags, title_en, desc_en = pv.metadata(k, d)
+            assert len(title) <= 100 and "Mahalakshmi Ashtakam" in title and "http" not in desc

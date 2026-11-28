@@ -38,6 +38,7 @@ class Series:
     bg_shift: int = 0         # rotates which clip is used (so the two channels do not look identical)
     seconds: float = 0        # Short length; 0 = the shared default (15 s)
     palette: str = ""         # text colour set in video/verse_short.PALETTES; "" = classic
+    every: int = 1            # 2 = alternate days: posts on start, start+2, ... and the verse index counts posts, not days
 
 
 SERIES = {
@@ -51,20 +52,27 @@ SERIES = {
     "vedas_hi": Series("vedas_hi", dt.date(2026, 11, 26), 10, (dt.time(9, 0), 50, dt.time(9, 55)), "vedas", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", ""),
     # Vishnu Sahasranamam, one verse a day from Sat 28 Nov 2026 (owner 2026-11-27). Mahanavi (Telugu + English) 10:00-10:55 AM IST,
     # Divine Mantra Sangam (Hindi + English) 10:00-10:55 AM IST. Each channel's own default music; Vishwaroopa video background when supplied.
-    "vishnu_te": Series("vishnu_te", dt.date(2026, 11, 28), 107, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 0, 8, "rose"),
-    "vishnu_hi": Series("vishnu_hi", dt.date(2026, 11, 28), 107, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 1, 8, "aqua"),
+    "vishnu_te": Series("vishnu_te", dt.date(2026, 11, 28), 107, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 0, 8, "rose", 2),
+    "vishnu_hi": Series("vishnu_hi", dt.date(2026, 11, 28), 107, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 1, 8, "aqua", 2),
     # Shiva sloka series (from the YouTube "content gaps": shiva slokam, shivaya slokam, sivayya mantralu): Mahanavi, Telugu + English, 15 days
     # from Sun 29 Nov 2026, 12:00-12:55 IST: Shiva Panchakshara Stotram (6) then Lingashtakam (9). Shiva pictures from Images/Monday_Shiva (the 457 px one skipped), the channel's own music.
     "shiva_te": Series("shiva_te", dt.date(2026, 11, 29), 15, (dt.time(12, 0), 50, dt.time(12, 55)), "shiva", "te", "mahanavi", "mahanavi", "", "meaning", "dir:Images/Monday_Shiva", "3.jpg", "", "", 0, 0, "goldwhite"),
     # Jeevitha Satyalu (life truths; YouTube "content gaps" search jeevitha satyalu): Mahanavi, Telugu + English, 30 days from Sun 29 Nov 2026, 20:00-20:55 IST.
     "jeevitha_te": Series("jeevitha_te", dt.date(2026, 11, 29), 30, (dt.time(20, 0), 50, dt.time(20, 55)), "jeevitha", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi,lingam,trishul,portrait,om_mountain", "", "", 0, 0, "violet"),
+    # Sri Mahalakshmi Ashtakam (YouTube "content gap"), 11 verses, on the days Vishnu Sahasranamam does not post (alternate days, 10:00-10:55 AM IST,
+    # from Sun 29 Nov 2026). Mahanavi (Telugu + English) and Divine Mantra Sangam (Hindi + English); Lakshmi pictures, each channel's own music.
+    "mlakshmi_te": Series("mlakshmi_te", dt.date(2026, 11, 29), 11, (dt.time(10, 0), 50, dt.time(10, 55)), "mlakshmi", "te", "mahanavi", "mahanavi", "", "meaning", "dir:assets/images/lakshmi108", "", "", "", 0, 8, "rose", 2),
+    "mlakshmi_hi": Series("mlakshmi_hi", dt.date(2026, 11, 29), 11, (dt.time(10, 0), 50, dt.time(10, 55)), "mlakshmi", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "dir:assets/images/lakshmi108", "", "", "", 1, 8, "aqua", 2),
 }
 
 
 def plan(key: str, d: dt.date) -> int | None:
     s = SERIES[key]
-    n = (d - s.start).days
-    return n if 0 <= n < s.count else None
+    days = (d - s.start).days
+    if days < 0 or days % s.every:
+        return None
+    n = days // s.every
+    return n if n < s.count else None
 
 
 def jitter_seconds(key: str, d: dt.date) -> int:

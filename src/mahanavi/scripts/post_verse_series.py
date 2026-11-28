@@ -35,6 +35,10 @@ SERIES_TAGS = {
     "vishnu_hi": ["Vishnu Sahasranamam", "Vishnu Sahasranama", "Vishnu Sahasranama stotram", "vishnu sahasranam in hindi", "Vishnu stotra with meaning",
                   "Vishnu mantra", "Narayan", "Hindi devotional", "विष्णु सहस्रनाम", "श्री हरि", "Hindu mantra", "Shorts"],
 }
+SERIES_TAGS["mlakshmi_te"] = ["Mahalakshmi Ashtakam", "Sri Mahalakshmi Ashtakam", "Mahalakshmi Ashtakam telugu", "Mahalakshmi Ashtakam lyrics", "Mahalakshmi ashtakam with meaning",
+                              "Namastestu Mahamaye", "Lakshmi stotram", "Lakshmi devi stotram", "Friday Lakshmi pooja", "Telugu devotional", "మహాలక్ష్మీ అష్టకం", "లక్ష్మీ స్తోత్రం", "Shorts"]
+SERIES_TAGS["mlakshmi_hi"] = ["Mahalakshmi Ashtakam", "Mahalakshmi Ashtakam hindi", "Mahalakshmi Ashtakam lyrics", "Mahalakshmi ashtakam with meaning", "Namastestu Mahamaye",
+                              "Lakshmi stotra", "Maa Lakshmi", "Friday Lakshmi puja", "Hindi devotional", "महालक्ष्मी अष्टकम्", "लक्ष्मी स्तोत्र", "Shorts"]
 SERIES_TAGS["shiva_te"] = ["Shiva slokam", "Shiva slokalu telugu", "Shivaya slokam", "Shiva Panchakshara Stotram", "Lingashtakam", "Lingashtakam telugu",
                            "Sivayya mantralu", "Om Namah Shivaya", "Shiva stotram telugu", "Telugu devotional", "శివ శ్లోకాలు", "లింగాష్టకం", "మహా భక్తి", "Shorts"]
 SERIES_TAGS["jeevitha_te"] = ["జీవిత సత్యాలు", "Jeevitha Satyalu", "Jeevitha satyalu telugu", "life quotes telugu", "Telugu quotes", "Telugu motivational quotes",
@@ -43,6 +47,10 @@ PLAYLISTS = {
     "jeevitha_te": ("జీవిత సత్యాలు | రోజుకో సత్యం | Jeevitha Satyalu Telugu Life Quotes",
                     "జీవిత సత్యాలు తెలుగులో, రోజుకొక మంచి మాట, సులభమైన వివరణతో. jeevitha satyalu telugu, life quotes in telugu, telugu good words, మంచి మాటలు, జీవిత పాఠాలు.\n"
                     "Life truths in Telugu, one a day, with a simple explanation in Telugu and English."),
+    "mlakshmi_te": ("మహాలక్ష్మీ అష్టకం | రోజుకో శ్లోకం అర్థంతో | Mahalakshmi Ashtakam Telugu",
+                    "శ్రీ మహాలక్ష్మీ అష్టకం (నమస్తేఽస్తు మహామాయే) తెలుగులో అర్థంతో, రోజుకో శ్లోకం. mahalakshmi ashtakam telugu, mahalakshmi ashtakam lyrics with meaning, lakshmi stotram telugu, friday lakshmi pooja stotram.\nSri Mahalakshmi Ashtakam in Telugu with meaning, one verse a day."),
+    "mlakshmi_hi": ("महालक्ष्मी अष्टकम् | रोज़ एक श्लोक अर्थ सहित | Mahalakshmi Ashtakam Hindi",
+                    "श्री महालक्ष्मी अष्टकम् (नमस्तेऽस्तु महामाये) हिंदी अर्थ सहित, रोज़ एक श्लोक। mahalakshmi ashtakam hindi, mahalakshmi ashtakam lyrics with meaning, lakshmi stotra, friday lakshmi puja.\nSri Mahalakshmi Ashtakam in Hindi with meaning, one verse a day."),
     "shiva_te": ("శివ శ్లోకాలు | పంచాక్షర స్తోత్రం, లింగాష్టకం | Shiva Slokam Telugu with Meaning",
                  "శివ శ్లోకాలు తెలుగు అర్థంతో, రోజుకో శ్లోకం. శివ పంచాక్షర స్తోత్రం, లింగాష్టకం, ఓం నమః శివాయ, శివయ్య మంత్రాలు, మహా భక్తి. shiva slokam telugu, shivaya slokam, lingashtakam telugu lyrics with meaning, shiva panchakshara stotram telugu.\n"
                  "Shiva slokas in Telugu with meaning, one verse a day: Shiva Panchakshara Stotram and Lingashtakam. Start from the first verse."),
@@ -97,6 +105,22 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
                 f"జీవిత సత్యాలు రోజుకొకటి, సులభమైన అర్థంతో. కొత్తగా చూస్తున్నారా? ప్లేలిస్ట్‌లో మొదటి సత్యం నుంచి చూడండి.\n\n"
                 f"A life truth in Telugu every day with its meaning in Telugu and English.\n\n{hashtags}")
         return title[:100], desc, SERIES_TAGS[key], "Life truth in Telugu | Daily Telugu quotes", f"Life truth: {en}\n\n{hashtags}"
+    if key in ("mlakshmi_te", "mlakshmi_hi"):
+        first = verse.split("\n")[0].replace(" ।", "").strip()   # short enough that the English words stay inside 100 characters
+        en = c.MEANING_EN[day]
+        if key == "mlakshmi_te":
+            title = f"మహాలక్ష్మీ అష్టకం | {first} | అర్థంతో | Mahalakshmi Ashtakam"
+            hashtags = "#మహాలక్ష్మీఅష్టకం #MahalakshmiAshtakam #Lakshmi #Shorts"
+            desc = (f"శ్రీ మహాలక్ష్మీ అష్టకం\n\n{verse}\n\nఅర్థం: {meaning}\n\nMeaning in English: {en}\n\n"
+                    f"మహాలక్ష్మీ అష్టకం రోజుకో శ్లోకం, అర్థంతో. కొత్తగా చూస్తున్నారా? ప్లేలిస్ట్‌లో మొదటి శ్లోకం నుంచి చూడండి.\n\n"
+                    f"Sri Mahalakshmi Ashtakam, one verse a day with its meaning in Telugu and English.\n\n{hashtags}")
+        else:
+            title = f"महालक्ष्मी अष्टकम् | {first} | अर्थ सहित | Mahalakshmi Ashtakam"
+            hashtags = "#महालक्ष्मीअष्टकम् #MahalakshmiAshtakam #Lakshmi #Shorts"
+            desc = (f"श्री महालक्ष्मी अष्टकम्\n\n{verse}\n\nअर्थ: {meaning}\n\nMeaning in English: {en}\n\n"
+                    f"महालक्ष्मी अष्टकम् का एक श्लोक रोज़, अर्थ सहित। नए हैं? प्लेलिस्ट में पहले श्लोक से सुनें।\n\n"
+                    f"Sri Mahalakshmi Ashtakam, one verse a day with its meaning in Hindi and English.\n\n{hashtags}")
+        return title[:100], desc, SERIES_TAGS[key], "Mahalakshmi Ashtakam with meaning | Lakshmi Stotram", f"Mahalakshmi Ashtakam: {en}\n\n{hashtags}"
     if key == "shiva_te":
         first = " ".join(verse.split("\n")[:2]).replace(" ।", "").strip()
         en = c.MEANING_EN[day]

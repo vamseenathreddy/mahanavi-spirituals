@@ -109,6 +109,8 @@ TARGETS = [
     ("post-vedas-hindi.yml", "Mantra Sangam - Vedas Short (9-10 AM, 26 Nov-5 Dec)", *_every_10(9, 0, 6)),
     # Vishnu Sahasranamam daily verse (10 days from Sat 28 Nov 2026), 10:00-10:55 IST on both channels.
     ("post-vishnu-telugu.yml", "Mahanavi - Vishnu Sahasranamam Short (10-11 AM, from 28 Nov)", *_every_10(10, 0, 6)),
+    ("post-mlakshmi-telugu.yml", "Mahanavi - Mahalakshmi Ashtakam Short (alternate days, 10-11 AM, from 29 Nov)", *_every_10(10, 0, 6)),
+    ("post-mlakshmi-hindi.yml", "Mantra Sangam - Mahalakshmi Ashtakam Short (alternate days, 10-11 AM, from 29 Nov)", *_every_10(10, 0, 6)),
     ("post-vishnu-hindi.yml", "Mantra Sangam - Vishnu Sahasranamam Short (10-11 AM, from 28 Nov)", *_every_10(10, 0, 6)),
     ("post-shiva-telugu.yml", "Mahanavi - Shiva Slokam Short (12-1 PM, 29 Nov-13 Dec)", *_every_10(12, 0, 6)),
     ("post-jeevitha-telugu.yml", "Mahanavi - Jeevitha Satyalu Short (8-9 PM, 29 Nov-28 Dec)", *_every_10(20, 0, 6)),
