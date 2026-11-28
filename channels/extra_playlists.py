@@ -77,7 +77,20 @@ def add_video(yt, key: str, video_id: str, lang: str) -> None:
 def backfill(yt, key: str, main_title: str, main_desc: str, lang: str, max_adds: int = 80) -> int:
     """Create the extra playlists and copy every video of the main playlist (oldest first); returns the number added."""
     main_id = upload.find_or_create_playlist(yt, main_title, main_desc, lang)
-    items = list(pl._pages(lambda t: yt.playlistItems().list(part="contentDetails", playlistId=main_id, maxResults=50, pageToken=t)))  # noqa: SLF001
+    import time
+
+    for p_id, p_title, count in pl.list_playlists(yt):
+        print(f"  channel playlist {p_id}: {p_title[:60]} ({count})")
+    items = []
+    for attempt in range(4):       # a playlist created a moment ago can answer 404 for a few seconds
+        try:
+            items = list(pl._pages(lambda t: yt.playlistItems().list(part="contentDetails", playlistId=main_id, maxResults=50, pageToken=t)))  # noqa: SLF001
+            break
+        except Exception as exc:  # noqa: BLE001
+            print(f"main playlist {main_id} not readable yet ({type(exc).__name__}), attempt {attempt + 1}")
+            if attempt == 3:
+                raise
+            time.sleep(20)
     vids = [i["contentDetails"]["videoId"] for i in sorted(items, key=lambda i: i["contentDetails"].get("videoPublishedAt", ""))]
     print(f"{key}: {len(vids)} videos in the main playlist")
     added = 0

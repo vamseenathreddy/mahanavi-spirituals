@@ -5,6 +5,10 @@ name: Tools | Backfill Extra Playlists
 on:
   workflow_dispatch:
     inputs:
+      series:
+        description: "all, or one of vishnu_te, vedas_te, lakshmi_te, vishnu_hi, vedas_hi, lakshmi_hi"
+        required: false
+        default: "all"
       max_adds:
         description: "Most videos to add per series in this run"
         required: false
@@ -15,6 +19,7 @@ permissions:
 
 jobs:
   backfill:
+    if: ${{ (inputs.series || 'all') == 'all' || inputs.series == matrix.series }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
