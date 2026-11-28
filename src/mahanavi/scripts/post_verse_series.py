@@ -100,7 +100,7 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
     if key == "shiva_te":
         first = " ".join(verse.split("\n")[:2]).replace(" ।", "").strip()
         en = c.MEANING_EN[day]
-        title = f"{c.HEADS[day]} | {first} | అర్థంతో"
+        title = f"{c.HEADS[day]} | {first} | అర్థంతో | Shiva Stotram Telugu"
         hashtags = "#శివశ్లోకం #ShivaSlokam #OmNamahShivaya #Shiva #Shorts"
         desc = (f"{c.HEADS[day]}\n\n{verse}\n\nఅర్థం: {meaning}\n\nMeaning in English: {en}\n\n"
                 f"శివ శ్లోకాలు రోజుకొకటి, అర్థంతో. కొత్తగా చూస్తున్నారా? ప్లేలిస్ట్‌లో మొదటి శ్లోకం నుంచి చూడండి.\n\n"
