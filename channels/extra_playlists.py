@@ -64,12 +64,26 @@ EXTRA: dict[str, list[tuple[str, str]]] = {
 }
 
 
+def _retry404(fn, tries: int = 5, wait: int = 15):
+    """A playlist created a moment ago answers 404 for a few seconds; try again before giving up."""
+    import time
+
+    for i in range(tries):
+        try:
+            return fn()
+        except Exception as exc:  # noqa: BLE001
+            if i == tries - 1 or "404" not in str(exc):
+                raise
+            print(f"playlist not ready yet, waiting {wait}s")
+            time.sleep(wait)
+
+
 def add_video(yt, key: str, video_id: str, lang: str) -> None:
     """Add one new video to every extra playlist of this series; one failure never blocks the others."""
     for title, desc in EXTRA.get(key, []):
         try:
             pid = upload.find_or_create_playlist(yt, title, desc, lang)
-            print(f"Playlist '{title[:30]}': {'added' if pl.add_once(yt, video_id, pid) else 'already listed'}")
+            print(f"Playlist '{title[:30]}': {'added' if _retry404(lambda: pl.add_once(yt, video_id, pid)) else 'already listed'}")
         except Exception as exc:  # noqa: BLE001
             print(f"WARNING: extra playlist failed: {type(exc).__name__}: {exc}")
 
@@ -96,12 +110,12 @@ def backfill(yt, key: str, main_title: str, main_desc: str, lang: str, max_adds:
     added = 0
     for title, desc in EXTRA.get(key, []):
         pid = upload.find_or_create_playlist(yt, title, desc, lang)
-        present = pl.playlist_video_ids(yt, pid)
+        present = _retry404(lambda: pl.playlist_video_ids(yt, pid))
         print(f"playlist https://www.youtube.com/playlist?list={pid} ({title[:40]}), {len(present)} already in it")
         for v in vids:
             if added >= max_adds:
                 print(f"::notice::stopped at {max_adds} additions (API quota); run again to continue")
                 return added
-            if pl.add_once(yt, v, pid, present):
+            if _retry404(lambda: pl.add_once(yt, v, pid, present)):
                 added += 1
     return added
