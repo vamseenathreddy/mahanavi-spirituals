@@ -34,8 +34,10 @@ PALETTES = {      # head, sub line, verse, meaning, English meaning, verse-box o
     "rose": ((255, 170, 200), (255, 215, 230), (255, 185, 210), (255, 238, 244), (255, 200, 220), (255, 150, 185)),
     "saffron": ((255, 150, 50), (255, 215, 170), (255, 170, 70), (255, 245, 230), (255, 205, 150), (255, 140, 40)),
     "violet": ((200, 170, 255), (225, 210, 255), (210, 185, 255), (245, 240, 255), (190, 210, 255), (180, 150, 250)),
+    "goldwhite": ((255, 205, 90), (255, 220, 130), (255, 214, 110), (255, 255, 255), (255, 255, 255), (255, 200, 80)),
     "mint": ((150, 240, 190), (205, 250, 225), (160, 245, 200), (235, 255, 245), (180, 235, 215), (130, 225, 175)),
 }
+FLAT = False        # True for the "goldwhite" set: plain gold and white letters, no black outline or shadow (dark backgrounds)
 PAL = PALETTES[os.environ.get("VERSE_PALETTE", "classic")]   # module default; render() switches it per series (Series.palette)
 CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
            "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi",
@@ -92,6 +94,9 @@ def _lh(font) -> int:
 def _embossed(img: Image.Image, xy: tuple[float, float], text: str, font, fill: tuple[int, int, int], stroke: int) -> None:
     """Letters that look raised: soft drop shadow, dark outline, top-to-bottom shaded fill, bright upper-left rim and dark lower-right rim."""
     x, y = xy
+    if FLAT:
+        ImageDraw.Draw(img).text((x, y), text, font=font, fill=tuple(fill) + (255,))
+        return
     m = Image.new("L", img.size, 0)
     ImageDraw.Draw(m).text((x, y), text, font=font, fill=255)
     sm = Image.new("L", img.size, 0)
@@ -122,7 +127,7 @@ def _layout(key: str, day: int, k: float, wide: bool = True) -> tuple[np.ndarray
     no_subscribe = hasattr(c, "SUBS")   # the Vedas cards carry no subscribe line and no numbering (owner rules 2026-11-06 / 2026-11-14)
     if s.variant == "chant":
         verse, meaning = verse.split("\n")[0].replace("।", "").replace("॥", "").strip(), ui["tail"]
-    f_head, f_sub, f_verse = _font(s.lang, int(56 * k)), _font(s.lang, int(32 * k)), _font(s.lang, int(40 * k))
+    f_head, f_sub, f_verse = _font(s.lang, int((68 if FLAT else 56) * k)), _font(s.lang, int(32 * k)), _font(s.lang, int(40 * k))
     f_mean, f_subs = _font(s.lang, int(36 * k)), _font(s.lang, 38)
     f_en = ImageFont.truetype(str(HIND), int(31 * k))
     probe = ImageDraw.Draw(Image.new("RGBA", (10, 10)))
@@ -244,8 +249,10 @@ def _open_bg_video(s: vs.Series, day: int):
 
 def render(key: str, day: int, out: Path, music: Path | None = None) -> Path:
     s = vs.SERIES[key]
-    global PAL
-    PAL = PALETTES[os.environ.get("VERSE_PALETTE") or s.palette or "classic"]
+    global PAL, FLAT
+    pal_name = os.environ.get("VERSE_PALETTE") or s.palette or "classic"
+    PAL = PALETTES[pal_name]
+    FLAT = pal_name == "goldwhite"
     pics = [Image.open(f).convert("RGB") for f in image_files(s)]
     seq = [cover(p) for p in pics] if pics else [gradient()]
     start = day % len(seq)

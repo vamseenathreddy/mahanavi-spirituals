@@ -55,7 +55,7 @@ SERIES = {
     "vishnu_hi": Series("vishnu_hi", dt.date(2026, 11, 28), 107, (dt.time(10, 0), 50, dt.time(10, 55)), "vishnu", "hi", "mantra_sangam", "mantra sangam", "", "meaning", "", "shiva,nandi", "", "assets/vishnu/vishwaroopa_a.mp4,assets/vishnu/vishwaroopa_b.mp4,assets/vishnu/vishwaroopa_c.mp4", 1, 8, "aqua"),
     # Shiva sloka series (from the YouTube "content gaps": shiva slokam, shivaya slokam, sivayya mantralu): Mahanavi, Telugu + English, 15 days
     # from Sun 29 Nov 2026, 12:00-12:55 IST: Shiva Panchakshara Stotram (6) then Lingashtakam (9). Shiva pictures from Images/Monday_Shiva (the 457 px one skipped), the channel's own music.
-    "shiva_te": Series("shiva_te", dt.date(2026, 11, 29), 15, (dt.time(12, 0), 50, dt.time(12, 55)), "shiva", "te", "mahanavi", "mahanavi", "", "meaning", "dir:Images/Monday_Shiva", "3.jpg", "", "", 0, 0, "ivory"),
+    "shiva_te": Series("shiva_te", dt.date(2026, 11, 29), 15, (dt.time(12, 0), 50, dt.time(12, 55)), "shiva", "te", "mahanavi", "mahanavi", "", "meaning", "dir:Images/Monday_Shiva", "3.jpg", "", "", 0, 0, "goldwhite"),
 }
 
 
