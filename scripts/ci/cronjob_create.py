@@ -110,6 +110,7 @@ TARGETS = [
     # Vishnu Sahasranamam daily verse (10 days from Sat 28 Nov 2026), 10:00-10:55 IST on both channels.
     ("post-vishnu-telugu.yml", "Mahanavi - Vishnu Sahasranamam Short (10-11 AM, from 28 Nov)", *_every_10(10, 0, 6)),
     ("post-vishnu-hindi.yml", "Mantra Sangam - Vishnu Sahasranamam Short (10-11 AM, from 28 Nov)", *_every_10(10, 0, 6)),
+    ("post-shiva-telugu.yml", "Mahanavi - Shiva Slokam Short (12-1 PM, 29 Nov-13 Dec)", *_every_10(12, 0, 6)),
     ("post-lakshmi-name-hindi.yml", "Trance Beats - Lakshmi 108 Names Short (4:30-6:30 PM)", *_every_10(16, 30, 13)),
     ("post-lakshmi-recap-hindi.yml", "Trance Beats - Lakshmi 108 Friday Recap (10 AM-12)", *_every_10(10, 0, 13)),
 ]

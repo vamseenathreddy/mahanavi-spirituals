@@ -80,3 +80,19 @@ def test_vishnu_series_from_28_nov_and_content_complete():
             title, desc, tags, title_en, desc_en = pv.metadata(k, d)
             assert "\n" not in title and len(title) <= 100 and "http" not in desc and not any(ch.isdigit() for ch in title)
             assert sum(len(x) + 1 for x in tags) < 480
+
+
+def test_shiva_series_from_29_nov_is_complete():
+    import datetime as dt
+
+    from channels import verse_series as vs
+    from mahanavi.content import shiva_te
+    from mahanavi.scripts import post_verse_series as pv
+
+    k = "shiva_te"
+    assert vs.plan(k, dt.date(2026, 11, 29)) == 0 and vs.plan(k, dt.date(2026, 12, 13)) == 14 and vs.plan(k, dt.date(2026, 12, 14)) is None
+    assert shiva_te.count() == len(shiva_te.HEADS) == len(shiva_te.SUBS) == len(shiva_te.MEANING_EN) == 15
+    for d in range(15):
+        title, desc, tags, title_en, desc_en = pv.metadata("shiva_te", d)
+        assert "\n" not in title and len(title) <= 100 and "http" not in desc
+    assert sum(len(t) + 2 for t in pv.SERIES_TAGS["shiva_te"]) < 480

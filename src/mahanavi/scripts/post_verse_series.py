@@ -35,7 +35,12 @@ SERIES_TAGS = {
     "vishnu_hi": ["Vishnu Sahasranamam", "Vishnu Sahasranama", "Vishnu Sahasranama stotram", "vishnu sahasranam in hindi", "Vishnu stotra with meaning",
                   "Vishnu mantra", "Narayan", "Hindi devotional", "विष्णु सहस्रनाम", "श्री हरि", "Hindu mantra", "Shorts"],
 }
+SERIES_TAGS["shiva_te"] = ["Shiva slokam", "Shiva slokalu telugu", "Shivaya slokam", "Shiva Panchakshara Stotram", "Lingashtakam", "Lingashtakam telugu",
+                           "Sivayya mantralu", "Om Namah Shivaya", "Shiva stotram telugu", "Telugu devotional", "శివ శ్లోకాలు", "లింగాష్టకం", "మహా భక్తి", "Shorts"]
 PLAYLISTS = {
+    "shiva_te": ("శివ శ్లోకాలు | పంచాక్షర స్తోత్రం, లింగాష్టకం | Shiva Slokam Telugu with Meaning",
+                 "శివ శ్లోకాలు తెలుగు అర్థంతో, రోజుకో శ్లోకం. శివ పంచాక్షర స్తోత్రం, లింగాష్టకం, ఓం నమః శివాయ, శివయ్య మంత్రాలు, మహా భక్తి. shiva slokam telugu, shivaya slokam, lingashtakam telugu lyrics with meaning, shiva panchakshara stotram telugu.\n"
+                 "Shiva slokas in Telugu with meaning, one verse a day: Shiva Panchakshara Stotram and Lingashtakam. Start from the first verse."),
     "shiv_tandav_hi": ("शिव ताण्डव स्तोत्र | श्लोक और हिंदी अर्थ | Shiv Tandav Stotram with Meaning",
                        "शिव ताण्डव स्तोत्र के सभी 15 श्लोक, हर श्लोक का हिंदी अर्थ, क्रम से। श्लोक 1 से शुरू करें।\n"
                        "Shiv Tandav Stotram, all 15 verses in order, each with its meaning in Hindi. Start from verse 1."),
@@ -78,6 +83,15 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
                     f"Vishnu Sahasranamam, one verse a day with its meaning in Hindi and English.\n\n{hashtags}")
         title_en = "Vishnu Sahasranamam verse with meaning | Daily Vishnu Stotram"
         return title[:100], desc, SERIES_TAGS[key], title_en, f"Vishnu Sahasranamam: {en}\n\n{hashtags}"
+    if key == "shiva_te":
+        first = " ".join(verse.split("\n")[:2]).replace(" ।", "").strip()
+        en = c.MEANING_EN[day]
+        title = f"{c.HEADS[day]} | {first} | అర్థంతో"
+        hashtags = "#శివశ్లోకం #ShivaSlokam #OmNamahShivaya #Shiva #Shorts"
+        desc = (f"{c.HEADS[day]}\n\n{verse}\n\nఅర్థం: {meaning}\n\nMeaning in English: {en}\n\n"
+                f"శివ శ్లోకాలు రోజుకొకటి, అర్థంతో. కొత్తగా చూస్తున్నారా? ప్లేలిస్ట్‌లో మొదటి శ్లోకం నుంచి చూడండి.\n\n"
+                f"Shiva slokas in Telugu, one verse a day with its meaning in Telugu and English.\n\n{hashtags}")
+        return title[:100], desc, SERIES_TAGS[key], "Shiva Slokam with meaning | Om Namah Shivaya", f"Shiva Slokam: {en}\n\n{hashtags}"
     if key in ("vedas_te", "vedas_hi"):
         from mahanavi.content import vedas as vd
 

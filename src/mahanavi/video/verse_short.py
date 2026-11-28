@@ -39,7 +39,8 @@ PALETTES = {      # head, sub line, verse, meaning, English meaning, verse-box o
 PAL = PALETTES[os.environ.get("VERSE_PALETTE", "classic")]   # module default; render() switches it per series (Series.palette)
 CONTENT = {"shiv_tandav_hi": "mahanavi.content.shiv_tandav_hi", "shiv_tandav_trance": "mahanavi.content.shiv_tandav_hi",
            "vedas_te": "mahanavi.content.vedas_te", "vedas_hi": "mahanavi.content.vedas_hi",
-           "vishnu_te": "mahanavi.content.vishnu_te", "vishnu_hi": "mahanavi.content.vishnu_hi"}
+           "vishnu_te": "mahanavi.content.vishnu_te", "vishnu_hi": "mahanavi.content.vishnu_hi",
+           "shiva_te": "mahanavi.content.shiva_te"}
 UI = {
     "hi": dict(sub="श्लोक {d}", subscribe="रोज़ एक श्लोक के लिए सब्सक्राइब करें"),
     "chant": dict(head="शिव ताण्डव ट्रांस", sub="जाप {d}", tail="हर हर महादेव", subscribe="रोज़ एक ट्रांस जाप के लिए सब्सक्राइब करें"),
@@ -54,7 +55,8 @@ def content(key: str):
 
 
 def image_files(s: vs.Series) -> list[Path]:
-    folder = PROJECT_ROOT / "channels" / (s.bg_channel or s.channel) / "assets" / "backgrounds"
+    src = s.bg_channel or s.channel
+    folder = PROJECT_ROOT / src[4:] if src.startswith("dir:") else PROJECT_ROOT / "channels" / src / "assets" / "backgrounds"
     files = sorted(p for p in folder.glob("*") if p.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")) if folder.exists() else []
     skip = [t for t in s.image_skip.split(",") if t]
     files = [p for p in files if not any(t in p.name.lower() for t in skip)] or files

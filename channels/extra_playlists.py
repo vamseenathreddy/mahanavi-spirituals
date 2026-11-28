@@ -7,12 +7,20 @@ from channels.engine import upload
 
 # series key -> (token file name, language)
 CHANNELS = {
-    "vishnu_te": ("youtube_token.json", "te"), "vedas_te": ("youtube_token.json", "te"), "lakshmi_te": ("youtube_token.json", "te"),
+    "vishnu_te": ("youtube_token.json", "te"), "shiva_te": ("youtube_token.json", "te"), "vedas_te": ("youtube_token.json", "te"), "lakshmi_te": ("youtube_token.json", "te"),
     "vishnu_hi": ("youtube_token_mantra_sangam.json", "hi"), "vedas_hi": ("youtube_token_mantra_sangam.json", "hi"),
     "lakshmi_hi": ("youtube_token_trance_beats.json", "hi"),
 }
 
 EXTRA: dict[str, list[tuple[str, str]]] = {
+    "shiva_te": [
+        ("శివ పంచాక్షర స్తోత్రం, లింగాష్టకం తెలుగు అర్థంతో | Lingashtakam Telugu Lyrics with Meaning",
+         "శివ పంచాక్షర స్తోత్రం, లింగాష్టకం శ్లోకాలు తెలుగు లిపిలో, అర్థంతో. lingashtakam telugu lyrics, shiva panchakshara stotram telugu, shiva stotram telugu with meaning.\nShiva Panchakshara Stotram and Lingashtakam with Telugu meaning."),
+        ("సోమవారం శివ మంత్రాలు | Monday Shiva Mantras Telugu | Sivayya Mantralu",
+         "సోమవారం, ప్రదోషం, శివరాత్రి రోజుల్లో చదవడానికి శివయ్య మంత్రాలు, శ్లోకాలు. sivayya mantralu, monday shiva pooja telugu, om namah shivaya telugu, pradosham slokalu.\nShiva mantras and slokas for Mondays, Pradosham and Shivaratri."),
+        ("ఉదయం శివ శ్లోకం 1 నిమిషం | Morning Shiva Slokam Telugu Shorts | మహా భక్తి",
+         "రోజును శివ స్మరణతో మొదలుపెట్టండి. morning shiva slokam telugu, shivaya slokam shorts, maha bhakti, daily shiva sloka.\nStart the day with a one-minute Shiva sloka."),
+    ],
     "vishnu_te": [
         ("విష్ణు సహస్రనామం తెలుగు అర్థంతో | Vishnu Sahasranamam Lyrics in Telugu with Meaning",
          "విష్ణు సహస్రనామం శ్లోకాలు తెలుగు లిపిలో, ప్రతి శ్లోకానికి సులభమైన తెలుగు అర్థంతో. vishnu sahasranamam lyrics in telugu with meaning, vishnu sahasranama stotram telugu, sri vishnu sahasranamam telugu lyrics.\nVishnu Sahasranamam verses in Telugu script with a simple meaning for each."),
