@@ -19,7 +19,6 @@ permissions:
 
 jobs:
   backfill:
-    if: ${{ (inputs.series || 'all') == 'all' || inputs.series == matrix.series }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
@@ -37,26 +36,31 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
+        if: ${{ (inputs.series || 'all') == 'all' || inputs.series == matrix.series }}
         with:
           python-version: "3.13"
           cache: "pip"
 
       - name: Install minimal deps for state sync
+        if: ${{ (inputs.series || 'all') == 'all' || inputs.series == matrix.series }}
         run: pip install google-auth google-api-python-client
 
       - name: Restore persistent state from Google Drive
+        if: ${{ (inputs.series || 'all') == 'all' || inputs.series == matrix.series }}
         env:
           GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: python scripts/ci/drive_state_sync.py pull
 
       - name: Install full Python dependencies
+        if: ${{ (inputs.series || 'all') == 'all' || inputs.series == matrix.series }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install -e .
 
       - name: Create the playlists and copy the posted Shorts
+        if: ${{ (inputs.series || 'all') == 'all' || inputs.series == matrix.series }}
         env:
           MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ matrix.token }}
         run: python3 scripts/ci/backfill_extra_playlists.py "${{ matrix.series }}" "${{ inputs.max_adds || '80' }}"
