@@ -25,7 +25,11 @@ def main() -> int:
     for k in keys:
         if left <= 0:
             break
-        n = ep.sync(yt, k, left)
+        try:
+            n = ep.sync(yt, k, left)
+        except Exception as exc:  # noqa: BLE001  quota used up: stop quietly, tomorrow's run continues
+            print(f"{k}: stopped ({type(exc).__name__}: {str(exc)[:100]})")
+            break
         left -= n
         print(f"{k}: added {n}")
     print(f"done, {budget - left} additions (budget {budget})")
