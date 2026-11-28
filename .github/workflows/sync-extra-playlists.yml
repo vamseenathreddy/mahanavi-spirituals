@@ -1,0 +1,50 @@
+name: Sync | Extra Playlists (daily top-up)
+
+# Daily top-up: copies the Shorts of every series into its extra search-angle playlists, a few per channel per run so the YouTube quota stays free for uploads.
+on:
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: "Most videos to add per channel in this run"
+        required: false
+        default: "30"
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        token: [youtube_token.json, youtube_token_mantra_sangam.json, youtube_token_trance_beats.json]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip"
+
+      - name: Install minimal deps for state sync
+        run: pip install google-auth google-api-python-client
+
+      - name: Restore persistent state from Google Drive
+        env:
+          GDRIVE_SA_KEY_JSON: ${{ secrets.GDRIVE_SA_KEY_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python scripts/ci/drive_state_sync.py pull
+
+      - name: Install full Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Sync the extra playlists
+        env:
+          MAHANAVI_YOUTUBE_TOKEN_FILE: ./data/${{ matrix.token }}
+        run: python3 scripts/ci/sync_extra_playlists.py "${{ matrix.token }}" "${{ inputs.budget || '30' }}"
