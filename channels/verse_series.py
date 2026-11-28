@@ -56,6 +56,8 @@ SERIES = {
     # Shiva sloka series (from the YouTube "content gaps": shiva slokam, shivaya slokam, sivayya mantralu): Mahanavi, Telugu + English, 15 days
     # from Sun 29 Nov 2026, 12:00-12:55 IST: Shiva Panchakshara Stotram (6) then Lingashtakam (9). Shiva pictures from Images/Monday_Shiva (the 457 px one skipped), the channel's own music.
     "shiva_te": Series("shiva_te", dt.date(2026, 11, 29), 15, (dt.time(12, 0), 50, dt.time(12, 55)), "shiva", "te", "mahanavi", "mahanavi", "", "meaning", "dir:Images/Monday_Shiva", "3.jpg", "", "", 0, 0, "goldwhite"),
+    # Jeevitha Satyalu (life truths; YouTube "content gaps" search jeevitha satyalu): Mahanavi, Telugu + English, 30 days from Sun 29 Nov 2026, 20:00-20:55 IST.
+    "jeevitha_te": Series("jeevitha_te", dt.date(2026, 11, 29), 30, (dt.time(20, 0), 50, dt.time(20, 55)), "jeevitha", "te", "mahanavi", "mahanavi", "", "meaning", "mantra_sangam", "shiva,nandi,lingam,trishul,portrait,om_mountain", "", "", 0, 0, "violet"),
 }
 
 

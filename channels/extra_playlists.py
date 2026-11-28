@@ -7,12 +7,20 @@ from channels.engine import upload
 
 # series key -> (token file name, language)
 CHANNELS = {
-    "vishnu_te": ("youtube_token.json", "te"), "shiva_te": ("youtube_token.json", "te"), "vedas_te": ("youtube_token.json", "te"), "lakshmi_te": ("youtube_token.json", "te"),
+    "vishnu_te": ("youtube_token.json", "te"), "shiva_te": ("youtube_token.json", "te"), "jeevitha_te": ("youtube_token.json", "te"), "vedas_te": ("youtube_token.json", "te"), "lakshmi_te": ("youtube_token.json", "te"),
     "vishnu_hi": ("youtube_token_mantra_sangam.json", "hi"), "vedas_hi": ("youtube_token_mantra_sangam.json", "hi"),
     "lakshmi_hi": ("youtube_token_trance_beats.json", "hi"),
 }
 
 EXTRA: dict[str, list[tuple[str, str]]] = {
+    "jeevitha_te": [
+        ("తెలుగు మంచి మాటలు | Telugu Good Words and Life Quotes",
+         "ప్రతిరోజూ మనసుకు శాంతినిచ్చే తెలుగు మంచి మాటలు, జీవిత పాఠాలు. telugu good words, telugu life quotes, manchi matalu telugu, telugu quotes about life.\nShort Telugu life quotes with meaning."),
+        ("ఉదయం స్ఫూర్తి మాటలు | Morning Motivation Telugu Shorts",
+         "రోజును ఉత్సాహంగా మొదలుపెట్టడానికి తెలుగు స్ఫూర్తి మాటలు. morning motivation telugu, telugu motivational quotes, positive thoughts telugu.\nMorning motivation in Telugu."),
+        ("సంబంధాలు, స్నేహం, కుటుంబం గురించి మాటలు | Telugu Quotes on Friendship and Family",
+         "స్నేహం, తల్లిదండ్రులు, క్షమ, ప్రేమ గురించి తెలుగు సూక్తులు. friendship quotes telugu, family quotes telugu, forgiveness quotes telugu.\nTelugu quotes on friendship, family and forgiveness."),
+    ],
     "shiva_te": [
         ("శివ పంచాక్షర స్తోత్రం, లింగాష్టకం తెలుగు అర్థంతో | Lingashtakam Telugu Lyrics with Meaning",
          "శివ పంచాక్షర స్తోత్రం, లింగాష్టకం శ్లోకాలు తెలుగు లిపిలో, అర్థంతో. lingashtakam telugu lyrics, shiva panchakshara stotram telugu, shiva stotram telugu with meaning.\nShiva Panchakshara Stotram and Lingashtakam with Telugu meaning."),

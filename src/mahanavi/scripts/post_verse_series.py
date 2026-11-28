@@ -37,7 +37,12 @@ SERIES_TAGS = {
 }
 SERIES_TAGS["shiva_te"] = ["Shiva slokam", "Shiva slokalu telugu", "Shivaya slokam", "Shiva Panchakshara Stotram", "Lingashtakam", "Lingashtakam telugu",
                            "Sivayya mantralu", "Om Namah Shivaya", "Shiva stotram telugu", "Telugu devotional", "శివ శ్లోకాలు", "లింగాష్టకం", "మహా భక్తి", "Shorts"]
+SERIES_TAGS["jeevitha_te"] = ["జీవిత సత్యాలు", "Jeevitha Satyalu", "Jeevitha satyalu telugu", "life quotes telugu", "Telugu quotes", "Telugu motivational quotes",
+                              "life lessons telugu", "మంచి మాటలు", "Telugu life truths", "Telugu devotional", "Shorts"]
 PLAYLISTS = {
+    "jeevitha_te": ("జీవిత సత్యాలు | రోజుకో సత్యం | Jeevitha Satyalu Telugu Life Quotes",
+                    "జీవిత సత్యాలు తెలుగులో, రోజుకొక మంచి మాట, సులభమైన వివరణతో. jeevitha satyalu telugu, life quotes in telugu, telugu good words, మంచి మాటలు, జీవిత పాఠాలు.\n"
+                    "Life truths in Telugu, one a day, with a simple explanation in Telugu and English."),
     "shiva_te": ("శివ శ్లోకాలు | పంచాక్షర స్తోత్రం, లింగాష్టకం | Shiva Slokam Telugu with Meaning",
                  "శివ శ్లోకాలు తెలుగు అర్థంతో, రోజుకో శ్లోకం. శివ పంచాక్షర స్తోత్రం, లింగాష్టకం, ఓం నమః శివాయ, శివయ్య మంత్రాలు, మహా భక్తి. shiva slokam telugu, shivaya slokam, lingashtakam telugu lyrics with meaning, shiva panchakshara stotram telugu.\n"
                  "Shiva slokas in Telugu with meaning, one verse a day: Shiva Panchakshara Stotram and Lingashtakam. Start from the first verse."),
@@ -83,6 +88,15 @@ def metadata(key: str, day: int) -> tuple[str, str, list[str], str, str]:
                     f"Vishnu Sahasranamam, one verse a day with its meaning in Hindi and English.\n\n{hashtags}")
         title_en = "Vishnu Sahasranamam verse with meaning | Daily Vishnu Stotram"
         return title[:100], desc, SERIES_TAGS[key], title_en, f"Vishnu Sahasranamam: {en}\n\n{hashtags}"
+    if key == "jeevitha_te":
+        first = verse.split("\n")[0]
+        en = c.MEANING_EN[day]
+        title = f"జీవిత సత్యం | {c.SUBS[day]} | {first}"
+        hashtags = "#జీవితసత్యాలు #JeevithaSatyalu #TeluguQuotes #LifeQuotes #Shorts"
+        desc = (f"జీవిత సత్యం: {c.SUBS[day]}\n\n{verse}\n\nఅర్థం: {meaning}\n\nMeaning in English: {en}\n\n"
+                f"జీవిత సత్యాలు రోజుకొకటి, సులభమైన అర్థంతో. కొత్తగా చూస్తున్నారా? ప్లేలిస్ట్‌లో మొదటి సత్యం నుంచి చూడండి.\n\n"
+                f"A life truth in Telugu every day with its meaning in Telugu and English.\n\n{hashtags}")
+        return title[:100], desc, SERIES_TAGS[key], "Life truth in Telugu | Daily Telugu quotes", f"Life truth: {en}\n\n{hashtags}"
     if key == "shiva_te":
         first = " ".join(verse.split("\n")[:2]).replace(" ।", "").strip()
         en = c.MEANING_EN[day]

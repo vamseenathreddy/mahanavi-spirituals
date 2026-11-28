@@ -96,3 +96,18 @@ def test_shiva_series_from_29_nov_is_complete():
         title, desc, tags, title_en, desc_en = pv.metadata("shiva_te", d)
         assert "\n" not in title and len(title) <= 100 and "http" not in desc
     assert sum(len(t) + 2 for t in pv.SERIES_TAGS["shiva_te"]) < 480
+
+
+def test_jeevitha_series_from_29_nov_is_complete():
+    import datetime as dt
+
+    from channels import verse_series as vs
+    from mahanavi.content import jeevitha_te
+    from mahanavi.scripts import post_verse_series as pv
+
+    assert vs.plan("jeevitha_te", dt.date(2026, 11, 29)) == 0 and vs.plan("jeevitha_te", dt.date(2026, 12, 28)) == 29 and vs.plan("jeevitha_te", dt.date(2026, 12, 29)) is None
+    assert jeevitha_te.count() == len(jeevitha_te.SUBS) == len(jeevitha_te.MEANING_EN) == 30
+    for d in range(30):
+        title, desc, tags, title_en, desc_en = pv.metadata("jeevitha_te", d)
+        assert "\n" not in title and len(title) <= 100 and "http" not in desc
+    assert sum(len(t) + 2 for t in pv.SERIES_TAGS["jeevitha_te"]) < 480
