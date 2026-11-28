@@ -58,6 +58,18 @@ def build(kind: str, today: dt.date, channel: str = "mahanavi"):
     return cal.build_festivals(y, m) if kind == "festivals" else cal.build_vratas(y, m)
 
 
+def _channel_titles(youtube) -> list[str]:
+    uploads = youtube.channels().list(part="contentDetails", mine=True).execute()["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+    titles, token = [], None
+    for _ in range(40):
+        resp = youtube.playlistItems().list(part="snippet", playlistId=uploads, maxResults=50, pageToken=token).execute()
+        titles += [it["snippet"]["title"] for it in resp["items"]]
+        token = resp.get("nextPageToken")
+        if not token:
+            break
+    return titles
+
+
 def _already_on_channel(youtube, title: str) -> dict | None:
     """The channel video (id, title) whose title contains this card's title (before the first '|'), scheduled ones included, else None."""
     key = title.split("|")[0].strip()
@@ -120,6 +132,18 @@ def main(argv: list[str] | None = None) -> int:
         if spec is None:
             print("nothing special: no post")
             return 0
+        if args.kind == "tips" and not args.dry_run:      # never post a pooja-rule card that is already on the channel
+            early_tips = YouTubeShortsUploader(settings)._build_service()  # noqa: SLF001
+            posted = _channel_titles(early_tips)
+            for skip in range(len(cal.TIPS)):
+                spec = cal.build_tip(today, skip)
+                if not any(spec.title.split("|")[0].strip() in t for t in posted):
+                    break
+                print(f"already posted, trying the next one: {spec.title}")
+            else:
+                print("::warning::every pooja-rule tip is already on the channel; add new ones to calendar_days.TIPS")
+                LAST["action"] = "skipped"
+                return 0
         print(f"{today} -> {spec.slug}: {spec.title}")
         if args.skip_if_exists and not args.dry_run:      # decide before the slow rendering
             early = YouTubeShortsUploader(settings)._build_service()  # noqa: SLF001

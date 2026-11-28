@@ -521,12 +521,12 @@ TIPS: tuple[Tip, ...] = (
 )
 
 
-def tip_for(day: dt.date) -> Tip:
-    return TIPS[day.toordinal() % len(TIPS)]
+def tip_for(day: dt.date, skip: int = 0) -> Tip:
+    return TIPS[(day.toordinal() + skip) % len(TIPS)]
 
 
-def build_tip(day: dt.date) -> RequestShort:
-    t = tip_for(day)
+def build_tip(day: dt.date, skip: int = 0) -> RequestShort:
+    t = tip_for(day, skip)
     o = Obs("tip", "పూజా నియమాలు", "Pooja Rules", t.god, t.photo, t.title, ("", "", ""), ("", "", ""), t.tags)
     slides = (Slide("points", 16.0, t.title, "\n".join(t.points)),)   # one card
     title = f"{t.title} | పూజా నియమాలు"
