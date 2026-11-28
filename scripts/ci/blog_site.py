@@ -30,12 +30,16 @@ RELATED_MARK = "<!--related-posts-->"
 RAW = "https://raw.githubusercontent.com/vamseenathreddy/mahanavi-spirituals/main/assets/blog/"
 
 
+# four daily windows (IST): early morning, midday, evening, night
+WINDOWS4 = [((5, 30), (8, 30)), ((11, 0), (14, 0)), ((16, 30), (19, 30)), ((20, 30), (23, 0))]
+
+
 def slots_for(site: str, day: dt.date) -> list[dt.datetime]:
     """Random post times for this day, seeded by site + day so every day differs and no two blogs share a minute."""
     import random
     rng = random.Random(f"{site}-{day.isoformat()}")
     out = []
-    for (h0, m0), (h1, m1) in bd.WINDOWS:
+    for (h0, m0), (h1, m1) in WINDOWS4:
         t = rng.randint(h0 * 60 + m0, h1 * 60 + m1)
         out.append(dt.datetime.combine(day, dt.time(t // 60, t % 60), bd.IST))
     return out
@@ -232,6 +236,8 @@ def main() -> int:
             taken.add(slot_t)
             made += 1
         day += dt.timedelta(days=1)
+    if len(todo) < 12:
+        print(f"::warning::{a.site}: only {len(todo)} unposted post(s) left, add more content")
     print(f"::notice::{made} post(s) {'scheduled' if a.apply else 'listed'}; {len(todo)} still waiting")
     return 0
 
